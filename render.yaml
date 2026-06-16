@@ -1,0 +1,18 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Chat BullQ — Web (Next.js 16, standalone)
+# Conecte ESTE repositório no Render via "New > Blueprint".
+# ─────────────────────────────────────────────────────────────────────────────
+services:
+  - type: web
+    name: chat-bullq-web
+    runtime: docker
+    plan: starter
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /
+    autoDeployTrigger: commit
+    envVars:
+      # URL pública da API (build-time + runtime). Preencha com a URL do serviço
+      # chat-bullq-api no Render, ex.: https://chat-bullq-api.onrender.com
+      - key: NEXT_PUBLIC_API_URL
+        sync: false
