@@ -18,6 +18,13 @@ const channelTypes: { value: ChannelType; label: string; icon: React.ElementType
     description: 'Conecte via Zappfy/Uazapi — sem restrição de 24h',
   },
   {
+    value: 'WHATSAPP_ZAPI',
+    label: 'WhatsApp (Z-API)',
+    icon: ZappfyIcon,
+    color: 'bg-zinc-50 dark:bg-zinc-800',
+    description: 'Conecte via Z-API — instância + token + Client-Token',
+  },
+  {
     value: 'WHATSAPP_OFFICIAL',
     label: 'WhatsApp Official',
     icon: MetaIcon,
@@ -39,6 +46,13 @@ const zappfySchema = z.object({
   webhookSecret: z.string().optional(),
 });
 
+const zapiSchema = z.object({
+  name: z.string().min(1, 'Nome é obrigatório'),
+  instanceId: z.string().min(1, 'Instance ID é obrigatório'),
+  token: z.string().min(1, 'Token da instância é obrigatório'),
+  clientToken: z.string().min(1, 'Client-Token (token de segurança da conta) é obrigatório'),
+});
+
 const waOfficialSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
   phoneNumberId: z.string().min(1, 'Phone Number ID é obrigatório'),
@@ -58,6 +72,7 @@ const instagramSchema = z.object({
 });
 
 type ZappfyFormData = z.infer<typeof zappfySchema>;
+type ZapiFormData = z.infer<typeof zapiSchema>;
 type WaOfficialFormData = z.infer<typeof waOfficialSchema>;
 type InstagramFormData = z.infer<typeof instagramSchema>;
 
@@ -83,6 +98,11 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
   const zappfyForm = useForm<ZappfyFormData>({
     resolver: zodResolver(zappfySchema),
     defaultValues: { name: '', token: '', webhookSecret: '' },
+  });
+
+  const zapiForm = useForm<ZapiFormData>({
+    resolver: zodResolver(zapiSchema),
+    defaultValues: { name: '', instanceId: '', token: '', clientToken: '' },
   });
 
   const waForm = useForm<WaOfficialFormData>({
@@ -125,6 +145,13 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
   const onSubmitZappfy = (data: ZappfyFormData) =>
     submitChannel('WHATSAPP_ZAPPFY', data.name, { token: data.token }, data.webhookSecret);
 
+  const onSubmitZapi = (data: ZapiFormData) =>
+    submitChannel('WHATSAPP_ZAPI', data.name, {
+      instanceId: data.instanceId,
+      token: data.token,
+      clientToken: data.clientToken,
+    });
+
   const onSubmitWaOfficial = (data: WaOfficialFormData) =>
     submitChannel(
       'WHATSAPP_OFFICIAL',
@@ -156,6 +183,7 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
     setStep('type');
     setSelectedType(null);
     zappfyForm.reset();
+    zapiForm.reset();
     waForm.reset();
     igForm.reset();
     onClose();
@@ -165,6 +193,7 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
 
   const titleMap: Record<string, string> = {
     WHATSAPP_ZAPPFY: 'Configurar Zappfy',
+    WHATSAPP_ZAPI: 'Configurar Z-API',
     WHATSAPP_OFFICIAL: 'Configurar WhatsApp Official',
     INSTAGRAM: 'Configurar Instagram',
   };
@@ -206,6 +235,18 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
             <Field label="Token" placeholder="Token da instância Zappfy" error={zappfyForm.formState.errors.token?.message} {...zappfyForm.register('token')} />
             <Field label="Webhook Secret" placeholder="Opcional" optional {...zappfyForm.register('webhookSecret')} />
             <WebhookUrl url={`${apiBaseUrl}/webhooks/WHATSAPP_ZAPPFY`} copied={copied} onCopy={() => handleCopyWebhook('WHATSAPP_ZAPPFY')} />
+            <FormFooter isLoading={isLoading} onBack={() => setStep('type')} />
+          </form>
+        ) : selectedType === 'WHATSAPP_ZAPI' ? (
+          <form onSubmit={zapiForm.handleSubmit(onSubmitZapi)} className="mt-6 space-y-4">
+            <Field label="Nome do canal" placeholder="Ex: WhatsApp Vendas" error={zapiForm.formState.errors.name?.message} {...zapiForm.register('name')} />
+            <Field label="Instance ID" placeholder="ID da instância (painel Z-API)" error={zapiForm.formState.errors.instanceId?.message} {...zapiForm.register('instanceId')} />
+            <Field label="Token da instância" type="text" placeholder="Token da instância (painel Z-API)" error={zapiForm.formState.errors.token?.message} {...zapiForm.register('token')} />
+            <Field label="Client-Token" type="text" placeholder="Token de segurança da conta (Client-Token)" error={zapiForm.formState.errors.clientToken?.message} {...zapiForm.register('clientToken')} />
+            <WebhookUrl url={`${apiBaseUrl}/webhooks/WHATSAPP_ZAPI`} copied={copied} onCopy={() => handleCopyWebhook('WHATSAPP_ZAPI')} />
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+              No painel do Z-API, cole essa URL em <strong>Ao receber</strong> (on-message-received).
+            </p>
             <FormFooter isLoading={isLoading} onBack={() => setStep('type')} />
           </form>
         ) : selectedType === 'WHATSAPP_OFFICIAL' ? (
