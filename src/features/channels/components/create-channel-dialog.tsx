@@ -307,7 +307,7 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
             <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-3 text-xs text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800/50 space-y-2">
               <p className="font-medium">No painel do Mercado Livre Developers, configure na sua app:</p>
               <p><strong>Redirect URI:</strong><br /><code className="break-all">{apiBaseUrl}/integrations/mercado-livre/oauth/callback</code></p>
-              <p><strong>Notificações:</strong><br /><code className="break-all">{apiBaseUrl}/webhooks/mercado-livre</code> — tópico <strong>questions</strong></p>
+              <p><strong>Notificações:</strong><br /><code className="break-all">{apiBaseUrl}/integrations/mercado-livre/webhook</code> — tópico <strong>questions</strong></p>
             </div>
             <p className="text-xs text-zinc-500 dark:text-zinc-400">Ao criar, você será redirecionado ao Mercado Livre para autorizar a conexão.</p>
             <FormFooter isLoading={isLoading} onBack={() => setStep('type')} />
