@@ -15,8 +15,7 @@ import {
   CheckCircle2,
   XCircle,
   Lock,
-  Globe,
-} from 'lucide-react';
+  Globe, ShoppingBag} from 'lucide-react';
 import { toast } from 'sonner';
 import type { Channel } from '../services/channels.service';
 import { channelsService } from '../services/channels.service';
@@ -27,6 +26,7 @@ import { EditChannelDialog } from './edit-channel-dialog';
 const channelTypeMap: Record<string, { label: string; icon: React.ElementType; color: string }> = {
   WHATSAPP_ZAPPFY: { label: 'WhatsApp (Zappfy)', icon: ZappfyIcon, color: 'bg-zinc-50 dark:bg-zinc-800' },
   WHATSAPP_ZAPI: { label: 'WhatsApp (Z-API)', icon: ZappfyIcon, color: 'bg-zinc-50 dark:bg-zinc-800' },
+  MERCADO_LIVRE: { label: 'Mercado Livre', icon: ShoppingBag, color: 'bg-zinc-50 dark:bg-zinc-800' },
   WHATSAPP_OFFICIAL: { label: 'WhatsApp Official', icon: MetaIcon, color: 'bg-zinc-50 dark:bg-zinc-800' },
   INSTAGRAM: { label: 'Instagram', icon: InstagramIcon, color: 'bg-zinc-50 dark:bg-zinc-800' },
 };

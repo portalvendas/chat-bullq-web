@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
-import { Loader2, X, Copy, Check } from 'lucide-react';
+import { Loader2, X, Copy, Check, ShoppingBag } from 'lucide-react';
 import { channelsService, type ChannelType } from '../services/channels.service';
 import { ZappfyIcon, MetaIcon, InstagramIcon } from '@/components/ui/icons';
 
@@ -37,6 +37,13 @@ const channelTypes: { value: ChannelType; label: string; icon: React.ElementType
     icon: InstagramIcon,
     color: 'bg-zinc-50 dark:bg-zinc-800',
     description: 'Instagram API com login empresarial — DMs e stories',
+  },
+  {
+    value: 'MERCADO_LIVRE',
+    label: 'Mercado Livre',
+    icon: ShoppingBag,
+    color: 'bg-zinc-50 dark:bg-zinc-800',
+    description: 'Responda perguntas de anúncios (OAuth do Mercado Livre)',
   },
 ];
 
@@ -71,10 +78,17 @@ const instagramSchema = z.object({
   webhookSecret: z.string().optional(),
 });
 
+const mercadoLivreSchema = z.object({
+  name: z.string().min(1, 'Nome é obrigatório'),
+  clientId: z.string().min(1, 'Client ID é obrigatório'),
+  clientSecret: z.string().min(1, 'Client Secret é obrigatório'),
+});
+
 type ZappfyFormData = z.infer<typeof zappfySchema>;
 type ZapiFormData = z.infer<typeof zapiSchema>;
 type WaOfficialFormData = z.infer<typeof waOfficialSchema>;
 type InstagramFormData = z.infer<typeof instagramSchema>;
+type MlFormData = z.infer<typeof mercadoLivreSchema>;
 
 const inputCls = 'flex h-10 w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm ring-offset-background placeholder:text-zinc-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100';
 const labelCls = 'text-sm font-medium text-zinc-700 dark:text-zinc-300';
@@ -113,6 +127,11 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
   const igForm = useForm<InstagramFormData>({
     resolver: zodResolver(instagramSchema),
     defaultValues: { name: '', accessToken: '', appSecret: '', igBusinessId: '', igAppId: '', webhookSecret: '' },
+  });
+
+  const mlForm = useForm<MlFormData>({
+    resolver: zodResolver(mercadoLivreSchema),
+    defaultValues: { name: '', clientId: '', clientSecret: '' },
   });
 
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1';
@@ -179,6 +198,24 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
       data.webhookSecret,
     );
 
+  const onSubmitMercadoLivre = async (data: MlFormData) => {
+    setIsLoading(true);
+    try {
+      const channel = await channelsService.create({
+        type: 'MERCADO_LIVRE',
+        name: data.name,
+        config: { clientId: data.clientId, clientSecret: data.clientSecret, siteId: 'MLB' },
+        visibility,
+      });
+      toast.success('Canal criado! Redirecionando para o Mercado Livre...');
+      const url = await channelsService.getMercadoLivreAuthUrl(channel.id);
+      window.location.href = url;
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Erro ao criar canal');
+      setIsLoading(false);
+    }
+  };
+
   const handleClose = () => {
     setStep('type');
     setSelectedType(null);
@@ -186,6 +223,7 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
     zapiForm.reset();
     waForm.reset();
     igForm.reset();
+    mlForm.reset();
     onClose();
   };
 
@@ -196,6 +234,7 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
     WHATSAPP_ZAPI: 'Configurar Z-API',
     WHATSAPP_OFFICIAL: 'Configurar WhatsApp Official',
     INSTAGRAM: 'Configurar Instagram',
+    MERCADO_LIVRE: 'Conectar Mercado Livre',
   };
 
   return (
@@ -258,6 +297,19 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
             <Field label="Business Account ID (WABA)" placeholder="Opcional — habilita auto-subscribe do webhook" optional {...waForm.register('businessAccountId')} />
             <Field label="Webhook Verify Token" placeholder="Token que você definiu no Meta" optional {...waForm.register('webhookSecret')} />
             <WebhookUrl url={`${apiBaseUrl}/webhooks/WHATSAPP_OFFICIAL`} copied={copied} onCopy={() => handleCopyWebhook('WHATSAPP_OFFICIAL')} />
+            <FormFooter isLoading={isLoading} onBack={() => setStep('type')} />
+          </form>
+        ) : selectedType === 'MERCADO_LIVRE' ? (
+          <form onSubmit={mlForm.handleSubmit(onSubmitMercadoLivre)} className="mt-6 space-y-4">
+            <Field label="Nome do canal" placeholder="Ex: Mercado Livre Loja" error={mlForm.formState.errors.name?.message} {...mlForm.register('name')} />
+            <Field label="Client ID" placeholder="App ID (Mercado Livre Developers)" error={mlForm.formState.errors.clientId?.message} {...mlForm.register('clientId')} />
+            <Field label="Client Secret" type="text" placeholder="Secret Key do app" error={mlForm.formState.errors.clientSecret?.message} {...mlForm.register('clientSecret')} />
+            <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-3 text-xs text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800/50 space-y-2">
+              <p className="font-medium">No painel do Mercado Livre Developers, configure na sua app:</p>
+              <p><strong>Redirect URI:</strong><br /><code className="break-all">{apiBaseUrl}/integrations/mercado-livre/oauth/callback</code></p>
+              <p><strong>Notificações:</strong><br /><code className="break-all">{apiBaseUrl}/webhooks/mercado-livre</code> — tópico <strong>questions</strong></p>
+            </div>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">Ao criar, você será redirecionado ao Mercado Livre para autorizar a conexão.</p>
             <FormFooter isLoading={isLoading} onBack={() => setStep('type')} />
           </form>
         ) : selectedType === 'INSTAGRAM' ? (
