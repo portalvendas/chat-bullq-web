@@ -515,16 +515,24 @@ export function ChatPanel({
 
   const handleRevoke = useCallback(
     async (msg: Message) => {
+      // Mercado Livre é marketplace (pergunta→resposta): não dá pra retratar
+      // uma resposta publicada, então o excluir é sempre local (só no inbox).
+      const isMarketplace = conversation.channel.type === 'MERCADO_LIVRE';
       const ok = window.confirm(
-        'Deletar essa mensagem pra todos? ' +
-          'Em WhatsApp via Zappfy a mensagem some no app do cliente. ' +
-          'Em WhatsApp Cloud API e Instagram, ela some apenas no Chat BullQ ' +
-          '(limitação da Meta — o cliente continua vendo no app dele).',
+        isMarketplace
+          ? 'Excluir essa mensagem do inbox? No Mercado Livre não é possível ' +
+              'retratar uma resposta publicada — ela some apenas aqui no Chat BullQ.'
+          : 'Deletar essa mensagem pra todos? ' +
+              'Em WhatsApp via Zappfy a mensagem some no app do cliente. ' +
+              'Em WhatsApp Cloud API e Instagram, ela some apenas no Chat BullQ ' +
+              '(limitação da Meta — o cliente continua vendo no app dele).',
       );
       if (!ok) return;
       try {
         const result = await inboxService.revokeMessage(msg.id);
-        if (result.succeededRemote) {
+        if (isMarketplace) {
+          toast.success('Mensagem excluída do inbox');
+        } else if (result.succeededRemote) {
           toast.success('Mensagem deletada pra todos');
         } else {
           toast.warning(
@@ -748,8 +756,16 @@ export function ChatPanel({
                           type="button"
                           onClick={() => handleRevoke(msg)}
                           className="rounded-full bg-white p-1.5 text-zinc-400 shadow-sm ring-1 ring-zinc-200 hover:text-red-600 dark:bg-zinc-800 dark:ring-zinc-700 dark:hover:text-red-400"
-                          title="Deletar pra todos"
-                          aria-label="Deletar mensagem pra todos"
+                          title={
+                            conversation.channel.type === 'MERCADO_LIVRE'
+                              ? 'Excluir do inbox'
+                              : 'Deletar pra todos'
+                          }
+                          aria-label={
+                            conversation.channel.type === 'MERCADO_LIVRE'
+                              ? 'Excluir mensagem do inbox'
+                              : 'Deletar mensagem pra todos'
+                          }
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </button>
