@@ -863,6 +863,11 @@ export function ChatPanel({
                             )}
                           </button>
                         )}
+                      {msg.metadata?.mlExternalAnswer && (
+                        <p className="mb-1 inline-flex w-fit items-center gap-1 rounded-full bg-yellow-100 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
+                          Respondida no Mercado Livre
+                        </p>
+                      )}
                       {isRevoked ? (
                         <div
                           className={`flex items-center gap-2 rounded-2xl border border-dashed px-4 py-2.5 italic ${
