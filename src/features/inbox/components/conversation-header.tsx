@@ -189,14 +189,18 @@ export function ConversationHeader({
             }, 'IA engajada — vai responder em segundos');
           }}
         />
-        <button
-          onClick={handleSync}
-          disabled={isSyncing}
-          title="Sincronizar mensagens"
-          className="inline-flex h-8 w-8 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-300"
-        >
-          <RefreshCw className={`h-3.5 w-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
-        </button>
+        {/* Mercado Livre é marketplace (pergunta→resposta), não um chat com
+            histórico sincronizável — esconde o sync, que não se aplica. */}
+        {conversation.channel.type !== 'MERCADO_LIVRE' && (
+          <button
+            onClick={handleSync}
+            disabled={isSyncing}
+            title="Sincronizar mensagens"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-300"
+          >
+            <RefreshCw className={`h-3.5 w-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
+          </button>
+        )}
         {onToggleAgentLogs && (
           <button
             onClick={onToggleAgentLogs}
