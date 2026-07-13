@@ -15,6 +15,12 @@ export interface Channel {
   /** null = segue org.aiEnabled, true = força ON, false = força OFF nesse canal. */
   aiEnabled: boolean | null;
   /**
+   * Janela de debounce (segundos) antes da IA responder. Nessa janela,
+   * novas mensagens do mesmo cliente na conversa são agrupadas numa
+   * resposta só. null = default do sistema (10s).
+   */
+  aiDebounceSeconds: number | null;
+  /**
    * ORG     = qualquer membro da org com permissão padrão enxerga (default).
    * PRIVATE = só membros com grant explícito enxergam, mesmo OWNER/ADMIN.
    */
@@ -37,6 +43,7 @@ export interface UpdateChannelPayload {
   webhookSecret?: string;
   isActive?: boolean;
   aiEnabled?: boolean | null;
+  aiDebounceSeconds?: number | null;
   visibility?: ChannelVisibility;
 }
 

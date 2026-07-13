@@ -29,11 +29,15 @@ export function EditChannelDialog({
   const [name, setName] = useState('');
   const [config, setConfig] = useState<Record<string, string>>({});
   const [webhookSecret, setWebhookSecret] = useState('');
+  const [debounceSeconds, setDebounceSeconds] = useState('');
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (!channel) return;
     setName(channel.name);
+    setDebounceSeconds(
+      channel.aiDebounceSeconds != null ? String(channel.aiDebounceSeconds) : '',
+    );
     // Coerce nested values to string for the form. Booleans/numbers are
     // re-typed on save when needed (none of the WhatsApp configs use them).
     const flat: Record<string, string> = {};
@@ -67,10 +71,20 @@ export function EditChannelDialog({
           delete merged[f.key];
         }
       }
+      // Delay da IA: vazio = null (usa default do sistema). Aceita só inteiro >= 0.
+      const parsedDebounce = debounceSeconds.trim() === ''
+        ? null
+        : Math.max(0, Math.floor(Number(debounceSeconds)));
+      if (parsedDebounce !== null && Number.isNaN(parsedDebounce)) {
+        toast.error('Delay da IA deve ser um número em segundos');
+        setSaving(false);
+        return;
+      }
       await channelsService.update(channel.id, {
         name: name.trim(),
         config: merged,
         webhookSecret: webhookSecret.trim() || undefined,
+        aiDebounceSeconds: parsedDebounce,
       });
       toast.success('Credenciais atualizadas');
       onSaved();
@@ -143,6 +157,26 @@ export function EditChannelDialog({
               onChange={(e) => setWebhookSecret(e.target.value)}
               className={inputCls}
             />
+          </div>
+
+          <div className="space-y-1.5">
+            <label className={labelCls}>
+              Delay da IA (segundos){' '}
+              <span className="text-zinc-400">(opcional)</span>
+            </label>
+            <input
+              type="number"
+              min={0}
+              value={debounceSeconds}
+              onChange={(e) => setDebounceSeconds(e.target.value)}
+              placeholder="Vazio = padrão do sistema (10s)"
+              className={inputCls.replace(' font-mono', '')}
+            />
+            <p className="text-[11px] text-zinc-500">
+              Tempo de espera antes da IA responder. Nessa janela, novas
+              mensagens do mesmo cliente são agrupadas numa resposta só. Cada
+              nova mensagem reinicia a contagem. Mercado Livre já vem com 120s.
+            </p>
           </div>
         </div>
 
