@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Trash2, X, Plus, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
@@ -472,12 +472,19 @@ function AgentSkillsAndTools({ agentId }: { agentId: string }) {
     (bindings ?? []).map((b) => [b.skillId, b.requiresApproval]),
   );
 
+  // Inicializa a seleção a partir do estado persistido UMA VEZ por agente.
+  // Sem o guard, todo refetch de `skills` (foco de janela/remount) retornava
+  // um novo array e disparava este effect, sobrescrevendo o rascunho do
+  // usuário com os bindings salvos (vazios) — desmarcando tudo antes do save.
+  const initedForAgent = useRef<string | null>(null);
   useEffect(() => {
     if (!skills) return;
+    if (initedForAgent.current === agentId) return;
     const ids = skills
       .filter((s) => (s.agents ?? []).some((a) => a.agent.id === agentId))
       .map((s) => s.id);
     setSkillIds(ids);
+    initedForAgent.current = agentId;
   }, [skills, agentId]);
 
   const toggleSkill = (id: string) =>
@@ -489,11 +496,14 @@ function AgentSkillsAndTools({ agentId }: { agentId: string }) {
     setSavingSkills(true);
     try {
       await aiCatalogService.setAgentSkills(agentId, skillIds);
-      // Recarrega bindings — skills atribuídas mudaram, requiresApproval
-      // de skills novas é false por padrão.
-      await queryClient.invalidateQueries({
-        queryKey: ['ai-agent-skills', agentId],
-      });
+      // Baseline persistido mudou: já refletimos a seleção salva como novo
+      // ponto de partida (evita que um refetch futuro reverta para o antigo).
+      initedForAgent.current = agentId;
+      // Recarrega bindings (requiresApproval) e o catálogo (agents/_count).
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['ai-agent-skills', agentId] }),
+        queryClient.invalidateQueries({ queryKey: ['ai-skills'] }),
+      ]);
       toast.success('Skills atualizadas');
     } catch (err: any) {
       toast.error(err?.response?.data?.message || 'Erro');
