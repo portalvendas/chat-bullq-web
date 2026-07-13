@@ -63,6 +63,7 @@ const TOOL_LABELS: Record<string, string> = {
   grantAccess: 'Liberar acesso',
   resetPassword: 'Resetar senha',
   transferToHuman: 'Transferir para humano',
+  replyToConversation: 'Resposta ao cliente',
 };
 
 function formatCountdown(ms: number): string {
@@ -192,9 +193,24 @@ export function PendingActionBanner({ action, index = 0 }: Props) {
             </span>
           </div>
 
-          <p className="mt-2 text-sm text-zinc-800 dark:text-zinc-100">
-            {action.preview.action}
-          </p>
+          {action.toolName === 'replyToConversation' ? (
+            <div className="mt-2 rounded-lg border border-zinc-200 bg-white/70 p-2.5 dark:border-zinc-700 dark:bg-zinc-900/50">
+              <p className="whitespace-pre-wrap text-sm text-zinc-800 dark:text-zinc-100">
+                {action.preview.action}
+              </p>
+            </div>
+          ) : (
+            <p className="mt-2 text-sm text-zinc-800 dark:text-zinc-100">
+              {action.preview.action}
+            </p>
+          )}
+
+          {action.preview.generatedBy && (
+            <p className="mt-1.5 text-xs text-zinc-600 dark:text-zinc-400">
+              Gerado por:{' '}
+              <span className="font-medium">{action.preview.generatedBy}</span>
+            </p>
+          )}
 
           {action.preview.affectedEntity && (
             <p className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">

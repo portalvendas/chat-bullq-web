@@ -30,6 +30,11 @@ export interface PendingActionPreview {
   /** Optional rollback instructions, displayed as a hint to the approver. */
   rollback?: string;
   affectedEntity?: PendingActionAffectedEntity;
+  /**
+   * Modo revisão: skills que geraram a resposta pendente (ex:
+   * "detalhar_produto_ml"). Mostrado no card antes de aprovar/rejeitar.
+   */
+  generatedBy?: string;
 }
 
 export interface PendingAction {

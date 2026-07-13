@@ -33,6 +33,8 @@ export interface OrganizationAiSettings {
   id: string;
   name: string;
   aiEnabled: boolean;
+  /** Modo revisão global: respostas da IA ficam pendentes de aprovação. */
+  aiReviewMode: boolean;
   aiTimezone: string;
   aiBusinessHours: BusinessHoursConfig | null;
   aiOutOfHoursMessage: string | null;
@@ -49,6 +51,7 @@ export interface OrganizationAiSettings {
 
 export interface UpdateAiSettingsInput {
   aiEnabled?: boolean;
+  aiReviewMode?: boolean;
   aiTimezone?: string;
   aiBusinessHours?: BusinessHoursConfig | null;
   aiOutOfHoursMessage?: string;

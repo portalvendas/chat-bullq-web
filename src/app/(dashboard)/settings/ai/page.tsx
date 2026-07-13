@@ -31,6 +31,7 @@ export default function SettingsAiPage() {
   });
 
   const [aiEnabled, setAiEnabled] = useState(true);
+  const [aiReviewMode, setAiReviewMode] = useState(false);
   const [aiTimezone, setAiTimezone] = useState('America/Sao_Paulo');
   const [hours, setHours] = useState<BusinessHoursConfig>(DEFAULT_BUSINESS_HOURS);
   // 24/7: representado no banco como aiBusinessHours = null. Mantemos os
@@ -58,6 +59,7 @@ export default function SettingsAiPage() {
   useEffect(() => {
     if (!data) return;
     setAiEnabled(data.aiEnabled);
+    setAiReviewMode(data.aiReviewMode ?? false);
     setAiTimezone(data.aiTimezone);
     setAlwaysOn(data.aiBusinessHours == null);
     setHours(data.aiBusinessHours ?? DEFAULT_BUSINESS_HOURS);
@@ -88,6 +90,7 @@ export default function SettingsAiPage() {
         .filter(Boolean);
       await aiSettingsService.update({
         aiEnabled,
+        aiReviewMode,
         aiTimezone,
         aiBusinessHours: alwaysOn ? null : hours,
         aiOutOfHoursMessage: outOfHoursMessage,
@@ -232,6 +235,20 @@ export default function SettingsAiPage() {
             </p>
           </div>
           <Toggle checked={aiEnabled} onChange={setAiEnabled} />
+        </label>
+
+        <label className="mt-4 flex cursor-pointer items-start justify-between gap-4 border-t border-zinc-100 pt-4 dark:border-zinc-800">
+          <div>
+            <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+              Modo revisão (aprovar respostas)
+            </p>
+            <p className="mt-0.5 text-xs text-zinc-500">
+              Quando ligado, toda resposta da IA fica pendente de aprovação no
+              inbox (Aprovar/Rejeitar) antes de ir pro cliente, com a skill que
+              gerou a resposta. Pode ser sobrescrito por conversa.
+            </p>
+          </div>
+          <Toggle checked={aiReviewMode} onChange={setAiReviewMode} />
         </label>
       </section>
 
