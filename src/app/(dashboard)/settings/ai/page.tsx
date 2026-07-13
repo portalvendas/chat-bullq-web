@@ -32,6 +32,7 @@ export default function SettingsAiPage() {
 
   const [aiEnabled, setAiEnabled] = useState(true);
   const [aiReviewMode, setAiReviewMode] = useState(false);
+  const [aiSignature, setAiSignature] = useState('');
   const [aiTimezone, setAiTimezone] = useState('America/Sao_Paulo');
   const [hours, setHours] = useState<BusinessHoursConfig>(DEFAULT_BUSINESS_HOURS);
   // 24/7: representado no banco como aiBusinessHours = null. Mantemos os
@@ -60,6 +61,7 @@ export default function SettingsAiPage() {
     if (!data) return;
     setAiEnabled(data.aiEnabled);
     setAiReviewMode(data.aiReviewMode ?? false);
+    setAiSignature(data.aiSignature ?? '');
     setAiTimezone(data.aiTimezone);
     setAlwaysOn(data.aiBusinessHours == null);
     setHours(data.aiBusinessHours ?? DEFAULT_BUSINESS_HOURS);
@@ -91,6 +93,7 @@ export default function SettingsAiPage() {
       await aiSettingsService.update({
         aiEnabled,
         aiReviewMode,
+        aiSignature: aiSignature.trim() || null,
         aiTimezone,
         aiBusinessHours: alwaysOn ? null : hours,
         aiOutOfHoursMessage: outOfHoursMessage,
@@ -250,6 +253,23 @@ export default function SettingsAiPage() {
           </div>
           <Toggle checked={aiReviewMode} onChange={setAiReviewMode} />
         </label>
+
+        <div className="mt-4 border-t border-zinc-100 pt-4 dark:border-zinc-800">
+          <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+            Assinatura das respostas
+          </p>
+          <p className="mt-0.5 text-xs text-zinc-500">
+            Texto fixo anexado ao final de TODA resposta enviada pela IA.
+            Deixe em branco para não usar assinatura.
+          </p>
+          <textarea
+            value={aiSignature}
+            onChange={(e) => setAiSignature(e.target.value)}
+            rows={2}
+            placeholder="Ex: Aguardamos sua compra e ficamos à disposição, Armazém Decora."
+            className="mt-2 w-full resize-y rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+          />
+        </div>
       </section>
 
       {/* Override por canal */}
