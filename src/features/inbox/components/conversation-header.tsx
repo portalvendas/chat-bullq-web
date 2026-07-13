@@ -13,6 +13,7 @@ import {
   Mail,
   Send,
   Activity,
+  ShoppingBag,
 } from 'lucide-react';
 import { ConversationAiToggle } from './conversation-ai-toggle';
 import { AssignmentPopover } from './assignment-popover';
@@ -35,6 +36,7 @@ function ChannelBadge({ type, name }: { type: string; name: string }) {
   const isTelegram = t.includes('TELEGRAM');
   const isEmail = t.includes('EMAIL') || t.includes('MAIL');
   const isSms = t.includes('SMS');
+  const isMarketplace = t.includes('MERCADO') || t.includes('MARKETPLACE');
 
   let Icon = MessageSquare;
   let label = 'Chat';
@@ -61,6 +63,10 @@ function ChannelBadge({ type, name }: { type: string; name: string }) {
     Icon = MessageSquare;
     label = 'SMS';
     cls = 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400';
+  } else if (isMarketplace) {
+    Icon = ShoppingBag;
+    label = 'Marketplace';
+    cls = 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400';
   }
 
   return (

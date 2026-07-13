@@ -9,13 +9,16 @@ import { Loader2, X, Copy, Check, ShoppingBag } from 'lucide-react';
 import { channelsService, type ChannelType } from '../services/channels.service';
 import { ZappfyIcon, MetaIcon, InstagramIcon } from '@/components/ui/icons';
 
-const channelTypes: { value: ChannelType; label: string; icon: React.ElementType; color: string; description: string }[] = [
+type ChannelCategory = 'Mensageria' | 'Marketplace';
+
+const channelTypes: { value: ChannelType; label: string; icon: React.ElementType; color: string; description: string; category: ChannelCategory }[] = [
   {
     value: 'WHATSAPP_ZAPPFY',
     label: 'WhatsApp (Zappfy)',
     icon: ZappfyIcon,
     color: 'bg-zinc-50 dark:bg-zinc-800',
     description: 'Conecte via Zappfy/Uazapi — sem restrição de 24h',
+    category: 'Mensageria',
   },
   {
     value: 'WHATSAPP_ZAPI',
@@ -23,6 +26,7 @@ const channelTypes: { value: ChannelType; label: string; icon: React.ElementType
     icon: ZappfyIcon,
     color: 'bg-zinc-50 dark:bg-zinc-800',
     description: 'Conecte via Z-API — instância + token + Client-Token',
+    category: 'Mensageria',
   },
   {
     value: 'WHATSAPP_OFFICIAL',
@@ -30,6 +34,7 @@ const channelTypes: { value: ChannelType; label: string; icon: React.ElementType
     icon: MetaIcon,
     color: 'bg-zinc-50 dark:bg-zinc-800',
     description: 'Meta Cloud API — templates HSM, alta escala',
+    category: 'Mensageria',
   },
   {
     value: 'INSTAGRAM',
@@ -37,15 +42,19 @@ const channelTypes: { value: ChannelType; label: string; icon: React.ElementType
     icon: InstagramIcon,
     color: 'bg-zinc-50 dark:bg-zinc-800',
     description: 'Instagram API com login empresarial — DMs e stories',
+    category: 'Mensageria',
   },
   {
     value: 'MERCADO_LIVRE',
     label: 'Mercado Livre',
     icon: ShoppingBag,
     color: 'bg-zinc-50 dark:bg-zinc-800',
-    description: 'Responda perguntas de anúncios (OAuth do Mercado Livre)',
+    description: 'Marketplace — responda perguntas de anúncios (pergunta→resposta)',
+    category: 'Marketplace',
   },
 ];
+
+const CHANNEL_CATEGORIES: ChannelCategory[] = ['Mensageria', 'Marketplace'];
 
 const zappfySchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
@@ -251,22 +260,35 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
         </div>
 
         {step === 'type' ? (
-          <div className="mt-6 grid gap-3">
-            {channelTypes.map((ct) => (
-              <button
-                key={ct.value}
-                onClick={() => handleTypeSelect(ct.value)}
-                className="flex items-center gap-4 rounded-xl border border-zinc-200 p-4 text-left transition-all hover:border-primary hover:shadow-sm dark:border-zinc-700 dark:hover:border-primary"
-              >
-                <div className={`flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-200/60 dark:border-zinc-700/60 ${ct.color}`}>
-                  <ct.icon className="h-6 w-6" />
+          <div className="mt-6 space-y-5">
+            {CHANNEL_CATEGORIES.map((cat) => {
+              const items = channelTypes.filter((ct) => ct.category === cat);
+              if (items.length === 0) return null;
+              return (
+                <div key={cat} className="space-y-2">
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-zinc-400 dark:text-zinc-500">
+                    {cat}
+                  </p>
+                  <div className="grid gap-3">
+                    {items.map((ct) => (
+                      <button
+                        key={ct.value}
+                        onClick={() => handleTypeSelect(ct.value)}
+                        className="flex items-center gap-4 rounded-xl border border-zinc-200 p-4 text-left transition-all hover:border-primary hover:shadow-sm dark:border-zinc-700 dark:hover:border-primary"
+                      >
+                        <div className={`flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-200/60 dark:border-zinc-700/60 ${ct.color}`}>
+                          <ct.icon className="h-6 w-6" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">{ct.label}</p>
+                          <p className="text-xs text-zinc-500 dark:text-zinc-400">{ct.description}</p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">{ct.label}</p>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400">{ct.description}</p>
-                </div>
-              </button>
-            ))}
+              );
+            })}
           </div>
         ) : selectedType === 'WHATSAPP_ZAPPFY' ? (
           <form onSubmit={zappfyForm.handleSubmit(onSubmitZappfy)} className="mt-6 space-y-4">
