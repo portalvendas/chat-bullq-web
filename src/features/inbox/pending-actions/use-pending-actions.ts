@@ -47,8 +47,8 @@ interface MutationContext {
 export function useApprovePendingAction() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id }: { id: string } & MutationContext) =>
-      approvePendingAction(id),
+    mutationFn: ({ id, text }: { id: string; text?: string } & MutationContext) =>
+      approvePendingAction(id, text),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: pendingActionsQueryKey(variables.conversationId),

@@ -105,6 +105,13 @@ export function PendingActionBanner({ action, index = 0 }: Props) {
   const [rejectOpen, setRejectOpen] = useState(false);
   const [reason, setReason] = useState('');
 
+  // Resposta ao cliente é EDITÁVEL antes de aprovar — o operador pode
+  // complementar/corrigir. O texto (original → editado) fica registrado no
+  // pending action e serve de base de aprendizado.
+  const isReply = action.toolName === 'replyToConversation';
+  const [editedText, setEditedText] = useState(action.preview.action ?? '');
+  const wasEdited = isReply && editedText.trim() !== (action.preview.action ?? '').trim();
+
   const isWorking = approve.isPending || reject.isPending;
   // Lock the buttons once the backend confirmed a terminal status.
   const isTerminal =
@@ -112,10 +119,19 @@ export function PendingActionBanner({ action, index = 0 }: Props) {
 
   const handleApprove = () => {
     if (isTerminal || isWorking) return;
+    if (isReply && !editedText.trim()) {
+      toast.error('A resposta não pode ficar vazia');
+      return;
+    }
     approve.mutate(
-      { id: action.id, conversationId: action.conversationId },
       {
-        onSuccess: () => toast.success('Ação aprovada'),
+        id: action.id,
+        conversationId: action.conversationId,
+        ...(isReply ? { text: editedText.trim() } : {}),
+      },
+      {
+        onSuccess: () =>
+          toast.success(wasEdited ? 'Resposta editada e aprovada' : 'Ação aprovada'),
         onError: (err: unknown) => {
           const message =
             err instanceof Error ? err.message : 'Erro ao aprovar ação';
@@ -193,10 +209,23 @@ export function PendingActionBanner({ action, index = 0 }: Props) {
             </span>
           </div>
 
-          {action.toolName === 'replyToConversation' ? (
-            <div className="mt-2 rounded-lg border border-zinc-200 bg-white/70 p-2.5 dark:border-zinc-700 dark:bg-zinc-900/50">
-              <p className="whitespace-pre-wrap text-sm text-zinc-800 dark:text-zinc-100">
-                {action.preview.action}
+          {isReply ? (
+            <div className="mt-2">
+              <textarea
+                value={editedText}
+                onChange={(e) => setEditedText(e.target.value)}
+                disabled={isTerminal || isWorking}
+                rows={Math.min(Math.max(editedText.split('\n').length, 3), 14)}
+                className="w-full resize-y whitespace-pre-wrap rounded-lg border border-zinc-300 bg-white/80 p-2.5 text-sm leading-relaxed text-zinc-800 outline-none focus:border-primary focus:ring-1 focus:ring-primary disabled:opacity-60 dark:border-zinc-700 dark:bg-zinc-900/60 dark:text-zinc-100"
+                placeholder="Resposta ao cliente…"
+              />
+              <p className="mt-1 text-[11px] text-zinc-500">
+                Você pode editar a resposta antes de aprovar.
+                {wasEdited && (
+                  <span className="ml-1 font-medium text-amber-600 dark:text-amber-400">
+                    Editada — o original da IA fica registrado.
+                  </span>
+                )}
               </p>
             </div>
           ) : (

@@ -22,8 +22,11 @@ export const pendingActionsService = {
     return data?.data ?? data;
   },
 
-  async approve(id: string): Promise<PendingAction> {
-    const { data } = await api.post(`/pending-actions/${id}/approve`, {});
+  async approve(id: string, text?: string): Promise<PendingAction> {
+    const { data } = await api.post(
+      `/pending-actions/${id}/approve`,
+      text != null ? { text } : {},
+    );
     return data?.data ?? data;
   },
 
@@ -36,8 +39,8 @@ export const pendingActionsService = {
 export const listPendingActions = (conversationId: string) =>
   pendingActionsService.list(conversationId);
 
-export const approvePendingAction = (id: string) =>
-  pendingActionsService.approve(id);
+export const approvePendingAction = (id: string, text?: string) =>
+  pendingActionsService.approve(id, text);
 
 export const rejectPendingAction = (id: string, reason: string) =>
   pendingActionsService.reject(id, reason);
