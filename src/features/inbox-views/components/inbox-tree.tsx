@@ -21,13 +21,19 @@ import {
   Trash2,
   Archive,
   MailOpen,
+  ShoppingBag,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   inboxViewsService,
   type InboxView,
 } from '../services/inbox-views.service';
+import { channelsService } from '@/features/channels/services/channels.service';
 import { InboxViewDialog } from './inbox-view-dialog';
+
+// Tipos de canal que são MARKETPLACE (pergunta→resposta), separados da
+// conversação (WhatsApp/Instagram). Extensível quando entrarem outros.
+const MARKETPLACE_TYPES = new Set(['MERCADO_LIVRE']);
 
 const VIEW_ICON: Record<string, any> = {
   Inbox,
@@ -68,6 +74,8 @@ export function InboxTree() {
   // as a no-op for query params.
   const goGeral = () => router.push('/inbox');
   const goView = (id: string) => router.push(`/inbox?view=${id}`);
+  const goMarketplace = (channelId: string) =>
+    router.push(`/inbox?channel=${channelId}`);
   const [expanded, setExpanded] = useState<boolean>(() => {
     if (typeof window === 'undefined') return true;
     return window.localStorage.getItem(STORAGE_KEY) !== '0';
@@ -81,6 +89,17 @@ export function InboxTree() {
     staleTime: 60000,
   });
 
+  // Canais marketplace conectados (hoje só Mercado Livre) — viram o submenu
+  // "Marketplaces". Só canais ativos.
+  const { data: channels = [] } = useQuery({
+    queryKey: ['channels'],
+    queryFn: () => channelsService.list(),
+    staleTime: 60000,
+  });
+  const marketplaceChannels = channels.filter(
+    (c) => c.isActive && MARKETPLACE_TYPES.has(c.type),
+  );
+
   const toggleExpanded = () => {
     const next = !expanded;
     setExpanded(next);
@@ -91,6 +110,7 @@ export function InboxTree() {
 
   const isInbox = pathname === '/inbox' || pathname?.startsWith('/inbox');
   const activeViewId = searchParams.get('view');
+  const activeChannelId = searchParams.get('channel');
 
   const handleDelete = async (view: InboxView) => {
     if (!confirm(`Excluir inbox "${view.name}"?`)) return;
@@ -122,7 +142,7 @@ export function InboxTree() {
           type="button"
           onClick={goGeral}
           className={`flex flex-1 items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm font-medium ${
-            isInbox && !activeViewId
+            isInbox && !activeViewId && !activeChannelId
               ? 'bg-zinc-950/5 text-zinc-950 dark:bg-white/5 dark:text-white'
               : 'text-zinc-700 hover:bg-zinc-950/5 hover:text-zinc-950 dark:text-zinc-300 dark:hover:bg-white/5 dark:hover:text-white'
           }`}
@@ -138,7 +158,7 @@ export function InboxTree() {
             type="button"
             onClick={goGeral}
             className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-xs ${
-              isInbox && !activeViewId
+              isInbox && !activeViewId && !activeChannelId
                 ? 'bg-zinc-950/5 font-medium text-zinc-900 dark:bg-white/5 dark:text-white'
                 : 'text-zinc-600 hover:bg-zinc-950/5 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-white/5 dark:hover:text-white'
             }`}
@@ -206,6 +226,36 @@ export function InboxTree() {
             <Plus className="size-3.5" />
             <span>Nova inbox</span>
           </button>
+
+          {/* Submenu MARKETPLACES: canais pergunta→resposta (ML), separados
+              da conversação. Cada canal marketplace vira um item. */}
+          {marketplaceChannels.length > 0 && (
+            <div className="mt-1 border-t border-zinc-100 pt-1 dark:border-zinc-800/70">
+              <div className="flex items-center gap-1.5 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-zinc-400 dark:text-zinc-500">
+                <ShoppingBag className="size-3" />
+                Marketplaces
+              </div>
+              {marketplaceChannels.map((ch) => {
+                const isActive = isInbox && activeChannelId === ch.id;
+                return (
+                  <button
+                    key={ch.id}
+                    type="button"
+                    onClick={() => goMarketplace(ch.id)}
+                    title={ch.name}
+                    className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-xs ${
+                      isActive
+                        ? 'bg-zinc-950/5 font-medium text-zinc-900 dark:bg-white/5 dark:text-white'
+                        : 'text-zinc-600 hover:bg-zinc-950/5 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-white/5 dark:hover:text-white'
+                    }`}
+                  >
+                    <ShoppingBag className="size-3.5 text-amber-500" />
+                    <span className="flex-1 truncate">{ch.name}</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
 

@@ -14,6 +14,9 @@ const AGENT_LOGS_PREF_KEY = 'inbox.agentLogsOpen';
 export default function InboxPage() {
   const searchParams = useSearchParams();
   const viewId = searchParams.get('view');
+  // Canal de marketplace selecionado (submenu Marketplaces → Mercado Livre).
+  // Quando ausente e sem view, o inbox é "Geral" = só conversação.
+  const marketplaceChannelId = searchParams.get('channel');
   const deepLinkConvId = searchParams.get('conversationId');
   const [activeConversation, setActiveConversation] = useState<Conversation | null>(null);
   // Persisted across sessions via localStorage so each operator keeps their
@@ -44,7 +47,7 @@ export default function InboxPage() {
   // panel doesn't show a thread that may not even match the new filter.
   useEffect(() => {
     setActiveConversation(null);
-  }, [viewId]);
+  }, [viewId, marketplaceChannelId]);
 
   // Deep-link from elsewhere (e.g. Jarvis Execuções drawer): when the URL
   // carries ?conversationId=..., resolve it once and open in the chat panel.
@@ -100,6 +103,7 @@ export default function InboxPage() {
         activeId={activeConversation?.id || null}
         onSelect={setActiveConversation}
         viewId={viewId}
+        marketplaceChannelId={marketplaceChannelId}
       />
 
       {activeConversation ? (

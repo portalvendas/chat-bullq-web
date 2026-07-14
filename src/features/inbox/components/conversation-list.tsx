@@ -120,9 +120,20 @@ interface ConversationListProps {
    * still layer on top via query params.
    */
   viewId?: string | null;
+  /**
+   * Canal de marketplace selecionado (submenu Marketplaces). Quando setado,
+   * a lista mostra só esse canal (ML). Ausente + sem view = "Geral", que
+   * mostra só conversação (WhatsApp/Instagram), excluindo marketplace.
+   */
+  marketplaceChannelId?: string | null;
 }
 
-export function ConversationList({ activeId, onSelect, viewId }: ConversationListProps) {
+export function ConversationList({
+  activeId,
+  onSelect,
+  viewId,
+  marketplaceChannelId,
+}: ConversationListProps) {
   const queryClient = useQueryClient();
   const orgId = useOrgId();
   const { on, onReconnect } = useSocket();
@@ -316,7 +327,7 @@ export function ConversationList({ activeId, onSelect, viewId }: ConversationLis
     hasNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery({
-    queryKey: ['conversations', orgId, viewId ?? null, filterKey, debouncedSearch, selectedChannelId, scope, currentUserId],
+    queryKey: ['conversations', orgId, viewId ?? null, marketplaceChannelId ?? null, filterKey, debouncedSearch, selectedChannelId, scope, currentUserId],
     queryFn: ({ pageParam = 1 }) => {
       const params: Record<string, string> = { limit: '30', page: String(pageParam) };
       if (unreadOnly) params.unread = 'true';
@@ -336,6 +347,13 @@ export function ConversationList({ activeId, onSelect, viewId }: ConversationLis
         if (!showGroups) params.groups = 'exclude';
       }
       if (debouncedSearch) params.search = debouncedSearch;
+      // Separação de inbox: marketplace (canal ML) vs conversação (Geral).
+      if (marketplaceChannelId) {
+        params.channelId = marketplaceChannelId;
+      } else if (!viewId) {
+        // Geral: só conversação — exclui canais marketplace no backend.
+        params.category = 'conversation';
+      }
       if (selectedChannelId) params.channelId = selectedChannelId;
       if (selectedTagIds.length > 0) params.tagIds = selectedTagIds.join(',');
       if (scope === 'MINE' && currentUserId) params.assignedToId = currentUserId;
