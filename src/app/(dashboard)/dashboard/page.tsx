@@ -9,7 +9,7 @@ import {
 import {
   Activity, Clock, Target, CheckCircle2, TrendingUp, TrendingDown, Minus,
   Bot, Tag as TagIcon, MessageCircle, CalendarClock,
-  Star, RotateCcw, ShieldCheck, ShoppingBag, Users, Sparkles,
+  Star, RotateCcw, ShieldCheck, ShoppingBag, Users, Sparkles, Pencil,
 } from 'lucide-react';
 import { dashboardService, type SparklinePoint } from '@/features/dashboard/services/dashboard.service';
 import { useOrgId } from '@/hooks/use-org-query-key';
@@ -309,9 +309,10 @@ export default function DashboardPage() {
               perguntas de anúncios (Mercado Livre)
             </span>
           </div>
-          <div className="mt-4 grid gap-4 sm:grid-cols-4">
+          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             <MpStat label="Perguntas" value={marketplace.totalPerguntas} icon={MessageCircle} color="text-zinc-700 dark:text-zinc-200" />
             <MpStat label="Respondidas pela IA" value={marketplace.porIa} icon={Sparkles} color="text-violet-600 dark:text-violet-400" />
+            <MpStat label="Editadas por usuário" value={marketplace.editadasPorUsuario} icon={Pencil} color="text-emerald-600 dark:text-emerald-400" />
             <MpStat label="Respondidas por usuário" value={marketplace.porUsuario} icon={Users} color="text-blue-600 dark:text-blue-400" />
             <MpStat label="Em aberto" value={marketplace.emAberto} icon={Clock} color="text-amber-600 dark:text-amber-400" />
           </div>

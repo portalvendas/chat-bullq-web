@@ -74,6 +74,7 @@ export interface MarketplaceStats {
   emAberto: number;
   porIa: number;
   porUsuario: number;
+  editadasPorUsuario: number;
 }
 export interface VolumeFlow { date: string; created: number; closed: number; }
 export interface MessagesFlow { date: string; inbound: number; outbound: number; }
