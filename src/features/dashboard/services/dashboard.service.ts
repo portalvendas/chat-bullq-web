@@ -68,6 +68,13 @@ export interface KpiSparklines {
 export interface VolumeByDay { date: string; count: number; }
 export interface VolumeByChannel { channelId: string; channelName: string; channelType: string; count: number; }
 export interface VolumeByStatus { status: string; count: number; }
+export interface MarketplaceStats {
+  totalPerguntas: number;
+  respondidas: number;
+  emAberto: number;
+  porIa: number;
+  porUsuario: number;
+}
 export interface VolumeFlow { date: string; created: number; closed: number; }
 export interface MessagesFlow { date: string; inbound: number; outbound: number; }
 export interface PeakHours { matrix: number[][]; max: number; }
@@ -105,6 +112,11 @@ export const dashboardService = {
     const { data } = await api.get('/dashboard/volume-by-day', { params });
     return data.data;
   },
+  async getMarketplaceStats(): Promise<MarketplaceStats> {
+    const { data } = await api.get('/dashboard/marketplace-stats');
+    return data?.data ?? data;
+  },
+
   async getVolumeByChannel(from?: string, to?: string): Promise<VolumeByChannel[]> {
     const params: Record<string, string> = {};
     if (from) params.from = from;

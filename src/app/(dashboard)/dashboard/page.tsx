@@ -9,7 +9,7 @@ import {
 import {
   Activity, Clock, Target, CheckCircle2, TrendingUp, TrendingDown, Minus,
   Bot, Tag as TagIcon, MessageCircle, CalendarClock,
-  Star, RotateCcw, ShieldCheck,
+  Star, RotateCcw, ShieldCheck, ShoppingBag, Users, Sparkles,
 } from 'lucide-react';
 import { dashboardService, type SparklinePoint } from '@/features/dashboard/services/dashboard.service';
 import { useOrgId } from '@/hooks/use-org-query-key';
@@ -113,6 +113,28 @@ function HeroSkeleton() {
   return <div className="h-44 animate-pulse rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900" />;
 }
 
+function MpStat({
+  label,
+  value,
+  icon: Icon,
+  color,
+}: {
+  label: string;
+  value: number;
+  icon: React.ElementType;
+  color: string;
+}) {
+  return (
+    <div className="rounded-lg border border-zinc-100 bg-zinc-50/60 p-3 dark:border-zinc-800 dark:bg-zinc-950/40">
+      <div className="flex items-center gap-1.5 text-[11px] font-medium text-zinc-500 dark:text-zinc-400">
+        <Icon className={`h-3.5 w-3.5 ${color}`} />
+        {label}
+      </div>
+      <p className={`mt-1 text-2xl font-bold tabular-nums ${color}`}>{value}</p>
+    </div>
+  );
+}
+
 function ChartCard({
   title, icon: Icon, children, height = 'h-64', subtitle,
 }: {
@@ -188,6 +210,10 @@ export default function DashboardPage() {
   const { data: reopens } = useQuery({
     queryKey: ['dashboard-reopens', orgId],
     queryFn: () => dashboardService.getReopens(),
+  });
+  const { data: marketplace } = useQuery({
+    queryKey: ['dashboard-marketplace', orgId],
+    queryFn: () => dashboardService.getMarketplaceStats(),
   });
 
   return (
@@ -270,6 +296,27 @@ export default function DashboardPage() {
           </>
         )}
       </div>
+
+      {/* Marketplaces: perguntas e quem respondeu (IA vs usuário) */}
+      {marketplace && (
+        <section className="mt-4 rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+          <div className="flex items-center gap-2">
+            <ShoppingBag className="h-5 w-5 text-amber-500" />
+            <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+              Marketplaces
+            </h2>
+            <span className="text-xs text-zinc-500">
+              perguntas de anúncios (Mercado Livre)
+            </span>
+          </div>
+          <div className="mt-4 grid gap-4 sm:grid-cols-4">
+            <MpStat label="Perguntas" value={marketplace.totalPerguntas} icon={MessageCircle} color="text-zinc-700 dark:text-zinc-200" />
+            <MpStat label="Respondidas pela IA" value={marketplace.porIa} icon={Sparkles} color="text-violet-600 dark:text-violet-400" />
+            <MpStat label="Respondidas por usuário" value={marketplace.porUsuario} icon={Users} color="text-blue-600 dark:text-blue-400" />
+            <MpStat label="Em aberto" value={marketplace.emAberto} icon={Clock} color="text-amber-600 dark:text-amber-400" />
+          </div>
+        </section>
+      )}
 
       {/* Quality KPIs row */}
       {overview && (
