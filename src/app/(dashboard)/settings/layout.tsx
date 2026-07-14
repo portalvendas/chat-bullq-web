@@ -20,6 +20,13 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
   const pathname = usePathname();
 
   return (
+    // Container rolável de altura cheia: o layout do dashboard dá altura
+    // limitada (flex-1 min-h-0) mas sem overflow — então QUALQUER aba de
+    // settings mais alta que a viewport ficava cortada e sem scroll. Aqui
+    // habilitamos o scroll vertical uma única vez pra todas as abas, sem
+    // tocar no layout global (que precisa ficar fixo pras telas app: inbox,
+    // kanban, etc.).
+    <div className="h-full overflow-y-auto">
     <div className="mx-auto w-full max-w-4xl p-6">
       <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Configurações</h1>
       <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
@@ -47,6 +54,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
       </nav>
 
       <div className="mt-8">{children}</div>
+    </div>
     </div>
   );
 }
