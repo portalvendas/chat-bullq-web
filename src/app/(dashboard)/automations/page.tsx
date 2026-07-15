@@ -60,7 +60,7 @@ export default function AutomationsPage() {
           <div className="flex items-center gap-2">
             <Zap className="h-5 w-5 text-amber-500" />
             <div>
-              <h1 className="text-lg font-semibold">Automações</h1>
+              <h1 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Automações</h1>
               <p className="text-xs text-zinc-500">
                 Quando algo acontece → execute uma sequência de ações
               </p>
@@ -237,7 +237,7 @@ function EmptyState({ onCreate }: { onCreate: () => void }) {
   return (
     <div className="rounded-2xl border-2 border-dashed border-zinc-200 px-8 py-16 text-center dark:border-zinc-800">
       <Zap className="mx-auto h-10 w-10 text-zinc-400" />
-      <h3 className="mt-4 text-lg font-semibold">
+      <h3 className="mt-4 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
         Nenhuma automação ainda
       </h3>
       <p className="mx-auto mt-2 max-w-md text-sm text-zinc-500">
