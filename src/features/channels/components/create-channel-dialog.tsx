@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
-import { Loader2, X, Copy, Check, ShoppingBag } from 'lucide-react';
+import { Loader2, X, Copy, Check, ShoppingBag, Store } from 'lucide-react';
 import { channelsService, type ChannelType } from '../services/channels.service';
 import { ZappfyIcon, MetaIcon, InstagramIcon } from '@/components/ui/icons';
 
@@ -52,6 +52,14 @@ const channelTypes: { value: ChannelType; label: string; icon: React.ElementType
     description: 'Marketplace — responda perguntas de anúncios (pergunta→resposta)',
     category: 'Marketplace',
   },
+  {
+    value: 'SHOPEE',
+    label: 'Shopee',
+    icon: Store,
+    color: 'bg-zinc-50 dark:bg-zinc-800',
+    description: 'Marketplace — chat do comprador (Shopee Open Platform)',
+    category: 'Marketplace',
+  },
 ];
 
 const CHANNEL_CATEGORIES: ChannelCategory[] = ['Mensageria', 'Marketplace'];
@@ -93,11 +101,18 @@ const mercadoLivreSchema = z.object({
   clientSecret: z.string().min(1, 'Client Secret é obrigatório'),
 });
 
+// Shopee usa app compartilhada (partner_id/key no ambiente) — no cadastro só
+// o nome; o resto (shop_id + tokens) vem do OAuth.
+const shopeeSchema = z.object({
+  name: z.string().min(1, 'Nome é obrigatório'),
+});
+
 type ZappfyFormData = z.infer<typeof zappfySchema>;
 type ZapiFormData = z.infer<typeof zapiSchema>;
 type WaOfficialFormData = z.infer<typeof waOfficialSchema>;
 type InstagramFormData = z.infer<typeof instagramSchema>;
 type MlFormData = z.infer<typeof mercadoLivreSchema>;
+type ShopeeFormData = z.infer<typeof shopeeSchema>;
 
 const inputCls = 'flex h-10 w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm ring-offset-background placeholder:text-zinc-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100';
 const labelCls = 'text-sm font-medium text-zinc-700 dark:text-zinc-300';
@@ -141,6 +156,11 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
   const mlForm = useForm<MlFormData>({
     resolver: zodResolver(mercadoLivreSchema),
     defaultValues: { name: '', clientId: '', clientSecret: '' },
+  });
+
+  const shopeeForm = useForm<ShopeeFormData>({
+    resolver: zodResolver(shopeeSchema),
+    defaultValues: { name: '' },
   });
 
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1';
@@ -225,6 +245,24 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
     }
   };
 
+  const onSubmitShopee = async (data: ShopeeFormData) => {
+    setIsLoading(true);
+    try {
+      const channel = await channelsService.create({
+        type: 'SHOPEE',
+        name: data.name,
+        config: {},
+        visibility,
+      });
+      toast.success('Canal criado! Redirecionando para o Shopee...');
+      const url = await channelsService.getShopeeAuthUrl(channel.id);
+      window.location.href = url;
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Erro ao criar canal');
+      setIsLoading(false);
+    }
+  };
+
   const handleClose = () => {
     setStep('type');
     setSelectedType(null);
@@ -233,6 +271,7 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
     waForm.reset();
     igForm.reset();
     mlForm.reset();
+    shopeeForm.reset();
     onClose();
   };
 
@@ -244,6 +283,7 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
     WHATSAPP_OFFICIAL: 'Configurar WhatsApp Official',
     INSTAGRAM: 'Configurar Instagram',
     MERCADO_LIVRE: 'Conectar Mercado Livre',
+    SHOPEE: 'Conectar Shopee',
   };
 
   return (
@@ -343,6 +383,17 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
             <Field label="Instagram App ID" placeholder="Opcional — ID do app do Instagram" optional {...igForm.register('igAppId')} />
             <Field label="Webhook Verify Token" placeholder="Token que você definiu no Meta" optional {...igForm.register('webhookSecret')} />
             <WebhookUrl url={`${apiBaseUrl}/webhooks/INSTAGRAM`} copied={copied} onCopy={() => handleCopyWebhook('INSTAGRAM')} />
+            <FormFooter isLoading={isLoading} onBack={() => setStep('type')} />
+          </form>
+        ) : selectedType === 'SHOPEE' ? (
+          <form onSubmit={shopeeForm.handleSubmit(onSubmitShopee)} className="mt-6 space-y-4">
+            <Field label="Nome do canal" placeholder="Ex: Shopee Loja" error={shopeeForm.formState.errors.name?.message} {...shopeeForm.register('name')} />
+            <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-3 text-xs text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800/50 space-y-2">
+              <p className="font-medium">No Shopee Open Platform, na sua app (mesma do Precificador), configure:</p>
+              <p><strong>Redirect URL:</strong><br /><code className="break-all">{apiBaseUrl}/integrations/shopee/oauth/callback</code></p>
+              <p className="text-zinc-500">As credenciais (partner_id/partner_key) já vêm do ambiente. Ao autorizar, capturamos o shop_id automaticamente.</p>
+            </div>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">Ao criar, você será redirecionado ao Shopee para autorizar a conexão da loja.</p>
             <FormFooter isLoading={isLoading} onBack={() => setStep('type')} />
           </form>
         ) : null}

@@ -1,6 +1,6 @@
 import { api } from '@/lib/api';
 
-export type ChannelType = 'WHATSAPP_OFFICIAL' | 'WHATSAPP_ZAPPFY' | 'WHATSAPP_ZAPI' | 'INSTAGRAM' | 'MERCADO_LIVRE';
+export type ChannelType = 'WHATSAPP_OFFICIAL' | 'WHATSAPP_ZAPPFY' | 'WHATSAPP_ZAPI' | 'INSTAGRAM' | 'MERCADO_LIVRE' | 'SHOPEE';
 
 export type ChannelVisibility = 'ORG' | 'PRIVATE';
 
@@ -109,6 +109,12 @@ export const channelsService = {
   /** Retorna a URL de consentimento OAuth do Mercado Livre para o canal. */
   async getMercadoLivreAuthUrl(channelId: string): Promise<string> {
     const { data } = await api.get<any>('/integrations/mercado-livre/oauth/authorize-url', { params: { channelId } });
+    return data?.data?.url ?? data?.url;
+  },
+
+  /** Retorna a URL de consentimento OAuth do Shopee para o canal. */
+  async getShopeeAuthUrl(channelId: string): Promise<string> {
+    const { data } = await api.get<any>('/integrations/shopee/oauth/authorize-url', { params: { channelId } });
     return data?.data?.url ?? data?.url;
   },
 
