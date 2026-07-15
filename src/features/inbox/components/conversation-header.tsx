@@ -36,7 +36,8 @@ function ChannelBadge({ type, name }: { type: string; name: string }) {
   const isTelegram = t.includes('TELEGRAM');
   const isEmail = t.includes('EMAIL') || t.includes('MAIL');
   const isSms = t.includes('SMS');
-  const isMarketplace = t.includes('MERCADO') || t.includes('MARKETPLACE');
+  const isMarketplace =
+    t.includes('MERCADO') || t.includes('MARKETPLACE') || t.includes('SHOPEE');
 
   let Icon = MessageSquare;
   let label = 'Chat';

@@ -33,7 +33,7 @@ import { InboxViewDialog } from './inbox-view-dialog';
 
 // Tipos de canal que são MARKETPLACE (pergunta→resposta), separados da
 // conversação (WhatsApp/Instagram). Extensível quando entrarem outros.
-const MARKETPLACE_TYPES = new Set(['MERCADO_LIVRE']);
+const MARKETPLACE_TYPES = new Set(['MERCADO_LIVRE', 'SHOPEE']);
 
 const VIEW_ICON: Record<string, any> = {
   Inbox,
