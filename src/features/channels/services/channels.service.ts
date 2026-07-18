@@ -118,6 +118,16 @@ export const channelsService = {
     return data?.data?.url ?? data?.url;
   },
 
+  /** Conclui o onboarding Coexistence (WhatsApp via QR) — envia code+wabaId. */
+  async completeWhatsAppEmbeddedSignup(payload: {
+    code: string;
+    wabaId: string;
+    name?: string;
+  }): Promise<{ channelId: string; phoneNumberId: string; displayPhoneNumber?: string }> {
+    const { data } = await api.post<any>('/integrations/whatsapp/embedded-signup', payload);
+    return data?.data ?? data;
+  },
+
   async startSync(id: string): Promise<{ success: boolean; jobId?: string; status?: SyncStatus }> {
     const { data } = await api.post<{ data: { success: boolean; jobId?: string; status?: SyncStatus } }>(`/channels/${id}/sync`);
     return data.data;

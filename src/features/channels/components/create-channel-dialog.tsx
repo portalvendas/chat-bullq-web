@@ -7,6 +7,7 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import { Loader2, X, Copy, Check, ShoppingBag, Store } from 'lucide-react';
 import { channelsService, type ChannelType } from '../services/channels.service';
+import { WhatsAppCoexistenceButton } from './whatsapp-coexistence-button';
 import { ZappfyIcon, MetaIcon, InstagramIcon } from '@/components/ui/icons';
 
 type ChannelCategory = 'Mensageria' | 'Marketplace';
@@ -351,7 +352,20 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
             <FormFooter isLoading={isLoading} onBack={() => setStep('type')} />
           </form>
         ) : selectedType === 'WHATSAPP_OFFICIAL' ? (
-          <form onSubmit={waForm.handleSubmit(onSubmitWaOfficial)} className="mt-6 space-y-4">
+          <div className="mt-6 space-y-4">
+            {/* Conexão leve via QR (Coexistence) — mantém o app WhatsApp Business. */}
+            <WhatsAppCoexistenceButton
+              onConnected={() => {
+                handleClose();
+                onCreated();
+              }}
+            />
+            <div className="flex items-center gap-3 text-[11px] uppercase tracking-wide text-zinc-400">
+              <span className="h-px flex-1 bg-zinc-200 dark:bg-zinc-800" />
+              ou configure manualmente
+              <span className="h-px flex-1 bg-zinc-200 dark:bg-zinc-800" />
+            </div>
+          <form onSubmit={waForm.handleSubmit(onSubmitWaOfficial)} className="space-y-4">
             <Field label="Nome do canal" placeholder="Ex: WhatsApp Business" error={waForm.formState.errors.name?.message} {...waForm.register('name')} />
             <Field label="Phone Number ID" placeholder="Encontrado no Meta Business Suite" error={waForm.formState.errors.phoneNumberId?.message} {...waForm.register('phoneNumberId')} />
             <Field label="Access Token" type="text" placeholder="System User Token ou Temporary Token" error={waForm.formState.errors.accessToken?.message} {...waForm.register('accessToken')} />
@@ -361,6 +375,7 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
             <WebhookUrl url={`${apiBaseUrl}/webhooks/WHATSAPP_OFFICIAL`} copied={copied} onCopy={() => handleCopyWebhook('WHATSAPP_OFFICIAL')} />
             <FormFooter isLoading={isLoading} onBack={() => setStep('type')} />
           </form>
+          </div>
         ) : selectedType === 'MERCADO_LIVRE' ? (
           <form onSubmit={mlForm.handleSubmit(onSubmitMercadoLivre)} className="mt-6 space-y-4">
             <Field label="Nome do canal" placeholder="Ex: Mercado Livre Loja" error={mlForm.formState.errors.name?.message} {...mlForm.register('name')} />
