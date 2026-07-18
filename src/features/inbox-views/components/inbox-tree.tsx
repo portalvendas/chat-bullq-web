@@ -29,7 +29,21 @@ import {
   type InboxView,
 } from '../services/inbox-views.service';
 import { channelsService } from '@/features/channels/services/channels.service';
+import { inboxService } from '@/features/inbox/services/inbox.service';
 import { InboxViewDialog } from './inbox-view-dialog';
+
+/** Pílula de alerta com a contagem de conversas sem resposta. */
+function UnansweredBadge({ count }: { count: number }) {
+  if (!count) return null;
+  return (
+    <span
+      title={`${count} sem resposta`}
+      className="ml-auto inline-flex min-w-4 items-center justify-center rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] font-semibold leading-none text-white"
+    >
+      {count > 99 ? '99+' : count}
+    </span>
+  );
+}
 
 // Tipos de canal que são MARKETPLACE (pergunta→resposta), separados da
 // conversação (WhatsApp/Instagram). Extensível quando entrarem outros.
@@ -100,6 +114,17 @@ export function InboxTree() {
     (c) => c.isActive && MARKETPLACE_TYPES.has(c.type),
   );
 
+  // Alertas de "sem resposta" (última msg do cliente). Atualiza a cada 30s.
+  const { data: unanswered } = useQuery({
+    queryKey: ['unanswered-counts'],
+    queryFn: () => inboxService.getUnansweredCounts(),
+    refetchInterval: 30000,
+    staleTime: 15000,
+  });
+  const generalUnanswered = unanswered?.general ?? 0;
+  const byChannel = unanswered?.byChannelId ?? {};
+  const totalUnanswered = Object.values(byChannel).reduce((a, b) => a + b, 0);
+
   const toggleExpanded = () => {
     const next = !expanded;
     setExpanded(next);
@@ -149,6 +174,7 @@ export function InboxTree() {
         >
           <Inbox className="size-5" />
           <span className="flex-1">Inbox</span>
+          <UnansweredBadge count={totalUnanswered} />
         </button>
       </div>
 
@@ -165,6 +191,7 @@ export function InboxTree() {
           >
             <Inbox className="size-3.5 text-zinc-400" />
             <span className="flex-1">Geral</span>
+            <UnansweredBadge count={generalUnanswered} />
           </button>
 
           {views.map((v) => {
@@ -251,6 +278,7 @@ export function InboxTree() {
                   >
                     <ShoppingBag className="size-3.5 text-amber-500" />
                     <span className="flex-1 truncate">{ch.name}</span>
+                    <UnansweredBadge count={byChannel[ch.id] ?? 0} />
                   </button>
                 );
               })}
