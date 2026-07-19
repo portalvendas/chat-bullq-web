@@ -43,10 +43,11 @@ export const pendingActionsService = {
   async regenerate(
     conversationId: string,
     complement: string,
+    scope: 'item' | 'store' = 'item',
   ): Promise<{ ok: boolean }> {
     const { data } = await api.post(
       `/conversations/${conversationId}/ai/regenerate`,
-      { complement },
+      { complement, scope },
     );
     return data?.data ?? data;
   },

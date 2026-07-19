@@ -116,6 +116,7 @@ export function PendingActionBanner({ action, index = 0 }: Props) {
   const [reason, setReason] = useState('');
   const [showComplement, setShowComplement] = useState(false);
   const [complement, setComplement] = useState('');
+  const [scope, setScope] = useState<'item' | 'store'>('item');
 
   // Resposta ao cliente é EDITÁVEL antes de aprovar — o operador pode
   // complementar/corrigir. O texto (original → editado) fica registrado no
@@ -183,12 +184,13 @@ export function PendingActionBanner({ action, index = 0 }: Props) {
       return;
     }
     regenerate.mutate(
-      { conversationId: action.conversationId, complement: c },
+      { conversationId: action.conversationId, complement: c, scope },
       {
         onSuccess: () => {
           toast.success('Regerando a resposta com a nova informação…');
           setComplement('');
           setShowComplement(false);
+          setScope('item');
         },
         onError: (err: unknown) =>
           toast.error(
@@ -353,6 +355,39 @@ export function PendingActionBanner({ action, index = 0 }: Props) {
                 className="w-full resize-y rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 disabled:opacity-60 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
                 autoFocus
               />
+
+              {/* Escopo: fato deste anúncio (padrão) ou geral da loja. */}
+              <div className="mt-2">
+                <span className="text-[11px] text-zinc-500">Aplicar a:</span>
+                <div className="mt-1 inline-flex overflow-hidden rounded-md border border-zinc-300 dark:border-zinc-700">
+                  {(
+                    [
+                      { key: 'item', label: 'Este anúncio' },
+                      { key: 'store', label: 'Toda a loja' },
+                    ] as const
+                  ).map((opt) => (
+                    <button
+                      key={opt.key}
+                      type="button"
+                      onClick={() => setScope(opt.key)}
+                      disabled={regenerate.isPending}
+                      className={`px-3 py-1 text-xs font-medium transition-colors disabled:opacity-50 ${
+                        scope === opt.key
+                          ? 'bg-violet-600 text-white'
+                          : 'bg-white text-zinc-600 hover:bg-zinc-50 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+                <p className="mt-1 text-[10px] text-zinc-400">
+                  {scope === 'item'
+                    ? 'Vale só pra este anúncio (marketplace).'
+                    : 'Vale pra toda a loja, em qualquer conversa.'}
+                </p>
+              </div>
+
               <div className="mt-2 flex items-center justify-end gap-2">
                 <button
                   type="button"

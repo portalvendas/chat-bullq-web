@@ -85,8 +85,9 @@ export function useRegenerateAnswer() {
     mutationFn: ({
       conversationId,
       complement,
-    }: { complement: string } & MutationContext) =>
-      pendingActionsService.regenerate(conversationId, complement),
+      scope,
+    }: { complement: string; scope?: 'item' | 'store' } & MutationContext) =>
+      pendingActionsService.regenerate(conversationId, complement, scope),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: pendingActionsQueryKey(variables.conversationId),
