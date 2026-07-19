@@ -2,10 +2,19 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { AlertTriangle, Check, Clock, Info, Loader2, X } from 'lucide-react';
+import {
+  AlertTriangle,
+  Check,
+  Clock,
+  Info,
+  Loader2,
+  Sparkles,
+  X,
+} from 'lucide-react';
 import { toast } from 'sonner';
 import {
   useApprovePendingAction,
+  useRegenerateAnswer,
   useRejectPendingAction,
 } from './use-pending-actions';
 import type {
@@ -101,9 +110,12 @@ export function PendingActionBanner({ action, index = 0 }: Props) {
 
   const approve = useApprovePendingAction();
   const reject = useRejectPendingAction();
+  const regenerate = useRegenerateAnswer();
 
   const [rejectOpen, setRejectOpen] = useState(false);
   const [reason, setReason] = useState('');
+  const [showComplement, setShowComplement] = useState(false);
+  const [complement, setComplement] = useState('');
 
   // Resposta ao cliente é EDITÁVEL antes de aprovar — o operador pode
   // complementar/corrigir. O texto (original → editado) fica registrado no
@@ -164,8 +176,35 @@ export function PendingActionBanner({ action, index = 0 }: Props) {
     );
   };
 
+  const handleRegenerate = () => {
+    const c = complement.trim();
+    if (!c) {
+      toast.error('Escreva a informação complementar');
+      return;
+    }
+    regenerate.mutate(
+      { conversationId: action.conversationId, complement: c },
+      {
+        onSuccess: () => {
+          toast.success('Regerando a resposta com a nova informação…');
+          setComplement('');
+          setShowComplement(false);
+        },
+        onError: (err: unknown) =>
+          toast.error(
+            err instanceof Error ? err.message : 'Erro ao regerar resposta',
+          ),
+      },
+    );
+  };
+
   const toolLabel = TOOL_LABELS[action.toolName] ?? action.toolName;
   const Icon = style.Icon;
+
+  // Ações expiradas NÃO permanecem na tela — sem card de "Expirado" pendurado.
+  // Backend já expira a antiga ao regerar; aqui garantimos que o countdown a 0
+  // remove o card na hora (o refetch em seguida a tira da lista de vez).
+  if (expired) return null;
 
   return (
     <motion.div
@@ -281,12 +320,67 @@ export function PendingActionBanner({ action, index = 0 }: Props) {
               <X className="h-3.5 w-3.5" />
               Rejeitar
             </button>
-            {expired && action.status === 'PENDING' && (
-              <span className="text-xs italic text-red-600 dark:text-red-400">
-                Esta ação expirou e não pode mais ser aprovada.
-              </span>
+            {isReply && (
+              <button
+                type="button"
+                onClick={() => setShowComplement((v) => !v)}
+                disabled={isTerminal || isWorking || regenerate.isPending}
+                className="inline-flex items-center gap-1.5 rounded-md border border-violet-300 bg-white px-3 py-1.5 text-xs font-medium text-violet-700 shadow-sm transition-colors hover:bg-violet-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-violet-800 dark:bg-transparent dark:text-violet-300 dark:hover:bg-violet-950/40"
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                Regerar com info
+              </button>
             )}
           </div>
+
+          {/* Info complementar → regera a resposta. O complemento também é
+              salvo na base de conhecimento (memória) pra respostas futuras. */}
+          {isReply && showComplement && (
+            <div className="mt-3 rounded-lg border border-violet-200 bg-violet-50/60 p-3 dark:border-violet-900/60 dark:bg-violet-950/20">
+              <label className="text-[12px] font-medium text-violet-800 dark:text-violet-300">
+                Informação complementar
+              </label>
+              <p className="mb-2 text-[11px] text-zinc-500">
+                Ex: &quot;Material é MDF&quot;. A IA regera a resposta usando isso, e o
+                fato fica salvo pra próximas perguntas.
+              </p>
+              <textarea
+                value={complement}
+                onChange={(e) => setComplement(e.target.value)}
+                disabled={regenerate.isPending}
+                rows={2}
+                placeholder="Digite o que a IA precisa saber…"
+                className="w-full resize-y rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 disabled:opacity-60 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+                autoFocus
+              />
+              <div className="mt-2 flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowComplement(false);
+                    setComplement('');
+                  }}
+                  disabled={regenerate.isPending}
+                  className="rounded-md px-3 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 disabled:opacity-50 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  onClick={handleRegenerate}
+                  disabled={regenerate.isPending || !complement.trim()}
+                  className="inline-flex items-center gap-1.5 rounded-md bg-violet-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {regenerate.isPending ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Sparkles className="h-3.5 w-3.5" />
+                  )}
+                  Regerar resposta
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

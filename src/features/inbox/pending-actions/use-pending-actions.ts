@@ -9,6 +9,7 @@ import {
   approvePendingAction,
   listPendingActions,
   rejectPendingAction,
+  pendingActionsService,
 } from './api';
 import type { PendingAction } from './types';
 
@@ -65,6 +66,27 @@ export function useRejectPendingAction() {
       reason,
     }: { id: string; reason: string } & MutationContext) =>
       rejectPendingAction(id, reason),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: pendingActionsQueryKey(variables.conversationId),
+      });
+    },
+  });
+}
+
+/**
+ * Regenera a resposta com uma informação complementar do operador. Ao
+ * concluir, invalida a lista — a ação antiga (expirada no backend) some e a
+ * nova aparece após o re-run do agente.
+ */
+export function useRegenerateAnswer() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      conversationId,
+      complement,
+    }: { complement: string } & MutationContext) =>
+      pendingActionsService.regenerate(conversationId, complement),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: pendingActionsQueryKey(variables.conversationId),

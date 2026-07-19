@@ -34,6 +34,22 @@ export const pendingActionsService = {
     const { data } = await api.post(`/pending-actions/${id}/reject`, { reason });
     return data?.data ?? data;
   },
+
+  /**
+   * Regenera a resposta pendente com uma informação complementar. O endpoint
+   * vive na conversa (salva o complemento na base de conhecimento, expira o
+   * pending atual e re-roda o agente).
+   */
+  async regenerate(
+    conversationId: string,
+    complement: string,
+  ): Promise<{ ok: boolean }> {
+    const { data } = await api.post(
+      `/conversations/${conversationId}/ai/regenerate`,
+      { complement },
+    );
+    return data?.data ?? data;
+  },
 };
 
 export const listPendingActions = (conversationId: string) =>
