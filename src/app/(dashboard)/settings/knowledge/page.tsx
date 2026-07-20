@@ -12,6 +12,7 @@ import {
   X,
   Store,
   Tag,
+  RefreshCw,
 } from 'lucide-react';
 import {
   knowledgeService,
@@ -91,12 +92,22 @@ export default function KnowledgePage() {
     },
     onError: () => toast.error('Erro ao salvar'),
   });
+  const scan = useMutation({
+    mutationFn: () => knowledgeService.scanMarketplace(),
+    onSuccess: () => {
+      toast.success(
+        'Varredura iniciada — os anúncios mapeados vão aparecer em Validados em alguns minutos.',
+      );
+      setTimeout(invalidate, 8000);
+    },
+    onError: () => toast.error('Erro ao iniciar varredura'),
+  });
 
   return (
     <div className="mx-auto w-full max-w-4xl">
       <div className="mb-4 flex items-center gap-2">
         <BookOpen className="h-5 w-5 text-zinc-500" />
-        <div>
+        <div className="flex-1">
           <h1 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
             Central de Conhecimento
           </h1>
@@ -105,6 +116,19 @@ export default function KnowledgePage() {
             circulação.
           </p>
         </div>
+        <button
+          onClick={() => scan.mutate()}
+          disabled={scan.isPending}
+          title="Varre os anúncios ativos do Mercado Livre e mapeia faixa de largura → link"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
+        >
+          {scan.isPending ? (
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          ) : (
+            <RefreshCw className="h-3.5 w-3.5" />
+          )}
+          Varrer anúncios (ML)
+        </button>
       </div>
 
       {/* Abas */}

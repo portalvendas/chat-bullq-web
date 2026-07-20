@@ -78,4 +78,13 @@ export const knowledgeService = {
   async remove(id: string): Promise<void> {
     await api.delete(`/knowledge/${id}`);
   },
+
+  /** Dispara a varredura de anúncios do Mercado Livre (roda em background). */
+  async scanMarketplace(): Promise<{ started: boolean }> {
+    const { data } = await api.post(
+      '/integrations/mercado-livre/directory/scan-variants',
+      {},
+    );
+    return unwrap<{ started: boolean }>(data);
+  },
 };
