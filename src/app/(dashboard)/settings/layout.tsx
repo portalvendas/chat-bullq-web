@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Radio, Users, Tags, Bell, Building2, KeyRound, Sparkles, BookUser, ShoppingBag } from 'lucide-react';
+import { Radio, Users, Tags, Bell, Building2, KeyRound, Sparkles, BookUser, ShoppingBag, BookOpen } from 'lucide-react';
 
 const tabs = [
   { href: '/settings/channels', label: 'Canais', icon: Radio },
   { href: '/settings/general', label: 'Geral', icon: Building2 },
   { href: '/settings/ai', label: 'IA', icon: Sparkles },
+  { href: '/settings/knowledge', label: 'Conhecimento', icon: BookOpen },
   { href: '/settings/organizadores', label: 'Organizadores', icon: ShoppingBag },
   { href: '/settings/members', label: 'Membros', icon: Users },
   { href: '/settings/contacts', label: 'Contatos', icon: BookUser },
