@@ -13,6 +13,7 @@ import {
   Store,
   Tag,
   RefreshCw,
+  Upload,
 } from 'lucide-react';
 import {
   knowledgeService,
@@ -39,6 +40,8 @@ export default function KnowledgePage() {
   const [search, setSearch] = useState('');
   const [editing, setEditing] = useState<KnowledgeItem | null>(null);
   const [editText, setEditText] = useState('');
+  const [importOpen, setImportOpen] = useState(false);
+  const [importText, setImportText] = useState('');
 
   const { data: counts } = useQuery({
     queryKey: ['knowledge-counts'],
@@ -102,6 +105,16 @@ export default function KnowledgePage() {
     },
     onError: () => toast.error('Erro ao iniciar varredura'),
   });
+  const importLinks = useMutation({
+    mutationFn: (text: string) => knowledgeService.importLinks(text),
+    onSuccess: (res) => {
+      toast.success(`${res.created} itens importados do arquivo de links.`);
+      setImportOpen(false);
+      setImportText('');
+      invalidate();
+    },
+    onError: () => toast.error('Erro ao importar o arquivo'),
+  });
 
   return (
     <div className="mx-auto w-full max-w-4xl">
@@ -117,6 +130,13 @@ export default function KnowledgePage() {
           </p>
         </div>
         <button
+          onClick={() => setImportOpen(true)}
+          className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
+        >
+          <Upload className="h-3.5 w-3.5" />
+          Importar links
+        </button>
+        <button
           onClick={() => scan.mutate()}
           disabled={scan.isPending}
           title="Varre os anúncios ativos do Mercado Livre e mapeia faixa de largura → link"
@@ -130,6 +150,69 @@ export default function KnowledgePage() {
           Varrer anúncios (ML)
         </button>
       </div>
+
+      {importOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
+          onClick={() => !importLinks.isPending && setImportOpen(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-lg rounded-xl border border-zinc-200 bg-white p-4 shadow-2xl dark:border-zinc-800 dark:bg-zinc-950"
+          >
+            <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+              Importar arquivo de links
+            </h2>
+            <p className="mt-1 mb-2 text-[11px] text-zinc-500">
+              Anexe o arquivo (.txt) ou cole o conteúdo. Mesmo formato do
+              diretório: categoria, &quot;código | largura&quot; e o link do anúncio.
+              Substitui o import anterior.
+            </p>
+            <label className="mb-2 inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800">
+              <Upload className="h-3.5 w-3.5" />
+              Escolher arquivo (.txt)
+              <input
+                type="file"
+                accept=".txt,.csv,text/plain"
+                className="hidden"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  const content = await file.text();
+                  setImportText(content);
+                  toast.success(`Arquivo "${file.name}" carregado — confira e importe.`);
+                }}
+              />
+            </label>
+            <textarea
+              value={importText}
+              onChange={(e) => setImportText(e.target.value)}
+              rows={10}
+              placeholder={'Porta Talheres\n001 | 30\nhttps://.../MLB-1234...'}
+              className="w-full resize-y rounded-md border border-zinc-300 bg-white px-3 py-2 font-mono text-xs outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+            />
+            <div className="mt-3 flex justify-end gap-2">
+              <button
+                onClick={() => setImportOpen(false)}
+                disabled={importLinks.isPending}
+                className="rounded-md px-3 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 disabled:opacity-50 dark:text-zinc-300 dark:hover:bg-zinc-800"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => importLinks.mutate(importText)}
+                disabled={importLinks.isPending || !importText.trim()}
+                className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-white hover:opacity-90 disabled:opacity-50"
+              >
+                {importLinks.isPending && (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                )}
+                Importar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Abas */}
       <div className="mb-3 flex items-center gap-1 border-b border-zinc-200 dark:border-zinc-800">
