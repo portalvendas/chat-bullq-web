@@ -87,4 +87,13 @@ export const knowledgeService = {
     );
     return unwrap<{ started: boolean }>(data);
   },
+
+  /** Importa o arquivo de links (texto colado) como itens VARIANT_MAP validados. */
+  async importLinks(text: string): Promise<{ rows: number; created: number }> {
+    const { data } = await api.post(
+      '/integrations/mercado-livre/directory/import-knowledge',
+      { text },
+    );
+    return unwrap<{ rows: number; created: number }>(data);
+  },
 };
