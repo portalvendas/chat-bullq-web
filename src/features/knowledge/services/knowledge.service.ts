@@ -88,6 +88,19 @@ export const knowledgeService = {
     return unwrap<{ started: boolean }>(data);
   },
 
+  /** Cria vários itens de conhecimento de uma vez (FAQ/conteúdo). */
+  async bulkCreate(
+    items: {
+      text: string;
+      title?: string | null;
+      type?: KnowledgeType;
+      status?: KnowledgeStatus;
+    }[],
+  ): Promise<{ created: number }> {
+    const { data } = await api.post('/knowledge/bulk', { items });
+    return unwrap<{ created: number }>(data);
+  },
+
   /** Importa o arquivo de links (texto colado) como itens VARIANT_MAP validados. */
   async importLinks(text: string): Promise<{ rows: number; created: number }> {
     const { data } = await api.post(

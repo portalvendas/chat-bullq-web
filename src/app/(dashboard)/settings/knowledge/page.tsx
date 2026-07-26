@@ -27,6 +27,29 @@ const TABS: { key: KnowledgeStatus; label: string }[] = [
   { key: 'ARCHIVED', label: 'Arquivados' },
 ];
 
+// Conteúdos migrados dos Salesbots do Kommo (FAQ/política). Formato: blocos
+// separados por "---", 1ª linha "# Título".
+const KOMMO_FAQ = `# Organizador de gaveta — sob medida
+Criamos organizadores de gaveta 100% sob medida, feitos artesanalmente para se ajustarem perfeitamente ao seu espaço, sem encaixes folgados nem desperdício de espaço. Servem tanto para dormitório quanto para utensílios de cozinha.
+---
+# Como funciona o sob medida e prazo
+Cada projeto é único: o cliente envia as medidas internas da gaveta e uma foto do espaço, e criamos um projeto com as divisórias ideais. A produção leva até 7 dias úteis.
+---
+# Preço
+O preço depende do tamanho, do modelo e do material desejado, porque trabalhamos com medidas personalizadas. Para orçar, precisamos das medidas internas das gavetas.
+---
+# Folga de segurança nas medidas
+Por segurança, o modelo é produzido de 2 a 4mm menor em relação às medidas informadas, para entrar sem enroscar na gaveta e evitar problemas com a dilatação dos materiais. Por isso precisamos das medidas bem exatas.
+---
+# Política de troca/devolução (produto sob medida)
+Como é um produto sob medida, produzido exclusivamente para o cliente, não realizamos devoluções ou trocas. O cliente deve conferir com atenção se as medidas informadas correspondem exatamente às medidas internas da gaveta antes de confirmar a produção.
+---
+# Fechamento do pedido
+Ao confirmar, deixamos o pedido pronto para entrar em produção no mesmo dia. É preciso confirmar o pagamento; depois o organizador é feito 100% sob medida. Para fechar, enviamos os dados para finalizar o cadastro.
+---
+# Após a compra (NF e rastreio)
+Depois de confirmado, o pedido é encaminhado para produção. Quando estiver disponível para envio, retornamos por e-mail com a NF e, em seguida, o link para rastreio. Ficamos à disposição para dúvidas.`;
+
 const SOURCE_LABEL: Record<string, string> = {
   MANUAL: 'Manual',
   OPERATOR_COMPLEMENT: 'Complemento do operador',
@@ -42,6 +65,8 @@ export default function KnowledgePage() {
   const [editText, setEditText] = useState('');
   const [importOpen, setImportOpen] = useState(false);
   const [importText, setImportText] = useState('');
+  const [faqOpen, setFaqOpen] = useState(false);
+  const [faqText, setFaqText] = useState('');
 
   const { data: counts } = useQuery({
     queryKey: ['knowledge-counts'],
@@ -115,6 +140,38 @@ export default function KnowledgePage() {
     },
     onError: () => toast.error('Erro ao importar o arquivo'),
   });
+  const importFaq = useMutation({
+    mutationFn: (text: string) => {
+      // Cada item separado por uma linha "---". 1ª linha "# Título" (opcional).
+      const items = text
+        .split(/^\s*---\s*$/m)
+        .map((raw) => raw.trim())
+        .filter(Boolean)
+        .map((block) => {
+          const lines = block.split('\n');
+          let title: string | null = null;
+          if (lines[0].startsWith('# ')) {
+            title = lines[0].slice(2).trim();
+            lines.shift();
+          }
+          return {
+            title,
+            text: lines.join('\n').trim(),
+            type: 'FAQ' as const,
+            status: 'VALIDATED' as const,
+          };
+        })
+        .filter((i) => i.text);
+      return knowledgeService.bulkCreate(items);
+    },
+    onSuccess: (res) => {
+      toast.success(`${res.created} itens de FAQ importados e validados.`);
+      setFaqOpen(false);
+      setFaqText('');
+      invalidate();
+    },
+    onError: () => toast.error('Erro ao importar FAQ'),
+  });
 
   return (
     <div className="mx-auto w-full max-w-4xl">
@@ -129,6 +186,13 @@ export default function KnowledgePage() {
             circulação.
           </p>
         </div>
+        <button
+          onClick={() => setFaqOpen(true)}
+          className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
+        >
+          <Upload className="h-3.5 w-3.5" />
+          Importar FAQ
+        </button>
         <button
           onClick={() => setImportOpen(true)}
           className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
@@ -150,6 +214,62 @@ export default function KnowledgePage() {
           Varrer anúncios (ML)
         </button>
       </div>
+
+      {faqOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
+          onClick={() => !importFaq.isPending && setFaqOpen(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-lg rounded-xl border border-zinc-200 bg-white p-4 shadow-2xl dark:border-zinc-800 dark:bg-zinc-950"
+          >
+            <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+              Importar FAQ em massa
+            </h2>
+            <p className="mt-1 mb-2 text-[11px] text-zinc-500">
+              Um item por bloco, separados por uma linha <code>---</code>. 1ª
+              linha começando com <code># </code> vira o título. Entram como
+              validados (a IA já usa).
+            </p>
+            <div className="mb-2 flex justify-end">
+              <button
+                onClick={() => setFaqText(KOMMO_FAQ)}
+                disabled={importFaq.isPending}
+                className="rounded-md border border-zinc-300 px-2 py-1 text-[11px] font-medium text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+              >
+                Carregar os 8 conteúdos do Kommo
+              </button>
+            </div>
+            <textarea
+              value={faqText}
+              onChange={(e) => setFaqText(e.target.value)}
+              rows={12}
+              placeholder={'# Prazo de produção\nProdução em até 7 dias úteis…\n---\n# Material\n…'}
+              className="w-full resize-y rounded-md border border-zinc-300 bg-white px-3 py-2 text-xs outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+            />
+            <div className="mt-3 flex justify-end gap-2">
+              <button
+                onClick={() => setFaqOpen(false)}
+                disabled={importFaq.isPending}
+                className="rounded-md px-3 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 disabled:opacity-50 dark:text-zinc-300 dark:hover:bg-zinc-800"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => importFaq.mutate(faqText)}
+                disabled={importFaq.isPending || !faqText.trim()}
+                className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-white hover:opacity-90 disabled:opacity-50"
+              >
+                {importFaq.isPending && (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                )}
+                Importar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {importOpen && (
         <div
