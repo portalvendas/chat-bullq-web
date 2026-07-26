@@ -100,4 +100,22 @@ export const cadencesService = {
     const { data } = await api.post(`/cadences/${id}/start`, { conversationId });
     return unwrap(data);
   },
+  async importKommo(
+    files: Array<{ name: string; model: unknown }>,
+  ): Promise<KommoImportResult> {
+    const { data } = await api.post('/cadences/import-kommo', { files });
+    return unwrap<KommoImportResult>(data);
+  },
 };
+
+export interface KommoImportResult {
+  created: number;
+  skipped: number;
+  results: Array<{
+    name: string;
+    status: 'created' | 'skipped' | 'error';
+    nodes?: number;
+    warnings?: string[];
+    error?: string;
+  }>;
+}

@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { Workflow, Plus, Trash2, Loader2, Loader, X } from 'lucide-react';
+import { Workflow, Plus, Trash2, Loader2, Loader, X, Upload } from 'lucide-react';
 import {
   cadencesService,
   type Cadence,
@@ -33,6 +33,7 @@ export function JarvisSalesbotsTab() {
   const qc = useQueryClient();
   const [editing, setEditing] = useState<Cadence | null>(null);
   const [creating, setCreating] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const { data: bots = [], isLoading } = useQuery({
     queryKey: ['cadences'],
@@ -56,6 +57,40 @@ export function JarvisSalesbotsTab() {
     onSuccess: () => invalidate(),
     onError: () => toast.error('Erro ao atualizar'),
   });
+  const importKommo = useMutation({
+    mutationFn: async (files: File[]) => {
+      const payload: Array<{ name: string; model: unknown }> = [];
+      for (const file of files) {
+        const raw = await file.text();
+        let parsed: any;
+        try {
+          parsed = JSON.parse(raw);
+        } catch {
+          throw new Error(`${file.name}: JSON inválido`);
+        }
+        const model = parsed?.model ?? parsed;
+        const name = file.name.replace(/\.json$/i, '').trim();
+        payload.push({ name, model });
+      }
+      return cadencesService.importKommo(payload);
+    },
+    onSuccess: (r) => {
+      const errs = r.results.filter((x) => x.status === 'error').length;
+      toast.success(
+        `Import concluído: ${r.created} criado(s), ${r.skipped} já existia(m)` +
+          (errs ? `, ${errs} com erro` : ''),
+      );
+      invalidate();
+    },
+    onError: (e: any) => toast.error(e?.message ?? 'Falha ao importar'),
+  });
+
+  const onFilesPicked = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    if (files.length) importKommo.mutate(files);
+    e.target.value = ''; // permite reimportar os mesmos arquivos
+  };
+
   const seedFollowup = useMutation({
     mutationFn: () =>
       cadencesService.create({
@@ -85,6 +120,26 @@ export function JarvisSalesbotsTab() {
             Salesbot do Kommo.
           </p>
         </div>
+        <input
+          ref={fileRef}
+          type="file"
+          accept=".json,application/json"
+          multiple
+          onChange={onFilesPicked}
+          className="hidden"
+        />
+        <button
+          onClick={() => fileRef.current?.click()}
+          disabled={importKommo.isPending}
+          className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
+        >
+          {importKommo.isPending ? (
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          ) : (
+            <Upload className="h-3.5 w-3.5" />
+          )}
+          Importar do Kommo
+        </button>
         {bots.length === 0 && (
           <button
             onClick={() => seedFollowup.mutate()}
