@@ -28,22 +28,34 @@ function fmtDelay(min: number): string {
   return `${Math.round((min / 1440) * 10) / 10}d`;
 }
 
-function stepSummary(s: WorkflowStep): string {
-  if (s.type === 'message') return s.text ? s.text.slice(0, 60) : '(mensagem vazia)';
-  if (s.type === 'wait') return `Esperar ${fmtDelay(s.delayMinutes)}`;
-  const map: Record<string, string> = {
-    tag: `Aplicar tag "${s.value ?? ''}"`,
-    move_stage: `Mover para etapa`,
-    close: 'Encerrar conversa',
-  };
-  return map[s.action] ?? s.action;
-}
-
 const STEP_ICON: Record<StepType, React.ElementType> = {
   message: MessageSquare,
   wait: Clock,
   action: Zap,
 };
+
+/**
+ * Normaliza passos vindos da API para o formato tipado. Cadências antigas
+ * gravaram passos lineares {delayMinutes, text} (sem `type`) — aqui viram
+ * [{wait}, {message}], igual ao backend. Passos já tipados passam direto.
+ */
+function normalizeSteps(raw: unknown): WorkflowStep[] {
+  if (!Array.isArray(raw)) return [];
+  const out: WorkflowStep[] = [];
+  for (const item of raw) {
+    if (!item || typeof item !== 'object') continue;
+    const o = item as Record<string, unknown>;
+    if (o.type === 'message' || o.type === 'wait' || o.type === 'action') {
+      out.push(o as unknown as WorkflowStep);
+      continue;
+    }
+    // Legado linear: {delayMinutes, text}
+    const delay = Number(o.delayMinutes) || 0;
+    if (delay > 0) out.push({ type: 'wait', delayMinutes: delay });
+    if (typeof o.text === 'string') out.push({ type: 'message', text: o.text });
+  }
+  return out;
+}
 
 /**
  * Jarvis > Salesbots. Espelha o Salesbot do Kommo: cada bot é um workflow
@@ -236,9 +248,10 @@ function SalesbotEditor({
   );
   const [triggerValue, setTriggerValue] = useState(bot?.triggerValue ?? '');
   const [stopOnReply, setStopOnReply] = useState(bot?.stopOnReply ?? true);
-  const [steps, setSteps] = useState<WorkflowStep[]>(
-    bot?.steps?.length ? bot.steps : [{ type: 'message', text: '' }],
-  );
+  const [steps, setSteps] = useState<WorkflowStep[]>(() => {
+    const norm = normalizeSteps(bot?.steps);
+    return norm.length ? norm : [{ type: 'message', text: '' }];
+  });
 
   const save = useMutation({
     mutationFn: () => {
@@ -362,7 +375,7 @@ function SalesbotEditor({
         </div>
         <div className="space-y-2">
           {steps.map((s, i) => {
-            const Icon = STEP_ICON[s.type];
+            const Icon = STEP_ICON[s.type] ?? Zap;
             return (
               <div
                 key={i}
