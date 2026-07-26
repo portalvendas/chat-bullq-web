@@ -3,64 +3,31 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import {
-  Workflow,
-  Plus,
-  Trash2,
-  Loader2,
-  MessageSquare,
-  Clock,
-  Zap,
-  ArrowUp,
-  ArrowDown,
-  X,
-} from 'lucide-react';
+import { Workflow, Plus, Trash2, Loader2, Loader, X } from 'lucide-react';
 import {
   cadencesService,
   type Cadence,
-  type WorkflowStep,
-  type StepType,
+  type WorkflowGraph,
 } from '@/features/cadences/services/cadences.service';
+import {
+  graphFromCadence,
+  emptyGraph,
+  followupGraph,
+} from '@/features/cadences/graph-utils';
+import { SalesbotCanvas } from '@/features/cadences/components/salesbot-canvas';
 
-function fmtDelay(min: number): string {
-  if (min < 60) return `${min}min`;
-  if (min < 1440) return `${Math.round((min / 60) * 10) / 10}h`;
-  return `${Math.round((min / 1440) * 10) / 10}d`;
-}
-
-const STEP_ICON: Record<StepType, React.ElementType> = {
-  message: MessageSquare,
-  wait: Clock,
-  action: Zap,
-};
-
-/**
- * Normaliza passos vindos da API para o formato tipado. Cadências antigas
- * gravaram passos lineares {delayMinutes, text} (sem `type`) — aqui viram
- * [{wait}, {message}], igual ao backend. Passos já tipados passam direto.
- */
-function normalizeSteps(raw: unknown): WorkflowStep[] {
-  if (!Array.isArray(raw)) return [];
-  const out: WorkflowStep[] = [];
-  for (const item of raw) {
-    if (!item || typeof item !== 'object') continue;
-    const o = item as Record<string, unknown>;
-    if (o.type === 'message' || o.type === 'wait' || o.type === 'action') {
-      out.push(o as unknown as WorkflowStep);
-      continue;
-    }
-    // Legado linear: {delayMinutes, text}
-    const delay = Number(o.delayMinutes) || 0;
-    if (delay > 0) out.push({ type: 'wait', delayMinutes: delay });
-    if (typeof o.text === 'string') out.push({ type: 'message', text: o.text });
+function nodeCount(c: Cadence): number {
+  const g = c.graph;
+  if (g && Array.isArray(g.nodes) && g.nodes.length) {
+    return g.nodes.filter((n) => n.type !== 'start' && n.type !== 'stop').length;
   }
-  return out;
+  return c.steps?.length ?? 0;
 }
 
 /**
- * Jarvis > Salesbots. Espelha o Salesbot do Kommo: cada bot é um workflow
- * ordenado de passos tipados (mensagem, espera, ação). A ordem do array é a
- * ordem de execução. Reaproveita o motor de cadências no backend.
+ * Jarvis > Salesbots. Cada bot é um workflow visual (canvas estilo Kommo) com
+ * ramificações: nós de mensagem/espera/ação conectados, onde a espera bifurca
+ * entre "tempo" e "cliente respondeu".
  */
 export function JarvisSalesbotsTab() {
   const qc = useQueryClient();
@@ -95,18 +62,7 @@ export function JarvisSalesbotsTab() {
         name: 'Follow-up de orçamento',
         triggerType: 'MANUAL',
         stopOnReply: true,
-        steps: [
-          { type: 'wait', delayMinutes: 60 },
-          { type: 'message', text: 'Oie! Consegue conversar agora ou prefere outro momento?' },
-          { type: 'wait', delayMinutes: 180 },
-          { type: 'message', text: 'Imagino que a rotina esteja corrida. Fiquei aguardando sua confirmação para seguir com seu orçamento. Me avisa quando puder!' },
-          { type: 'wait', delayMinutes: 180 },
-          { type: 'message', text: 'Oi, eu de novo 😊 se confirmando nas próximas horas, consigo colocar seu pedido em produção ainda hoje. Me avisa para garantir.' },
-          { type: 'wait', delayMinutes: 1200 },
-          { type: 'message', text: 'Oi 😊 Estamos com uma condição especial hoje e consigo aplicar diretamente na sua proposta. Posso seguir com o seu orçamento?' },
-          { type: 'action', action: 'tag', value: 'NÃO RESPONDEU' },
-          { type: 'action', action: 'close' },
-        ],
+        graph: followupGraph(),
         onEnd: {},
       }),
     onSuccess: () => {
@@ -125,8 +81,8 @@ export function JarvisSalesbotsTab() {
             Salesbots
           </h2>
           <p className="text-xs text-zinc-500">
-            Bots de atendimento com workflow ordenado: mensagens, esperas e
-            ações que rodam em sequência e param quando o cliente responde.
+            Bots de atendimento com workflow visual e ramificações — igual ao
+            Salesbot do Kommo.
           </p>
         </div>
         {bots.length === 0 && (
@@ -180,10 +136,7 @@ export function JarvisSalesbotsTab() {
                   }`}
                 />
               </button>
-              <button
-                onClick={() => setEditing(c)}
-                className="min-w-0 flex-1 text-left"
-              >
+              <button onClick={() => setEditing(c)} className="min-w-0 flex-1 text-left">
                 <div className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
                   {c.name}
                 </div>
@@ -191,7 +144,7 @@ export function JarvisSalesbotsTab() {
                   {c.triggerType === 'TAG_ADDED'
                     ? `gatilho: tag "${c.triggerValue ?? '—'}"`
                     : 'início manual'}{' '}
-                  · {c.steps.length} passo(s) ·{' '}
+                  · {nodeCount(c)} nó(s) ·{' '}
                   {c.stopOnReply ? 'para na resposta' : 'não para'} ·{' '}
                   {c._count?.runs ?? 0} execuções
                 </div>
@@ -227,12 +180,6 @@ export function JarvisSalesbotsTab() {
   );
 }
 
-function newStep(type: StepType): WorkflowStep {
-  if (type === 'message') return { type: 'message', text: '' };
-  if (type === 'wait') return { type: 'wait', delayMinutes: 60 };
-  return { type: 'action', action: 'tag', value: '' };
-}
-
 function SalesbotEditor({
   bot,
   onClose,
@@ -248,35 +195,18 @@ function SalesbotEditor({
   );
   const [triggerValue, setTriggerValue] = useState(bot?.triggerValue ?? '');
   const [stopOnReply, setStopOnReply] = useState(bot?.stopOnReply ?? true);
-  const [steps, setSteps] = useState<WorkflowStep[]>(() => {
-    const norm = normalizeSteps(bot?.steps);
-    return norm.length ? norm : [{ type: 'message', text: '' }];
-  });
+  const [graph, setGraph] = useState<WorkflowGraph>(() =>
+    bot ? graphFromCadence(bot) : emptyGraph(),
+  );
 
   const save = useMutation({
     mutationFn: () => {
-      // Construção tipada contextual (clean é WorkflowStep[]): cada push
-      // recebe o literal correto sem casts frágeis sobre a união.
-      const clean: WorkflowStep[] = [];
-      for (const s of steps) {
-        if (s.type === 'message') {
-          if (s.text.trim()) clean.push({ type: 'message', text: s.text.trim() });
-        } else if (s.type === 'wait') {
-          clean.push({ type: 'wait', delayMinutes: Number(s.delayMinutes) || 0 });
-        } else {
-          clean.push({
-            type: 'action',
-            action: s.action,
-            ...(s.value?.trim() ? { value: s.value.trim() } : {}),
-          });
-        }
-      }
       const dto = {
         name: name.trim(),
         triggerType,
         triggerValue: triggerType === 'TAG_ADDED' ? triggerValue.trim() : null,
         stopOnReply,
-        steps: clean,
+        graph,
         onEnd: {},
       };
       return bot
@@ -290,231 +220,69 @@ function SalesbotEditor({
     onError: () => toast.error('Erro ao salvar'),
   });
 
-  const patchStep = (i: number, patch: Partial<WorkflowStep>) =>
-    setSteps((arr) =>
-      arr.map((s, idx) => (idx === i ? ({ ...s, ...patch } as WorkflowStep) : s)),
-    );
-  const removeStep = (i: number) =>
-    setSteps((a) => a.filter((_, idx) => idx !== i));
-  const move = (i: number, dir: -1 | 1) =>
-    setSteps((a) => {
-      const j = i + dir;
-      if (j < 0 || j >= a.length) return a;
-      const next = [...a];
-      [next[i], next[j]] = [next[j], next[i]];
-      return next;
-    });
-  const addStep = (type: StepType) => setSteps((a) => [...a, newStep(type)]);
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
-      onClick={() => !save.isPending && onClose()}
-    >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl border border-zinc-200 bg-white p-4 shadow-2xl dark:border-zinc-800 dark:bg-zinc-950"
-      >
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-            {bot ? 'Editar Salesbot' : 'Novo Salesbot'}
-          </h2>
-          <button
-            onClick={onClose}
-            className="flex h-7 w-7 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </div>
-
-        <label className="text-[12px] font-medium text-zinc-700 dark:text-zinc-300">
-          Nome
-        </label>
+    <div className="fixed inset-0 z-50 flex flex-col bg-white dark:bg-zinc-950">
+      {/* Barra superior */}
+      <div className="flex flex-wrap items-center gap-2 border-b border-zinc-200 px-4 py-2.5 dark:border-zinc-800">
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Ex: Follow-up de orçamento"
-          className="mb-3 mt-1 w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+          placeholder="Nome do Salesbot"
+          className="w-56 rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm font-medium outline-none focus:border-primary dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
         />
-
-        <label className="text-[12px] font-medium text-zinc-700 dark:text-zinc-300">
-          Gatilho
-        </label>
-        <div className="mb-3 mt-1 flex flex-wrap items-center gap-2">
-          <select
-            value={triggerType}
-            onChange={(e) =>
-              setTriggerType(e.target.value as 'MANUAL' | 'TAG_ADDED')
-            }
-            className="rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
-          >
-            <option value="MANUAL">Início manual</option>
-            <option value="TAG_ADDED">Ao aplicar uma tag</option>
-          </select>
-          {triggerType === 'TAG_ADDED' && (
-            <input
-              value={triggerValue}
-              onChange={(e) => setTriggerValue(e.target.value)}
-              placeholder="Nome exato da tag (ex: Orçamento Enviado)"
-              className="flex-1 rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm outline-none focus:border-primary dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
-            />
-          )}
-        </div>
-
-        <label className="mb-1 flex items-center gap-2 text-xs text-zinc-600 dark:text-zinc-300">
+        <select
+          value={triggerType}
+          onChange={(e) => setTriggerType(e.target.value as 'MANUAL' | 'TAG_ADDED')}
+          className="rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+        >
+          <option value="MANUAL">Início manual</option>
+          <option value="TAG_ADDED">Ao aplicar tag</option>
+        </select>
+        {triggerType === 'TAG_ADDED' && (
+          <input
+            value={triggerValue}
+            onChange={(e) => setTriggerValue(e.target.value)}
+            placeholder="Nome da tag"
+            className="w-44 rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm outline-none focus:border-primary dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+          />
+        )}
+        <label className="flex items-center gap-1.5 text-xs text-zinc-600 dark:text-zinc-300">
           <input
             type="checkbox"
             checked={stopOnReply}
             onChange={(e) => setStopOnReply(e.target.checked)}
           />
-          Parar o bot quando o cliente responder
+          parar na resposta
         </label>
 
-        <div className="mt-3 mb-1 text-[12px] font-medium text-zinc-700 dark:text-zinc-300">
-          Workflow (executado em ordem)
-        </div>
-        <div className="space-y-2">
-          {steps.map((s, i) => {
-            const Icon = STEP_ICON[s.type] ?? Zap;
-            return (
-              <div
-                key={i}
-                className="rounded-lg border border-zinc-200 p-2 dark:border-zinc-800"
-              >
-                <div className="mb-1.5 flex items-center gap-2 text-[11px] text-zinc-500">
-                  <span className="flex h-5 w-5 items-center justify-center rounded bg-zinc-100 text-zinc-500 dark:bg-zinc-800">
-                    {i + 1}
-                  </span>
-                  <Icon className="h-3.5 w-3.5" />
-                  <span className="font-medium">
-                    {s.type === 'message'
-                      ? 'Mensagem'
-                      : s.type === 'wait'
-                        ? 'Esperar'
-                        : 'Ação'}
-                  </span>
-                  <div className="ml-auto flex items-center gap-0.5">
-                    <button
-                      onClick={() => move(i, -1)}
-                      disabled={i === 0}
-                      className="text-zinc-400 hover:text-zinc-700 disabled:opacity-30 dark:hover:text-zinc-200"
-                    >
-                      <ArrowUp className="h-3.5 w-3.5" />
-                    </button>
-                    <button
-                      onClick={() => move(i, 1)}
-                      disabled={i === steps.length - 1}
-                      className="text-zinc-400 hover:text-zinc-700 disabled:opacity-30 dark:hover:text-zinc-200"
-                    >
-                      <ArrowDown className="h-3.5 w-3.5" />
-                    </button>
-                    <button
-                      onClick={() => removeStep(i)}
-                      className="text-zinc-400 hover:text-red-500"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
-                </div>
-
-                {s.type === 'message' && (
-                  <textarea
-                    value={s.text}
-                    onChange={(e) => patchStep(i, { text: e.target.value })}
-                    rows={2}
-                    placeholder="Mensagem enviada ao cliente…"
-                    className="w-full resize-y rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm outline-none focus:border-primary dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
-                  />
-                )}
-
-                {s.type === 'wait' && (
-                  <div className="flex items-center gap-2 text-xs text-zinc-600 dark:text-zinc-300">
-                    Aguardar
-                    <input
-                      type="number"
-                      min={0}
-                      value={s.delayMinutes}
-                      onChange={(e) =>
-                        patchStep(i, { delayMinutes: Number(e.target.value) })
-                      }
-                      className="w-20 rounded border border-zinc-300 px-1.5 py-0.5 text-xs dark:border-zinc-700 dark:bg-zinc-900"
-                    />
-                    minutos ({fmtDelay(s.delayMinutes)}) antes do próximo passo
-                  </div>
-                )}
-
-                {s.type === 'action' && (
-                  <div className="flex flex-wrap items-center gap-2">
-                    <select
-                      value={s.action}
-                      onChange={(e) =>
-                        patchStep(i, {
-                          action: e.target.value as 'tag' | 'move_stage' | 'close',
-                        })
-                      }
-                      className="rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
-                    >
-                      <option value="tag">Aplicar tag</option>
-                      <option value="move_stage">Mover etapa</option>
-                      <option value="close">Encerrar conversa</option>
-                    </select>
-                    {s.action !== 'close' && (
-                      <input
-                        value={s.value ?? ''}
-                        onChange={(e) => patchStep(i, { value: e.target.value })}
-                        placeholder={
-                          s.action === 'tag'
-                            ? 'Nome da tag'
-                            : 'ID da etapa (card stage)'
-                        }
-                        className="flex-1 rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-xs outline-none focus:border-primary dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
-                      />
-                    )}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="mt-2 flex flex-wrap gap-2">
-          <button
-            onClick={() => addStep('message')}
-            className="inline-flex items-center gap-1 rounded-md border border-dashed border-zinc-300 px-2 py-1 text-xs text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
-          >
-            <MessageSquare className="h-3.5 w-3.5" /> Mensagem
-          </button>
-          <button
-            onClick={() => addStep('wait')}
-            className="inline-flex items-center gap-1 rounded-md border border-dashed border-zinc-300 px-2 py-1 text-xs text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
-          >
-            <Clock className="h-3.5 w-3.5" /> Esperar
-          </button>
-          <button
-            onClick={() => addStep('action')}
-            className="inline-flex items-center gap-1 rounded-md border border-dashed border-zinc-300 px-2 py-1 text-xs text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
-          >
-            <Zap className="h-3.5 w-3.5" /> Ação
-          </button>
-        </div>
-
-        <div className="mt-4 flex justify-end gap-2">
+        <div className="ml-auto flex items-center gap-2">
           <button
             onClick={onClose}
             disabled={save.isPending}
-            className="rounded-md px-3 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+            className="rounded-md px-3 py-1.5 text-sm font-medium text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
           >
             Cancelar
           </button>
           <button
             onClick={() => save.mutate()}
             disabled={save.isPending || !name.trim()}
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-white hover:opacity-90 disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-1.5 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
           >
-            {save.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+            {save.isPending && <Loader className="h-3.5 w-3.5 animate-spin" />}
             Salvar
           </button>
+          <button
+            onClick={onClose}
+            className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+          >
+            <X className="h-4 w-4" />
+          </button>
         </div>
+      </div>
+
+      {/* Canvas */}
+      <div className="flex-1 overflow-hidden">
+        <SalesbotCanvas graph={graph} onChange={setGraph} />
       </div>
     </div>
   );

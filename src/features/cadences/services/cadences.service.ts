@@ -10,6 +10,34 @@ export type WorkflowStep =
 
 export type StepType = WorkflowStep['type'];
 
+// ─── Grafo do salesbot (motor com ramificações) ───
+export type GraphNodeType = 'start' | 'message' | 'wait' | 'action' | 'stop';
+export type NodeHandle = 'out' | 'timeout' | 'reply';
+export type ActionKind = 'tag' | 'move_stage' | 'close';
+
+export interface GraphNode {
+  id: string;
+  type: GraphNodeType;
+  text?: string;
+  delayMinutes?: number;
+  untilReply?: boolean;
+  businessHoursOnly?: boolean;
+  action?: ActionKind;
+  value?: string;
+  x?: number;
+  y?: number;
+}
+export interface GraphEdge {
+  id?: string;
+  from: string;
+  fromHandle?: NodeHandle;
+  to: string;
+}
+export interface WorkflowGraph {
+  nodes: GraphNode[];
+  edges: GraphEdge[];
+}
+
 /** @deprecated formato legado — mantido só para leitura de dados antigos. */
 export interface CadenceStep {
   delayMinutes: number;
@@ -31,6 +59,7 @@ export interface Cadence {
   stopOnReply: boolean;
   businessHoursOnly: boolean;
   steps: WorkflowStep[];
+  graph?: WorkflowGraph;
   onEnd: CadenceOnEnd;
   _count?: { runs: number };
 }
@@ -43,6 +72,7 @@ export interface CadenceInput {
   stopOnReply?: boolean;
   businessHoursOnly?: boolean;
   steps?: WorkflowStep[];
+  graph?: WorkflowGraph;
   onEnd?: CadenceOnEnd;
 }
 
