@@ -1,5 +1,16 @@
 import { api } from '@/lib/api';
 
+// Workflow tipado — cada passo é de um tipo. A ordem do array é a ordem de
+// execução (igual ao Salesbot do Kommo). O backend normaliza o formato
+// legado ({delayMinutes,text}) automaticamente, mas o front já cria tipado.
+export type WorkflowStep =
+  | { type: 'message'; text: string }
+  | { type: 'wait'; delayMinutes: number }
+  | { type: 'action'; action: 'tag' | 'move_stage' | 'close'; value?: string };
+
+export type StepType = WorkflowStep['type'];
+
+/** @deprecated formato legado — mantido só para leitura de dados antigos. */
 export interface CadenceStep {
   delayMinutes: number;
   text: string;
@@ -19,7 +30,7 @@ export interface Cadence {
   triggerValue: string | null;
   stopOnReply: boolean;
   businessHoursOnly: boolean;
-  steps: CadenceStep[];
+  steps: WorkflowStep[];
   onEnd: CadenceOnEnd;
   _count?: { runs: number };
 }
@@ -31,7 +42,7 @@ export interface CadenceInput {
   triggerValue?: string | null;
   stopOnReply?: boolean;
   businessHoursOnly?: boolean;
-  steps?: CadenceStep[];
+  steps?: WorkflowStep[];
   onEnd?: CadenceOnEnd;
 }
 

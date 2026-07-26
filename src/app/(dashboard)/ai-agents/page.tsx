@@ -1,7 +1,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { Bot, BarChart3, User, Sparkles, Wrench, Activity, ShieldCheck } from 'lucide-react';
+import { Bot, BarChart3, User, Sparkles, Wrench, Activity, ShieldCheck, Workflow } from 'lucide-react';
 import { AgentsList } from '@/features/ai-agents/components/agents-list';
 import { JarvisOverviewTab } from '@/features/ai-agents/components/jarvis/overview-tab';
 import { JarvisAgentTab } from '@/features/ai-agents/components/jarvis/agent-tab';
@@ -9,20 +9,22 @@ import { JarvisSkillsTab } from '@/features/ai-agents/components/jarvis/skills-t
 import { JarvisToolsTab } from '@/features/ai-agents/components/jarvis/tools-tab';
 import { JarvisRunsTab } from '@/features/ai-agents/components/jarvis/runs-tab';
 import { JarvisWatchdogTab } from '@/features/ai-agents/components/jarvis/watchdog-tab';
+import { JarvisSalesbotsTab } from '@/features/ai-agents/components/jarvis/salesbots-tab';
 
-type Tab = 'overview' | 'agents' | 'skills' | 'tools' | 'agent' | 'runs' | 'watchdog';
+type Tab = 'overview' | 'agents' | 'skills' | 'tools' | 'agent' | 'runs' | 'watchdog' | 'salesbots';
 
 const TAB_META: Record<Tab, { label: string; icon: React.ElementType }> = {
   overview: { label: 'Visão geral', icon: BarChart3 },
   agents: { label: 'Agentes', icon: Bot },
   skills: { label: 'Skills', icon: Sparkles },
   tools: { label: 'Tools', icon: Wrench },
+  salesbots: { label: 'Salesbots', icon: Workflow },
   runs: { label: 'Execuções', icon: Activity },
   watchdog: { label: 'Watchdog', icon: ShieldCheck },
   agent: { label: 'Por agente', icon: User },
 };
 
-const VALID_TABS: Tab[] = ['overview', 'agents', 'skills', 'tools', 'runs', 'watchdog', 'agent'];
+const VALID_TABS: Tab[] = ['overview', 'agents', 'skills', 'tools', 'salesbots', 'runs', 'watchdog', 'agent'];
 
 export default function AiAgentsPage() {
   const searchParams = useSearchParams();
@@ -48,6 +50,7 @@ export default function AiAgentsPage() {
         {tab === 'agents' && <AgentsList />}
         {tab === 'skills' && <JarvisSkillsTab />}
         {tab === 'tools' && <JarvisToolsTab />}
+        {tab === 'salesbots' && <JarvisSalesbotsTab />}
         {tab === 'runs' && <JarvisRunsTab />}
         {tab === 'watchdog' && <JarvisWatchdogTab />}
         {tab === 'agent' && <JarvisAgentTab />}

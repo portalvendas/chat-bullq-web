@@ -12,11 +12,12 @@ import {
   Activity,
   User,
   ShieldCheck,
+  Workflow,
 } from 'lucide-react';
 
 const STORAGE_KEY = 'jarvis-tree-expanded';
 
-type Tab = 'overview' | 'agents' | 'skills' | 'tools' | 'runs' | 'agent' | 'watchdog';
+type Tab = 'overview' | 'agents' | 'skills' | 'tools' | 'runs' | 'agent' | 'watchdog' | 'salesbots';
 
 const TABS: Array<{
   id: Tab;
@@ -27,6 +28,7 @@ const TABS: Array<{
   { id: 'agents', label: 'Agentes', icon: Bot },
   { id: 'skills', label: 'Skills', icon: Sparkles },
   { id: 'tools', label: 'Tools', icon: Wrench },
+  { id: 'salesbots', label: 'Salesbots', icon: Workflow },
   { id: 'runs', label: 'Execuções', icon: Activity },
   { id: 'watchdog', label: 'Watchdog', icon: ShieldCheck },
   { id: 'agent', label: 'Por agente', icon: User },
