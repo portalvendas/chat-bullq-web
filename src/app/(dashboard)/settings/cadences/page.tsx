@@ -43,6 +43,26 @@ export default function CadencesPage() {
     onSuccess: () => invalidate(),
     onError: () => toast.error('Erro ao atualizar'),
   });
+  const seedFollowup = useMutation({
+    mutationFn: () =>
+      cadencesService.create({
+        name: 'Follow-up de orçamento (Kommo)',
+        triggerType: 'MANUAL',
+        stopOnReply: true,
+        steps: [
+          { delayMinutes: 60, text: 'Oie! Consegue conversar agora ou prefere outro momento?' },
+          { delayMinutes: 180, text: 'Imagino que a rotina esteja corrida. Fiquei aguardando sua confirmação para seguir com seu orçamento. Me avisa quando puder!' },
+          { delayMinutes: 180, text: 'Oi, eu de novo 😊 se confirmando nas próximas horas, consigo colocar seu pedido em produção ainda hoje. Me avisa para garantir.' },
+          { delayMinutes: 1200, text: 'Oi😊 Estamos com uma condição especial hoje e consigo aplicar diretamente na sua proposta. Posso seguir com o seu orçamento?' },
+        ],
+        onEnd: { tagName: 'NÃO RESPONDEU', close: true },
+      }),
+    onSuccess: () => {
+      toast.success('Cadência de exemplo criada (Follow-up de orçamento).');
+      invalidate();
+    },
+    onError: () => toast.error('Erro ao criar exemplo'),
+  });
 
   return (
     <div className="mx-auto w-full max-w-4xl">
@@ -57,6 +77,18 @@ export default function CadencesPage() {
             quando o cliente responde.
           </p>
         </div>
+        {cadences.length === 0 && (
+          <button
+            onClick={() => seedFollowup.mutate()}
+            disabled={seedFollowup.isPending}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
+          >
+            {seedFollowup.isPending ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : null}
+            Follow-up de exemplo
+          </button>
+        )}
         <button
           onClick={() => setCreating(true)}
           className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-white hover:opacity-90"
@@ -104,7 +136,10 @@ export default function CadencesPage() {
                   {c.name}
                 </div>
                 <div className="mt-0.5 text-[11px] text-zinc-500">
-                  {c.steps.length} passo(s) ·{' '}
+                  {c.triggerType === 'TAG_ADDED'
+                    ? `tag: ${c.triggerValue ?? '—'}`
+                    : 'manual'}{' '}
+                  · {c.steps.length} passo(s) ·{' '}
                   {c.stopOnReply ? 'para na resposta' : 'não para'} ·{' '}
                   {c._count?.runs ?? 0} disparos
                 </div>
@@ -150,6 +185,10 @@ function CadenceEditor({
   onSaved: () => void;
 }) {
   const [name, setName] = useState(cadence?.name ?? '');
+  const [triggerType, setTriggerType] = useState<'MANUAL' | 'TAG_ADDED'>(
+    cadence?.triggerType ?? 'MANUAL',
+  );
+  const [triggerValue, setTriggerValue] = useState(cadence?.triggerValue ?? '');
   const [stopOnReply, setStopOnReply] = useState(cadence?.stopOnReply ?? true);
   const [steps, setSteps] = useState<CadenceStep[]>(
     cadence?.steps?.length ? cadence.steps : [{ delayMinutes: 60, text: '' }],
@@ -161,6 +200,8 @@ function CadenceEditor({
     mutationFn: () => {
       const dto = {
         name: name.trim(),
+        triggerType,
+        triggerValue: triggerType === 'TAG_ADDED' ? triggerValue.trim() : null,
         stopOnReply,
         steps: steps
           .filter((s) => s.text.trim())
@@ -217,6 +258,28 @@ function CadenceEditor({
           placeholder="Ex: Follow-up de orçamento"
           className="mb-3 mt-1 w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
         />
+
+        <label className="text-[12px] font-medium text-zinc-700 dark:text-zinc-300">
+          Disparo
+        </label>
+        <div className="mb-3 mt-1 flex flex-wrap items-center gap-2">
+          <select
+            value={triggerType}
+            onChange={(e) => setTriggerType(e.target.value as 'MANUAL' | 'TAG_ADDED')}
+            className="rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+          >
+            <option value="MANUAL">Manual</option>
+            <option value="TAG_ADDED">Ao aplicar uma tag</option>
+          </select>
+          {triggerType === 'TAG_ADDED' && (
+            <input
+              value={triggerValue}
+              onChange={(e) => setTriggerValue(e.target.value)}
+              placeholder="Nome exato da tag (ex: Orçamento Enviado)"
+              className="flex-1 rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm outline-none focus:border-primary dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+            />
+          )}
+        </div>
 
         <label className="mb-1 flex items-center gap-2 text-xs text-zinc-600 dark:text-zinc-300">
           <input

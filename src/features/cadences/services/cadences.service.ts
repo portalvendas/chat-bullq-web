@@ -9,11 +9,14 @@ export interface CadenceOnEnd {
   moveStageId?: string;
   close?: boolean;
 }
+export type CadenceTrigger = 'MANUAL' | 'TAG_ADDED';
 export interface Cadence {
   id: string;
   name: string;
   description: string | null;
   active: boolean;
+  triggerType: CadenceTrigger;
+  triggerValue: string | null;
   stopOnReply: boolean;
   businessHoursOnly: boolean;
   steps: CadenceStep[];
@@ -24,6 +27,8 @@ export interface CadenceInput {
   name: string;
   description?: string | null;
   active?: boolean;
+  triggerType?: CadenceTrigger;
+  triggerValue?: string | null;
   stopOnReply?: boolean;
   businessHoursOnly?: boolean;
   steps?: CadenceStep[];
