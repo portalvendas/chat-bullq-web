@@ -13,7 +13,19 @@ export interface WhatsappTemplate {
   externalId: string | null;
   metaName?: string | null;
   rejectionReason?: string | null;
+  components?: TemplateComponent[];
 }
+
+export type TemplateButton =
+  | { type: 'QUICK_REPLY'; text: string }
+  | { type: 'URL'; text: string; url: string }
+  | { type: 'PHONE_NUMBER'; text: string; phone_number: string };
+
+export type TemplateComponent =
+  | { type: 'HEADER'; format: 'TEXT'; text: string }
+  | { type: 'BODY'; text: string }
+  | { type: 'FOOTER'; text: string }
+  | { type: 'BUTTONS'; buttons: TemplateButton[] };
 
 export interface ChannelHealth {
   channels: Array<{
@@ -50,7 +62,7 @@ export const templatesService = {
     const { data } = await api.get('/whatsapp-templates', { params });
     return unwrap<TemplateListResult>(data);
   },
-  async seed(): Promise<{ seeded: number }> {
+  async seed(): Promise<{ seeded: number; skipped?: number; errors?: string[] }> {
     const { data } = await api.post('/whatsapp-templates/seed', {});
     return unwrap(data);
   },
@@ -90,4 +102,5 @@ export interface TemplateInput {
   status?: string;
   category?: string;
   language?: string;
+  components?: TemplateComponent[];
 }
