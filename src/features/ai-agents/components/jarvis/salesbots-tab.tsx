@@ -7,6 +7,7 @@ import { Workflow, Plus, Trash2, Loader2, Loader, X, Upload } from 'lucide-react
 import {
   cadencesService,
   type Cadence,
+  type CadenceTrigger,
   type WorkflowGraph,
 } from '@/features/cadences/services/cadences.service';
 import {
@@ -15,6 +16,7 @@ import {
   followupGraph,
 } from '@/features/cadences/graph-utils';
 import { SalesbotCanvas } from '@/features/cadences/components/salesbot-canvas';
+import { pipelinesService } from '@/features/pipelines/services/pipelines.service';
 
 function nodeCount(c: Cadence): number {
   const g = c.graph;
@@ -198,7 +200,9 @@ export function JarvisSalesbotsTab() {
                 <div className="mt-0.5 text-[11px] text-zinc-500">
                   {c.triggerType === 'TAG_ADDED'
                     ? `gatilho: tag "${c.triggerValue ?? '—'}"`
-                    : 'início manual'}{' '}
+                    : c.triggerType === 'STAGE_ENTERED'
+                      ? 'gatilho: entrar em etapa do funil'
+                      : 'início manual'}{' '}
                   · {nodeCount(c)} nó(s) ·{' '}
                   {c.stopOnReply ? 'para na resposta' : 'não para'} ·{' '}
                   {c._count?.runs ?? 0} execuções
@@ -245,7 +249,7 @@ function SalesbotEditor({
   onSaved: () => void;
 }) {
   const [name, setName] = useState(bot?.name ?? '');
-  const [triggerType, setTriggerType] = useState<'MANUAL' | 'TAG_ADDED'>(
+  const [triggerType, setTriggerType] = useState<CadenceTrigger>(
     bot?.triggerType ?? 'MANUAL',
   );
   const [triggerValue, setTriggerValue] = useState(bot?.triggerValue ?? '');
@@ -254,12 +258,19 @@ function SalesbotEditor({
     bot ? graphFromCadence(bot) : emptyGraph(),
   );
 
+  const { data: pipelines = [] } = useQuery({
+    queryKey: ['pipelines'],
+    queryFn: () => pipelinesService.list(),
+    staleTime: 60_000,
+  });
+
   const save = useMutation({
     mutationFn: () => {
       const dto = {
         name: name.trim(),
         triggerType,
-        triggerValue: triggerType === 'TAG_ADDED' ? triggerValue.trim() : null,
+        triggerValue:
+          triggerType === 'MANUAL' ? null : triggerValue.trim() || null,
         stopOnReply,
         graph,
         onEnd: {},
@@ -287,11 +298,15 @@ function SalesbotEditor({
         />
         <select
           value={triggerType}
-          onChange={(e) => setTriggerType(e.target.value as 'MANUAL' | 'TAG_ADDED')}
+          onChange={(e) => {
+            setTriggerType(e.target.value as CadenceTrigger);
+            setTriggerValue('');
+          }}
           className="rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
         >
           <option value="MANUAL">Início manual</option>
           <option value="TAG_ADDED">Ao aplicar tag</option>
+          <option value="STAGE_ENTERED">Ao entrar em etapa do funil</option>
         </select>
         {triggerType === 'TAG_ADDED' && (
           <input
@@ -300,6 +315,24 @@ function SalesbotEditor({
             placeholder="Nome da tag"
             className="w-44 rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm outline-none focus:border-primary dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
           />
+        )}
+        {triggerType === 'STAGE_ENTERED' && (
+          <select
+            value={triggerValue}
+            onChange={(e) => setTriggerValue(e.target.value)}
+            className="w-64 rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+          >
+            <option value="">Escolha a etapa…</option>
+            {pipelines.map((p) => (
+              <optgroup key={p.id} label={p.name}>
+                {(p.stages ?? []).map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
+                ))}
+              </optgroup>
+            ))}
+          </select>
         )}
         <label className="flex items-center gap-1.5 text-xs text-zinc-600 dark:text-zinc-300">
           <input
