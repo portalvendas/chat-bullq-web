@@ -17,6 +17,7 @@ import {
   type Pipeline,
   type PipelineStage,
 } from '@/features/pipelines/services/pipelines.service';
+import { lossReasonsService } from '@/features/settings/services/loss-reasons.service';
 import { type Conversation } from '../services/inbox.service';
 
 interface Props {
@@ -43,6 +44,18 @@ export function PipelinePopover({ conversation, onChanged }: Props) {
   const [adding, setAdding] = useState(false);
   const [pickPipeline, setPickPipeline] = useState('');
   const [pickStage, setPickStage] = useState('');
+  // Captura de motivo ao mover pra etapa LOST.
+  const [lostPrompt, setLostPrompt] = useState<{
+    card: ConversationCard;
+    stageId: string;
+  } | null>(null);
+  const [lostReason, setLostReason] = useState('');
+
+  const { data: lossReasons = [] } = useQuery<string[]>({
+    queryKey: ['loss-reasons'],
+    queryFn: () => lossReasonsService.get(),
+    staleTime: 5 * 60 * 1000,
+  });
 
   const { data: pipelines = [] } = useQuery<Pipeline[]>({
     queryKey: ['pipelines'],
@@ -82,12 +95,24 @@ export function PipelinePopover({ conversation, onChanged }: Props) {
 
   const handleStageChange = async (card: ConversationCard, stageId: string) => {
     if (stageId === card.stageId) return;
+    // Se a etapa destino é do tipo LOST, pede o motivo antes de mover.
+    const target = stagesOf(card.pipelineId).find((s) => s.id === stageId);
+    if (target?.type === 'LOST') {
+      setLostReason(lossReasons[0] ?? '');
+      setLostPrompt({ card, stageId });
+      return;
+    }
+    await doMove(card, stageId);
+  };
+
+  const doMove = async (
+    card: ConversationCard,
+    stageId: string,
+    closedReason?: string,
+  ) => {
     setBusyCardId(card.id);
     try {
-      // toIndex: 0 — manda pro topo da nova coluna; o backend ajusta os
-      // outros cards. Não dá pra "manter a posição" porque a posição é por
-      // stage, e a stage mudou. Topo é a convenção mais previsível.
-      await pipelinesService.moveCard(card.id, stageId, 0);
+      await pipelinesService.moveCard(card.id, stageId, 0, closedReason);
       toast.success('Estágio atualizado');
       invalidate();
     } catch (err: any) {
@@ -95,6 +120,13 @@ export function PipelinePopover({ conversation, onChanged }: Props) {
     } finally {
       setBusyCardId(null);
     }
+  };
+
+  const confirmLost = async () => {
+    if (!lostPrompt) return;
+    const { card, stageId } = lostPrompt;
+    setLostPrompt(null);
+    await doMove(card, stageId, lostReason.trim() || undefined);
   };
 
   /**
@@ -195,6 +227,40 @@ export function PipelinePopover({ conversation, onChanged }: Props) {
         transition
         className="z-50 mt-1.5 w-80 rounded-lg border border-zinc-200 bg-white p-3 shadow-lg outline-none transition duration-100 ease-out data-[closed]:scale-95 data-[closed]:opacity-0 dark:border-zinc-800 dark:bg-zinc-900 [--anchor-gap:0.25rem]"
       >
+        {lostPrompt && (
+          <div className="mb-3 rounded-lg border border-red-200 bg-red-50 p-2.5 dark:border-red-900/40 dark:bg-red-900/20">
+            <div className="mb-1.5 text-[11px] font-semibold text-red-700 dark:text-red-300">
+              Motivo da perda
+            </div>
+            <select
+              value={lostReason}
+              onChange={(e) => setLostReason(e.target.value)}
+              className="mb-2 w-full rounded border border-red-200 bg-white px-2 py-1 text-xs dark:border-red-900/40 dark:bg-zinc-900 dark:text-zinc-100"
+            >
+              <option value="">Sem motivo</option>
+              {lossReasons.map((r) => (
+                <option key={r} value={r}>
+                  {r}
+                </option>
+              ))}
+            </select>
+            <div className="flex justify-end gap-1.5">
+              <button
+                onClick={() => setLostPrompt(null)}
+                className="rounded px-2 py-1 text-[11px] text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={confirmLost}
+                className="rounded bg-red-600 px-2.5 py-1 text-[11px] font-medium text-white hover:bg-red-700"
+              >
+                Marcar como perdido
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-zinc-500">
           Pipelines desta conversa
         </div>

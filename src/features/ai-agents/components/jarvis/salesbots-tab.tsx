@@ -202,7 +202,9 @@ export function JarvisSalesbotsTab() {
                     ? `gatilho: tag "${c.triggerValue ?? '—'}"`
                     : c.triggerType === 'STAGE_ENTERED'
                       ? 'gatilho: entrar em etapa do funil'
-                      : 'início manual'}{' '}
+                      : c.triggerType === 'INACTIVITY'
+                        ? `gatilho: inativo há ${c.triggerValue ?? '?'} dia(s)`
+                        : 'início manual'}{' '}
                   · {nodeCount(c)} nó(s) ·{' '}
                   {c.stopOnReply ? 'para na resposta' : 'não para'} ·{' '}
                   {c._count?.runs ?? 0} execuções
@@ -307,6 +309,7 @@ function SalesbotEditor({
           <option value="MANUAL">Início manual</option>
           <option value="TAG_ADDED">Ao aplicar tag</option>
           <option value="STAGE_ENTERED">Ao entrar em etapa do funil</option>
+          <option value="INACTIVITY">Por inatividade (sem resposta)</option>
         </select>
         {triggerType === 'TAG_ADDED' && (
           <input
@@ -333,6 +336,19 @@ function SalesbotEditor({
               </optgroup>
             ))}
           </select>
+        )}
+        {triggerType === 'INACTIVITY' && (
+          <div className="flex items-center gap-1.5 text-xs text-zinc-600 dark:text-zinc-300">
+            sem resposta há
+            <input
+              type="number"
+              min={1}
+              value={triggerValue || '1'}
+              onChange={(e) => setTriggerValue(e.target.value)}
+              className="w-16 rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm outline-none focus:border-primary dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+            />
+            dia(s)
+          </div>
         )}
         <label className="flex items-center gap-1.5 text-xs text-zinc-600 dark:text-zinc-300">
           <input

@@ -1,14 +1,101 @@
 'use client';
 
-import { Building2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import { XCircle, Plus, Trash2, Loader2, GripVertical } from 'lucide-react';
+import { lossReasonsService } from '@/features/settings/services/loss-reasons.service';
 
 export default function SettingsGeneralPage() {
+  const qc = useQueryClient();
+  const { data, isLoading } = useQuery({
+    queryKey: ['loss-reasons'],
+    queryFn: () => lossReasonsService.get(),
+    staleTime: 60_000,
+  });
+  const [reasons, setReasons] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (data) setReasons(data);
+  }, [data]);
+
+  const save = useMutation({
+    mutationFn: () =>
+      lossReasonsService.set(reasons.map((r) => r.trim()).filter(Boolean)),
+    onSuccess: (saved) => {
+      setReasons(saved);
+      qc.invalidateQueries({ queryKey: ['loss-reasons'] });
+      toast.success('Motivos de perda salvos');
+    },
+    onError: () => toast.error('Erro ao salvar'),
+  });
+
+  const setAt = (i: number, v: string) =>
+    setReasons((arr) => arr.map((r, idx) => (idx === i ? v : r)));
+  const removeAt = (i: number) =>
+    setReasons((arr) => arr.filter((_, idx) => idx !== i));
+  const add = () => setReasons((arr) => [...arr, '']);
+
   return (
-    <div className="rounded-xl border border-zinc-200 bg-zinc-50/50 p-8 text-center dark:border-zinc-800 dark:bg-zinc-900/50">
-      <Building2 className="mx-auto h-10 w-10 text-zinc-300 dark:text-zinc-600" />
-      <p className="mt-3 text-sm text-zinc-500 dark:text-zinc-400">
-        Configurações gerais da organização — disponível em breve
-      </p>
+    <div className="max-w-xl">
+      <div className="mb-4 flex items-center gap-2">
+        <XCircle className="h-5 w-5 text-zinc-500" />
+        <div>
+          <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
+            Motivos de perda
+          </h2>
+          <p className="text-xs text-zinc-500">
+            Opções mostradas ao mover um lead para uma etapa de <b>perdido</b>,
+            para identificar pontos fracos.
+          </p>
+        </div>
+      </div>
+
+      {isLoading ? (
+        <div className="flex items-center gap-2 py-8 text-sm text-zinc-500">
+          <Loader2 className="h-4 w-4 animate-spin" /> Carregando…
+        </div>
+      ) : (
+        <>
+          <div className="space-y-2">
+            {reasons.map((r, i) => (
+              <div key={i} className="flex items-center gap-2">
+                <GripVertical className="h-4 w-4 shrink-0 text-zinc-300" />
+                <input
+                  value={r}
+                  onChange={(e) => setAt(i, e.target.value)}
+                  placeholder="Motivo…"
+                  className="flex-1 rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm outline-none focus:border-primary dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+                />
+                <button
+                  onClick={() => removeAt(i)}
+                  className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-400 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <button
+            onClick={add}
+            className="mt-2 inline-flex items-center gap-1 rounded-md border border-dashed border-zinc-300 px-2.5 py-1.5 text-xs text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+          >
+            <Plus className="h-3.5 w-3.5" /> Adicionar motivo
+          </button>
+
+          <div className="mt-5">
+            <button
+              onClick={() => save.mutate()}
+              disabled={save.isPending}
+              className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
+            >
+              {save.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+              Salvar
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 }

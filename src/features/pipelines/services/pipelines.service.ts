@@ -187,10 +187,12 @@ export const pipelinesService = {
     cardId: string,
     toStageId: string,
     toIndex: number,
+    closedReason?: string,
   ): Promise<CardSummary> {
     const { data } = await api.post(`/pipelines/cards/${cardId}/move`, {
       toStageId,
       toIndex,
+      ...(closedReason ? { closedReason } : {}),
     });
     return data.data ?? data;
   },

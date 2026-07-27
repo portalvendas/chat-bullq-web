@@ -49,7 +49,11 @@ export interface CadenceOnEnd {
   moveStageId?: string;
   close?: boolean;
 }
-export type CadenceTrigger = 'MANUAL' | 'TAG_ADDED' | 'STAGE_ENTERED';
+export type CadenceTrigger =
+  | 'MANUAL'
+  | 'TAG_ADDED'
+  | 'STAGE_ENTERED'
+  | 'INACTIVITY';
 export interface Cadence {
   id: string;
   name: string;
