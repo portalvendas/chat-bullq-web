@@ -73,6 +73,15 @@ export function SalesbotCanvas({
 }) {
   const nodes = graph.nodes ?? [];
   const edges = graph.edges ?? [];
+
+  // Tamanho dinâmico: o canvas cresce para caber TODO o grafo (senão nós e
+  // arestas de bots grandes — ex: follow-ups importados do Kommo — ficam
+  // cortados fora da área visível).
+  const contentW = Math.max(
+    1400,
+    ...nodes.map((n) => (n.x ?? 0) + NODE_W + 160),
+  );
+  const contentH = Math.max(900, ...nodes.map((n) => (n.y ?? 0) + 260));
   const [selected, setSelected] = useState<string | null>(null);
   const [connecting, setConnecting] = useState<{ from: string; handle: NodeHandle } | null>(
     null,
@@ -205,7 +214,7 @@ export function SalesbotCanvas({
         onKeyDown={(e) => e.key === 'Escape' && setConnecting(null)}
         tabIndex={0}
       >
-        <div className="relative" style={{ width: 2600, height: 1600 }}>
+        <div className="relative" style={{ width: contentW, height: contentH }}>
           {/* Grid sutil */}
           <div
             className="pointer-events-none absolute inset-0"
