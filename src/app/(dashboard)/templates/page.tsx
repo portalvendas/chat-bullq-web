@@ -13,6 +13,8 @@ import {
   Plus,
   Pencil,
   X,
+  Send,
+  ShieldCheck,
 } from 'lucide-react';
 import {
   templatesService,
@@ -85,6 +87,22 @@ export default function TemplatesPage() {
     onSuccess: () => invalidate(),
     onError: () => toast.error('Erro ao remover'),
   });
+  const submit = useMutation({
+    mutationFn: (id: string) => templatesService.submit(id),
+    onSuccess: (r) => {
+      toast.success(`Enviado à Meta como "${r.metaName}" — status ${r.status}`);
+      invalidate();
+    },
+    onError: (e: any) =>
+      toast.error(e?.response?.data?.message ?? 'Erro ao enviar para aprovação'),
+  });
+
+  const { data: health } = useQuery({
+    queryKey: ['wa-health'],
+    queryFn: () => templatesService.health(),
+    staleTime: 60_000,
+  });
+  const healthChannels = health?.channels ?? [];
 
   const items: WhatsappTemplate[] = data?.items ?? [];
   const total = data?.total ?? 0;
@@ -142,6 +160,44 @@ export default function TemplatesPage() {
         </button>
       </div>
 
+      {healthChannels.length > 0 && (
+        <div className="flex flex-wrap gap-3 border-b border-zinc-200 bg-zinc-50 px-6 py-2 text-xs dark:border-zinc-800 dark:bg-zinc-900/50">
+          {healthChannels.map((c) => (
+            <div
+              key={c.channelId}
+              className="inline-flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-2.5 py-1 dark:border-zinc-700 dark:bg-zinc-900"
+            >
+              <ShieldCheck className="h-3.5 w-3.5 text-primary" />
+              <span className="font-medium text-zinc-700 dark:text-zinc-200">
+                {c.verifiedName || c.name}
+              </span>
+              {c.error ? (
+                <span className="text-red-500">{c.error}</span>
+              ) : (
+                <>
+                  <span className="text-zinc-400">·</span>
+                  <span
+                    className={
+                      c.qualityRating === 'GREEN'
+                        ? 'text-emerald-600'
+                        : c.qualityRating === 'YELLOW'
+                          ? 'text-amber-600'
+                          : c.qualityRating === 'RED'
+                            ? 'text-red-600'
+                            : 'text-zinc-500'
+                    }
+                  >
+                    qualidade: {c.qualityRating ?? '—'}
+                  </span>
+                  <span className="text-zinc-400">·</span>
+                  <span className="text-zinc-500">limite: {c.messagingLimit ?? '—'}</span>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
       <div className="flex-1 overflow-auto">
         {isLoading ? (
           <div className="flex items-center gap-2 p-8 text-sm text-zinc-500">
@@ -184,6 +240,14 @@ export default function TemplatesPage() {
                   </td>
                   <td className="px-4 py-2.5">
                     <StatusBadge status={t.status} />
+                    {t.status === 'REJECTED' && t.rejectionReason && (
+                      <div
+                        className="mt-1 max-w-[160px] truncate text-[10px] text-red-500"
+                        title={t.rejectionReason}
+                      >
+                        {t.rejectionReason}
+                      </div>
+                    )}
                   </td>
                   <td className="px-4 py-2.5 text-zinc-600 dark:text-zinc-400">
                     {t.category === 'MARKETING'
@@ -205,6 +269,18 @@ export default function TemplatesPage() {
                   </td>
                   <td className="px-4 py-2.5">
                     <div className="flex items-center gap-1">
+                      <button
+                        onClick={() =>
+                          confirm(
+                            `Enviar "${t.name}" para aprovação da Meta?`,
+                          ) && submit.mutate(t.id)
+                        }
+                        disabled={submit.isPending}
+                        title="Enviar para aprovação da Meta"
+                        className="flex h-7 w-7 items-center justify-center rounded-md text-zinc-400 hover:bg-emerald-50 hover:text-emerald-600 disabled:opacity-40 dark:hover:bg-emerald-900/20"
+                      >
+                        <Send className="h-4 w-4" />
+                      </button>
                       <button
                         onClick={() => setEditing(t)}
                         className="flex h-7 w-7 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"

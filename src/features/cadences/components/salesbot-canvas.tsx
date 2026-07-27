@@ -1,6 +1,15 @@
 'use client';
 
-import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
+import {
+  createContext,
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
+import { useQuery } from '@tanstack/react-query';
 import {
   ReactFlow,
   ReactFlowProvider,
@@ -37,6 +46,10 @@ import type {
   GraphNodeType,
   NodeHandle,
 } from '@/features/cadences/services/cadences.service';
+import { templatesService } from '@/features/templates/services/templates.service';
+
+/** Templates aprovados disponíveis para os nós de mensagem (fora de 24h). */
+const TemplatesCtx = createContext<Array<{ id: string; name: string }>>([]);
 
 const TYPE_META: Record<
   GraphNodeType,
@@ -58,6 +71,7 @@ const HANDLE_COLOR: Record<NodeHandle, string> = {
 interface SalesData {
   kind: GraphNodeType;
   text?: string;
+  templateId?: string;
   delayMinutes?: number;
   untilReply?: boolean;
   businessHoursOnly?: boolean;
@@ -72,6 +86,7 @@ function uid(prefix: string): string {
 // ─── Nó customizado ───────────────────────────────
 const SalesNode = memo(({ id, data, selected }: NodeProps) => {
   const { updateNodeData, deleteElements } = useReactFlow();
+  const templates = useContext(TemplatesCtx);
   const d = data as unknown as SalesData;
   const M = TYPE_META[d.kind];
   const Icon = M.icon;
@@ -111,13 +126,28 @@ const SalesNode = memo(({ id, data, selected }: NodeProps) => {
 
       <div className="space-y-1.5 px-2 py-2">
         {d.kind === 'message' && (
-          <textarea
-            value={d.text ?? ''}
-            onChange={(e) => patch({ text: e.target.value })}
-            rows={2}
-            placeholder="Mensagem ao cliente…"
-            className="nodrag w-full resize-y rounded border border-zinc-300 px-1.5 py-1 text-xs outline-none focus:border-primary dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
-          />
+          <>
+            <textarea
+              value={d.text ?? ''}
+              onChange={(e) => patch({ text: e.target.value })}
+              rows={2}
+              placeholder="Mensagem ao cliente (dentro de 24h)…"
+              className="nodrag w-full resize-y rounded border border-zinc-300 px-1.5 py-1 text-xs outline-none focus:border-primary dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+            />
+            <select
+              value={d.templateId ?? ''}
+              onChange={(e) => patch({ templateId: e.target.value || undefined })}
+              title="Template aprovado usado quando fora da janela de 24h (WhatsApp)"
+              className="nodrag mt-1 w-full rounded border border-zinc-300 px-1 py-0.5 text-[11px] text-zinc-600 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300"
+            >
+              <option value="">Fora de 24h: (sem template)</option>
+              {templates.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.name}
+                </option>
+              ))}
+            </select>
+          </>
         )}
         {d.kind === 'wait' && (
           <>
@@ -228,6 +258,7 @@ function toRf(graph: WorkflowGraph): { nodes: Node[]; edges: Edge[] } {
     data: {
       kind: n.type,
       text: n.text,
+      templateId: n.templateId,
       delayMinutes: n.delayMinutes,
       untilReply: n.untilReply,
       businessHoursOnly: n.businessHoursOnly,
@@ -259,8 +290,10 @@ function toGraph(nodes: Node[], edges: Edge[]): WorkflowGraph {
         x: Math.round(n.position.x),
         y: Math.round(n.position.y),
       };
-      if (d.kind === 'message') gn.text = d.text ?? '';
-      else if (d.kind === 'wait') {
+      if (d.kind === 'message') {
+        gn.text = d.text ?? '';
+        if (d.templateId) gn.templateId = d.templateId;
+      } else if (d.kind === 'wait') {
         gn.delayMinutes = Number(d.delayMinutes) || 0;
         gn.untilReply = !!d.untilReply;
         gn.businessHoursOnly = !!d.businessHoursOnly;
@@ -303,6 +336,17 @@ function CanvasInner({
   const [nodes, setNodes, onNodesChange] = useNodesState(initial.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initial.edges);
   const { fitView } = useReactFlow();
+
+  // Templates aprovados p/ os nós de mensagem (envio fora de 24h).
+  const { data: tplData } = useQuery({
+    queryKey: ['wa-templates-approved'],
+    queryFn: () => templatesService.list({ status: 'APPROVED', pageSize: 200 }),
+    staleTime: 60_000,
+  });
+  const templateOptions = useMemo(
+    () => (tplData?.items ?? []).map((t) => ({ id: t.id, name: t.name })),
+    [tplData],
+  );
 
   // Sincroniza estado interno → grafo do editor (para o Salvar).
   const first = useRef(true);
@@ -359,6 +403,7 @@ function CanvasInner({
   }, [edges, setNodes, fitView]);
 
   return (
+    <TemplatesCtx.Provider value={templateOptions}>
     <ReactFlow
       nodes={nodes}
       edges={edges}
@@ -405,6 +450,7 @@ function CanvasInner({
         </button>
       </Panel>
     </ReactFlow>
+    </TemplatesCtx.Provider>
   );
 }
 

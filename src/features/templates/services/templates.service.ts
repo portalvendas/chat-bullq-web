@@ -11,6 +11,21 @@ export interface WhatsappTemplate {
   source: string; // SEED | META_SYNC | MANUAL
   channelId: string | null;
   externalId: string | null;
+  metaName?: string | null;
+  rejectionReason?: string | null;
+}
+
+export interface ChannelHealth {
+  channels: Array<{
+    channelId: string;
+    name: string;
+    phone?: string;
+    verifiedName?: string;
+    qualityRating?: string;
+    messagingLimit?: string;
+    nameStatus?: string;
+    error?: string;
+  }>;
 }
 
 export interface TemplateListResult {
@@ -57,6 +72,14 @@ export const templatesService = {
   },
   async remove(id: string): Promise<void> {
     await api.delete(`/whatsapp-templates/${id}`);
+  },
+  async submit(id: string): Promise<{ status: string; metaName: string }> {
+    const { data } = await api.post(`/whatsapp-templates/${id}/submit`, {});
+    return unwrap(data);
+  },
+  async health(): Promise<ChannelHealth> {
+    const { data } = await api.get('/whatsapp-templates/health');
+    return unwrap<ChannelHealth>(data);
   },
 };
 

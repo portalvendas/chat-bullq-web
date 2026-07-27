@@ -19,6 +19,7 @@ export interface GraphNode {
   id: string;
   type: GraphNodeType;
   text?: string;
+  templateId?: string;
   delayMinutes?: number;
   untilReply?: boolean;
   businessHoursOnly?: boolean;
