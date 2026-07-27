@@ -8,6 +8,7 @@ import {
   Building2,
   ChevronUp,
   Zap,
+  MessageSquareText,
 } from 'lucide-react';
 import { InboxTree } from '@/features/inbox-views/components/inbox-tree';
 import { JarvisTree } from '@/features/ai-agents/components/jarvis-tree';
@@ -37,6 +38,7 @@ import {
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/automations', label: 'Automações', icon: Zap },
+  { href: '/templates', label: 'Modelos', icon: MessageSquareText },
 ];
 
 export function AppSidebar() {
