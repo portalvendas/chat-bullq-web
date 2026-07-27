@@ -10,10 +10,14 @@ import {
   Loader2,
   Search,
   Trash2,
+  Plus,
+  Pencil,
+  X,
 } from 'lucide-react';
 import {
   templatesService,
   type WhatsappTemplate,
+  type TemplateInput,
 } from '@/features/templates/services/templates.service';
 
 function StatusBadge({ status }: { status: string }) {
@@ -42,6 +46,8 @@ export default function TemplatesPage() {
   const qc = useQueryClient();
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
+  const [editing, setEditing] = useState<WhatsappTemplate | null>(null);
+  const [creating, setCreating] = useState(false);
 
   const { data, isLoading } = useQuery({
     queryKey: ['wa-templates', search, page],
@@ -119,7 +125,7 @@ export default function TemplatesPage() {
         <button
           onClick={() => sync.mutate()}
           disabled={sync.isPending}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-white hover:opacity-90 disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
         >
           {sync.isPending ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -127,6 +133,12 @@ export default function TemplatesPage() {
             <RefreshCw className="h-3.5 w-3.5" />
           )}
           Sincronizar Meta
+        </button>
+        <button
+          onClick={() => setCreating(true)}
+          className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-white hover:opacity-90"
+        >
+          <Plus className="h-3.5 w-3.5" /> Novo modelo
         </button>
       </div>
 
@@ -192,14 +204,22 @@ export default function TemplatesPage() {
                     <span className="line-clamp-2">{t.bodyText}</span>
                   </td>
                   <td className="px-4 py-2.5">
-                    <button
-                      onClick={() =>
-                        confirm(`Remover o modelo "${t.name}"?`) && remove.mutate(t.id)
-                      }
-                      className="flex h-7 w-7 items-center justify-center rounded-md text-zinc-400 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => setEditing(t)}
+                        className="flex h-7 w-7 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() =>
+                          confirm(`Remover o modelo "${t.name}"?`) && remove.mutate(t.id)
+                        }
+                        className="flex h-7 w-7 items-center justify-center rounded-md text-zinc-400 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -229,6 +249,173 @@ export default function TemplatesPage() {
           </button>
         </div>
       )}
+
+      {(creating || editing) && (
+        <TemplateEditor
+          template={editing}
+          onClose={() => {
+            setCreating(false);
+            setEditing(null);
+          }}
+          onSaved={() => {
+            invalidate();
+            setCreating(false);
+            setEditing(null);
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+function TemplateEditor({
+  template,
+  onClose,
+  onSaved,
+}: {
+  template: WhatsappTemplate | null;
+  onClose: () => void;
+  onSaved: () => void;
+}) {
+  const [name, setName] = useState(template?.name ?? '');
+  const [category, setCategory] = useState(template?.category ?? 'MARKETING');
+  const [language, setLanguage] = useState(template?.language ?? 'pt_BR');
+  const [status, setStatus] = useState(template?.status ?? 'APPROVED');
+  const [waba, setWaba] = useState(template?.waba ?? '');
+  const [bodyText, setBodyText] = useState(template?.bodyText ?? '');
+
+  const save = useMutation({
+    mutationFn: () => {
+      const dto: TemplateInput = {
+        name: name.trim(),
+        bodyText: bodyText.trim(),
+        category,
+        language,
+        status,
+        waba: waba.trim() || null,
+      };
+      return template
+        ? templatesService.update(template.id, dto)
+        : templatesService.create(dto);
+    },
+    onSuccess: () => {
+      toast.success(template ? 'Modelo atualizado' : 'Modelo criado');
+      onSaved();
+    },
+    onError: () => toast.error('Erro ao salvar modelo'),
+  });
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
+      onClick={() => !save.isPending && onClose()}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl border border-zinc-200 bg-white p-4 shadow-2xl dark:border-zinc-800 dark:bg-zinc-950"
+      >
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+            {template ? 'Editar modelo' : 'Novo modelo'}
+          </h2>
+          <button
+            onClick={onClose}
+            className="flex h-7 w-7 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+
+        <label className="text-[12px] font-medium text-zinc-700 dark:text-zinc-300">
+          Nome
+        </label>
+        <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Ex: BM02 FUP automático 1"
+          className="mb-3 mt-1 w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm outline-none focus:border-primary dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+        />
+
+        <div className="mb-3 grid grid-cols-3 gap-2">
+          <div>
+            <label className="text-[12px] font-medium text-zinc-700 dark:text-zinc-300">
+              Categoria
+            </label>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="mt-1 w-full rounded-md border border-zinc-300 bg-white px-2 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+            >
+              <option value="MARKETING">Marketing</option>
+              <option value="UTILITY">Utilidade</option>
+              <option value="AUTHENTICATION">Autenticação</option>
+            </select>
+          </div>
+          <div>
+            <label className="text-[12px] font-medium text-zinc-700 dark:text-zinc-300">
+              Idioma
+            </label>
+            <input
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              className="mt-1 w-full rounded-md border border-zinc-300 bg-white px-2 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+            />
+          </div>
+          <div>
+            <label className="text-[12px] font-medium text-zinc-700 dark:text-zinc-300">
+              Status
+            </label>
+            <select
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              className="mt-1 w-full rounded-md border border-zinc-300 bg-white px-2 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+            >
+              <option value="APPROVED">Aprovado</option>
+              <option value="PENDING">Pendente</option>
+              <option value="REJECTED">Rejeitado</option>
+            </select>
+          </div>
+        </div>
+
+        <label className="text-[12px] font-medium text-zinc-700 dark:text-zinc-300">
+          ID WABA (opcional)
+        </label>
+        <input
+          value={waba}
+          onChange={(e) => setWaba(e.target.value)}
+          placeholder="Ex: 1728403631734473"
+          className="mb-3 mt-1 w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm font-mono outline-none focus:border-primary dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+        />
+
+        <label className="text-[12px] font-medium text-zinc-700 dark:text-zinc-300">
+          Texto de resposta
+        </label>
+        <textarea
+          value={bodyText}
+          onChange={(e) => setBodyText(e.target.value)}
+          rows={4}
+          placeholder="Texto do template…"
+          className="mb-4 mt-1 w-full resize-y rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm outline-none focus:border-primary dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+        />
+
+        <div className="flex justify-end gap-2">
+          <button
+            onClick={onClose}
+            disabled={save.isPending}
+            className="rounded-md px-3 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+          >
+            Cancelar
+          </button>
+          <button
+            onClick={() => save.mutate()}
+            disabled={save.isPending || !name.trim() || !bodyText.trim()}
+            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-1.5 text-xs font-medium text-white hover:opacity-90 disabled:opacity-50"
+          >
+            {save.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+            Salvar
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

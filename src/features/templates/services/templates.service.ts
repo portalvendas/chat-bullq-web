@@ -47,7 +47,24 @@ export const templatesService = {
     const { data } = await api.post('/whatsapp-templates/sync', {});
     return unwrap(data);
   },
+  async create(dto: TemplateInput): Promise<WhatsappTemplate> {
+    const { data } = await api.post('/whatsapp-templates', dto);
+    return unwrap<WhatsappTemplate>(data);
+  },
+  async update(id: string, dto: Partial<TemplateInput>): Promise<WhatsappTemplate> {
+    const { data } = await api.patch(`/whatsapp-templates/${id}`, dto);
+    return unwrap<WhatsappTemplate>(data);
+  },
   async remove(id: string): Promise<void> {
     await api.delete(`/whatsapp-templates/${id}`);
   },
 };
+
+export interface TemplateInput {
+  name: string;
+  bodyText: string;
+  waba?: string | null;
+  status?: string;
+  category?: string;
+  language?: string;
+}
