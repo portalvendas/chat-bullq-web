@@ -59,8 +59,14 @@ export default function LeadAdsSettingsPage() {
         pageName: pageName.trim() || undefined,
         accessToken: accessToken.trim(),
       }),
-    onSuccess: () => {
-      toast.success('Página conectada');
+    onSuccess: (res) => {
+      if (res?.subscription && !res.subscription.ok) {
+        toast.warning(
+          `Página salva, mas a assinatura do leadgen falhou: ${res.subscription.error ?? 'erro'}. Verifique se o token tem pages_manage_metadata.`,
+        );
+      } else {
+        toast.success('Página conectada e inscrita no leadgen');
+      }
       setPageId('');
       setPageName('');
       setAccessToken('');

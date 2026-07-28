@@ -6,6 +6,7 @@ export interface LeadAdsPage {
   pageName: string | null;
   active: boolean;
   createdAt?: string;
+  subscription?: { ok: boolean; error?: string };
 }
 
 function unwrap<T>(data: any): T {
