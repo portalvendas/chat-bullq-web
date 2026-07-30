@@ -167,6 +167,37 @@ export interface ConversationCard {
   };
 }
 
+// ─── Roteamento origem → funil/etapa ──────────────────────────────
+
+export type OriginType =
+  | 'MERCADO_LIVRE'
+  | 'SHOPEE'
+  | 'WHATSAPP'
+  | 'INSTAGRAM'
+  | 'TELEGRAM'
+  | 'LANDING_PAGE'
+  | 'FACEBOOK_LEADADS';
+
+export interface RoutingTarget {
+  pipelineId: string;
+  stageId?: string | null;
+}
+export interface RoutingException extends RoutingTarget {
+  id?: string;
+  kind: 'CHANNEL' | 'LEADADS_PAGE' | 'UTM_SOURCE';
+  value: string;
+  label?: string;
+}
+export interface LeadRouting {
+  byType: Record<string, RoutingTarget>;
+  exceptions: RoutingException[];
+}
+export interface RoutingOptions {
+  types: string[];
+  channels: { id: string; type: string; name: string }[];
+  leadAdsPages: { pageId: string; pageName: string | null }[];
+}
+
 export const pipelinesService = {
   async list(includeArchived = false): Promise<Pipeline[]> {
     const { data } = await api.get('/pipelines', {
@@ -177,6 +208,18 @@ export const pipelinesService = {
   /** Card único com contato completo (para o painel de enriquecimento). */
   async getCard(cardId: string): Promise<CardDetail> {
     const { data } = await api.get(`/pipelines/cards/${cardId}`);
+    return data.data ?? data;
+  },
+  async getRouting(): Promise<LeadRouting> {
+    const { data } = await api.get('/pipelines/routing');
+    return data.data ?? data;
+  },
+  async getRoutingOptions(): Promise<RoutingOptions> {
+    const { data } = await api.get('/pipelines/routing/options');
+    return data.data ?? data;
+  },
+  async saveRouting(payload: LeadRouting): Promise<LeadRouting> {
+    const { data } = await api.put('/pipelines/routing', payload);
     return data.data ?? data;
   },
   /**

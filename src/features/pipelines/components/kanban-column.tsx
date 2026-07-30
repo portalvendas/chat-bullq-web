@@ -60,33 +60,43 @@ export function KanbanColumn({ stage, cards, onAddCard, onCardClick }: Props) {
   return (
     <div className="flex h-full w-72 shrink-0 flex-col">
       <div
-        className={`flex items-center justify-between gap-2 rounded-t-lg border-b-2 px-3 py-2 ${headerCls}`}
+        className={`rounded-t-lg border-b-2 px-3 py-2 ${headerCls}`}
       >
-        <div className="flex min-w-0 items-center gap-2">
-          {stage.type === 'WON' && (
-            <Trophy className="h-3.5 w-3.5 shrink-0 text-green-600" />
-          )}
-          {stage.type === 'LOST' && (
-            <XIcon className="h-3.5 w-3.5 shrink-0 text-red-600" />
-          )}
-          <span className="truncate text-xs font-semibold uppercase tracking-wide text-zinc-700 dark:text-zinc-200">
-            {stage.name}
-          </span>
-          <span
-            className={`inline-flex items-center justify-center rounded-full px-1.5 py-0.5 text-[10px] font-bold ${pillCls}`}
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex min-w-0 items-center gap-2">
+            {stage.type === 'WON' && (
+              <Trophy className="h-3.5 w-3.5 shrink-0 text-green-600" />
+            )}
+            {stage.type === 'LOST' && (
+              <XIcon className="h-3.5 w-3.5 shrink-0 text-red-600" />
+            )}
+            <span className="truncate text-xs font-semibold uppercase tracking-wide text-zinc-700 dark:text-zinc-200">
+              {stage.name}
+            </span>
+            <span
+              className={`inline-flex items-center justify-center rounded-full px-1.5 py-0.5 text-[10px] font-bold ${pillCls}`}
+            >
+              {cards.length}
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={onAddCard}
+            className="rounded-md p-1 text-zinc-500 transition-colors hover:bg-white/50 hover:text-zinc-900 dark:hover:bg-zinc-800/60 dark:hover:text-zinc-100"
+            aria-label="Adicionar conversa"
+            title="Adicionar conversa nessa stage"
           >
-            {cards.length}
-          </span>
+            <Plus className="h-3.5 w-3.5" />
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={onAddCard}
-          className="rounded-md p-1 text-zinc-500 transition-colors hover:bg-white/50 hover:text-zinc-900 dark:hover:bg-zinc-800/60 dark:hover:text-zinc-100"
-          aria-label="Adicionar conversa"
-          title="Adicionar conversa nessa stage"
-        >
-          <Plus className="h-3.5 w-3.5" />
-        </button>
+        {/* Total dos valores dos cards da etapa — no topo da coluna. */}
+        {totalLabel && (
+          <div className="mt-1 flex justify-end">
+            <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+              Total: {totalLabel}
+            </span>
+          </div>
+        )}
       </div>
 
       <div
@@ -105,11 +115,6 @@ export function KanbanColumn({ stage, cards, onAddCard, onCardClick }: Props) {
         {cards.map((c) => (
           <KanbanCard key={c.id} card={c} onClick={() => onCardClick(c)} />
         ))}
-        {totalLabel && (
-          <p className="pt-2 text-center text-[10px] uppercase tracking-wide text-zinc-400">
-            Total: {totalLabel}
-          </p>
-        )}
       </div>
     </div>
   );

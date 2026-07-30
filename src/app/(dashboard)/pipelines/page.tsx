@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import { Plus, KanbanSquare, Trash2, Star, Archive, RotateCcw } from 'lucide-react';
+import { Plus, KanbanSquare, Trash2, Star, Archive, RotateCcw, Route } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   pipelinesService,
@@ -90,13 +90,22 @@ export default function PipelinesIndexPage() {
             cards independentes — podem ou não estar vinculados a uma conversa.
           </p>
         </div>
-        <button
-          onClick={() => setCreating(true)}
-          className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-        >
-          <Plus className="h-4 w-4" />
-          Novo pipeline
-        </button>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/pipelines/routing"
+            className="inline-flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+          >
+            <Route className="h-4 w-4" />
+            Roteamento de origens
+          </Link>
+          <button
+            onClick={() => setCreating(true)}
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+          >
+            <Plus className="h-4 w-4" />
+            Novo pipeline
+          </button>
+        </div>
       </div>
 
       {creating && (
