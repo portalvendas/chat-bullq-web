@@ -12,6 +12,7 @@
  * fbclid/gclid → canal da conversa. Nunca inventa: se não houver sinal,
  * mostra "Direto/Desconhecido".
  */
+import { useState } from 'react';
 import {
   Facebook,
   Instagram,
@@ -19,10 +20,10 @@ import {
   Search,
   ShoppingBag,
   MessageCircle,
-  Mail,
   Phone,
   Tag as TagIcon,
   Calendar,
+  ChevronRight,
 } from 'lucide-react';
 import type {
   CardDetail,
@@ -219,9 +220,12 @@ function Field({ label, value }: { label: string; value?: string | null }) {
 export function LeadEnrichment({ card }: { card: CardDetail }) {
   const c = card.contact;
   const tracking = getTracking(card);
-  const hasTracking = Object.keys(tracking).some(
+  // Rastreamento vem RECOLHIDO por padrão — o operador expande se quiser ver.
+  const [showTracking, setShowTracking] = useState(false);
+  const trackingKeys = Object.keys(tracking).filter(
     (k) => tracking[k] !== undefined && tracking[k] !== '' && tracking[k] !== null,
   );
+  const hasTracking = trackingKeys.length > 0;
 
   return (
     <div className="space-y-3">
@@ -254,13 +258,26 @@ export function LeadEnrichment({ card }: { card: CardDetail }) {
         )}
       </div>
 
-      {/* Tracking */}
-      <div className="rounded-md border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900/40">
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-zinc-500">
-          Rastreamento (tracking)
-        </p>
-        {hasTracking ? (
-          <div className="grid grid-cols-2 gap-2">
+      {/* Tracking — recolhido por padrão */}
+      <div className="rounded-md border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900/40">
+        <button
+          type="button"
+          onClick={() => setShowTracking((v) => !v)}
+          disabled={!hasTracking}
+          className="flex w-full items-center justify-between gap-2 rounded-md px-3 py-2 text-left hover:bg-zinc-50 disabled:cursor-default disabled:hover:bg-transparent dark:hover:bg-zinc-800/50"
+        >
+          <span className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-zinc-500">
+            <ChevronRight
+              className={`h-3.5 w-3.5 transition-transform ${showTracking ? 'rotate-90' : ''}`}
+            />
+            Rastreamento (tracking)
+          </span>
+          <span className="text-[10px] font-normal normal-case text-zinc-400">
+            {hasTracking ? `${trackingKeys.length} campos` : 'nenhum dado'}
+          </span>
+        </button>
+        {showTracking && hasTracking && (
+          <div className="grid grid-cols-2 gap-2 px-3 pb-3 pt-1">
             <Field label="utm_source" value={tracking.utm_source} />
             <Field label="utm_medium" value={tracking.utm_medium} />
             <Field label="utm_campaign" value={tracking.utm_campaign} />
@@ -279,10 +296,6 @@ export function LeadEnrichment({ card }: { card: CardDetail }) {
               <Field label="User-Agent" value={tracking.user_agent} />
             </div>
           </div>
-        ) : (
-          <p className="text-xs text-zinc-400">
-            Nenhum dado de rastreamento capturado para este lead.
-          </p>
         )}
       </div>
     </div>

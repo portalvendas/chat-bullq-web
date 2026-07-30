@@ -2,14 +2,33 @@
 
 import { useDraggable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
-import { GripVertical, MessageSquare, User } from 'lucide-react';
+import { GripVertical, MessageSquare, User, Calendar } from 'lucide-react';
 import { ZappfyIcon, MetaIcon, InstagramIcon } from '@/components/ui/icons';
+import { deriveLeadSource } from './lead-enrichment';
 import type { CardSummary } from '../services/pipelines.service';
 
 const channelIconByType: Record<string, React.ElementType> = {
   WHATSAPP_ZAPPFY: ZappfyIcon,
   WHATSAPP_OFFICIAL: MetaIcon,
   INSTAGRAM: InstagramIcon,
+};
+
+/** Data do lead na capa do card: 30/07/2026 14:47 (sem vírgula). */
+const fmtLeadDate = (iso?: string | null): string => {
+  if (!iso) return '';
+  try {
+    return new Date(iso)
+      .toLocaleString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+      .replace(',', '');
+  } catch {
+    return '';
+  }
 };
 
 const formatBRL = (v: number | string | null) => {
@@ -45,6 +64,17 @@ export function KanbanCard({ card, onClick }: Props) {
   const assignedTo = card.assignedTo;
   const isClosed = card.status !== 'OPEN';
 
+  // Capa: data do lead + fonte (logo). Tracking/source vive em card.metadata
+  // (leads de LP/Ads); senão cai pro canal da conversa.
+  const meta = (card.metadata ?? {}) as any;
+  const leadDate = fmtLeadDate(card.createdAt);
+  const source = deriveLeadSource(
+    (meta.tracking ?? {}) as any,
+    meta.source,
+    card.conversation?.channel?.type,
+  );
+  const SourceIcon = source.Icon;
+
   return (
     <div
       ref={setNodeRef}
@@ -76,6 +106,21 @@ export function KanbanCard({ card, onClick }: Props) {
             </p>
           )}
         </div>
+      </div>
+
+      {/* Capa: data do lead + logo da fonte */}
+      <div className="mt-2 flex items-center justify-between gap-2 text-[10px] text-zinc-400">
+        <span className="inline-flex items-center gap-1">
+          <Calendar className="h-3 w-3" />
+          {leadDate}
+        </span>
+        <span
+          title={`Fonte: ${source.label}`}
+          className={`inline-flex max-w-[55%] items-center gap-1 truncate rounded-full px-1.5 py-0.5 font-medium ${source.cls}`}
+        >
+          <SourceIcon className="h-3 w-3 shrink-0" />
+          <span className="truncate">{source.label}</span>
+        </span>
       </div>
 
       <div className="mt-2 flex items-center gap-2 text-[11px] text-zinc-500">
