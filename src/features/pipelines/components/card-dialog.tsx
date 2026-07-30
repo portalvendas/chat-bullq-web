@@ -1,12 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { X, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   pipelinesService,
   type CardSummary,
 } from '../services/pipelines.service';
+import { LeadHeader, LeadEnrichment } from './lead-enrichment';
 
 interface Props {
   open: boolean;
@@ -30,6 +32,13 @@ export function CardDialog({
   const [value, setValue] = useState('');
   const [closedReason, setClosedReason] = useState('');
   const [saving, setSaving] = useState(false);
+
+  // Detalhe completo (contato + tracking) — só busca ao editar um card existente.
+  const { data: detail } = useQuery({
+    queryKey: ['card-detail', card?.id],
+    queryFn: () => pipelinesService.getCard(card!.id),
+    enabled: open && !!card?.id,
+  });
 
   useEffect(() => {
     if (card) {
@@ -110,6 +119,9 @@ export function CardDialog({
         </div>
 
         <div className="space-y-4 px-6 py-5">
+          {/* Antes do detalhe: data do lead + fonte (Facebook/Instagram/LP…) */}
+          {detail && <LeadHeader card={detail} />}
+
           <div>
             <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300">
               Título
@@ -166,14 +178,8 @@ export function CardDialog({
             </div>
           )}
 
-          {card?.contact && (
-            <div className="rounded-md border border-zinc-200 bg-zinc-50 p-3 text-xs dark:border-zinc-800 dark:bg-zinc-900/50">
-              <p className="text-zinc-500">Contato</p>
-              <p className="mt-0.5 font-medium text-zinc-900 dark:text-zinc-100">
-                {card.contact.name || card.contact.phone}
-              </p>
-            </div>
-          )}
+          {/* Enriquecimento do lead: contato completo + tracking/UTM */}
+          {detail && <LeadEnrichment card={detail} />}
         </div>
 
         <div className="sticky bottom-0 flex items-center justify-between gap-2 border-t border-zinc-200 bg-zinc-50 px-6 py-3 dark:border-zinc-800 dark:bg-zinc-900/50">

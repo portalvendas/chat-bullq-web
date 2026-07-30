@@ -20,6 +20,7 @@ import { AssignmentPopover } from './assignment-popover';
 import { AgentPinPopover } from './agent-pin-popover';
 import { PipelinePopover } from './pipeline-popover';
 import { SalesbotPopover } from './salesbot-popover';
+import { LeadInfoPopover } from './lead-info-popover';
 import { inboxService, type Conversation } from '../services/inbox.service';
 
 interface ConversationHeaderProps {
@@ -169,6 +170,7 @@ export function ConversationHeader({
       </div>
 
       <div className="flex items-center gap-1.5">
+        <LeadInfoPopover conversationId={conversation.id} />
         <AgentPinPopover conversation={conversation} onChanged={onUpdate} />
         <ConversationAiToggle
           conversation={conversation}

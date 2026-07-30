@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import { Plus, KanbanSquare, Trash2, Star, Archive } from 'lucide-react';
+import { Plus, KanbanSquare, Trash2, Star, Archive, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   pipelinesService,
@@ -17,8 +17,9 @@ export default function PipelinesIndexPage() {
   const [saving, setSaving] = useState(false);
 
   const { data: pipelines = [], isLoading } = useQuery({
-    queryKey: ['pipelines'],
-    queryFn: () => pipelinesService.list(),
+    queryKey: ['pipelines', 'withArchived'],
+    // Inclui desativados para permitir Reativar direto na lista.
+    queryFn: () => pipelinesService.list(true),
   });
 
   const handleCreate = async () => {
@@ -55,6 +56,24 @@ export default function PipelinesIndexPage() {
       qc.invalidateQueries({ queryKey: ['pipelines'] });
     } catch (err: any) {
       toast.error(err?.response?.data?.message || 'Erro');
+    }
+  };
+
+  const handleToggleArchive = async (p: Pipeline) => {
+    const next = !p.archived;
+    if (
+      next &&
+      !confirm(
+        `Desativar o funil "${p.name}"? Ele some da lista de trabalho e do inbox, mas os cards e dados são preservados. Você pode reativar depois.`,
+      )
+    )
+      return;
+    try {
+      await pipelinesService.update(p.id, { archived: next } as any);
+      toast.success(next ? 'Funil desativado' : 'Funil reativado');
+      qc.invalidateQueries({ queryKey: ['pipelines'] });
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || 'Erro ao atualizar');
     }
   };
 
@@ -129,7 +148,9 @@ export default function PipelinesIndexPage() {
         {pipelines.map((p) => (
           <div
             key={p.id}
-            className="group relative rounded-xl border border-zinc-200 bg-white p-4 hover:border-primary/40 hover:shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
+            className={`group relative rounded-xl border border-zinc-200 bg-white p-4 hover:border-primary/40 hover:shadow-sm dark:border-zinc-800 dark:bg-zinc-900 ${
+              p.archived ? 'opacity-60' : ''
+            }`}
           >
             <Link href={`/pipelines/${p.id}`} className="block">
               <div className="flex items-center gap-2">
@@ -142,6 +163,11 @@ export default function PipelinesIndexPage() {
                     className="h-3.5 w-3.5 text-amber-500"
                     fill="currentColor"
                   />
+                )}
+                {p.archived && (
+                  <span className="rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+                    Desativado
+                  </span>
                 )}
               </div>
               {p.description && (
@@ -156,7 +182,7 @@ export default function PipelinesIndexPage() {
               </div>
             </Link>
             <div className="absolute right-2 top-2 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-              {!p.isDefault && (
+              {!p.isDefault && !p.archived && (
                 <button
                   onClick={() => handleSetDefault(p)}
                   title="Marcar como padrão"
@@ -166,7 +192,23 @@ export default function PipelinesIndexPage() {
                 </button>
               )}
               <button
+                onClick={() => handleToggleArchive(p)}
+                title={p.archived ? 'Reativar funil' : 'Desativar funil'}
+                className={`rounded p-1 text-zinc-400 ${
+                  p.archived
+                    ? 'hover:bg-emerald-50 hover:text-emerald-600'
+                    : 'hover:bg-amber-50 hover:text-amber-600'
+                }`}
+              >
+                {p.archived ? (
+                  <RotateCcw className="h-3.5 w-3.5" />
+                ) : (
+                  <Archive className="h-3.5 w-3.5" />
+                )}
+              </button>
+              <button
                 onClick={() => handleDelete(p)}
+                title="Excluir permanentemente"
                 className="rounded p-1 text-zinc-400 hover:bg-red-50 hover:text-red-500"
               >
                 <Trash2 className="h-3.5 w-3.5" />

@@ -85,13 +85,12 @@ export function KanbanBoard({ pipelineId }: Props) {
     const source = cardIndex.get(cardId);
     if (!source) return;
 
-    // Drop appends to end of target column.
-    const toIndex =
-      source.stageId === targetStageId
-        ? Math.max(0, board.cards[targetStageId].length - 1)
-        : board.cards[targetStageId].length;
+    // Ordenação fixa por data (mais novo → mais antigo): não há reordenação
+    // manual DENTRO da coluna. O arrastar só serve pra mover ENTRE etapas.
+    if (source.stageId === targetStageId) return;
 
-    if (source.stageId === targetStageId && source.index === toIndex) return;
+    // Ao mudar de etapa, insere no fim; o backend reordena por createdAt desc.
+    const toIndex = board.cards[targetStageId].length;
 
     // Optimistic: rebuild the board locally.
     qc.setQueryData<typeof board>(['pipeline-board', pipelineId], (prev) => {

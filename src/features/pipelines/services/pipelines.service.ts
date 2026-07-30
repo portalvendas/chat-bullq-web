@@ -76,6 +76,50 @@ export interface BoardResponse {
   cards: Record<string, CardSummary[]>; // by stageId
 }
 
+/** Tracking capturado na origem do lead (LP/Ads). Vive em metadata.tracking. */
+export interface LeadTracking {
+  source?: string;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  utm_content?: string;
+  utm_term?: string;
+  fbclid?: string;
+  gclid?: string;
+  pagina?: string;
+  referrer?: string;
+  client_ip?: string;
+  user_agent?: string;
+  [k: string]: unknown;
+}
+
+export interface ContactTagLite {
+  id: string;
+  name: string;
+  color: string;
+}
+
+/** Card único com contato COMPLETO (email, metadata/tracking, tags) — GET /pipelines/cards/:id. */
+export interface CardDetail extends Omit<CardSummary, 'contact'> {
+  contact?: {
+    id: string;
+    name: string | null;
+    phone: string | null;
+    email: string | null;
+    avatarUrl: string | null;
+    notes: string | null;
+    metadata: Record<string, unknown>;
+    createdAt: string;
+    tags: ContactTagLite[];
+  } | null;
+  stage?: {
+    id: string;
+    name: string;
+    type: StageType;
+    color: string | null;
+  } | null;
+}
+
 export interface CreatePipelineInput {
   name: string;
   description?: string;
@@ -124,8 +168,15 @@ export interface ConversationCard {
 }
 
 export const pipelinesService = {
-  async list(): Promise<Pipeline[]> {
-    const { data } = await api.get('/pipelines');
+  async list(includeArchived = false): Promise<Pipeline[]> {
+    const { data } = await api.get('/pipelines', {
+      params: includeArchived ? { includeArchived: 'true' } : {},
+    });
+    return data.data ?? data;
+  },
+  /** Card único com contato completo (para o painel de enriquecimento). */
+  async getCard(cardId: string): Promise<CardDetail> {
+    const { data } = await api.get(`/pipelines/cards/${cardId}`);
     return data.data ?? data;
   },
   /**
