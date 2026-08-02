@@ -222,6 +222,7 @@ export default function ImportPage() {
       contactsCreated: 0,
       contactsUpdated: 0,
       cardsCreated: 0,
+      cardsUpdated: 0,
       cardsSkipped: 0,
       stagesCreated: 0,
       errors: [],
@@ -239,6 +240,7 @@ export default function ImportPage() {
         agg.contactsCreated += res.contactsCreated;
         agg.contactsUpdated += res.contactsUpdated;
         agg.cardsCreated += res.cardsCreated;
+        agg.cardsUpdated += res.cardsUpdated;
         agg.cardsSkipped += res.cardsSkipped;
         agg.stagesCreated += res.stagesCreated;
         agg.errors.push(...res.errors);
@@ -410,7 +412,8 @@ export default function ImportPage() {
               </p>
               <ul className="mt-2 space-y-0.5 text-emerald-800 dark:text-emerald-300">
                 <li>Leads (cards) criados: <strong>{result.cardsCreated}</strong></li>
-                <li>Cards já existentes (pulados): {result.cardsSkipped}</li>
+                <li>Leads existentes enriquecidos: <strong>{result.cardsUpdated}</strong></li>
+                <li>Sem mudança (pulados): {result.cardsSkipped}</li>
                 <li>Contatos novos: {result.contactsCreated} · atualizados: {result.contactsUpdated}</li>
                 <li>Etapas criadas: {result.stagesCreated}</li>
               </ul>

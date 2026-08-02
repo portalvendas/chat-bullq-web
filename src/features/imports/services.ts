@@ -66,6 +66,7 @@ export interface ImportSummary {
   contactsCreated: number;
   contactsUpdated: number;
   cardsCreated: number;
+  cardsUpdated: number;
   cardsSkipped: number;
   stagesCreated: number;
   errors: Array<{ row: number; error: string }>;
