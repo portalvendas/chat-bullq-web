@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import * as XLSX from 'xlsx';
 import { Upload, AlertTriangle, CheckCircle2, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { pipelinesService } from '@/features/pipelines/services/pipelines.service';
@@ -82,6 +81,24 @@ const toIso = (v: any) => {
 };
 const CHUNK = 25;
 
+// SheetJS carregado sob demanda da CDN (evita virar dependência npm/lockfile).
+let xlsxPromise: Promise<any> | null = null;
+function loadXLSX(): Promise<any> {
+  if (typeof window !== 'undefined' && (window as any).XLSX)
+    return Promise.resolve((window as any).XLSX);
+  if (!xlsxPromise) {
+    xlsxPromise = new Promise((resolve, reject) => {
+      const sc = document.createElement('script');
+      sc.src =
+        'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+      sc.onload = () => resolve((window as any).XLSX);
+      sc.onerror = () => reject(new Error('Falha ao carregar o leitor de planilha'));
+      document.head.appendChild(sc);
+    });
+  }
+  return xlsxPromise;
+}
+
 export default function ImportPage() {
   const [headers, setHeaders] = useState<string[]>([]);
   const [rows, setRows] = useState<any[][]>([]);
@@ -109,6 +126,7 @@ export default function ImportPage() {
     setResult(null);
     setFileName(file.name);
     const buf = await file.arrayBuffer();
+    const XLSX = await loadXLSX();
     const wb = XLSX.read(buf, { type: 'array', cellDates: true });
     const ws = wb.Sheets[wb.SheetNames[0]];
     const aoa = XLSX.utils.sheet_to_json(ws, {
