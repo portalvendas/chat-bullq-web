@@ -243,8 +243,13 @@ export const pipelinesService = {
   async remove(id: string): Promise<void> {
     await api.delete(`/pipelines/${id}`);
   },
-  async getBoard(id: string): Promise<BoardResponse> {
-    const { data } = await api.get(`/pipelines/${id}/board`);
+  async getBoard(
+    id: string,
+    params?: { from?: string; to?: string },
+  ): Promise<BoardResponse> {
+    const { data } = await api.get(`/pipelines/${id}/board`, {
+      params: params ?? {},
+    });
     return data.data ?? data;
   },
   async upsertStages(

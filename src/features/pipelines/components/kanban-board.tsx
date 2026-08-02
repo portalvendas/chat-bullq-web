@@ -19,6 +19,59 @@ import { KanbanCard } from './kanban-card';
 import { CardDialog } from './card-dialog';
 import { AddConversationDialog } from './add-conversation-dialog';
 import { ConversationDialog } from '@/features/inbox/components/conversation-dialog';
+import { Calendar } from 'lucide-react';
+
+// ─── Filtro por data de recebimento do lead ──────────────────────
+type DatePreset = 'today' | 'yesterday' | '7d' | '30d' | 'month' | 'all';
+
+const PRESETS: { key: DatePreset; label: string }[] = [
+  { key: 'today', label: 'Hoje' },
+  { key: 'yesterday', label: 'Ontem' },
+  { key: '7d', label: 'Últimos 7 dias' },
+  { key: '30d', label: 'Últimos 30 dias' },
+  { key: 'month', label: 'Este mês' },
+  { key: 'all', label: 'Tudo' },
+];
+
+function rangeFor(preset: DatePreset): { from?: string; to?: string } {
+  const now = new Date();
+  const start = (d: Date) => {
+    const x = new Date(d);
+    x.setHours(0, 0, 0, 0);
+    return x;
+  };
+  const end = (d: Date) => {
+    const x = new Date(d);
+    x.setHours(23, 59, 59, 999);
+    return x;
+  };
+  const daysAgo = (n: number) => {
+    const x = new Date(now);
+    x.setDate(x.getDate() - n);
+    return x;
+  };
+  switch (preset) {
+    case 'today':
+      return { from: start(now).toISOString(), to: end(now).toISOString() };
+    case 'yesterday':
+      return {
+        from: start(daysAgo(1)).toISOString(),
+        to: end(daysAgo(1)).toISOString(),
+      };
+    case '7d':
+      return { from: start(daysAgo(6)).toISOString(), to: end(now).toISOString() };
+    case '30d':
+      return { from: start(daysAgo(29)).toISOString(), to: end(now).toISOString() };
+    case 'month':
+      return {
+        from: start(new Date(now.getFullYear(), now.getMonth(), 1)).toISOString(),
+        to: end(now).toISOString(),
+      };
+    case 'all':
+    default:
+      return {};
+  }
+}
 
 interface Props {
   pipelineId: string;
@@ -33,10 +86,20 @@ export function KanbanBoard({ pipelineId }: Props) {
   const [addStageId, setAddStageId] = useState<string | null>(null);
   // Conversation popup (when card has a linked conversation, click opens chat).
   const [viewingConvId, setViewingConvId] = useState<string | null>(null);
+  // Filtro por data de recebimento do lead (padrão: últimos 30 dias).
+  const [preset, setPreset] = useState<DatePreset>('30d');
+  const range = useMemo(() => rangeFor(preset), [preset]);
+
+  const boardKey = [
+    'pipeline-board',
+    pipelineId,
+    range.from ?? 'all',
+    range.to ?? 'all',
+  ];
 
   const { data: board, isLoading } = useQuery({
-    queryKey: ['pipeline-board', pipelineId],
-    queryFn: () => pipelinesService.getBoard(pipelineId),
+    queryKey: boardKey,
+    queryFn: () => pipelinesService.getBoard(pipelineId, range),
   });
 
   const sensors = useSensors(
@@ -93,7 +156,7 @@ export function KanbanBoard({ pipelineId }: Props) {
     const toIndex = board.cards[targetStageId].length;
 
     // Optimistic: rebuild the board locally.
-    qc.setQueryData<typeof board>(['pipeline-board', pipelineId], (prev) => {
+    qc.setQueryData<typeof board>(boardKey, (prev) => {
       if (!prev) return prev;
       const newCards = { ...prev.cards };
       const sourceList = [...newCards[source.stageId]];
@@ -123,15 +186,43 @@ export function KanbanBoard({ pipelineId }: Props) {
     );
   }
 
+  const totalLeads = Object.values(board.cards).reduce(
+    (acc, list) => acc + list.length,
+    0,
+  );
+
   return (
-    <>
+    <div className="flex h-full flex-col">
+      {/* Filtro por data de recebimento do lead (createdAt) */}
+      <div className="flex flex-wrap items-center gap-1.5 px-4 pb-2">
+        <span className="mr-1 inline-flex items-center gap-1 text-[11px] text-zinc-400">
+          <Calendar className="h-3.5 w-3.5" /> Recebidos:
+        </span>
+        {PRESETS.map((p) => (
+          <button
+            key={p.key}
+            onClick={() => setPreset(p.key)}
+            className={`rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${
+              preset === p.key
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700'
+            }`}
+          >
+            {p.label}
+          </button>
+        ))}
+        <span className="ml-auto text-[11px] text-zinc-400">
+          {totalLeads} leads
+        </span>
+      </div>
+
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <div className="flex h-full gap-3 overflow-x-auto px-4 pb-4">
+        <div className="flex flex-1 gap-3 overflow-x-auto px-4 pb-4">
           {board.stages.map((stage) => (
             <KanbanColumn
               key={stage.id}
@@ -180,6 +271,6 @@ export function KanbanBoard({ pipelineId }: Props) {
         conversationId={viewingConvId}
         onClose={() => setViewingConvId(null)}
       />
-    </>
+    </div>
   );
 }
