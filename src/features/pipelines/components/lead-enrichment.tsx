@@ -217,9 +217,18 @@ function Field({ label, value }: { label: string; value?: string | null }) {
   );
 }
 
+function humanizeKey(k: string): string {
+  return k.replace(/_/g, ' ').replace(/^./, (m) => m.toUpperCase());
+}
+
 export function LeadEnrichment({ card }: { card: CardDetail }) {
   const c = card.contact;
   const tracking = getTracking(card);
+  // Campos personalizados gravados no import (metadata.custom).
+  const customObj = ((card.metadata as any)?.custom ?? {}) as Record<string, any>;
+  const customEntries = Object.entries(customObj).filter(
+    ([, v]) => v !== null && v !== undefined && v !== '',
+  );
   // Rastreamento vem RECOLHIDO por padrão — o operador expande se quiser ver.
   const [showTracking, setShowTracking] = useState(false);
   const trackingKeys = Object.keys(tracking).filter(
@@ -257,6 +266,20 @@ export function LeadEnrichment({ card }: { card: CardDetail }) {
           <p className="text-xs text-zinc-400">Sem dados de contato.</p>
         )}
       </div>
+
+      {/* Campos personalizados (import) */}
+      {customEntries.length > 0 && (
+        <div className="rounded-md border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900/40">
+          <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-zinc-500">
+            Campos personalizados
+          </p>
+          <div className="grid grid-cols-2 gap-2">
+            {customEntries.map(([k, v]) => (
+              <Field key={k} label={humanizeKey(k)} value={String(v)} />
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Tracking — recolhido por padrão */}
       <div className="rounded-md border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900/40">
