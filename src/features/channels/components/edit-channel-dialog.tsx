@@ -232,6 +232,13 @@ function fieldsFor(type: Channel['type']): FieldDef[] {
       { key: 'appSecret', label: 'App Secret', placeholder: 'Chave secreta do app' },
       { key: 'igBusinessId', label: 'Instagram Business ID', placeholder: 'Detectado automaticamente', optional: true },
       { key: 'igAppId', label: 'Instagram App ID', optional: true },
+      {
+        key: 'commentAutoReplyText',
+        label: 'Auto-DM em comentários',
+        placeholder: 'Ex: Oi! Vi seu comentário 💛 Te chamei no direct pra te ajudar.',
+        optional: true,
+        hint: 'Mensagem enviada automaticamente no direct quando alguém comenta. Vazio = usa o texto padrão.',
+      },
     ];
   }
   return [];

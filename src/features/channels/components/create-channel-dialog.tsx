@@ -94,6 +94,7 @@ const instagramSchema = z.object({
   igBusinessId: z.string().optional(),
   igAppId: z.string().optional(),
   webhookSecret: z.string().optional(),
+  commentAutoReplyText: z.string().optional(),
 });
 
 const mercadoLivreSchema = z.object({
@@ -151,7 +152,7 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
 
   const igForm = useForm<InstagramFormData>({
     resolver: zodResolver(instagramSchema),
-    defaultValues: { name: '', accessToken: '', appSecret: '', igBusinessId: '', igAppId: '', webhookSecret: '' },
+    defaultValues: { name: '', accessToken: '', appSecret: '', igBusinessId: '', igAppId: '', webhookSecret: '', commentAutoReplyText: '' },
   });
 
   const mlForm = useForm<MlFormData>({
@@ -224,6 +225,7 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
         igBusinessId: data.igBusinessId || undefined,
         igAppId: data.igAppId || undefined,
         apiVersion: 'v21.0',
+        commentAutoReplyText: data.commentAutoReplyText?.trim() || undefined,
       },
       data.webhookSecret,
     );
@@ -397,6 +399,7 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
             <Field label="Instagram Business ID" placeholder="Opcional — detectado automaticamente" optional {...igForm.register('igBusinessId')} />
             <Field label="Instagram App ID" placeholder="Opcional — ID do app do Instagram" optional {...igForm.register('igAppId')} />
             <Field label="Webhook Verify Token" placeholder="Token que você definiu no Meta" optional {...igForm.register('webhookSecret')} />
+            <Field label="Auto-DM em comentários" placeholder="Ex: Oi! Vi seu comentário 💛 Te chamei no direct pra te ajudar." optional {...igForm.register('commentAutoReplyText')} />
             <WebhookUrl url={`${apiBaseUrl}/webhooks/INSTAGRAM`} copied={copied} onCopy={() => handleCopyWebhook('INSTAGRAM')} />
             <FormFooter isLoading={isLoading} onBack={() => setStep('type')} />
           </form>
