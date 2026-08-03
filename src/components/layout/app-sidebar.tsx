@@ -9,6 +9,7 @@ import {
   ChevronUp,
   Zap,
   MessageSquareText,
+  MessageCircle,
 } from 'lucide-react';
 import { InboxTree } from '@/features/inbox-views/components/inbox-tree';
 import { JarvisTree } from '@/features/ai-agents/components/jarvis-tree';
@@ -38,6 +39,7 @@ import {
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/automations', label: 'Automações', icon: Zap },
+  { href: '/comentarios', label: 'Comentários', icon: MessageCircle },
   { href: '/templates', label: 'Modelos', icon: MessageSquareText },
 ];
 
