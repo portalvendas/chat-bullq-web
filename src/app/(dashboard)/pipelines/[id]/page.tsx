@@ -14,13 +14,18 @@ export default function PipelineBoardPage() {
   const pipelineId = params?.id;
   const [stagesOpen, setStagesOpen] = useState(false);
 
-  const { data: board } = useQuery({
-    queryKey: ['pipeline-board', pipelineId],
-    queryFn: () => pipelinesService.getBoard(pipelineId!),
+  // Cabeçalho + stages vêm da LISTA de pipelines (leve: só metadados + stages),
+  // não do board inteiro — senão a página carregava TODOS os cards do funil só
+  // pra mostrar o nome, ignorando o filtro de data do board. O board (com o
+  // filtro de 30 dias) é carregado só pelo KanbanBoard.
+  const { data: pipelines } = useQuery({
+    queryKey: ['pipelines', 'withArchived'],
+    queryFn: () => pipelinesService.list(true),
     enabled: !!pipelineId,
   });
+  const pipeline = pipelines?.find((p) => p.id === pipelineId);
 
-  const archived = board?.pipeline?.archived ?? false;
+  const archived = pipeline?.archived ?? false;
 
   if (!pipelineId) return null;
 
@@ -37,12 +42,10 @@ export default function PipelineBoardPage() {
         <KanbanSquare className="h-5 w-5 text-primary" />
         <div className="flex-1">
           <h1 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
-            {board?.pipeline?.name ?? 'Pipeline'}
+            {pipeline?.name ?? 'Pipeline'}
           </h1>
-          {board?.pipeline?.description && (
-            <p className="text-xs text-zinc-500">
-              {board.pipeline.description}
-            </p>
+          {pipeline?.description && (
+            <p className="text-xs text-zinc-500">{pipeline.description}</p>
           )}
         </div>
         {archived && (
@@ -52,7 +55,7 @@ export default function PipelineBoardPage() {
         )}
         <button
           onClick={() => setStagesOpen(true)}
-          disabled={!board}
+          disabled={!pipeline}
           className="inline-flex items-center gap-1.5 rounded-md border border-zinc-200 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 hover:border-zinc-300 hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
         >
           <Settings className="h-3.5 w-3.5" />
@@ -63,11 +66,11 @@ export default function PipelineBoardPage() {
         <KanbanBoard pipelineId={pipelineId} />
       </div>
 
-      {board && (
+      {pipeline && (
         <StagesDialog
           open={stagesOpen}
           pipelineId={pipelineId}
-          initialStages={board.stages}
+          initialStages={pipeline.stages ?? []}
           onClose={() => setStagesOpen(false)}
           onSaved={() => setStagesOpen(false)}
         />
