@@ -1,9 +1,10 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { Upload, AlertTriangle, CheckCircle2, Loader2 } from 'lucide-react';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { Upload, AlertTriangle, CheckCircle2, Loader2, CalendarClock } from 'lucide-react';
 import { toast } from 'sonner';
+import { api } from '@/lib/api';
 import { pipelinesService } from '@/features/pipelines/services/pipelines.service';
 import {
   importsService,
@@ -97,6 +98,90 @@ function loadXLSX(): Promise<any> {
     });
   }
   return xlsxPromise;
+}
+
+interface BackfillResult {
+  corrigiveis: number;
+  dataMin: string | null;
+  dataMax: string | null;
+  atualizados: number;
+}
+
+/** Corrige a data (createdAt) dos leads importados do Kommo que ficaram com a
+ *  data da importação, usando a "Criado em" original guardada no metadata. */
+function BackfillDatesCard() {
+  const [res, setRes] = useState<BackfillResult | null>(null);
+  const [mode, setMode] = useState<'preview' | 'exec' | null>(null);
+  const run = (execute: boolean) =>
+    api
+      .post(`/imports/backfill-dates${execute ? '?execute=true' : ''}`, {})
+      .then((r) => r.data.data ?? r.data);
+  const preview = useMutation({
+    mutationFn: () => run(false),
+    onSuccess: (r: BackfillResult) => {
+      setRes(r);
+      setMode('preview');
+      toast.success(`${r.corrigiveis} card(s) com data a corrigir`);
+    },
+    onError: (e: any) => toast.error(e?.message ?? 'Falha na prévia'),
+  });
+  const execute = useMutation({
+    mutationFn: () => run(true),
+    onSuccess: (r: BackfillResult) => {
+      setRes(r);
+      setMode('exec');
+      toast.success(`${r.atualizados} data(s) corrigida(s)`);
+    },
+    onError: (e: any) => toast.error(e?.message ?? 'Falha ao corrigir'),
+  });
+  const busy = preview.isPending || execute.isPending;
+  const fmt = (d: string | null) =>
+    d ? new Date(d).toLocaleDateString('pt-BR') : '—';
+
+  return (
+    <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50/50 p-4 dark:border-amber-500/20 dark:bg-amber-500/5">
+      <div className="flex items-center gap-2 text-sm font-medium text-zinc-800 dark:text-zinc-200">
+        <CalendarClock className="h-4 w-4 text-amber-500" />
+        Corrigir datas dos leads importados
+      </div>
+      <p className="mt-1 text-xs text-zinc-500">
+        Leads que ficaram com a data da importação são corrigidos para a data
+        original (&quot;Criado em&quot;) do Kommo, guardada no lead. Rode a
+        prévia antes de aplicar.
+      </p>
+      <div className="mt-3 flex flex-wrap gap-2">
+        <button
+          onClick={() => preview.mutate()}
+          disabled={busy}
+          className="inline-flex items-center gap-2 rounded-lg border border-zinc-200 px-3 py-1.5 text-xs font-medium text-zinc-700 hover:bg-white disabled:opacity-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
+        >
+          {preview.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+          Rodar prévia
+        </button>
+        <button
+          onClick={() => {
+            if (window.confirm('Corrigir as datas dos leads importados agora?'))
+              execute.mutate();
+          }}
+          disabled={busy || !res || res.corrigiveis === 0}
+          className="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground disabled:opacity-50"
+        >
+          {execute.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+          Corrigir agora
+        </button>
+      </div>
+      {res && (
+        <div className="mt-3 text-xs text-zinc-600 dark:text-zinc-300">
+          {mode === 'exec'
+            ? `${res.atualizados} data(s) corrigida(s).`
+            : `${res.corrigiveis} card(s) a corrigir`}
+          {res.corrigiveis > 0 && (
+            <> — datas de {fmt(res.dataMin)} a {fmt(res.dataMax)}</>
+          )}
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default function ImportPage() {
@@ -270,6 +355,8 @@ export default function ImportPage() {
         Suba o XLSX exportado do Kommo. Mapeamos contato, telefone, valor,
         tracking (UTM/fbclid) e criamos etapas/campos que faltarem.
       </p>
+
+      <BackfillDatesCard />
 
       {/* Upload */}
       <label className="mt-5 flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-zinc-300 p-8 text-center hover:border-primary/40 dark:border-zinc-700">
