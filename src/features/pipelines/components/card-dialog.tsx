@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { X, Trash2 } from 'lucide-react';
+import { X, Trash2, MessageCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   pipelinesService,
@@ -17,7 +17,19 @@ interface Props {
   stageId: string | null;
   onClose: () => void;
   onSaved: () => void;
+  /** Abrir a conversa (chat) do lead — cruzando o card com o canal de texto ativo. */
+  onOpenConversation?: (conversationId: string) => void;
 }
+
+const CHANNEL_LABEL: Record<string, string> = {
+  WHATSAPP_ZAPI: 'WhatsApp',
+  WHATSAPP_OFFICIAL: 'WhatsApp',
+  WHATSAPP_ZAPPFY: 'WhatsApp',
+  INSTAGRAM: 'Instagram',
+  TELEGRAM: 'Telegram',
+  MERCADO_LIVRE: 'Mercado Livre',
+  SHOPEE: 'Shopee',
+};
 
 export function CardDialog({
   open,
@@ -26,6 +38,7 @@ export function CardDialog({
   stageId,
   onClose,
   onSaved,
+  onOpenConversation,
 }: Props) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -121,6 +134,42 @@ export function CardDialog({
         <div className="space-y-4 px-6 py-5">
           {/* Antes do detalhe: data do lead + fonte (Facebook/Instagram/LP…) */}
           {detail && <LeadHeader card={detail} />}
+
+          {/* Chat do lead: cruza o card com os canais de texto ativos do
+              contato (WhatsApp/Instagram/…) — abre a conversa direto daqui,
+              inclusive em cards importados que não nasceram de uma conversa. */}
+          {onOpenConversation &&
+            (detail?.contact?.conversations?.length ?? 0) > 0 && (
+              <div className="rounded-lg border border-zinc-200 p-2.5 dark:border-zinc-800">
+                <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-zinc-400">
+                  Conversas do lead
+                </p>
+                <div className="flex flex-col gap-1.5">
+                  {detail!.contact!.conversations!.map((c) => (
+                    <button
+                      key={c.id}
+                      onClick={() => onOpenConversation(c.id)}
+                      className="flex items-center justify-between gap-2 rounded-md border border-zinc-200 px-2.5 py-1.5 text-left text-sm hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
+                    >
+                      <span className="inline-flex items-center gap-2 text-zinc-700 dark:text-zinc-200">
+                        <MessageCircle className="h-4 w-4 text-primary" />
+                        Abrir conversa
+                        {c.channel && (
+                          <span className="rounded-full bg-zinc-100 px-1.5 py-0.5 text-[10px] font-medium text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
+                            {CHANNEL_LABEL[c.channel.type] || c.channel.name}
+                          </span>
+                        )}
+                      </span>
+                      {c.lastMessageAt && (
+                        <span className="text-[10px] tabular-nums text-zinc-400">
+                          {new Date(c.lastMessageAt).toLocaleDateString('pt-BR')}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
           <div>
             <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300">

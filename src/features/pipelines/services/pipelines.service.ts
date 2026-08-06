@@ -99,6 +99,14 @@ export interface ContactTagLite {
   color: string;
 }
 
+/** Conversa (canal de texto) do contato — pra abrir o chat direto do card. */
+export interface ContactConversationLite {
+  id: string;
+  status: string;
+  lastMessageAt: string | null;
+  channel: { id: string; type: string; name: string } | null;
+}
+
 /** Card único com contato COMPLETO (email, metadata/tracking, tags) — GET /pipelines/cards/:id. */
 export interface CardDetail extends Omit<CardSummary, 'contact'> {
   contact?: {
@@ -111,6 +119,7 @@ export interface CardDetail extends Omit<CardSummary, 'contact'> {
     metadata: Record<string, unknown>;
     createdAt: string;
     tags: ContactTagLite[];
+    conversations?: ContactConversationLite[];
   } | null;
   stage?: {
     id: string;

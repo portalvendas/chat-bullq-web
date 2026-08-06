@@ -249,6 +249,10 @@ export function KanbanBoard({ pipelineId }: Props) {
         card={editingCard}
         stageId={null}
         onClose={() => setEditingCard(null)}
+        onOpenConversation={(convId) => {
+          setEditingCard(null);
+          setViewingConvId(convId);
+        }}
         onSaved={() => {
           qc.invalidateQueries({ queryKey: ['pipeline-board', pipelineId] });
           setEditingCard(null);
