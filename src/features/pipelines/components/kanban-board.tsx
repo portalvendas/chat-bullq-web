@@ -229,6 +229,7 @@ export function KanbanBoard({ pipelineId }: Props) {
               stage={stage}
               cards={board.cards[stage.id] ?? []}
               onAddCard={() => setAddStageId(stage.id)}
+              onOpenConversation={(convId) => setViewingConvId(convId)}
               onCardClick={(c) => {
                 // Click primário: abre a conversa em popup. Sem conversa
                 // vinculada, cai pra edição do card como fallback.

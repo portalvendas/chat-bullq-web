@@ -53,6 +53,7 @@ export interface CardSummary {
     name: string | null;
     phone: string | null;
     avatarUrl: string | null;
+    conversations?: { id: string; channel: { type: string } | null }[];
   } | null;
   assignedTo?: {
     id: string;

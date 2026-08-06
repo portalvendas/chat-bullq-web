@@ -45,9 +45,11 @@ const formatBRL = (v: number | string | null) => {
 interface Props {
   card: CardSummary;
   onClick?: () => void;
+  /** Abre o chat do lead direto da capa (cruza com o canal de texto ativo). */
+  onOpenConversation?: (conversationId: string) => void;
 }
 
-export function KanbanCard({ card, onClick }: Props) {
+export function KanbanCard({ card, onClick, onOpenConversation }: Props) {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
       id: card.id,
@@ -63,6 +65,16 @@ export function KanbanCard({ card, onClick }: Props) {
   const contact = card.contact;
   const assignedTo = card.assignedTo;
   const isClosed = card.status !== 'OPEN';
+
+  // Conversa a abrir pela capa: a do próprio card (se veio de conversa) ou a
+  // mais recente do contato (cards importados cruzam com o WhatsApp/IG ativo).
+  const contactConv = card.contact?.conversations?.[0];
+  const openConvId = card.conversationId ?? contactConv?.id ?? null;
+  const openConvChannelType =
+    card.conversation?.channel?.type ?? contactConv?.channel?.type ?? null;
+  const OpenConvIcon =
+    (openConvChannelType && channelIconByType[openConvChannelType]) ||
+    MessageSquare;
 
   // Capa: data do lead + fonte (logo). Tracking/source vive em card.metadata
   // (leads de LP/Ads); senão cai pro canal da conversa.
@@ -151,23 +163,18 @@ export function KanbanCard({ card, onClick }: Props) {
           <span />
         )}
         <div className="flex shrink-0 items-center gap-1">
-          {card.conversation?.channel && (() => {
-            const ChannelIcon =
-              channelIconByType[card.conversation.channel.type] ?? MessageSquare;
-            return (
-              <span
-                title={`${card.conversation.channel.name} · clique pra abrir a conversa`}
-                className="flex h-5 w-5 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800"
-              >
-                <ChannelIcon className="h-3 w-3 text-zinc-600 dark:text-zinc-300" />
-              </span>
-            );
-          })()}
-          {!card.conversation && card.conversationId && (
-            <MessageSquare
-              className="h-3 w-3 text-blue-500"
-              aria-label="Tem conversa vinculada"
-            />
+          {openConvId && onOpenConversation && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onOpenConversation(openConvId);
+              }}
+              title="Abrir conversa do lead"
+              className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+              aria-label="Abrir conversa"
+            >
+              <OpenConvIcon className="h-3 w-3" />
+            </button>
           )}
           {assignedTo && (
             <span
