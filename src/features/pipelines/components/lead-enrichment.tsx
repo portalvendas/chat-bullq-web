@@ -235,6 +235,15 @@ export function LeadEnrichment({ card }: { card: CardDetail }) {
     (k) => tracking[k] !== undefined && tracking[k] !== '' && tracking[k] !== null,
   );
   const hasTracking = trackingKeys.length > 0;
+  // Chaves já exibidas com rótulo fixo abaixo; o resto (ex.: "projeto") é
+  // renderizado dinamicamente pra não sumir nenhum campo enviado no tracking.
+  const KNOWN_TRACKING = new Set([
+    'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term',
+    'fbclid', 'gclid', 'client_ip', 'pagina', 'referrer', 'user_agent',
+  ]);
+  const extraTrackingEntries = trackingKeys
+    .filter((k) => !KNOWN_TRACKING.has(k))
+    .map((k) => [k, tracking[k]] as [string, any]);
 
   return (
     <div className="space-y-3">
@@ -318,6 +327,12 @@ export function LeadEnrichment({ card }: { card: CardDetail }) {
             <div className="col-span-2">
               <Field label="User-Agent" value={tracking.user_agent} />
             </div>
+            {/* Chaves extras (ex.: projeto) enviadas no tracking. */}
+            {extraTrackingEntries.map(([k, v]) => (
+              <div key={k} className="col-span-2">
+                <Field label={humanizeKey(k)} value={String(v)} />
+              </div>
+            ))}
           </div>
         )}
       </div>
