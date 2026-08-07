@@ -80,6 +80,15 @@ export function KanbanCard({ card, onClick, onOpenConversation }: Props) {
   // (leads de LP/Ads); senão cai pro canal da conversa.
   const meta = (card.metadata ?? {}) as any;
   const leadDate = fmtLeadDate(card.createdAt);
+  const temp = (meta.leadTemperature as string | undefined) || undefined;
+  const score = meta.leadScore as number | undefined;
+  const tempCls =
+    temp === 'Quente'
+      ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+      : temp === 'Morno'
+        ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
+        : 'bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400';
+  const tempEmoji = temp === 'Quente' ? '🔥' : temp === 'Frio' ? '❄️' : '🌡️';
   const source = deriveLeadSource(
     (meta.tracking ?? {}) as any,
     meta.source,
@@ -135,7 +144,16 @@ export function KanbanCard({ card, onClick, onOpenConversation }: Props) {
         </span>
       </div>
 
-      <div className="mt-2 flex items-center gap-2 text-[11px] text-zinc-500">
+      <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] text-zinc-500">
+        {temp && (
+          <span
+            title={score != null ? `Lead score: ${score}` : undefined}
+            className={`rounded-full px-2 py-0.5 font-semibold ${tempCls}`}
+          >
+            {tempEmoji} {temp}
+            {score != null ? ` · ${score}` : ''}
+          </span>
+        )}
         {value && (
           <span className="rounded-full bg-emerald-50 px-2 py-0.5 font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
             {value}
