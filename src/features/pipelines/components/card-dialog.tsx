@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { X, Trash2, MessageCircle } from 'lucide-react';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { X, Trash2, MessageCircle, Phone, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   pipelinesService,
@@ -51,6 +51,30 @@ export function CardDialog({
     queryKey: ['card-detail', card?.id],
     queryFn: () => pipelinesService.getCard(card!.id),
     enabled: open && !!card?.id,
+  });
+
+  // "Iniciar WhatsApp": lead com telefone e SEM conversa ainda — o vendedor
+  // escolhe o número/canal pra ligar o lead ao WhatsApp.
+  const [waChannel, setWaChannel] = useState('');
+  const hasPhone = !!detail?.contact?.phone;
+  const hasConversation = (detail?.contact?.conversations?.length ?? 0) > 0;
+  const { data: waChannels } = useQuery({
+    queryKey: ['wa-channels'],
+    queryFn: () => pipelinesService.listWhatsappChannels(),
+    enabled: open && hasPhone && !hasConversation,
+  });
+  const startWa = useMutation({
+    mutationFn: () =>
+      pipelinesService.startWhatsapp(
+        card!.id,
+        waChannel || waChannels?.[0]?.id || '',
+      ),
+    onSuccess: (r) => {
+      toast.success('Conversa de WhatsApp iniciada');
+      onOpenConversation?.(r.conversationId);
+    },
+    onError: (e: any) =>
+      toast.error(e?.response?.data?.message || 'Falha ao iniciar WhatsApp'),
   });
 
   useEffect(() => {
@@ -170,6 +194,45 @@ export function CardDialog({
                 </div>
               </div>
             )}
+
+          {/* Iniciar WhatsApp: lead com telefone e sem conversa ainda. O
+              vendedor escolhe o número/canal pra ligar o lead ao WhatsApp. */}
+          {onOpenConversation && hasPhone && !hasConversation && (
+            <div className="rounded-lg border border-emerald-200 bg-emerald-50/40 p-2.5 dark:border-emerald-500/20 dark:bg-emerald-500/5">
+              <p className="mb-1.5 flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wide text-emerald-700 dark:text-emerald-400">
+                <Phone className="h-3.5 w-3.5" /> Iniciar WhatsApp
+              </p>
+              <div className="flex items-center gap-2">
+                <select
+                  value={waChannel || waChannels?.[0]?.id || ''}
+                  onChange={(e) => setWaChannel(e.target.value)}
+                  className="min-w-0 flex-1 rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                >
+                  {(waChannels ?? []).map((ch) => (
+                    <option key={ch.id} value={ch.id}>
+                      {ch.name}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  onClick={() => startWa.mutate()}
+                  disabled={startWa.isPending || !(waChannels?.length)}
+                  className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-emerald-700 disabled:opacity-50"
+                >
+                  {startWa.isPending ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <MessageCircle className="h-3.5 w-3.5" />
+                  )}
+                  Ligar ao WhatsApp
+                </button>
+              </div>
+              <p className="mt-1 text-[10px] text-zinc-500">
+                Cria a conversa nesse número — o vendedor contata e os follow-ups
+                disparam por ele.
+              </p>
+            </div>
+          )}
 
           <div>
             <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300">

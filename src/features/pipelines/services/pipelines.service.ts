@@ -220,6 +220,22 @@ export const pipelinesService = {
     const { data } = await api.get(`/pipelines/cards/${cardId}`);
     return data.data ?? data;
   },
+  async listWhatsappChannels(): Promise<
+    { id: string; name: string; type: string }[]
+  > {
+    const { data } = await api.get('/pipelines/whatsapp-channels');
+    return data.data ?? data;
+  },
+  async startWhatsapp(
+    cardId: string,
+    channelId: string,
+  ): Promise<{ conversationId: string }> {
+    const { data } = await api.post(
+      `/pipelines/cards/${cardId}/start-whatsapp`,
+      { channelId },
+    );
+    return data.data ?? data;
+  },
   async getRouting(): Promise<LeadRouting> {
     const { data } = await api.get('/pipelines/routing');
     return data.data ?? data;
