@@ -184,6 +184,88 @@ function BackfillDatesCard() {
   );
 }
 
+interface LeadScoreResult {
+  corrigiveis: number;
+  valorAjustar: number;
+  contatos: number;
+  atualizados: number;
+  tagsAplicadas: number;
+}
+
+/** Corrige cards da LP cujo Valor recebeu o lead score: zera Valor, grava a
+ *  temperatura e aplica a tag Lead Quente/Morno/Frio no contato. */
+function BackfillLeadScoreCard() {
+  const [res, setRes] = useState<LeadScoreResult | null>(null);
+  const [mode, setMode] = useState<'preview' | 'exec' | null>(null);
+  const run = (execute: boolean) =>
+    api
+      .post(`/imports/backfill-leadscore${execute ? '?execute=true' : ''}`, {})
+      .then((r) => r.data.data ?? r.data);
+  const preview = useMutation({
+    mutationFn: () => run(false),
+    onSuccess: (r: LeadScoreResult) => {
+      setRes(r);
+      setMode('preview');
+      toast.success(`${r.valorAjustar} card(s) com Valor = score`);
+    },
+    onError: (e: any) => toast.error(e?.message ?? 'Falha na prévia'),
+  });
+  const execute = useMutation({
+    mutationFn: () => run(true),
+    onSuccess: (r: LeadScoreResult) => {
+      setRes(r);
+      setMode('exec');
+      toast.success(
+        `${r.atualizados} card(s) corrigido(s), ${r.tagsAplicadas} tag(s) aplicadas`,
+      );
+    },
+    onError: (e: any) => toast.error(e?.message ?? 'Falha ao corrigir'),
+  });
+  const busy = preview.isPending || execute.isPending;
+
+  return (
+    <div className="mt-3 rounded-xl border border-orange-200 bg-orange-50/50 p-4 dark:border-orange-500/20 dark:bg-orange-500/5">
+      <div className="flex items-center gap-2 text-sm font-medium text-zinc-800 dark:text-zinc-200">
+        <CalendarClock className="h-4 w-4 text-orange-500" />
+        Corrigir Valor x Lead Score (leads da LP)
+      </div>
+      <p className="mt-1 text-xs text-zinc-500">
+        Cards em que o "Valor R$" recebeu o lead score: zera o Valor, grava a
+        temperatura no card e aplica a tag Lead Quente/Morno/Frio no contato
+        (aparece no WhatsApp). Rode a prévia antes.
+      </p>
+      <div className="mt-3 flex flex-wrap gap-2">
+        <button
+          onClick={() => preview.mutate()}
+          disabled={busy}
+          className="inline-flex items-center gap-2 rounded-lg border border-zinc-200 px-3 py-1.5 text-xs font-medium text-zinc-700 hover:bg-white disabled:opacity-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
+        >
+          {preview.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+          Rodar prévia
+        </button>
+        <button
+          onClick={() => {
+            if (window.confirm('Corrigir os leads com Valor = score agora?'))
+              execute.mutate();
+          }}
+          disabled={busy || !res || res.valorAjustar === 0}
+          className="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground disabled:opacity-50"
+        >
+          {execute.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+          Corrigir agora
+        </button>
+      </div>
+      {res && (
+        <div className="mt-3 text-xs text-zinc-600 dark:text-zinc-300">
+          {mode === 'exec'
+            ? `${res.atualizados} card(s) corrigido(s), ${res.tagsAplicadas} tag(s) de temperatura aplicadas.`
+            : `${res.corrigiveis} com lead score · ${res.valorAjustar} com Valor = score · ${res.contatos} contato(s).`}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function ImportPage() {
   const [headers, setHeaders] = useState<string[]>([]);
   const [rows, setRows] = useState<any[][]>([]);
@@ -357,6 +439,7 @@ export default function ImportPage() {
       </p>
 
       <BackfillDatesCard />
+      <BackfillLeadScoreCard />
 
       {/* Upload */}
       <label className="mt-5 flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-zinc-300 p-8 text-center hover:border-primary/40 dark:border-zinc-700">
