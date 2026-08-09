@@ -10,6 +10,8 @@ export interface PipelineStage {
   color: string | null;
   type: StageType;
   order: number;
+  /** Prazo de inatividade (horas) desta etapa. null = herda do funil. */
+  inactivityHours: number | null;
   createdAt: string;
 }
 
@@ -23,6 +25,8 @@ export interface Pipeline {
   isDefault: boolean;
   archived: boolean;
   order: number;
+  /** Prazo padrão de inatividade (horas) do funil. null = alerta desligado. */
+  inactivityHours: number | null;
   stages?: PipelineStage[];
   _count?: { cards: number };
   createdAt: string;
@@ -286,6 +290,7 @@ export const pipelinesService = {
       color?: string;
       type?: StageType;
       order?: number;
+      inactivityHours?: number | null;
     }>,
   ): Promise<PipelineStage[]> {
     const { data } = await api.put(`/pipelines/${id}/stages`, { stages });

@@ -40,12 +40,16 @@ interface DraftStage {
   name: string;
   color: string;
   type: StageType;
+  // Prazo de inatividade (horas) da etapa. null = herda do funil.
+  inactivityHours: number | null;
 }
 
 interface Props {
   open: boolean;
   pipelineId: string;
   initialStages: PipelineStage[];
+  /** Prazo padrão do funil (horas). null = alerta de inatividade desligado. */
+  pipelineInactivityHours?: number | null;
   onClose: () => void;
   onSaved: () => void;
 }
@@ -164,6 +168,29 @@ function SortableRow({
               );
             })}
           </div>
+
+          <div className="ml-1 h-4 w-px bg-zinc-200 dark:bg-zinc-700" />
+
+          {/* Prazo de inatividade da etapa (horas). Vazio = herda do funil. */}
+          <label className="flex items-center gap-1 text-[11px] text-zinc-500">
+            Parado após
+            <input
+              type="number"
+              min={1}
+              value={stage.inactivityHours ?? ''}
+              onChange={(e) =>
+                onChange({
+                  inactivityHours:
+                    e.target.value === ''
+                      ? null
+                      : Math.max(1, parseInt(e.target.value, 10) || 1),
+                })
+              }
+              placeholder="herda"
+              className="w-16 rounded-md border border-zinc-300 bg-white px-1.5 py-0.5 text-xs dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+            />
+            h
+          </label>
         </div>
       </div>
 
@@ -183,11 +210,13 @@ export function StagesDialog({
   open,
   pipelineId,
   initialStages,
+  pipelineInactivityHours,
   onClose,
   onSaved,
 }: Props) {
   const qc = useQueryClient();
   const [stages, setStages] = useState<DraftStage[]>([]);
+  const [pipelineHours, setPipelineHours] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -199,10 +228,12 @@ export function StagesDialog({
           name: s.name,
           color: s.color ?? 'zinc',
           type: s.type,
+          inactivityHours: s.inactivityHours ?? null,
         })),
       );
+      setPipelineHours(pipelineInactivityHours ?? null);
     }
-  }, [open, initialStages]);
+  }, [open, initialStages, pipelineInactivityHours]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -224,7 +255,13 @@ export function StagesDialog({
   const handleAdd = () => {
     setStages((prev) => [
       ...prev,
-      { key: makeKey(), name: '', color: 'zinc', type: 'NORMAL' },
+      {
+        key: makeKey(),
+        name: '',
+        color: 'zinc',
+        type: 'NORMAL',
+        inactivityHours: null,
+      },
     ]);
   };
 
@@ -235,6 +272,10 @@ export function StagesDialog({
     }
     setSaving(true);
     try {
+      // Prazo padrão do funil (default de inatividade de todas as etapas).
+      await pipelinesService.update(pipelineId, {
+        inactivityHours: pipelineHours,
+      });
       await pipelinesService.upsertStages(
         pipelineId,
         stages.map((s, idx) => ({
@@ -243,6 +284,7 @@ export function StagesDialog({
           color: s.color,
           type: s.type,
           order: idx,
+          inactivityHours: s.inactivityHours,
         })),
       );
       toast.success('Stages atualizadas');
@@ -280,6 +322,33 @@ export function StagesDialog({
         </div>
 
         <div className="flex-1 overflow-y-auto px-6 py-4">
+          {/* Prazo padrão de inatividade do funil */}
+          <div className="mb-4 flex items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2.5 dark:border-zinc-800 dark:bg-zinc-900/50">
+            <span className="text-sm text-zinc-700 dark:text-zinc-300">
+              Avisar quando um card ficar sem interação por
+            </span>
+            <input
+              type="number"
+              min={1}
+              value={pipelineHours ?? ''}
+              onChange={(e) =>
+                setPipelineHours(
+                  e.target.value === ''
+                    ? null
+                    : Math.max(1, parseInt(e.target.value, 10) || 1),
+                )
+              }
+              placeholder="desligado"
+              className="w-24 rounded-md border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+            />
+            <span className="text-sm text-zinc-700 dark:text-zinc-300">
+              horas
+            </span>
+            <span className="ml-auto text-[11px] text-zinc-400">
+              Vazio = alerta desligado. Cada etapa pode ter prazo próprio.
+            </span>
+          </div>
+
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}

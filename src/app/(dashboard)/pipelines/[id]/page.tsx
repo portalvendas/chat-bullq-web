@@ -71,6 +71,7 @@ export default function PipelineBoardPage() {
           open={stagesOpen}
           pipelineId={pipelineId}
           initialStages={pipeline.stages ?? []}
+          pipelineInactivityHours={pipeline.inactivityHours ?? null}
           onClose={() => setStagesOpen(false)}
           onSaved={() => setStagesOpen(false)}
         />
