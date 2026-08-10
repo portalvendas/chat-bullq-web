@@ -229,6 +229,53 @@ export function LeadEnrichment({ card }: { card: CardDetail }) {
   const customEntries = Object.entries(customObj).filter(
     ([, v]) => v !== null && v !== undefined && v !== '',
   );
+
+  // Lead score + temperatura + respostas do formulário (LP/Lead Ads gravam em
+  // metadata.raw + leadScore/leadTemperature). Para lead que digitou no
+  // WhatsApp não há captura estruturada — as respostas ficam no próprio chat.
+  const meta = (card.metadata as any) ?? {};
+  const raw = (meta.raw ?? {}) as Record<string, any>;
+  const score = meta.leadScore ?? raw.lead_score ?? raw.score ?? null;
+  const temp =
+    meta.leadTemperature ?? raw.lead_temperatura ?? raw.temperatura ?? null;
+  const tempCls =
+    temp === 'Quente'
+      ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300'
+      : temp === 'Morno'
+        ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300'
+        : temp === 'Frio'
+          ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
+          : 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300';
+  const fmtVal = (v: any) =>
+    Array.isArray(v)
+      ? v.join(', ')
+      : typeof v === 'boolean'
+        ? v
+          ? 'Sim'
+          : 'Não'
+        : v == null
+          ? ''
+          : String(v);
+  const FORM_FIELDS: [string, string][] = [
+    ['itens', 'Itens'],
+    ['material', 'Material'],
+    ['medidas', 'Medidas'],
+    ['quantidade', 'Quantidade'],
+    ['prazo', 'Prazo'],
+    ['cidade_uf', 'Cidade/UF'],
+    ['cidade', 'Cidade'],
+    ['precisa_consultoria', 'Consultoria'],
+    ['item_outro', 'Outro item'],
+    ['descricao', 'Descrição'],
+  ];
+  const formEntries = FORM_FIELDS.map(
+    ([k, label]) => [label, fmtVal(raw[k])] as [string, string],
+  ).filter(([, v]) => v !== '');
+  // Resumo do formulário também vem na DESCRIÇÃO do card (ex.: "Itens: … |
+  // Material: … | Score: 51 (Morno)") — é o que o card sem conversa mostra.
+  const description = card.description?.trim() || '';
+  const hasFormBlock =
+    score != null || formEntries.length > 0 || description.length > 0;
   // Rastreamento vem RECOLHIDO por padrão — o operador expande se quiser ver.
   const [showTracking, setShowTracking] = useState(false);
   const trackingKeys = Object.keys(tracking).filter(
@@ -275,6 +322,41 @@ export function LeadEnrichment({ card }: { card: CardDetail }) {
           <p className="text-xs text-zinc-400">Sem dados de contato.</p>
         )}
       </div>
+
+      {/* Score + Respostas do formulário (lead da LP / Lead Ads) */}
+      {hasFormBlock && (
+        <div className="rounded-md border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900/40">
+          <div className="mb-2 flex items-center justify-between gap-2">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-zinc-500">
+              Respostas do formulário
+            </p>
+            {score != null && (
+              <span
+                className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${tempCls}`}
+                title="Lead score / temperatura"
+              >
+                Score {String(score)}
+                {temp ? ` · ${temp}` : ''}
+              </span>
+            )}
+          </div>
+          {formEntries.length > 0 ? (
+            <div className="grid grid-cols-2 gap-2">
+              {formEntries.map(([label, value]) => (
+                <Field key={label} label={label} value={value} />
+              ))}
+            </div>
+          ) : description ? (
+            <p className="whitespace-pre-wrap break-words text-xs text-zinc-800 dark:text-zinc-200">
+              {description}
+            </p>
+          ) : (
+            <p className="text-xs text-zinc-400">
+              Sem respostas estruturadas (lead digitou no chat).
+            </p>
+          )}
+        </div>
+      )}
 
       {/* Campos personalizados (import) */}
       {customEntries.length > 0 && (
