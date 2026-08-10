@@ -114,7 +114,30 @@ export const cadencesService = {
     const { data } = await api.post('/cadences/import-kommo', { files });
     return unwrap<KommoImportResult>(data);
   },
+  async autoLinkTemplates(
+    id: string,
+    execute: boolean,
+  ): Promise<AutoLinkResult> {
+    const { data } = await api.post(
+      `/cadences/${id}/auto-link-templates`,
+      {},
+      { params: { execute: execute ? 'true' : 'false' } },
+    );
+    return unwrap<AutoLinkResult>(data);
+  },
 };
+
+export interface AutoLinkResult {
+  total: number;
+  linked: number;
+  execute: boolean;
+  results: Array<{
+    nodeId: string;
+    text: string;
+    template: string | null;
+    score: number;
+  }>;
+}
 
 export interface KommoImportResult {
   created: number;

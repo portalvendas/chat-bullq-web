@@ -307,6 +307,19 @@ function SalesbotEditor({
     onError: () => toast.error('Erro ao salvar'),
   });
 
+  // Vincula automaticamente os nós de mensagem aos templates aprovados
+  // (usa o texto salvo do bot — salve antes se acabou de editar o fluxo).
+  const autoLink = useMutation({
+    mutationFn: () => cadencesService.autoLinkTemplates(bot!.id, true),
+    onSuccess: (r) => {
+      toast.success(
+        `Templates vinculados: ${r.linked}/${r.total} nó(s) de mensagem`,
+      );
+      onSaved();
+    },
+    onError: () => toast.error('Falha ao vincular templates'),
+  });
+
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-white dark:bg-zinc-950">
       {/* Barra superior */}
@@ -428,6 +441,19 @@ function SalesbotEditor({
         </details>
 
         <div className="ml-auto flex items-center gap-2">
+          {bot && (
+            <button
+              onClick={() => autoLink.mutate()}
+              disabled={autoLink.isPending}
+              title="Casa cada nó de mensagem com o template aprovado de texto igual (WhatsApp Oficial fora das 24h)"
+              className="inline-flex items-center gap-1.5 rounded-md border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-100 disabled:opacity-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
+            >
+              {autoLink.isPending && (
+                <Loader className="h-3.5 w-3.5 animate-spin" />
+              )}
+              Vincular templates
+            </button>
+          )}
           <button
             onClick={onClose}
             disabled={save.isPending}
