@@ -20,6 +20,7 @@ import { AssignmentPopover } from './assignment-popover';
 import { AgentPinPopover } from './agent-pin-popover';
 import { PipelinePopover } from './pipeline-popover';
 import { SalesbotPopover } from './salesbot-popover';
+import { ChannelSwitchPopover } from './channel-switch-popover';
 import { LeadInfoPopover } from './lead-info-popover';
 import { inboxService, type Conversation } from '../services/inbox.service';
 
@@ -170,6 +171,11 @@ export function ConversationHeader({
       </div>
 
       <div className="flex items-center gap-1.5">
+        <ChannelSwitchPopover
+          conversationId={conversation.id}
+          currentChannelId={conversation.channel.id}
+          currentChannelType={conversation.channel.type}
+        />
         <LeadInfoPopover conversationId={conversation.id} />
         <AgentPinPopover conversation={conversation} onChanged={onUpdate} />
         <ConversationAiToggle

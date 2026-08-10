@@ -235,6 +235,16 @@ export const inboxService = {
     return data.data;
   },
 
+  async switchChannel(
+    conversationId: string,
+    channelId: string,
+  ): Promise<{ conversationId: string; channelId: string; channelType: string }> {
+    const { data } = await api.post(
+      `/conversations/${conversationId}/switch-channel`,
+      { channelId },
+    );
+    return data.data ?? data;
+  },
   async syncConversation(
     conversationId: string,
   ): Promise<{ imported: number; fetched: number; syncedAt: string }> {
