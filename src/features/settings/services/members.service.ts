@@ -6,6 +6,8 @@ export interface Member {
   organizationId: string;
   role: 'OWNER' | 'ADMIN' | 'AGENT';
   agentStatus: string;
+  permissionGroupId: string | null;
+  permissionGroup?: { id: string; name: string } | null;
   joinedAt: string;
   user: {
     id: string;

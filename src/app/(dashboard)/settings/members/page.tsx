@@ -5,6 +5,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { UserPlus, Trash2, Shield, ShieldCheck, User, Users, Copy, Link, X, Hash } from 'lucide-react';
 import { toast } from 'sonner';
 import { membersService, type Member } from '@/features/settings/services/members.service';
+import { permissionGroupsService } from '@/features/settings/services/permission-groups.service';
 import { useOrgId } from '@/hooks/use-org-query-key';
 import { MemberChannelsDrawer } from '@/features/settings/components/member-channels-drawer';
 
@@ -66,6 +67,21 @@ export default function SettingsMembersPage() {
       refresh();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Erro ao atualizar role');
+    }
+  };
+
+  const { data: groups = [] } = useQuery({
+    queryKey: ['permission-groups'],
+    queryFn: () => permissionGroupsService.list(),
+  });
+
+  const handleAssignGroup = async (memberId: string, groupId: string) => {
+    try {
+      await permissionGroupsService.assign(memberId, groupId || null);
+      toast.success('Grupo atualizado');
+      refresh();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Erro ao vincular grupo');
     }
   };
 
@@ -149,6 +165,7 @@ export default function SettingsMembersPage() {
             <tr className="border-b border-zinc-100 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900/50">
               <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Membro</th>
               <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Role</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Grupo</th>
               <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Canais</th>
               <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Entrou em</th>
               <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-zinc-500">Ações</th>
@@ -167,7 +184,7 @@ export default function SettingsMembersPage() {
               ))
             ) : !members?.length ? (
               <tr>
-                <td colSpan={5} className="px-4 py-12 text-center">
+                <td colSpan={6} className="px-4 py-12 text-center">
                   <Users className="mx-auto h-10 w-10 text-zinc-200 dark:text-zinc-700" />
                   <p className="mt-3 text-sm text-zinc-500">Nenhum membro encontrado</p>
                 </td>
@@ -202,6 +219,26 @@ export default function SettingsMembersPage() {
                         >
                           <option value="ADMIN">Admin</option>
                           <option value="AGENT">Agente</option>
+                        </select>
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      {m.role === 'OWNER' || m.role === 'ADMIN' ? (
+                        <span className="text-[11px] text-zinc-400">
+                          Acesso total
+                        </span>
+                      ) : (
+                        <select
+                          value={m.permissionGroupId ?? ''}
+                          onChange={(e) => handleAssignGroup(m.id, e.target.value)}
+                          className="rounded-md border border-zinc-200 bg-white px-2 py-1 text-xs dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                        >
+                          <option value="">Sem grupo (padrão)</option>
+                          {groups.map((g) => (
+                            <option key={g.id} value={g.id}>
+                              {g.name}
+                            </option>
+                          ))}
                         </select>
                       )}
                     </td>

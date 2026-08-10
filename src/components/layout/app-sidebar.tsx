@@ -11,6 +11,7 @@ import {
   MessageSquareText,
   MessageCircle,
 } from 'lucide-react';
+import { usePermissions } from '@/hooks/use-permissions';
 import { InboxTree } from '@/features/inbox-views/components/inbox-tree';
 import { JarvisTree } from '@/features/ai-agents/components/jarvis-tree';
 import { PipelinesTree } from '@/features/pipelines/components/pipelines-tree';
@@ -37,16 +38,17 @@ import {
 } from '@/components/ui/dropdown';
 
 const navItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/automations', label: 'Automações', icon: Zap },
-  { href: '/comentarios', label: 'Comentários', icon: MessageCircle },
-  { href: '/templates', label: 'Modelos', icon: MessageSquareText },
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, mod: 'dashboard' },
+  { href: '/automations', label: 'Automações', icon: Zap, mod: 'automations' },
+  { href: '/comentarios', label: 'Comentários', icon: MessageCircle, mod: 'inbox' },
+  { href: '/templates', label: 'Modelos', icon: MessageSquareText, mod: 'templates' },
 ];
 
 export function AppSidebar() {
   const { user, organizations, activeOrgId, setActiveOrg, logout } =
     useAuthStore();
   const activeOrg = organizations.find((o) => o.id === activeOrgId);
+  const { canView } = usePermissions();
 
   const handleOrgSwitch = (orgId: string) => {
     setActiveOrg(orgId);
@@ -86,15 +88,17 @@ export function AppSidebar() {
 
       <SidebarBody>
         <SidebarSection>
-          <InboxTree />
-          <PipelinesTree />
-          <JarvisTree />
-          {navItems.map((item) => (
-            <SidebarItem key={item.href} href={item.href}>
-              <item.icon className="size-5" />
-              <SidebarLabel>{item.label}</SidebarLabel>
-            </SidebarItem>
-          ))}
+          {canView('inbox') && <InboxTree />}
+          {canView('pipelines') && <PipelinesTree />}
+          {canView('jarvis') && <JarvisTree />}
+          {navItems
+            .filter((item) => canView(item.mod))
+            .map((item) => (
+              <SidebarItem key={item.href} href={item.href}>
+                <item.icon className="size-5" />
+                <SidebarLabel>{item.label}</SidebarLabel>
+              </SidebarItem>
+            ))}
         </SidebarSection>
 
         <SidebarSpacer />
