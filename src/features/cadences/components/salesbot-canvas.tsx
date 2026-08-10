@@ -72,6 +72,9 @@ interface SalesData {
   kind: GraphNodeType;
   text?: string;
   templateId?: string;
+  mediaUrl?: string;
+  mediaType?: 'DOCUMENT' | 'IMAGE';
+  fileName?: string;
   delayMinutes?: number;
   untilReply?: boolean;
   businessHoursOnly?: boolean;
@@ -147,6 +150,38 @@ const SalesNode = memo(({ id, data, selected }: NodeProps) => {
                 </option>
               ))}
             </select>
+            {/* Anexo (catálogo/PDF/imagem) — enviado dentro da janela de 24h */}
+            <input
+              value={d.mediaUrl ?? ''}
+              onChange={(e) => patch({ mediaUrl: e.target.value || undefined })}
+              placeholder="Anexo: URL do PDF/catálogo/imagem (opcional)"
+              title="Arquivo enviado como documento/imagem dentro das 24h. O texto acima vira legenda."
+              className="nodrag w-full rounded border border-zinc-300 px-1.5 py-1 text-[11px] outline-none focus:border-primary dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+            />
+            {d.mediaUrl?.trim() && (
+              <div className="flex items-center gap-1">
+                <select
+                  value={d.mediaType ?? 'DOCUMENT'}
+                  onChange={(e) =>
+                    patch({ mediaType: e.target.value as 'DOCUMENT' | 'IMAGE' })
+                  }
+                  className="nodrag rounded border border-zinc-300 px-1 py-0.5 text-[11px] dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300"
+                >
+                  <option value="DOCUMENT">Documento</option>
+                  <option value="IMAGE">Imagem</option>
+                </select>
+                {d.mediaType !== 'IMAGE' && (
+                  <input
+                    value={d.fileName ?? ''}
+                    onChange={(e) =>
+                      patch({ fileName: e.target.value || undefined })
+                    }
+                    placeholder="nome-do-arquivo.pdf"
+                    className="nodrag flex-1 rounded border border-zinc-300 px-1.5 py-0.5 text-[11px] outline-none focus:border-primary dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+                  />
+                )}
+              </div>
+            )}
           </>
         )}
         {d.kind === 'wait' && (
@@ -259,6 +294,9 @@ function toRf(graph: WorkflowGraph): { nodes: Node[]; edges: Edge[] } {
       kind: n.type,
       text: n.text,
       templateId: n.templateId,
+      mediaUrl: n.mediaUrl,
+      mediaType: n.mediaType,
+      fileName: n.fileName,
       delayMinutes: n.delayMinutes,
       untilReply: n.untilReply,
       businessHoursOnly: n.businessHoursOnly,
@@ -293,6 +331,11 @@ function toGraph(nodes: Node[], edges: Edge[]): WorkflowGraph {
       if (d.kind === 'message') {
         gn.text = d.text ?? '';
         if (d.templateId) gn.templateId = d.templateId;
+        if (d.mediaUrl?.trim()) {
+          gn.mediaUrl = d.mediaUrl.trim();
+          gn.mediaType = d.mediaType ?? 'DOCUMENT';
+          if (d.fileName?.trim()) gn.fileName = d.fileName.trim();
+        }
       } else if (d.kind === 'wait') {
         gn.delayMinutes = Number(d.delayMinutes) || 0;
         gn.untilReply = !!d.untilReply;

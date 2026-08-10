@@ -20,6 +20,9 @@ export interface GraphNode {
   type: GraphNodeType;
   text?: string;
   templateId?: string;
+  mediaUrl?: string;
+  mediaType?: 'DOCUMENT' | 'IMAGE';
+  fileName?: string;
   delayMinutes?: number;
   untilReply?: boolean;
   businessHoursOnly?: boolean;
