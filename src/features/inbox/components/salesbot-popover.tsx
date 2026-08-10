@@ -27,6 +27,14 @@ export function SalesbotPopover({ conversation }: Props) {
   });
   const active = bots.filter((b) => b.active);
 
+  // Salesbots REALMENTE rodando nesta conversa (RUNNING/WAITING).
+  const { data: running = [] } = useQuery({
+    queryKey: ['salesbot-active', conversation.id],
+    queryFn: () => cadencesService.activeForConversation(conversation.id),
+    refetchInterval: 15_000,
+  });
+  const runningBot = running[0];
+
   const start = async (bot: Cadence) => {
     setBusy(bot.id);
     try {
@@ -52,11 +60,28 @@ export function SalesbotPopover({ conversation }: Props) {
   return (
     <Popover className="relative">
       <PopoverButton
-        title="Iniciar um Salesbot nesta conversa"
-        className="inline-flex items-center gap-1.5 rounded-md bg-zinc-100 px-2.5 py-1.5 text-xs font-medium text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
+        title={
+          runningBot
+            ? `Salesbot rodando: ${runningBot.name}`
+            : 'Iniciar um Salesbot nesta conversa'
+        }
+        className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium ${
+          runningBot
+            ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-300'
+            : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700'
+        }`}
       >
-        <Workflow className="h-3.5 w-3.5" />
-        Salesbot
+        {runningBot ? (
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+          </span>
+        ) : (
+          <Workflow className="h-3.5 w-3.5" />
+        )}
+        <span className="max-w-[120px] truncate">
+          {runningBot ? runningBot.name : 'Salesbot'}
+        </span>
         <ChevronDown className="h-3 w-3 text-zinc-400" />
       </PopoverButton>
 
@@ -65,6 +90,25 @@ export function SalesbotPopover({ conversation }: Props) {
         transition
         className="z-50 mt-1.5 w-72 rounded-lg border border-zinc-200 bg-white p-2 shadow-lg outline-none transition duration-100 ease-out data-[closed]:scale-95 data-[closed]:opacity-0 dark:border-zinc-800 dark:bg-zinc-900 [--anchor-gap:0.25rem]"
       >
+        {running.length > 0 && (
+          <div className="mb-2 rounded-md border border-emerald-200 bg-emerald-50 p-2 dark:border-emerald-900/40 dark:bg-emerald-900/15">
+            <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-emerald-700 dark:text-emerald-300">
+              Rodando nesta conversa
+            </p>
+            {running.map((r) => (
+              <div key={r.runId} className="flex items-center gap-2 text-xs text-emerald-800 dark:text-emerald-200">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                </span>
+                <span className="truncate font-medium">{r.name}</span>
+                <span className="text-[10px] text-emerald-600 dark:text-emerald-400">
+                  {r.status === 'WAITING' ? 'aguardando' : 'ativo'}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
         <div className="mb-1 px-1 text-[11px] font-semibold uppercase tracking-wide text-zinc-500">
           Iniciar Salesbot
         </div>

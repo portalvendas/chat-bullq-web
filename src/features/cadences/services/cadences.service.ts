@@ -87,6 +87,14 @@ export interface CadenceInput {
   onEnd?: CadenceOnEnd;
 }
 
+export interface ActiveSalesbot {
+  runId: string;
+  status: 'RUNNING' | 'WAITING';
+  cadenceId: string;
+  name: string;
+  startedAt: string;
+}
+
 function unwrap<T>(data: any): T {
   return (data?.data ?? data) as T;
 }
@@ -110,6 +118,10 @@ export const cadencesService = {
   async start(id: string, conversationId: string): Promise<{ started: boolean; reason?: string }> {
     const { data } = await api.post(`/cadences/${id}/start`, { conversationId });
     return unwrap(data);
+  },
+  async activeForConversation(conversationId: string): Promise<ActiveSalesbot[]> {
+    const { data } = await api.get(`/cadences/active/${conversationId}`);
+    return unwrap<ActiveSalesbot[]>(data) ?? [];
   },
   async importKommo(
     files: Array<{ name: string; model: unknown }>,
