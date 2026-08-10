@@ -4,356 +4,15 @@
   "graph": {},
   "nodes": [
     {
-      "label": "salesbot-canvas.tsx",
-      "file_type": "code",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_features_cadences_components_salesbot_canvas",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "salesbot-canvas.tsx"
-    },
-    {
-      "label": "TemplatesCtx",
-      "file_type": "code",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L52",
-      "_origin": "ast",
-      "id": "src_features_cadences_components_salesbot_canvas_templatesctx",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "templatesctx"
-    },
-    {
-      "label": "TYPE_META",
-      "file_type": "code",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L54",
-      "_origin": "ast",
-      "id": "src_features_cadences_components_salesbot_canvas_type_meta",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "type_meta"
-    },
-    {
-      "label": "HANDLE_COLOR",
-      "file_type": "code",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L65",
-      "_origin": "ast",
-      "id": "src_features_cadences_components_salesbot_canvas_handle_color",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "handle_color"
-    },
-    {
-      "label": "SalesData",
-      "file_type": "code",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L71",
-      "_origin": "ast",
-      "id": "src_features_cadences_components_salesbot_canvas_salesdata",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "salesdata"
-    },
-    {
-      "label": "uid()",
-      "file_type": "code",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L85",
-      "_origin": "ast",
-      "id": "src_features_cadences_components_salesbot_canvas_uid",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "uid()"
-    },
-    {
-      "label": "SalesNode",
-      "file_type": "code",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L90",
-      "_origin": "ast",
-      "id": "src_features_cadences_components_salesbot_canvas_salesnode",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "salesnode"
-    },
-    {
-      "label": "nodeTypes",
-      "file_type": "code",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L285",
-      "_origin": "ast",
-      "id": "src_features_cadences_components_salesbot_canvas_nodetypes",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "nodetypes"
-    },
-    {
-      "label": "toRf()",
-      "file_type": "code",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L288",
-      "_origin": "ast",
-      "id": "src_features_cadences_components_salesbot_canvas_torf",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "torf()"
-    },
-    {
-      "label": "toGraph()",
-      "file_type": "code",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L321",
-      "_origin": "ast",
-      "id": "src_features_cadences_components_salesbot_canvas_tograph",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "tograph()"
-    },
-    {
-      "label": "dagreLayout()",
-      "file_type": "code",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L357",
-      "_origin": "ast",
-      "id": "src_features_cadences_components_salesbot_canvas_dagrelayout",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "dagrelayout()"
-    },
-    {
-      "label": "CanvasInner()",
-      "file_type": "code",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L371",
-      "_origin": "ast",
-      "id": "src_features_cadences_components_salesbot_canvas_canvasinner",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "canvasinner()"
-    },
-    {
-      "label": "SalesbotCanvas()",
-      "file_type": "code",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L505",
-      "_origin": "ast",
-      "id": "src_features_cadences_components_salesbot_canvas_salesbotcanvas",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "salesbotcanvas()"
-    },
-    {
-      "label": "cadences.service.ts",
-      "file_type": "code",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_features_cadences_services_cadences_service",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "cadences.service.ts"
-    },
-    {
-      "label": "WorkflowStep",
-      "file_type": "code",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L6",
-      "_origin": "ast",
-      "id": "src_features_cadences_services_cadences_service_workflowstep",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "workflowstep"
-    },
-    {
-      "label": "StepType",
-      "file_type": "code",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L11",
-      "_origin": "ast",
-      "id": "src_features_cadences_services_cadences_service_steptype",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "steptype"
-    },
-    {
-      "label": "GraphNodeType",
-      "file_type": "code",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L14",
-      "_origin": "ast",
-      "id": "src_features_cadences_services_cadences_service_graphnodetype",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "graphnodetype"
-    },
-    {
-      "label": "NodeHandle",
-      "file_type": "code",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L15",
-      "_origin": "ast",
-      "id": "src_features_cadences_services_cadences_service_nodehandle",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "nodehandle"
-    },
-    {
-      "label": "ActionKind",
-      "file_type": "code",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L16",
-      "_origin": "ast",
-      "id": "src_features_cadences_services_cadences_service_actionkind",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "actionkind"
-    },
-    {
-      "label": "GraphNode",
-      "file_type": "code",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L18",
-      "_origin": "ast",
-      "id": "src_features_cadences_services_cadences_service_graphnode",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "graphnode"
-    },
-    {
-      "label": "GraphEdge",
-      "file_type": "code",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L34",
-      "_origin": "ast",
-      "id": "src_features_cadences_services_cadences_service_graphedge",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "graphedge"
-    },
-    {
-      "label": "WorkflowGraph",
-      "file_type": "code",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L40",
-      "_origin": "ast",
-      "id": "src_features_cadences_services_cadences_service_workflowgraph",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "workflowgraph"
-    },
-    {
-      "label": "CadenceStep",
-      "file_type": "code",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L46",
-      "_origin": "ast",
-      "id": "src_features_cadences_services_cadences_service_cadencestep",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "cadencestep"
-    },
-    {
-      "label": "CadenceOnEnd",
-      "file_type": "code",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L50",
-      "_origin": "ast",
-      "id": "src_features_cadences_services_cadences_service_cadenceonend",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "cadenceonend"
-    },
-    {
-      "label": "CadenceTrigger",
-      "file_type": "code",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L55",
-      "_origin": "ast",
-      "id": "src_features_cadences_services_cadences_service_cadencetrigger",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "cadencetrigger"
-    },
-    {
-      "label": "Cadence",
-      "file_type": "code",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L60",
-      "_origin": "ast",
-      "id": "src_features_cadences_services_cadences_service_cadence",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "cadence"
-    },
-    {
-      "label": "CadenceInput",
-      "file_type": "code",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L76",
-      "_origin": "ast",
-      "id": "src_features_cadences_services_cadences_service_cadenceinput",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "cadenceinput"
-    },
-    {
-      "label": "unwrap()",
-      "file_type": "code",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L90",
-      "_origin": "ast",
-      "id": "src_features_cadences_services_cadences_service_unwrap",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "unwrap()"
-    },
-    {
-      "label": "cadencesService",
-      "file_type": "code",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L94",
-      "_origin": "ast",
-      "id": "src_features_cadences_services_cadences_service_cadencesservice",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "cadencesservice"
-    },
-    {
-      "label": "AutoLinkResult",
-      "file_type": "code",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L133",
-      "_origin": "ast",
-      "id": "src_features_cadences_services_cadences_service_autolinkresult",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "autolinkresult"
-    },
-    {
-      "label": "KommoImportResult",
-      "file_type": "code",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L145",
-      "_origin": "ast",
-      "id": "src_features_cadences_services_cadences_service_kommoimportresult",
-      "community": 18,
-      "community_name": "cadences.service.ts",
-      "norm_label": "kommoimportresult"
-    },
-    {
       "label": "[id]/page.tsx",
       "file_type": "code",
       "source_file": "src/app/(dashboard)/pipelines/[id]/page.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "pipelines.service.ts",
-      "norm_label": "[id]/page.tsx",
-      "id": "src_app_dashboard_pipelines_id_page"
+      "id": "src_app_dashboard_pipelines_id_page",
+      "community": 22,
+      "community_name": "stages-dialog.tsx",
+      "norm_label": "[id]/page.tsx"
     },
     {
       "label": "PipelineBoardPage()",
@@ -361,10 +20,10 @@
       "source_file": "src/app/(dashboard)/pipelines/[id]/page.tsx",
       "source_location": "L11",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "pipelines.service.ts",
-      "norm_label": "pipelineboardpage()",
-      "id": "src_app_dashboard_pipelines_id_page_pipelineboardpage"
+      "id": "src_app_dashboard_pipelines_id_page_pipelineboardpage",
+      "community": 22,
+      "community_name": "stages-dialog.tsx",
+      "norm_label": "pipelineboardpage()"
     },
     {
       "label": "stages-dialog.tsx",
@@ -372,10 +31,10 @@
       "source_file": "src/features/pipelines/components/stages-dialog.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "pipelines.service.ts",
-      "norm_label": "stages-dialog.tsx",
-      "id": "src_features_pipelines_components_stages_dialog"
+      "id": "src_features_pipelines_components_stages_dialog",
+      "community": 22,
+      "community_name": "stages-dialog.tsx",
+      "norm_label": "stages-dialog.tsx"
     },
     {
       "label": "DraftStage",
@@ -383,10 +42,10 @@
       "source_file": "src/features/pipelines/components/stages-dialog.tsx",
       "source_location": "L36",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "pipelines.service.ts",
-      "norm_label": "draftstage",
-      "id": "src_features_pipelines_components_stages_dialog_draftstage"
+      "id": "src_features_pipelines_components_stages_dialog_draftstage",
+      "community": 22,
+      "community_name": "stages-dialog.tsx",
+      "norm_label": "draftstage"
     },
     {
       "label": "Props",
@@ -394,10 +53,10 @@
       "source_file": "src/features/pipelines/components/stages-dialog.tsx",
       "source_location": "L47",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "pipelines.service.ts",
-      "norm_label": "props",
-      "id": "src_features_pipelines_components_stages_dialog_props"
+      "id": "src_features_pipelines_components_stages_dialog_props",
+      "community": 22,
+      "community_name": "stages-dialog.tsx",
+      "norm_label": "props"
     },
     {
       "label": "COLORS",
@@ -405,10 +64,10 @@
       "source_file": "src/features/pipelines/components/stages-dialog.tsx",
       "source_location": "L57",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "pipelines.service.ts",
-      "norm_label": "colors",
-      "id": "src_features_pipelines_components_stages_dialog_colors"
+      "id": "src_features_pipelines_components_stages_dialog_colors",
+      "community": 22,
+      "community_name": "stages-dialog.tsx",
+      "norm_label": "colors"
     },
     {
       "label": "TYPE_OPTIONS",
@@ -416,10 +75,10 @@
       "source_file": "src/features/pipelines/components/stages-dialog.tsx",
       "source_location": "L67",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "pipelines.service.ts",
-      "norm_label": "type_options",
-      "id": "src_features_pipelines_components_stages_dialog_type_options"
+      "id": "src_features_pipelines_components_stages_dialog_type_options",
+      "community": 22,
+      "community_name": "stages-dialog.tsx",
+      "norm_label": "type_options"
     },
     {
       "label": "makeKey()",
@@ -427,10 +86,10 @@
       "source_file": "src/features/pipelines/components/stages-dialog.tsx",
       "source_location": "L78",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "pipelines.service.ts",
-      "norm_label": "makekey()",
-      "id": "src_features_pipelines_components_stages_dialog_makekey"
+      "id": "src_features_pipelines_components_stages_dialog_makekey",
+      "community": 22,
+      "community_name": "stages-dialog.tsx",
+      "norm_label": "makekey()"
     },
     {
       "label": "SortableRow()",
@@ -438,10 +97,10 @@
       "source_file": "src/features/pipelines/components/stages-dialog.tsx",
       "source_location": "L82",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "pipelines.service.ts",
-      "norm_label": "sortablerow()",
-      "id": "src_features_pipelines_components_stages_dialog_sortablerow"
+      "id": "src_features_pipelines_components_stages_dialog_sortablerow",
+      "community": 22,
+      "community_name": "stages-dialog.tsx",
+      "norm_label": "sortablerow()"
     },
     {
       "label": "StagesDialog()",
@@ -449,10 +108,10 @@
       "source_file": "src/features/pipelines/components/stages-dialog.tsx",
       "source_location": "L209",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "pipelines.service.ts",
-      "norm_label": "stagesdialog()",
-      "id": "src_features_pipelines_components_stages_dialog_stagesdialog"
+      "id": "src_features_pipelines_components_stages_dialog_stagesdialog",
+      "community": 22,
+      "community_name": "stages-dialog.tsx",
+      "norm_label": "stagesdialog()"
     },
     {
       "label": "pipelines.service.ts",
@@ -460,10 +119,10 @@
       "source_file": "src/features/pipelines/services/pipelines.service.ts",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service",
       "community": 6,
       "community_name": "pipelines.service.ts",
-      "norm_label": "pipelines.service.ts",
-      "id": "src_features_pipelines_services_pipelines_service"
+      "norm_label": "pipelines.service.ts"
     },
     {
       "label": "StageType",
@@ -471,10 +130,10 @@
       "source_file": "src/features/pipelines/services/pipelines.service.ts",
       "source_location": "L3",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "pipelines.service.ts",
-      "norm_label": "stagetype",
-      "id": "src_features_pipelines_services_pipelines_service_stagetype"
+      "id": "src_features_pipelines_services_pipelines_service_stagetype",
+      "community": 22,
+      "community_name": "stages-dialog.tsx",
+      "norm_label": "stagetype"
     },
     {
       "label": "CardStatus",
@@ -482,10 +141,10 @@
       "source_file": "src/features/pipelines/services/pipelines.service.ts",
       "source_location": "L4",
       "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_cardstatus",
       "community": 6,
       "community_name": "pipelines.service.ts",
-      "norm_label": "cardstatus",
-      "id": "src_features_pipelines_services_pipelines_service_cardstatus"
+      "norm_label": "cardstatus"
     },
     {
       "label": "PipelineStage",
@@ -493,10 +152,10 @@
       "source_file": "src/features/pipelines/services/pipelines.service.ts",
       "source_location": "L6",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "pipelines.service.ts",
-      "norm_label": "pipelinestage",
-      "id": "src_features_pipelines_services_pipelines_service_pipelinestage"
+      "id": "src_features_pipelines_services_pipelines_service_pipelinestage",
+      "community": 22,
+      "community_name": "stages-dialog.tsx",
+      "norm_label": "pipelinestage"
     },
     {
       "label": "Pipeline",
@@ -504,10 +163,10 @@
       "source_file": "src/features/pipelines/services/pipelines.service.ts",
       "source_location": "L18",
       "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_pipeline",
       "community": 6,
       "community_name": "pipelines.service.ts",
-      "norm_label": "pipeline",
-      "id": "src_features_pipelines_services_pipelines_service_pipeline"
+      "norm_label": "pipeline"
     },
     {
       "label": "CardSummary",
@@ -515,10 +174,10 @@
       "source_file": "src/features/pipelines/services/pipelines.service.ts",
       "source_location": "L36",
       "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_cardsummary",
       "community": 6,
       "community_name": "pipelines.service.ts",
-      "norm_label": "cardsummary",
-      "id": "src_features_pipelines_services_pipelines_service_cardsummary"
+      "norm_label": "cardsummary"
     },
     {
       "label": "BoardResponse",
@@ -526,10 +185,10 @@
       "source_file": "src/features/pipelines/services/pipelines.service.ts",
       "source_location": "L78",
       "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_boardresponse",
       "community": 6,
       "community_name": "pipelines.service.ts",
-      "norm_label": "boardresponse",
-      "id": "src_features_pipelines_services_pipelines_service_boardresponse"
+      "norm_label": "boardresponse"
     },
     {
       "label": "LeadTracking",
@@ -537,10 +196,10 @@
       "source_file": "src/features/pipelines/services/pipelines.service.ts",
       "source_location": "L85",
       "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_leadtracking",
       "community": 6,
       "community_name": "pipelines.service.ts",
-      "norm_label": "leadtracking",
-      "id": "src_features_pipelines_services_pipelines_service_leadtracking"
+      "norm_label": "leadtracking"
     },
     {
       "label": "ContactTagLite",
@@ -548,10 +207,10 @@
       "source_file": "src/features/pipelines/services/pipelines.service.ts",
       "source_location": "L101",
       "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_contacttaglite",
       "community": 6,
       "community_name": "pipelines.service.ts",
-      "norm_label": "contacttaglite",
-      "id": "src_features_pipelines_services_pipelines_service_contacttaglite"
+      "norm_label": "contacttaglite"
     },
     {
       "label": "ContactConversationLite",
@@ -559,10 +218,10 @@
       "source_file": "src/features/pipelines/services/pipelines.service.ts",
       "source_location": "L108",
       "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_contactconversationlite",
       "community": 6,
       "community_name": "pipelines.service.ts",
-      "norm_label": "contactconversationlite",
-      "id": "src_features_pipelines_services_pipelines_service_contactconversationlite"
+      "norm_label": "contactconversationlite"
     },
     {
       "label": "CardDetail",
@@ -570,10 +229,10 @@
       "source_file": "src/features/pipelines/services/pipelines.service.ts",
       "source_location": "L116",
       "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_carddetail",
       "community": 6,
       "community_name": "pipelines.service.ts",
-      "norm_label": "carddetail",
-      "id": "src_features_pipelines_services_pipelines_service_carddetail"
+      "norm_label": "carddetail"
     },
     {
       "label": "CreatePipelineInput",
@@ -581,10 +240,10 @@
       "source_file": "src/features/pipelines/services/pipelines.service.ts",
       "source_location": "L137",
       "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_createpipelineinput",
       "community": 6,
       "community_name": "pipelines.service.ts",
-      "norm_label": "createpipelineinput",
-      "id": "src_features_pipelines_services_pipelines_service_createpipelineinput"
+      "norm_label": "createpipelineinput"
     },
     {
       "label": "CreateCardInput",
@@ -592,10 +251,10 @@
       "source_file": "src/features/pipelines/services/pipelines.service.ts",
       "source_location": "L151",
       "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_createcardinput",
       "community": 6,
       "community_name": "pipelines.service.ts",
-      "norm_label": "createcardinput",
-      "id": "src_features_pipelines_services_pipelines_service_createcardinput"
+      "norm_label": "createcardinput"
     },
     {
       "label": "ConversationCard",
@@ -603,10 +262,10 @@
       "source_file": "src/features/pipelines/services/pipelines.service.ts",
       "source_location": "L163",
       "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_conversationcard",
       "community": 6,
       "community_name": "pipelines.service.ts",
-      "norm_label": "conversationcard",
-      "id": "src_features_pipelines_services_pipelines_service_conversationcard"
+      "norm_label": "conversationcard"
     },
     {
       "label": "OriginType",
@@ -614,10 +273,10 @@
       "source_file": "src/features/pipelines/services/pipelines.service.ts",
       "source_location": "L186",
       "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_origintype",
       "community": 6,
       "community_name": "pipelines.service.ts",
-      "norm_label": "origintype",
-      "id": "src_features_pipelines_services_pipelines_service_origintype"
+      "norm_label": "origintype"
     },
     {
       "label": "RoutingTarget",
@@ -625,10 +284,10 @@
       "source_file": "src/features/pipelines/services/pipelines.service.ts",
       "source_location": "L195",
       "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_routingtarget",
       "community": 6,
       "community_name": "pipelines.service.ts",
-      "norm_label": "routingtarget",
-      "id": "src_features_pipelines_services_pipelines_service_routingtarget"
+      "norm_label": "routingtarget"
     },
     {
       "label": "RoutingException",
@@ -636,10 +295,10 @@
       "source_file": "src/features/pipelines/services/pipelines.service.ts",
       "source_location": "L199",
       "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_routingexception",
       "community": 6,
       "community_name": "pipelines.service.ts",
-      "norm_label": "routingexception",
-      "id": "src_features_pipelines_services_pipelines_service_routingexception"
+      "norm_label": "routingexception"
     },
     {
       "label": "LeadRouting",
@@ -647,10 +306,10 @@
       "source_file": "src/features/pipelines/services/pipelines.service.ts",
       "source_location": "L205",
       "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_leadrouting",
       "community": 6,
       "community_name": "pipelines.service.ts",
-      "norm_label": "leadrouting",
-      "id": "src_features_pipelines_services_pipelines_service_leadrouting"
+      "norm_label": "leadrouting"
     },
     {
       "label": "RoutingOptions",
@@ -658,10 +317,10 @@
       "source_file": "src/features/pipelines/services/pipelines.service.ts",
       "source_location": "L209",
       "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_routingoptions",
       "community": 6,
       "community_name": "pipelines.service.ts",
-      "norm_label": "routingoptions",
-      "id": "src_features_pipelines_services_pipelines_service_routingoptions"
+      "norm_label": "routingoptions"
     },
     {
       "label": "pipelinesService",
@@ -669,10 +328,10 @@
       "source_file": "src/features/pipelines/services/pipelines.service.ts",
       "source_location": "L215",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "pipelines.service.ts",
-      "norm_label": "pipelinesservice",
-      "id": "src_features_pipelines_services_pipelines_service_pipelinesservice"
+      "id": "src_features_pipelines_services_pipelines_service_pipelinesservice",
+      "community": 22,
+      "community_name": "stages-dialog.tsx",
+      "norm_label": "pipelinesservice"
     },
     {
       "label": "layout.tsx",
@@ -977,7 +636,7 @@
       "source_file": "package.json",
       "source_location": "L11",
       "_origin": "ast",
-      "community": 3,
+      "community": 5,
       "community_name": "dependencies",
       "norm_label": "dependencies",
       "id": "package_dependencies"
@@ -988,8 +647,8 @@
       "source_file": "package.json",
       "source_location": "L12",
       "_origin": "ast",
-      "community": 21,
-      "community_name": "@dagrejs/dagre",
+      "community": 5,
+      "community_name": "dependencies",
       "norm_label": "@dagrejs/dagre",
       "id": "package_dependencies_dagrejs_dagre"
     },
@@ -999,8 +658,8 @@
       "source_file": "package.json",
       "source_location": "L12",
       "_origin": "ast",
-      "community": 21,
-      "community_name": "@dagrejs/dagre",
+      "community": 5,
+      "community_name": "dependencies",
       "norm_label": "@dagrejs/dagre",
       "id": "dagrejs_dagre"
     },
@@ -1120,8 +779,8 @@
       "source_file": "package.json",
       "source_location": "L18",
       "_origin": "ast",
-      "community": 22,
-      "community_name": "@tanstack/react-query",
+      "community": 5,
+      "community_name": "dependencies",
       "norm_label": "@tanstack/react-query",
       "id": "package_dependencies_tanstack_react_query"
     },
@@ -1131,8 +790,8 @@
       "source_file": "package.json",
       "source_location": "L18",
       "_origin": "ast",
-      "community": 22,
-      "community_name": "@tanstack/react-query",
+      "community": 5,
+      "community_name": "dependencies",
       "norm_label": "@tanstack/react-query",
       "id": "tanstack_react_query"
     },
@@ -1187,7 +846,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "community": 3,
-      "community_name": "dependencies",
+      "community_name": "class-variance-authority",
       "norm_label": "class-variance-authority",
       "id": "package_dependencies_class_variance_authority"
     },
@@ -1198,7 +857,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "community": 3,
-      "community_name": "dependencies",
+      "community_name": "class-variance-authority",
       "norm_label": "class-variance-authority",
       "id": "class_variance_authority"
     },
@@ -1209,7 +868,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "community": 5,
-      "community_name": "clsx",
+      "community_name": "dependencies",
       "norm_label": "clsx",
       "id": "package_dependencies_clsx"
     },
@@ -1220,7 +879,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "community": 5,
-      "community_name": "clsx",
+      "community_name": "dependencies",
       "norm_label": "clsx",
       "id": "clsx"
     },
@@ -1384,8 +1043,8 @@
       "source_file": "package.json",
       "source_location": "L30",
       "_origin": "ast",
-      "community": 3,
-      "community_name": "dependencies",
+      "community": 18,
+      "community_name": "recharts",
       "norm_label": "recharts",
       "id": "package_dependencies_recharts"
     },
@@ -1395,8 +1054,8 @@
       "source_file": "package.json",
       "source_location": "L30",
       "_origin": "ast",
-      "community": 3,
-      "community_name": "dependencies",
+      "community": 18,
+      "community_name": "recharts",
       "norm_label": "recharts",
       "id": "recharts"
     },
@@ -1450,8 +1109,8 @@
       "source_file": "package.json",
       "source_location": "L33",
       "_origin": "ast",
-      "community": 3,
-      "community_name": "dependencies",
+      "community": 21,
+      "community_name": "tailwind-merge",
       "norm_label": "tailwind-merge",
       "id": "package_dependencies_tailwind_merge"
     },
@@ -1461,8 +1120,8 @@
       "source_file": "package.json",
       "source_location": "L33",
       "_origin": "ast",
-      "community": 3,
-      "community_name": "dependencies",
+      "community": 21,
+      "community_name": "tailwind-merge",
       "norm_label": "tailwind-merge",
       "id": "tailwind_merge"
     },
@@ -1702,464 +1361,13 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L371",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_components_salesbot_canvas",
-      "target": "src_features_cadences_components_salesbot_canvas_canvasinner",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L357",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_components_salesbot_canvas",
-      "target": "src_features_cadences_components_salesbot_canvas_dagrelayout",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L65",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_components_salesbot_canvas",
-      "target": "src_features_cadences_components_salesbot_canvas_handle_color",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L285",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_components_salesbot_canvas",
-      "target": "src_features_cadences_components_salesbot_canvas_nodetypes",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L505",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_components_salesbot_canvas",
-      "target": "src_features_cadences_components_salesbot_canvas_salesbotcanvas",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L71",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_components_salesbot_canvas",
-      "target": "src_features_cadences_components_salesbot_canvas_salesdata",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L90",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_components_salesbot_canvas",
-      "target": "src_features_cadences_components_salesbot_canvas_salesnode",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L52",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_components_salesbot_canvas",
-      "target": "src_features_cadences_components_salesbot_canvas_templatesctx",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L321",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_components_salesbot_canvas",
-      "target": "src_features_cadences_components_salesbot_canvas_tograph",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L288",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_components_salesbot_canvas",
-      "target": "src_features_cadences_components_salesbot_canvas_torf",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L54",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_components_salesbot_canvas",
-      "target": "src_features_cadences_components_salesbot_canvas_type_meta",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L85",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_components_salesbot_canvas",
-      "target": "src_features_cadences_components_salesbot_canvas_uid",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L43",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_components_salesbot_canvas",
-      "target": "src_features_cadences_services_cadences_service",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L43",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_components_salesbot_canvas",
-      "target": "src_features_cadences_services_cadences_service_graphnode",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L43",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_components_salesbot_canvas",
-      "target": "src_features_cadences_services_cadences_service_graphnodetype",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L43",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_components_salesbot_canvas",
-      "target": "src_features_cadences_services_cadences_service_nodehandle",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L43",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_components_salesbot_canvas",
-      "target": "src_features_cadences_services_cadences_service_workflowgraph",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "references",
-      "context": "field",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L72",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_components_salesbot_canvas_salesdata",
-      "target": "src_features_cadences_services_cadences_service_graphnodetype",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L433",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_components_salesbot_canvas_canvasinner",
-      "target": "src_features_cadences_components_salesbot_canvas_uid",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L378",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_components_salesbot_canvas_canvasinner",
-      "target": "src_features_cadences_components_salesbot_canvas_torf",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L401",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_components_salesbot_canvas_canvasinner",
-      "target": "src_features_cadences_components_salesbot_canvas_tograph",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L444",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_components_salesbot_canvas_canvasinner",
-      "target": "src_features_cadences_components_salesbot_canvas_dagrelayout",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "references",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/features/cadences/components/salesbot-canvas.tsx",
-      "source_location": "L359",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_components_salesbot_canvas_dagrelayout",
-      "target": "src_features_cadences_services_cadences_service_workflowgraph"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L16",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_services_cadences_service",
-      "target": "src_features_cadences_services_cadences_service_actionkind",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L133",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_services_cadences_service",
-      "target": "src_features_cadences_services_cadences_service_autolinkresult",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L60",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_services_cadences_service",
-      "target": "src_features_cadences_services_cadences_service_cadence",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L76",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_services_cadences_service",
-      "target": "src_features_cadences_services_cadences_service_cadenceinput",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L50",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_services_cadences_service",
-      "target": "src_features_cadences_services_cadences_service_cadenceonend",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L94",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_services_cadences_service",
-      "target": "src_features_cadences_services_cadences_service_cadencesservice",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L46",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_services_cadences_service",
-      "target": "src_features_cadences_services_cadences_service_cadencestep",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L55",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_services_cadences_service",
-      "target": "src_features_cadences_services_cadences_service_cadencetrigger",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L34",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_services_cadences_service",
-      "target": "src_features_cadences_services_cadences_service_graphedge",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L18",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_services_cadences_service",
-      "target": "src_features_cadences_services_cadences_service_graphnode",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L14",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_services_cadences_service",
-      "target": "src_features_cadences_services_cadences_service_graphnodetype",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L145",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_services_cadences_service",
-      "target": "src_features_cadences_services_cadences_service_kommoimportresult",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L15",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_services_cadences_service",
-      "target": "src_features_cadences_services_cadences_service_nodehandle",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L11",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_services_cadences_service",
-      "target": "src_features_cadences_services_cadences_service_steptype",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L90",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_services_cadences_service",
-      "target": "src_features_cadences_services_cadences_service_unwrap",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L40",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_services_cadences_service",
-      "target": "src_features_cadences_services_cadences_service_workflowgraph",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/cadences/services/cadences.service.ts",
-      "source_location": "L6",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_cadences_services_cadences_service",
-      "target": "src_features_cadences_services_cadences_service_workflowstep",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "src/app/(dashboard)/pipelines/[id]/page.tsx",
       "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_app_dashboard_pipelines_id_page",
-      "target": "src_app_dashboard_pipelines_id_page_pipelineboardpage"
+      "target": "src_app_dashboard_pipelines_id_page_pipelineboardpage",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -2169,9 +1377,9 @@
       "source_location": "L9",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_app_dashboard_pipelines_id_page",
-      "target": "src_features_pipelines_components_stages_dialog"
+      "target": "src_features_pipelines_components_stages_dialog",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -2181,9 +1389,9 @@
       "source_location": "L9",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_app_dashboard_pipelines_id_page",
-      "target": "src_features_pipelines_components_stages_dialog_stagesdialog"
+      "target": "src_features_pipelines_components_stages_dialog_stagesdialog",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -2193,9 +1401,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_app_dashboard_pipelines_id_page",
-      "target": "src_features_pipelines_services_pipelines_service"
+      "target": "src_features_pipelines_services_pipelines_service",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -2205,9 +1413,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_app_dashboard_pipelines_id_page",
-      "target": "src_features_pipelines_services_pipelines_service_pipelinesservice"
+      "target": "src_features_pipelines_services_pipelines_service_pipelinesservice",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2216,9 +1424,9 @@
       "source_location": "L57",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_components_stages_dialog",
-      "target": "src_features_pipelines_components_stages_dialog_colors"
+      "target": "src_features_pipelines_components_stages_dialog_colors",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2227,9 +1435,9 @@
       "source_location": "L36",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_components_stages_dialog",
-      "target": "src_features_pipelines_components_stages_dialog_draftstage"
+      "target": "src_features_pipelines_components_stages_dialog_draftstage",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2238,9 +1446,9 @@
       "source_location": "L78",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_components_stages_dialog",
-      "target": "src_features_pipelines_components_stages_dialog_makekey"
+      "target": "src_features_pipelines_components_stages_dialog_makekey",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2249,9 +1457,9 @@
       "source_location": "L47",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_components_stages_dialog",
-      "target": "src_features_pipelines_components_stages_dialog_props"
+      "target": "src_features_pipelines_components_stages_dialog_props",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2260,9 +1468,9 @@
       "source_location": "L82",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_components_stages_dialog",
-      "target": "src_features_pipelines_components_stages_dialog_sortablerow"
+      "target": "src_features_pipelines_components_stages_dialog_sortablerow",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2271,9 +1479,9 @@
       "source_location": "L209",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_components_stages_dialog",
-      "target": "src_features_pipelines_components_stages_dialog_stagesdialog"
+      "target": "src_features_pipelines_components_stages_dialog_stagesdialog",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2282,9 +1490,9 @@
       "source_location": "L67",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_components_stages_dialog",
-      "target": "src_features_pipelines_components_stages_dialog_type_options"
+      "target": "src_features_pipelines_components_stages_dialog_type_options",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -2294,9 +1502,9 @@
       "source_location": "L30",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_components_stages_dialog",
-      "target": "src_features_pipelines_services_pipelines_service"
+      "target": "src_features_pipelines_services_pipelines_service",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -2306,9 +1514,9 @@
       "source_location": "L30",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_components_stages_dialog",
-      "target": "src_features_pipelines_services_pipelines_service_pipelinesservice"
+      "target": "src_features_pipelines_services_pipelines_service_pipelinesservice",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -2318,9 +1526,9 @@
       "source_location": "L30",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_components_stages_dialog",
-      "target": "src_features_pipelines_services_pipelines_service_pipelinestage"
+      "target": "src_features_pipelines_services_pipelines_service_pipelinestage",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -2330,9 +1538,9 @@
       "source_location": "L30",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_components_stages_dialog",
-      "target": "src_features_pipelines_services_pipelines_service_stagetype"
+      "target": "src_features_pipelines_services_pipelines_service_stagetype",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -2342,9 +1550,9 @@
       "source_location": "L42",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_components_stages_dialog_draftstage",
-      "target": "src_features_pipelines_services_pipelines_service_stagetype"
+      "target": "src_features_pipelines_services_pipelines_service_stagetype",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -2354,9 +1562,9 @@
       "source_location": "L50",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_components_stages_dialog_props",
-      "target": "src_features_pipelines_services_pipelines_service_pipelinestage"
+      "target": "src_features_pipelines_services_pipelines_service_pipelinestage",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2366,9 +1574,9 @@
       "source_location": "L259",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_components_stages_dialog_stagesdialog",
-      "target": "src_features_pipelines_components_stages_dialog_makekey"
+      "target": "src_features_pipelines_components_stages_dialog_makekey",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2377,9 +1585,9 @@
       "source_location": "L78",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_services_pipelines_service",
-      "target": "src_features_pipelines_services_pipelines_service_boardresponse"
+      "target": "src_features_pipelines_services_pipelines_service_boardresponse",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2388,9 +1596,9 @@
       "source_location": "L116",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_services_pipelines_service",
-      "target": "src_features_pipelines_services_pipelines_service_carddetail"
+      "target": "src_features_pipelines_services_pipelines_service_carddetail",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2399,9 +1607,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_services_pipelines_service",
-      "target": "src_features_pipelines_services_pipelines_service_cardstatus"
+      "target": "src_features_pipelines_services_pipelines_service_cardstatus",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2410,9 +1618,9 @@
       "source_location": "L36",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_services_pipelines_service",
-      "target": "src_features_pipelines_services_pipelines_service_cardsummary"
+      "target": "src_features_pipelines_services_pipelines_service_cardsummary",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2421,9 +1629,9 @@
       "source_location": "L108",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_services_pipelines_service",
-      "target": "src_features_pipelines_services_pipelines_service_contactconversationlite"
+      "target": "src_features_pipelines_services_pipelines_service_contactconversationlite",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2432,9 +1640,9 @@
       "source_location": "L101",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_services_pipelines_service",
-      "target": "src_features_pipelines_services_pipelines_service_contacttaglite"
+      "target": "src_features_pipelines_services_pipelines_service_contacttaglite",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2443,9 +1651,9 @@
       "source_location": "L163",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_services_pipelines_service",
-      "target": "src_features_pipelines_services_pipelines_service_conversationcard"
+      "target": "src_features_pipelines_services_pipelines_service_conversationcard",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2454,9 +1662,9 @@
       "source_location": "L151",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_services_pipelines_service",
-      "target": "src_features_pipelines_services_pipelines_service_createcardinput"
+      "target": "src_features_pipelines_services_pipelines_service_createcardinput",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2465,9 +1673,9 @@
       "source_location": "L137",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_services_pipelines_service",
-      "target": "src_features_pipelines_services_pipelines_service_createpipelineinput"
+      "target": "src_features_pipelines_services_pipelines_service_createpipelineinput",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2476,9 +1684,9 @@
       "source_location": "L205",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_services_pipelines_service",
-      "target": "src_features_pipelines_services_pipelines_service_leadrouting"
+      "target": "src_features_pipelines_services_pipelines_service_leadrouting",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2487,9 +1695,9 @@
       "source_location": "L85",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_services_pipelines_service",
-      "target": "src_features_pipelines_services_pipelines_service_leadtracking"
+      "target": "src_features_pipelines_services_pipelines_service_leadtracking",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2498,9 +1706,9 @@
       "source_location": "L186",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_services_pipelines_service",
-      "target": "src_features_pipelines_services_pipelines_service_origintype"
+      "target": "src_features_pipelines_services_pipelines_service_origintype",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2509,9 +1717,9 @@
       "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_services_pipelines_service",
-      "target": "src_features_pipelines_services_pipelines_service_pipeline"
+      "target": "src_features_pipelines_services_pipelines_service_pipeline",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2520,9 +1728,9 @@
       "source_location": "L215",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_services_pipelines_service",
-      "target": "src_features_pipelines_services_pipelines_service_pipelinesservice"
+      "target": "src_features_pipelines_services_pipelines_service_pipelinesservice",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2531,9 +1739,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_services_pipelines_service",
-      "target": "src_features_pipelines_services_pipelines_service_pipelinestage"
+      "target": "src_features_pipelines_services_pipelines_service_pipelinestage",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2542,9 +1750,9 @@
       "source_location": "L199",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_services_pipelines_service",
-      "target": "src_features_pipelines_services_pipelines_service_routingexception"
+      "target": "src_features_pipelines_services_pipelines_service_routingexception",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2553,9 +1761,9 @@
       "source_location": "L209",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_services_pipelines_service",
-      "target": "src_features_pipelines_services_pipelines_service_routingoptions"
+      "target": "src_features_pipelines_services_pipelines_service_routingoptions",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2564,9 +1772,9 @@
       "source_location": "L195",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_services_pipelines_service",
-      "target": "src_features_pipelines_services_pipelines_service_routingtarget"
+      "target": "src_features_pipelines_services_pipelines_service_routingtarget",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2575,9 +1783,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_services_pipelines_service",
-      "target": "src_features_pipelines_services_pipelines_service_stagetype"
+      "target": "src_features_pipelines_services_pipelines_service_stagetype",
+      "confidence_score": 1.0
     },
     {
       "relation": "inherits",
@@ -2587,9 +1795,9 @@
       "source_location": "L199",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_pipelines_services_pipelines_service_routingexception",
-      "target": "src_features_pipelines_services_pipelines_service_routingtarget"
+      "target": "src_features_pipelines_services_pipelines_service_routingtarget",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -3736,5 +2944,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "4916fbcd0ec40ebabf9bc9746d295dbc14f6df5b"
+  "built_at_commit": "24b4705a5a0b8a91de05ea4e0ea64ece56483dd8"
 }

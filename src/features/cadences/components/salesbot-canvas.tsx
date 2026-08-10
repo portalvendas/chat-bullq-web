@@ -47,9 +47,11 @@ import type {
   NodeHandle,
 } from '@/features/cadences/services/cadences.service';
 import { templatesService } from '@/features/templates/services/templates.service';
+import { pipelinesService } from '@/features/pipelines/services/pipelines.service';
 
 /** Templates aprovados disponíveis para os nós de mensagem (fora de 24h). */
 const TemplatesCtx = createContext<Array<{ id: string; name: string }>>([]);
+const StagesCtx = createContext<Array<{ id: string; label: string }>>([]);
 
 const TYPE_META: Record<
   GraphNodeType,
@@ -90,6 +92,7 @@ function uid(prefix: string): string {
 const SalesNode = memo(({ id, data, selected }: NodeProps) => {
   const { updateNodeData, deleteElements } = useReactFlow();
   const templates = useContext(TemplatesCtx);
+  const stages = useContext(StagesCtx);
   const d = data as unknown as SalesData;
   const M = TYPE_META[d.kind];
   const Icon = M.icon;
@@ -233,13 +236,27 @@ const SalesNode = memo(({ id, data, selected }: NodeProps) => {
               <option value="move_stage">Mover etapa</option>
               <option value="close">Encerrar conversa</option>
             </select>
-            {d.action !== 'close' && (
+            {d.action === 'tag' && (
               <input
                 value={d.value ?? ''}
                 onChange={(e) => patch({ value: e.target.value })}
-                placeholder={d.action === 'tag' ? 'Nome da tag' : 'ID da etapa'}
+                placeholder="Nome da tag"
                 className="nodrag w-full rounded border border-zinc-300 px-1.5 py-1 text-xs outline-none focus:border-primary dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
               />
+            )}
+            {d.action === 'move_stage' && (
+              <select
+                value={d.value ?? ''}
+                onChange={(e) => patch({ value: e.target.value || undefined })}
+                className="nodrag w-full rounded border border-zinc-300 px-1 py-1 text-xs dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+              >
+                <option value="">Escolha a etapa…</option>
+                {stages.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.label}
+                  </option>
+                ))}
+              </select>
             )}
           </>
         )}
@@ -391,6 +408,23 @@ function CanvasInner({
     [tplData],
   );
 
+  // Etapas de todos os funis p/ o nó "Ação → mover etapa".
+  const { data: pipelinesData } = useQuery({
+    queryKey: ['pipelines'],
+    queryFn: () => pipelinesService.list(),
+    staleTime: 60_000,
+  });
+  const stageOptions = useMemo(
+    () =>
+      (pipelinesData ?? []).flatMap((p) =>
+        (p.stages ?? []).map((s) => ({
+          id: s.id,
+          label: `${p.name} › ${s.name}`,
+        })),
+      ),
+    [pipelinesData],
+  );
+
   // Sincroniza estado interno → grafo do editor (para o Salvar).
   const first = useRef(true);
   useEffect(() => {
@@ -446,6 +480,7 @@ function CanvasInner({
   }, [edges, setNodes, fitView]);
 
   return (
+    <StagesCtx.Provider value={stageOptions}>
     <TemplatesCtx.Provider value={templateOptions}>
     <ReactFlow
       nodes={nodes}
@@ -494,6 +529,7 @@ function CanvasInner({
       </Panel>
     </ReactFlow>
     </TemplatesCtx.Provider>
+    </StagesCtx.Provider>
   );
 }
 
