@@ -17,6 +17,7 @@ import {
 } from '@/features/cadences/graph-utils';
 import { SalesbotCanvas } from '@/features/cadences/components/salesbot-canvas';
 import { pipelinesService } from '@/features/pipelines/services/pipelines.service';
+import { channelsService } from '@/features/channels/services/channels.service';
 
 function nodeCount(c: Cadence): number {
   const g = c.graph;
@@ -256,6 +257,12 @@ function SalesbotEditor({
   );
   const [triggerValue, setTriggerValue] = useState(bot?.triggerValue ?? '');
   const [stopOnReply, setStopOnReply] = useState(bot?.stopOnReply ?? true);
+  const [businessHoursOnly, setBusinessHoursOnly] = useState(
+    bot?.businessHoursOnly ?? false,
+  );
+  const [channelFilter, setChannelFilter] = useState<string[]>(
+    bot?.channelFilter ?? [],
+  );
   const [graph, setGraph] = useState<WorkflowGraph>(() =>
     bot ? graphFromCadence(bot) : emptyGraph(),
   );
@@ -265,6 +272,16 @@ function SalesbotEditor({
     queryFn: () => pipelinesService.list(),
     staleTime: 60_000,
   });
+  const { data: channels = [] } = useQuery({
+    queryKey: ['channels'],
+    queryFn: () => channelsService.list(),
+    staleTime: 60_000,
+  });
+
+  const toggleChannel = (id: string) =>
+    setChannelFilter((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    );
 
   const save = useMutation({
     mutationFn: () => {
@@ -274,6 +291,8 @@ function SalesbotEditor({
         triggerValue:
           triggerType === 'MANUAL' ? null : triggerValue.trim() || null,
         stopOnReply,
+        businessHoursOnly,
+        channelFilter,
         graph,
         onEnd: {},
       };
@@ -358,6 +377,55 @@ function SalesbotEditor({
           />
           parar na resposta
         </label>
+
+        <label className="flex items-center gap-1.5 text-xs text-zinc-600 dark:text-zinc-300">
+          <input
+            type="checkbox"
+            checked={businessHoursOnly}
+            onChange={(e) => setBusinessHoursOnly(e.target.checked)}
+          />
+          só em horário comercial
+        </label>
+
+        {/* Filtro de ORIGEM: de quais canais este bot pode disparar. */}
+        <details className="relative text-xs">
+          <summary className="cursor-pointer list-none rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-zinc-700 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200">
+            Origem:{' '}
+            {channelFilter.length === 0
+              ? 'todas'
+              : `${channelFilter.length} selecionada(s)`}
+          </summary>
+          <div className="absolute left-0 z-20 mt-1 max-h-64 w-64 overflow-auto rounded-md border border-zinc-200 bg-white p-1.5 shadow-lg dark:border-zinc-800 dark:bg-zinc-900">
+            <button
+              type="button"
+              onClick={() => setChannelFilter([])}
+              className="mb-1 w-full rounded px-2 py-1 text-left text-[11px] text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            >
+              Todas as origens (limpar)
+            </button>
+            {channels.length === 0 && (
+              <div className="px-2 py-1 text-[11px] text-zinc-400">
+                Nenhum canal conectado
+              </div>
+            )}
+            {channels.map((ch) => (
+              <label
+                key={ch.id}
+                className="flex items-center gap-2 rounded px-2 py-1 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              >
+                <input
+                  type="checkbox"
+                  checked={channelFilter.includes(ch.id)}
+                  onChange={() => toggleChannel(ch.id)}
+                />
+                <span className="truncate">
+                  {ch.name}{' '}
+                  <span className="text-zinc-400">({ch.type})</span>
+                </span>
+              </label>
+            ))}
+          </div>
+        </details>
 
         <div className="ml-auto flex items-center gap-2">
           <button

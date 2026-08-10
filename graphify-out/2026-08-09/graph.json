@@ -4,15 +4,92 @@
   "graph": {},
   "nodes": [
     {
+      "label": "layout.tsx",
+      "file_type": "code",
+      "source_file": "src/app/(dashboard)/layout.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_app_dashboard_layout",
+      "community": 10,
+      "community_name": "notifications-bell.tsx",
+      "norm_label": "layout.tsx"
+    },
+    {
+      "label": "DashboardLayout()",
+      "file_type": "code",
+      "source_file": "src/app/(dashboard)/layout.tsx",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "src_app_dashboard_layout_dashboardlayout",
+      "community": 10,
+      "community_name": "notifications-bell.tsx",
+      "norm_label": "dashboardlayout()"
+    },
+    {
+      "label": "notifications-bell.tsx",
+      "file_type": "code",
+      "source_file": "src/features/notifications/components/notifications-bell.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_features_notifications_components_notifications_bell",
+      "community": 10,
+      "community_name": "notifications-bell.tsx",
+      "norm_label": "notifications-bell.tsx"
+    },
+    {
+      "label": "IncomingNotification",
+      "file_type": "code",
+      "source_file": "src/features/notifications/components/notifications-bell.tsx",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "src_features_notifications_components_notifications_bell_incomingnotification",
+      "community": 10,
+      "community_name": "notifications-bell.tsx",
+      "norm_label": "incomingnotification"
+    },
+    {
+      "label": "playBeep()",
+      "file_type": "code",
+      "source_file": "src/features/notifications/components/notifications-bell.tsx",
+      "source_location": "L32",
+      "_origin": "ast",
+      "id": "src_features_notifications_components_notifications_bell_playbeep",
+      "community": 10,
+      "community_name": "notifications-bell.tsx",
+      "norm_label": "playbeep()"
+    },
+    {
+      "label": "hrefFor()",
+      "file_type": "code",
+      "source_file": "src/features/notifications/components/notifications-bell.tsx",
+      "source_location": "L57",
+      "_origin": "ast",
+      "id": "src_features_notifications_components_notifications_bell_hreffor",
+      "community": 10,
+      "community_name": "notifications-bell.tsx",
+      "norm_label": "hreffor()"
+    },
+    {
+      "label": "NotificationsBell()",
+      "file_type": "code",
+      "source_file": "src/features/notifications/components/notifications-bell.tsx",
+      "source_location": "L68",
+      "_origin": "ast",
+      "id": "src_features_notifications_components_notifications_bell_notificationsbell",
+      "community": 10,
+      "community_name": "notifications-bell.tsx",
+      "norm_label": "notificationsbell()"
+    },
+    {
       "label": "page.tsx",
       "file_type": "code",
       "source_file": "src/app/(dashboard)/settings/import/page.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_app_dashboard_settings_import_page",
       "community": 2,
       "community_name": "page.tsx",
-      "norm_label": "page.tsx"
+      "norm_label": "page.tsx",
+      "id": "src_app_dashboard_settings_import_page"
     },
     {
       "label": "TRACKING",
@@ -20,10 +97,10 @@
       "source_file": "src/app/(dashboard)/settings/import/page.tsx",
       "source_location": "L17",
       "_origin": "ast",
-      "id": "src_app_dashboard_settings_import_page_tracking",
       "community": 2,
       "community_name": "page.tsx",
-      "norm_label": "tracking"
+      "norm_label": "tracking",
+      "id": "src_app_dashboard_settings_import_page_tracking"
     },
     {
       "label": "NATIVE",
@@ -31,10 +108,10 @@
       "source_file": "src/app/(dashboard)/settings/import/page.tsx",
       "source_location": "L35",
       "_origin": "ast",
-      "id": "src_app_dashboard_settings_import_page_native",
       "community": 2,
       "community_name": "page.tsx",
-      "norm_label": "native"
+      "norm_label": "native",
+      "id": "src_app_dashboard_settings_import_page_native"
     },
     {
       "label": "slugify()",
@@ -42,10 +119,10 @@
       "source_file": "src/app/(dashboard)/settings/import/page.tsx",
       "source_location": "L59",
       "_origin": "ast",
-      "id": "src_app_dashboard_settings_import_page_slugify",
       "community": 2,
       "community_name": "page.tsx",
-      "norm_label": "slugify()"
+      "norm_label": "slugify()",
+      "id": "src_app_dashboard_settings_import_page_slugify"
     },
     {
       "label": "s()",
@@ -53,10 +130,10 @@
       "source_file": "src/app/(dashboard)/settings/import/page.tsx",
       "source_location": "L70",
       "_origin": "ast",
-      "id": "src_app_dashboard_settings_import_page_s",
       "community": 2,
       "community_name": "page.tsx",
-      "norm_label": "s()"
+      "norm_label": "s()",
+      "id": "src_app_dashboard_settings_import_page_s"
     },
     {
       "label": "num()",
@@ -64,10 +141,10 @@
       "source_file": "src/app/(dashboard)/settings/import/page.tsx",
       "source_location": "L72",
       "_origin": "ast",
-      "id": "src_app_dashboard_settings_import_page_num",
       "community": 2,
       "community_name": "page.tsx",
-      "norm_label": "num()"
+      "norm_label": "num()",
+      "id": "src_app_dashboard_settings_import_page_num"
     },
     {
       "label": "toIso()",
@@ -75,10 +152,10 @@
       "source_file": "src/app/(dashboard)/settings/import/page.tsx",
       "source_location": "L77",
       "_origin": "ast",
-      "id": "src_app_dashboard_settings_import_page_toiso",
       "community": 2,
       "community_name": "page.tsx",
-      "norm_label": "toiso()"
+      "norm_label": "toiso()",
+      "id": "src_app_dashboard_settings_import_page_toiso"
     },
     {
       "label": "loadXLSX()",
@@ -86,10 +163,10 @@
       "source_file": "src/app/(dashboard)/settings/import/page.tsx",
       "source_location": "L87",
       "_origin": "ast",
-      "id": "src_app_dashboard_settings_import_page_loadxlsx",
       "community": 2,
       "community_name": "page.tsx",
-      "norm_label": "loadxlsx()"
+      "norm_label": "loadxlsx()",
+      "id": "src_app_dashboard_settings_import_page_loadxlsx"
     },
     {
       "label": "BackfillResult",
@@ -97,10 +174,10 @@
       "source_file": "src/app/(dashboard)/settings/import/page.tsx",
       "source_location": "L103",
       "_origin": "ast",
-      "id": "src_app_dashboard_settings_import_page_backfillresult",
       "community": 2,
       "community_name": "page.tsx",
-      "norm_label": "backfillresult"
+      "norm_label": "backfillresult",
+      "id": "src_app_dashboard_settings_import_page_backfillresult"
     },
     {
       "label": "BackfillDatesCard()",
@@ -108,10 +185,10 @@
       "source_file": "src/app/(dashboard)/settings/import/page.tsx",
       "source_location": "L112",
       "_origin": "ast",
-      "id": "src_app_dashboard_settings_import_page_backfilldatescard",
       "community": 2,
       "community_name": "page.tsx",
-      "norm_label": "backfilldatescard()"
+      "norm_label": "backfilldatescard()",
+      "id": "src_app_dashboard_settings_import_page_backfilldatescard"
     },
     {
       "label": "ImportPage()",
@@ -119,10 +196,10 @@
       "source_file": "src/app/(dashboard)/settings/import/page.tsx",
       "source_location": "L187",
       "_origin": "ast",
-      "id": "src_app_dashboard_settings_import_page_importpage",
       "community": 2,
       "community_name": "page.tsx",
-      "norm_label": "importpage()"
+      "norm_label": "importpage()",
+      "id": "src_app_dashboard_settings_import_page_importpage"
     },
     {
       "label": "package.json",
@@ -482,8 +559,8 @@
       "source_file": "package.json",
       "source_location": "L23",
       "_origin": "ast",
-      "community": 10,
-      "community_name": "framer-motion",
+      "community": 3,
+      "community_name": "dependencies",
       "norm_label": "framer-motion",
       "id": "package_dependencies_framer_motion"
     },
@@ -493,8 +570,8 @@
       "source_file": "package.json",
       "source_location": "L23",
       "_origin": "ast",
-      "community": 10,
-      "community_name": "framer-motion",
+      "community": 3,
+      "community_name": "dependencies",
       "norm_label": "framer-motion",
       "id": "framer_motion"
     },
@@ -504,8 +581,8 @@
       "source_file": "package.json",
       "source_location": "L24",
       "_origin": "ast",
-      "community": 3,
-      "community_name": "dependencies",
+      "community": 26,
+      "community_name": "lucide-react",
       "norm_label": "lucide-react",
       "id": "package_dependencies_lucide_react"
     },
@@ -515,8 +592,8 @@
       "source_file": "package.json",
       "source_location": "L24",
       "_origin": "ast",
-      "community": 3,
-      "community_name": "dependencies",
+      "community": 26,
+      "community_name": "lucide-react",
       "norm_label": "lucide-react",
       "id": "lucide_react"
     },
@@ -954,13 +1031,116 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/layout.tsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_layout",
+      "target": "src_app_dashboard_layout_dashboardlayout",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/layout.tsx",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_layout",
+      "target": "src_features_notifications_components_notifications_bell",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/layout.tsx",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_layout",
+      "target": "src_features_notifications_components_notifications_bell_notificationsbell",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/notifications/components/notifications-bell.tsx",
+      "source_location": "L57",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_notifications_components_notifications_bell",
+      "target": "src_features_notifications_components_notifications_bell_hreffor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/notifications/components/notifications-bell.tsx",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_notifications_components_notifications_bell",
+      "target": "src_features_notifications_components_notifications_bell_incomingnotification",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/notifications/components/notifications-bell.tsx",
+      "source_location": "L68",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_notifications_components_notifications_bell",
+      "target": "src_features_notifications_components_notifications_bell_notificationsbell",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/notifications/components/notifications-bell.tsx",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_notifications_components_notifications_bell",
+      "target": "src_features_notifications_components_notifications_bell_playbeep",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/notifications/components/notifications-bell.tsx",
+      "source_location": "L106",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_notifications_components_notifications_bell_notificationsbell",
+      "target": "src_features_notifications_components_notifications_bell_playbeep",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/notifications/components/notifications-bell.tsx",
+      "source_location": "L111",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_notifications_components_notifications_bell_notificationsbell",
+      "target": "src_features_notifications_components_notifications_bell_hreffor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "src/app/(dashboard)/settings/import/page.tsx",
       "source_location": "L112",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_settings_import_page",
-      "target": "src_app_dashboard_settings_import_page_backfilldatescard",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_settings_import_page_backfilldatescard"
     },
     {
       "relation": "contains",
@@ -969,9 +1149,9 @@
       "source_location": "L103",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_settings_import_page",
-      "target": "src_app_dashboard_settings_import_page_backfillresult",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_settings_import_page_backfillresult"
     },
     {
       "relation": "contains",
@@ -980,9 +1160,9 @@
       "source_location": "L187",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_settings_import_page",
-      "target": "src_app_dashboard_settings_import_page_importpage",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_settings_import_page_importpage"
     },
     {
       "relation": "contains",
@@ -991,9 +1171,9 @@
       "source_location": "L87",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_settings_import_page",
-      "target": "src_app_dashboard_settings_import_page_loadxlsx",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_settings_import_page_loadxlsx"
     },
     {
       "relation": "contains",
@@ -1002,9 +1182,9 @@
       "source_location": "L35",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_settings_import_page",
-      "target": "src_app_dashboard_settings_import_page_native",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_settings_import_page_native"
     },
     {
       "relation": "contains",
@@ -1013,9 +1193,9 @@
       "source_location": "L72",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_settings_import_page",
-      "target": "src_app_dashboard_settings_import_page_num",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_settings_import_page_num"
     },
     {
       "relation": "contains",
@@ -1024,9 +1204,9 @@
       "source_location": "L70",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_settings_import_page",
-      "target": "src_app_dashboard_settings_import_page_s",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_settings_import_page_s"
     },
     {
       "relation": "contains",
@@ -1035,9 +1215,9 @@
       "source_location": "L59",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_settings_import_page",
-      "target": "src_app_dashboard_settings_import_page_slugify",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_settings_import_page_slugify"
     },
     {
       "relation": "contains",
@@ -1046,9 +1226,9 @@
       "source_location": "L77",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_settings_import_page",
-      "target": "src_app_dashboard_settings_import_page_toiso",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_settings_import_page_toiso"
     },
     {
       "relation": "contains",
@@ -1057,9 +1237,9 @@
       "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_settings_import_page",
-      "target": "src_app_dashboard_settings_import_page_tracking",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_settings_import_page_tracking"
     },
     {
       "relation": "references",
@@ -1081,9 +1261,9 @@
       "source_location": "L274",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_settings_import_page_importpage",
-      "target": "src_app_dashboard_settings_import_page_slugify",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_settings_import_page_slugify"
     },
     {
       "relation": "calls",
@@ -1093,9 +1273,9 @@
       "source_location": "L241",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_settings_import_page_importpage",
-      "target": "src_app_dashboard_settings_import_page_s",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_settings_import_page_s"
     },
     {
       "relation": "calls",
@@ -1105,9 +1285,9 @@
       "source_location": "L285",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_settings_import_page_importpage",
-      "target": "src_app_dashboard_settings_import_page_num",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_settings_import_page_num"
     },
     {
       "relation": "calls",
@@ -1117,9 +1297,9 @@
       "source_location": "L274",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_settings_import_page_importpage",
-      "target": "src_app_dashboard_settings_import_page_toiso",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_settings_import_page_toiso"
     },
     {
       "relation": "calls",
@@ -1129,9 +1309,9 @@
       "source_location": "L214",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_settings_import_page_importpage",
-      "target": "src_app_dashboard_settings_import_page_loadxlsx",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_settings_import_page_loadxlsx"
     },
     {
       "relation": "references",
@@ -1993,5 +2173,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "bff89de256286191cb06362d9b4ebeabdc2afcd7"
+  "built_at_commit": "e9e10bf9bcce891e4d5728624ad12e129a2b5514"
 }

@@ -1,16 +1,16 @@
-# Graph Report - chat-bullq-web  (2026-08-05)
+# Graph Report - chat-bullq-web  (2026-08-09)
 
 ## Corpus Check
-- 167 files · ~102,046 words
+- 168 files · ~103,800 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 86 nodes · 91 edges · 26 communities (4 shown, 22 thin omitted)
+- 93 nodes · 100 edges · 27 communities (5 shown, 22 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `bff89de2`
+- Built from commit: `e9e10bf9`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -25,7 +25,7 @@
 - @dnd-kit/core
 - @dnd-kit/sortable
 - @dnd-kit/utilities
-- framer-motion
+- notifications-bell.tsx
 - @headlessui/react
 - @hookform/resolvers
 - next-themes
@@ -41,18 +41,19 @@
 - @xyflow/react
 - zod
 - zustand
+- lucide-react
 
 ## God Nodes (most connected - your core abstractions)
 1. `ImportPage()` - 8 edges
 2. `scripts` - 5 edges
-3. `NATIVE` - 2 edges
-4. `slugify()` - 2 edges
-5. `s()` - 2 edges
-6. `num()` - 2 edges
-7. `toIso()` - 2 edges
-8. `loadXLSX()` - 2 edges
-9. `BackfillResult` - 2 edges
-10. `@dagrejs/dagre` - 2 edges
+3. `NotificationsBell()` - 4 edges
+4. `playBeep()` - 2 edges
+5. `hrefFor()` - 2 edges
+6. `NATIVE` - 2 edges
+7. `slugify()` - 2 edges
+8. `s()` - 2 edges
+9. `num()` - 2 edges
+10. `toIso()` - 2 edges
 
 ## Surprising Connections (you probably didn't know these)
 - None detected - all connections are within the same source files.
@@ -60,7 +61,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (26 total, 22 thin omitted)
+## Communities (27 total, 22 thin omitted)
 
 ### Community 0 - "devDependencies"
 Cohesion: 0.12
@@ -76,21 +77,25 @@ Nodes (9): BackfillResult, ImportPage(), loadXLSX(), NATIVE, num(), s(), slugify
 
 ### Community 3 - "dependencies"
 Cohesion: 0.40
-Nodes (5): class-variance-authority, lucide-react, dependencies, class-variance-authority, lucide-react
+Nodes (5): class-variance-authority, framer-motion, dependencies, class-variance-authority, framer-motion
+
+### Community 10 - "notifications-bell.tsx"
+Cohesion: 0.43
+Nodes (4): hrefFor(), IncomingNotification, NotificationsBell(), playBeep()
 
 ## Knowledge Gaps
-- **40 isolated node(s):** `TRACKING`, `name`, `version`, `private`, `dev` (+35 more)
+- **41 isolated node(s):** `IncomingNotification`, `TRACKING`, `name`, `version`, `private` (+36 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **22 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `dependencies` connect `dependencies` to `package.json`, `axios`, `clsx`, `@dagrejs/dagre`, `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`, `framer-motion`, `@headlessui/react`, `@hookform/resolvers`, `next-themes`, `next`, `react`, `react-dom`, `react-hook-form`, `recharts`, `socket.io-client`, `sonner`, `tailwind-merge`, `@tanstack/react-query`, `@xyflow/react`, `zod`, `zustand`?**
-  _High betweenness centrality (0.659) - this node is a cross-community bridge._
+- **Why does `dependencies` connect `dependencies` to `package.json`, `axios`, `clsx`, `@dagrejs/dagre`, `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`, `@headlessui/react`, `@hookform/resolvers`, `next-themes`, `next`, `react`, `react-dom`, `react-hook-form`, `recharts`, `socket.io-client`, `sonner`, `tailwind-merge`, `@tanstack/react-query`, `@xyflow/react`, `zod`, `zustand`, `lucide-react`?**
+  _High betweenness centrality (0.562) - this node is a cross-community bridge._
 - **Why does `devDependencies` connect `devDependencies` to `package.json`?**
-  _High betweenness centrality (0.291) - this node is a cross-community bridge._
-- **What connects `TRACKING`, `name`, `version` to the rest of the system?**
-  _40 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _High betweenness centrality (0.248) - this node is a cross-community bridge._
+- **What connects `IncomingNotification`, `TRACKING`, `name` to the rest of the system?**
+  _41 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `devDependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.11764705882352941 - nodes in this community are weakly interconnected._

@@ -4,15 +4,345 @@
   "graph": {},
   "nodes": [
     {
+      "label": "[id]/page.tsx",
+      "file_type": "code",
+      "source_file": "src/app/(dashboard)/pipelines/[id]/page.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_app_dashboard_pipelines_id_page",
+      "community": 22,
+      "community_name": "stages-dialog.tsx",
+      "norm_label": "[id]/page.tsx"
+    },
+    {
+      "label": "PipelineBoardPage()",
+      "file_type": "code",
+      "source_file": "src/app/(dashboard)/pipelines/[id]/page.tsx",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "src_app_dashboard_pipelines_id_page_pipelineboardpage",
+      "community": 22,
+      "community_name": "stages-dialog.tsx",
+      "norm_label": "pipelineboardpage()"
+    },
+    {
+      "label": "stages-dialog.tsx",
+      "file_type": "code",
+      "source_file": "src/features/pipelines/components/stages-dialog.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_features_pipelines_components_stages_dialog",
+      "community": 22,
+      "community_name": "stages-dialog.tsx",
+      "norm_label": "stages-dialog.tsx"
+    },
+    {
+      "label": "DraftStage",
+      "file_type": "code",
+      "source_file": "src/features/pipelines/components/stages-dialog.tsx",
+      "source_location": "L36",
+      "_origin": "ast",
+      "id": "src_features_pipelines_components_stages_dialog_draftstage",
+      "community": 22,
+      "community_name": "stages-dialog.tsx",
+      "norm_label": "draftstage"
+    },
+    {
+      "label": "Props",
+      "file_type": "code",
+      "source_file": "src/features/pipelines/components/stages-dialog.tsx",
+      "source_location": "L47",
+      "_origin": "ast",
+      "id": "src_features_pipelines_components_stages_dialog_props",
+      "community": 22,
+      "community_name": "stages-dialog.tsx",
+      "norm_label": "props"
+    },
+    {
+      "label": "COLORS",
+      "file_type": "code",
+      "source_file": "src/features/pipelines/components/stages-dialog.tsx",
+      "source_location": "L57",
+      "_origin": "ast",
+      "id": "src_features_pipelines_components_stages_dialog_colors",
+      "community": 22,
+      "community_name": "stages-dialog.tsx",
+      "norm_label": "colors"
+    },
+    {
+      "label": "TYPE_OPTIONS",
+      "file_type": "code",
+      "source_file": "src/features/pipelines/components/stages-dialog.tsx",
+      "source_location": "L67",
+      "_origin": "ast",
+      "id": "src_features_pipelines_components_stages_dialog_type_options",
+      "community": 22,
+      "community_name": "stages-dialog.tsx",
+      "norm_label": "type_options"
+    },
+    {
+      "label": "makeKey()",
+      "file_type": "code",
+      "source_file": "src/features/pipelines/components/stages-dialog.tsx",
+      "source_location": "L78",
+      "_origin": "ast",
+      "id": "src_features_pipelines_components_stages_dialog_makekey",
+      "community": 22,
+      "community_name": "stages-dialog.tsx",
+      "norm_label": "makekey()"
+    },
+    {
+      "label": "SortableRow()",
+      "file_type": "code",
+      "source_file": "src/features/pipelines/components/stages-dialog.tsx",
+      "source_location": "L82",
+      "_origin": "ast",
+      "id": "src_features_pipelines_components_stages_dialog_sortablerow",
+      "community": 22,
+      "community_name": "stages-dialog.tsx",
+      "norm_label": "sortablerow()"
+    },
+    {
+      "label": "StagesDialog()",
+      "file_type": "code",
+      "source_file": "src/features/pipelines/components/stages-dialog.tsx",
+      "source_location": "L209",
+      "_origin": "ast",
+      "id": "src_features_pipelines_components_stages_dialog_stagesdialog",
+      "community": 22,
+      "community_name": "stages-dialog.tsx",
+      "norm_label": "stagesdialog()"
+    },
+    {
+      "label": "pipelines.service.ts",
+      "file_type": "code",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service",
+      "community": 6,
+      "community_name": "pipelines.service.ts",
+      "norm_label": "pipelines.service.ts"
+    },
+    {
+      "label": "StageType",
+      "file_type": "code",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_stagetype",
+      "community": 22,
+      "community_name": "stages-dialog.tsx",
+      "norm_label": "stagetype"
+    },
+    {
+      "label": "CardStatus",
+      "file_type": "code",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L4",
+      "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_cardstatus",
+      "community": 6,
+      "community_name": "pipelines.service.ts",
+      "norm_label": "cardstatus"
+    },
+    {
+      "label": "PipelineStage",
+      "file_type": "code",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_pipelinestage",
+      "community": 22,
+      "community_name": "stages-dialog.tsx",
+      "norm_label": "pipelinestage"
+    },
+    {
+      "label": "Pipeline",
+      "file_type": "code",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L18",
+      "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_pipeline",
+      "community": 6,
+      "community_name": "pipelines.service.ts",
+      "norm_label": "pipeline"
+    },
+    {
+      "label": "CardSummary",
+      "file_type": "code",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L36",
+      "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_cardsummary",
+      "community": 6,
+      "community_name": "pipelines.service.ts",
+      "norm_label": "cardsummary"
+    },
+    {
+      "label": "BoardResponse",
+      "file_type": "code",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L78",
+      "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_boardresponse",
+      "community": 6,
+      "community_name": "pipelines.service.ts",
+      "norm_label": "boardresponse"
+    },
+    {
+      "label": "LeadTracking",
+      "file_type": "code",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L85",
+      "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_leadtracking",
+      "community": 6,
+      "community_name": "pipelines.service.ts",
+      "norm_label": "leadtracking"
+    },
+    {
+      "label": "ContactTagLite",
+      "file_type": "code",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L101",
+      "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_contacttaglite",
+      "community": 6,
+      "community_name": "pipelines.service.ts",
+      "norm_label": "contacttaglite"
+    },
+    {
+      "label": "ContactConversationLite",
+      "file_type": "code",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L108",
+      "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_contactconversationlite",
+      "community": 6,
+      "community_name": "pipelines.service.ts",
+      "norm_label": "contactconversationlite"
+    },
+    {
+      "label": "CardDetail",
+      "file_type": "code",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L116",
+      "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_carddetail",
+      "community": 6,
+      "community_name": "pipelines.service.ts",
+      "norm_label": "carddetail"
+    },
+    {
+      "label": "CreatePipelineInput",
+      "file_type": "code",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L137",
+      "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_createpipelineinput",
+      "community": 6,
+      "community_name": "pipelines.service.ts",
+      "norm_label": "createpipelineinput"
+    },
+    {
+      "label": "CreateCardInput",
+      "file_type": "code",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L151",
+      "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_createcardinput",
+      "community": 6,
+      "community_name": "pipelines.service.ts",
+      "norm_label": "createcardinput"
+    },
+    {
+      "label": "ConversationCard",
+      "file_type": "code",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L163",
+      "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_conversationcard",
+      "community": 6,
+      "community_name": "pipelines.service.ts",
+      "norm_label": "conversationcard"
+    },
+    {
+      "label": "OriginType",
+      "file_type": "code",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L186",
+      "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_origintype",
+      "community": 6,
+      "community_name": "pipelines.service.ts",
+      "norm_label": "origintype"
+    },
+    {
+      "label": "RoutingTarget",
+      "file_type": "code",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L195",
+      "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_routingtarget",
+      "community": 6,
+      "community_name": "pipelines.service.ts",
+      "norm_label": "routingtarget"
+    },
+    {
+      "label": "RoutingException",
+      "file_type": "code",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L199",
+      "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_routingexception",
+      "community": 6,
+      "community_name": "pipelines.service.ts",
+      "norm_label": "routingexception"
+    },
+    {
+      "label": "LeadRouting",
+      "file_type": "code",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L205",
+      "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_leadrouting",
+      "community": 6,
+      "community_name": "pipelines.service.ts",
+      "norm_label": "leadrouting"
+    },
+    {
+      "label": "RoutingOptions",
+      "file_type": "code",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L209",
+      "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_routingoptions",
+      "community": 6,
+      "community_name": "pipelines.service.ts",
+      "norm_label": "routingoptions"
+    },
+    {
+      "label": "pipelinesService",
+      "file_type": "code",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L215",
+      "_origin": "ast",
+      "id": "src_features_pipelines_services_pipelines_service_pipelinesservice",
+      "community": 22,
+      "community_name": "stages-dialog.tsx",
+      "norm_label": "pipelinesservice"
+    },
+    {
       "label": "layout.tsx",
       "file_type": "code",
       "source_file": "src/app/(dashboard)/layout.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_app_dashboard_layout",
       "community": 10,
       "community_name": "notifications-bell.tsx",
-      "norm_label": "layout.tsx"
+      "norm_label": "layout.tsx",
+      "id": "src_app_dashboard_layout"
     },
     {
       "label": "DashboardLayout()",
@@ -20,10 +350,10 @@
       "source_file": "src/app/(dashboard)/layout.tsx",
       "source_location": "L14",
       "_origin": "ast",
-      "id": "src_app_dashboard_layout_dashboardlayout",
       "community": 10,
       "community_name": "notifications-bell.tsx",
-      "norm_label": "dashboardlayout()"
+      "norm_label": "dashboardlayout()",
+      "id": "src_app_dashboard_layout_dashboardlayout"
     },
     {
       "label": "notifications-bell.tsx",
@@ -31,10 +361,10 @@
       "source_file": "src/features/notifications/components/notifications-bell.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_features_notifications_components_notifications_bell",
       "community": 10,
       "community_name": "notifications-bell.tsx",
-      "norm_label": "notifications-bell.tsx"
+      "norm_label": "notifications-bell.tsx",
+      "id": "src_features_notifications_components_notifications_bell"
     },
     {
       "label": "IncomingNotification",
@@ -42,10 +372,10 @@
       "source_file": "src/features/notifications/components/notifications-bell.tsx",
       "source_location": "L22",
       "_origin": "ast",
-      "id": "src_features_notifications_components_notifications_bell_incomingnotification",
       "community": 10,
       "community_name": "notifications-bell.tsx",
-      "norm_label": "incomingnotification"
+      "norm_label": "incomingnotification",
+      "id": "src_features_notifications_components_notifications_bell_incomingnotification"
     },
     {
       "label": "playBeep()",
@@ -53,10 +383,10 @@
       "source_file": "src/features/notifications/components/notifications-bell.tsx",
       "source_location": "L32",
       "_origin": "ast",
-      "id": "src_features_notifications_components_notifications_bell_playbeep",
       "community": 10,
       "community_name": "notifications-bell.tsx",
-      "norm_label": "playbeep()"
+      "norm_label": "playbeep()",
+      "id": "src_features_notifications_components_notifications_bell_playbeep"
     },
     {
       "label": "hrefFor()",
@@ -64,10 +394,10 @@
       "source_file": "src/features/notifications/components/notifications-bell.tsx",
       "source_location": "L57",
       "_origin": "ast",
-      "id": "src_features_notifications_components_notifications_bell_hreffor",
       "community": 10,
       "community_name": "notifications-bell.tsx",
-      "norm_label": "hreffor()"
+      "norm_label": "hreffor()",
+      "id": "src_features_notifications_components_notifications_bell_hreffor"
     },
     {
       "label": "NotificationsBell()",
@@ -75,20 +405,20 @@
       "source_file": "src/features/notifications/components/notifications-bell.tsx",
       "source_location": "L68",
       "_origin": "ast",
-      "id": "src_features_notifications_components_notifications_bell_notificationsbell",
       "community": 10,
       "community_name": "notifications-bell.tsx",
-      "norm_label": "notificationsbell()"
+      "norm_label": "notificationsbell()",
+      "id": "src_features_notifications_components_notifications_bell_notificationsbell"
     },
     {
-      "label": "page.tsx",
+      "label": "import/page.tsx",
       "file_type": "code",
       "source_file": "src/app/(dashboard)/settings/import/page.tsx",
       "source_location": "L1",
       "_origin": "ast",
       "community": 2,
       "community_name": "page.tsx",
-      "norm_label": "page.tsx",
+      "norm_label": "import/page.tsx",
       "id": "src_app_dashboard_settings_import_page"
     },
     {
@@ -306,7 +636,7 @@
       "source_file": "package.json",
       "source_location": "L11",
       "_origin": "ast",
-      "community": 3,
+      "community": 5,
       "community_name": "dependencies",
       "norm_label": "dependencies",
       "id": "package_dependencies"
@@ -317,8 +647,8 @@
       "source_file": "package.json",
       "source_location": "L12",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "@dagrejs/dagre",
+      "community": 5,
+      "community_name": "dependencies",
       "norm_label": "@dagrejs/dagre",
       "id": "package_dependencies_dagrejs_dagre"
     },
@@ -328,8 +658,8 @@
       "source_file": "package.json",
       "source_location": "L12",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "@dagrejs/dagre",
+      "community": 5,
+      "community_name": "dependencies",
       "norm_label": "@dagrejs/dagre",
       "id": "dagrejs_dagre"
     },
@@ -449,8 +779,8 @@
       "source_file": "package.json",
       "source_location": "L18",
       "_origin": "ast",
-      "community": 22,
-      "community_name": "@tanstack/react-query",
+      "community": 5,
+      "community_name": "dependencies",
       "norm_label": "@tanstack/react-query",
       "id": "package_dependencies_tanstack_react_query"
     },
@@ -460,8 +790,8 @@
       "source_file": "package.json",
       "source_location": "L18",
       "_origin": "ast",
-      "community": 22,
-      "community_name": "@tanstack/react-query",
+      "community": 5,
+      "community_name": "dependencies",
       "norm_label": "@tanstack/react-query",
       "id": "tanstack_react_query"
     },
@@ -516,7 +846,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "community": 3,
-      "community_name": "dependencies",
+      "community_name": "class-variance-authority",
       "norm_label": "class-variance-authority",
       "id": "package_dependencies_class_variance_authority"
     },
@@ -527,7 +857,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "community": 3,
-      "community_name": "dependencies",
+      "community_name": "class-variance-authority",
       "norm_label": "class-variance-authority",
       "id": "class_variance_authority"
     },
@@ -538,7 +868,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "community": 5,
-      "community_name": "clsx",
+      "community_name": "dependencies",
       "norm_label": "clsx",
       "id": "package_dependencies_clsx"
     },
@@ -549,7 +879,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "community": 5,
-      "community_name": "clsx",
+      "community_name": "dependencies",
       "norm_label": "clsx",
       "id": "clsx"
     },
@@ -559,8 +889,8 @@
       "source_file": "package.json",
       "source_location": "L23",
       "_origin": "ast",
-      "community": 3,
-      "community_name": "dependencies",
+      "community": 27,
+      "community_name": "framer-motion",
       "norm_label": "framer-motion",
       "id": "package_dependencies_framer_motion"
     },
@@ -570,8 +900,8 @@
       "source_file": "package.json",
       "source_location": "L23",
       "_origin": "ast",
-      "community": 3,
-      "community_name": "dependencies",
+      "community": 27,
+      "community_name": "framer-motion",
       "norm_label": "framer-motion",
       "id": "framer_motion"
     },
@@ -1031,13 +1361,454 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/pipelines/[id]/page.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_pipelines_id_page",
+      "target": "src_app_dashboard_pipelines_id_page_pipelineboardpage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/pipelines/[id]/page.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_pipelines_id_page",
+      "target": "src_features_pipelines_components_stages_dialog",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/pipelines/[id]/page.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_pipelines_id_page",
+      "target": "src_features_pipelines_components_stages_dialog_stagesdialog",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/pipelines/[id]/page.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_pipelines_id_page",
+      "target": "src_features_pipelines_services_pipelines_service",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/pipelines/[id]/page.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_pipelines_id_page",
+      "target": "src_features_pipelines_services_pipelines_service_pipelinesservice",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/components/stages-dialog.tsx",
+      "source_location": "L57",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_components_stages_dialog",
+      "target": "src_features_pipelines_components_stages_dialog_colors",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/components/stages-dialog.tsx",
+      "source_location": "L36",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_components_stages_dialog",
+      "target": "src_features_pipelines_components_stages_dialog_draftstage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/components/stages-dialog.tsx",
+      "source_location": "L78",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_components_stages_dialog",
+      "target": "src_features_pipelines_components_stages_dialog_makekey",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/components/stages-dialog.tsx",
+      "source_location": "L47",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_components_stages_dialog",
+      "target": "src_features_pipelines_components_stages_dialog_props",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/components/stages-dialog.tsx",
+      "source_location": "L82",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_components_stages_dialog",
+      "target": "src_features_pipelines_components_stages_dialog_sortablerow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/components/stages-dialog.tsx",
+      "source_location": "L209",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_components_stages_dialog",
+      "target": "src_features_pipelines_components_stages_dialog_stagesdialog",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/components/stages-dialog.tsx",
+      "source_location": "L67",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_components_stages_dialog",
+      "target": "src_features_pipelines_components_stages_dialog_type_options",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/components/stages-dialog.tsx",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_components_stages_dialog",
+      "target": "src_features_pipelines_services_pipelines_service",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/components/stages-dialog.tsx",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_components_stages_dialog",
+      "target": "src_features_pipelines_services_pipelines_service_pipelinesservice",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/components/stages-dialog.tsx",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_components_stages_dialog",
+      "target": "src_features_pipelines_services_pipelines_service_pipelinestage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/components/stages-dialog.tsx",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_components_stages_dialog",
+      "target": "src_features_pipelines_services_pipelines_service_stagetype",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "field",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/components/stages-dialog.tsx",
+      "source_location": "L42",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_components_stages_dialog_draftstage",
+      "target": "src_features_pipelines_services_pipelines_service_stagetype",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "field",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/components/stages-dialog.tsx",
+      "source_location": "L50",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_components_stages_dialog_props",
+      "target": "src_features_pipelines_services_pipelines_service_pipelinestage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/components/stages-dialog.tsx",
+      "source_location": "L259",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_components_stages_dialog_stagesdialog",
+      "target": "src_features_pipelines_components_stages_dialog_makekey",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L78",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_services_pipelines_service",
+      "target": "src_features_pipelines_services_pipelines_service_boardresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L116",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_services_pipelines_service",
+      "target": "src_features_pipelines_services_pipelines_service_carddetail",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_services_pipelines_service",
+      "target": "src_features_pipelines_services_pipelines_service_cardstatus",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L36",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_services_pipelines_service",
+      "target": "src_features_pipelines_services_pipelines_service_cardsummary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L108",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_services_pipelines_service",
+      "target": "src_features_pipelines_services_pipelines_service_contactconversationlite",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L101",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_services_pipelines_service",
+      "target": "src_features_pipelines_services_pipelines_service_contacttaglite",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L163",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_services_pipelines_service",
+      "target": "src_features_pipelines_services_pipelines_service_conversationcard",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L151",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_services_pipelines_service",
+      "target": "src_features_pipelines_services_pipelines_service_createcardinput",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L137",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_services_pipelines_service",
+      "target": "src_features_pipelines_services_pipelines_service_createpipelineinput",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L205",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_services_pipelines_service",
+      "target": "src_features_pipelines_services_pipelines_service_leadrouting",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L85",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_services_pipelines_service",
+      "target": "src_features_pipelines_services_pipelines_service_leadtracking",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L186",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_services_pipelines_service",
+      "target": "src_features_pipelines_services_pipelines_service_origintype",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_services_pipelines_service",
+      "target": "src_features_pipelines_services_pipelines_service_pipeline",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L215",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_services_pipelines_service",
+      "target": "src_features_pipelines_services_pipelines_service_pipelinesservice",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_services_pipelines_service",
+      "target": "src_features_pipelines_services_pipelines_service_pipelinestage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L199",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_services_pipelines_service",
+      "target": "src_features_pipelines_services_pipelines_service_routingexception",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L209",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_services_pipelines_service",
+      "target": "src_features_pipelines_services_pipelines_service_routingoptions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L195",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_services_pipelines_service",
+      "target": "src_features_pipelines_services_pipelines_service_routingtarget",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_services_pipelines_service",
+      "target": "src_features_pipelines_services_pipelines_service_stagetype",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "context": "type",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/pipelines/services/pipelines.service.ts",
+      "source_location": "L199",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_pipelines_services_pipelines_service_routingexception",
+      "target": "src_features_pipelines_services_pipelines_service_routingtarget",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "src/app/(dashboard)/layout.tsx",
       "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_layout",
-      "target": "src_app_dashboard_layout_dashboardlayout",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_layout_dashboardlayout"
     },
     {
       "relation": "imports_from",
@@ -1047,9 +1818,9 @@
       "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_layout",
-      "target": "src_features_notifications_components_notifications_bell",
-      "confidence_score": 1.0
+      "target": "src_features_notifications_components_notifications_bell"
     },
     {
       "relation": "imports",
@@ -1059,9 +1830,9 @@
       "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_layout",
-      "target": "src_features_notifications_components_notifications_bell_notificationsbell",
-      "confidence_score": 1.0
+      "target": "src_features_notifications_components_notifications_bell_notificationsbell"
     },
     {
       "relation": "contains",
@@ -1070,9 +1841,9 @@
       "source_location": "L57",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_notifications_components_notifications_bell",
-      "target": "src_features_notifications_components_notifications_bell_hreffor",
-      "confidence_score": 1.0
+      "target": "src_features_notifications_components_notifications_bell_hreffor"
     },
     {
       "relation": "contains",
@@ -1081,9 +1852,9 @@
       "source_location": "L22",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_notifications_components_notifications_bell",
-      "target": "src_features_notifications_components_notifications_bell_incomingnotification",
-      "confidence_score": 1.0
+      "target": "src_features_notifications_components_notifications_bell_incomingnotification"
     },
     {
       "relation": "contains",
@@ -1092,9 +1863,9 @@
       "source_location": "L68",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_notifications_components_notifications_bell",
-      "target": "src_features_notifications_components_notifications_bell_notificationsbell",
-      "confidence_score": 1.0
+      "target": "src_features_notifications_components_notifications_bell_notificationsbell"
     },
     {
       "relation": "contains",
@@ -1103,9 +1874,9 @@
       "source_location": "L32",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_notifications_components_notifications_bell",
-      "target": "src_features_notifications_components_notifications_bell_playbeep",
-      "confidence_score": 1.0
+      "target": "src_features_notifications_components_notifications_bell_playbeep"
     },
     {
       "relation": "calls",
@@ -1115,9 +1886,9 @@
       "source_location": "L106",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_notifications_components_notifications_bell_notificationsbell",
-      "target": "src_features_notifications_components_notifications_bell_playbeep",
-      "confidence_score": 1.0
+      "target": "src_features_notifications_components_notifications_bell_playbeep"
     },
     {
       "relation": "calls",
@@ -1127,9 +1898,9 @@
       "source_location": "L111",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_notifications_components_notifications_bell_notificationsbell",
-      "target": "src_features_notifications_components_notifications_bell_hreffor",
-      "confidence_score": 1.0
+      "target": "src_features_notifications_components_notifications_bell_hreffor"
     },
     {
       "relation": "contains",
@@ -2173,5 +2944,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "e9e10bf9bcce891e4d5728624ad12e129a2b5514"
+  "built_at_commit": "24b4705a5a0b8a91de05ea4e0ea64ece56483dd8"
 }

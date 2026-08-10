@@ -63,6 +63,8 @@ export interface Cadence {
   triggerValue: string | null;
   stopOnReply: boolean;
   businessHoursOnly: boolean;
+  /** Origens permitidas (channelIds). Vazio = todas. */
+  channelFilter: string[];
   steps: WorkflowStep[];
   graph?: WorkflowGraph;
   onEnd: CadenceOnEnd;
@@ -76,6 +78,7 @@ export interface CadenceInput {
   triggerValue?: string | null;
   stopOnReply?: boolean;
   businessHoursOnly?: boolean;
+  channelFilter?: string[];
   steps?: WorkflowStep[];
   graph?: WorkflowGraph;
   onEnd?: CadenceOnEnd;
