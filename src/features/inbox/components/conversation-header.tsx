@@ -175,6 +175,9 @@ export function ConversationHeader({
           conversationId={conversation.id}
           currentChannelId={conversation.channel.id}
           currentChannelType={conversation.channel.type}
+          highlight={
+            conversation.tags?.some((t) => t.tag?.name === '+24h') ?? false
+          }
         />
         <LeadInfoPopover conversationId={conversation.id} />
         <AgentPinPopover conversation={conversation} onChanged={onUpdate} />
