@@ -11,6 +11,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Loader2, Plug, RefreshCw, Unplug, CheckCircle2 } from 'lucide-react';
 import { tinyService } from '@/features/tiny/services/tiny.service';
+import { MetaCapiCard } from '@/features/tiny/components/meta-capi-card';
 
 function fmt(v?: string | null): string {
   if (!v) return 'nunca';
@@ -159,6 +160,9 @@ export default function IntegracoesPage() {
           )}
         </div>
       </div>
+
+      {/* Meta CAPI — só faz sentido com o Tiny conectado (fonte dos eventos) */}
+      {connected && <MetaCapiCard />}
     </div>
   );
 }

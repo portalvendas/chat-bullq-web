@@ -77,6 +77,29 @@ export interface TinyItem {
   infoAdicional: string | null;
 }
 
+export interface MetaCapiConfig {
+  enabled: boolean;
+  pixelId: string | null;
+  apiVersion: string;
+  testEventCode: string | null;
+  currency: string;
+  purchaseSituacoes: string[];
+  addToCartEnabled: boolean;
+  addToCartSituacoes: string[];
+  hasToken: boolean;
+  lastError: string | null;
+}
+export interface MetaCapiConfigInput {
+  enabled?: boolean;
+  pixelId?: string | null;
+  accessToken?: string | null;
+  apiVersion?: string;
+  testEventCode?: string | null;
+  purchaseSituacoes?: string[];
+  addToCartEnabled?: boolean;
+  addToCartSituacoes?: string[];
+}
+
 function unwrap<T>(data: any): T {
   return (data?.data ?? data) as T;
 }
@@ -120,4 +143,26 @@ export const tinyService = {
     const { data } = await api.get(`/tiny/documents/${docId}/items`);
     return unwrap<{ items: TinyItem[] }>(data)?.items ?? [];
   },
+  async capiConfig(): Promise<MetaCapiConfig> {
+    const { data } = await api.get('/tiny/capi/config');
+    return unwrap<MetaCapiConfig>(data);
+  },
+  async updateCapiConfig(dto: MetaCapiConfigInput): Promise<MetaCapiConfig> {
+    const { data } = await api.put('/tiny/capi/config', dto);
+    return unwrap<MetaCapiConfig>(data);
+  },
 };
+
+/** Situações de pedido do Tiny (pra multiseleção de Purchase). */
+export const TINY_PEDIDO_SITUACOES = [
+  'Aberta',
+  'Aprovada',
+  'Preparando Envio',
+  'Faturada',
+  'Pronto Envio',
+  'Enviada',
+  'Entregue',
+  'Dados Incompletos',
+  'Cancelada',
+  'Não Entregue',
+];
