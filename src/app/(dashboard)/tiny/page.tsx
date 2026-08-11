@@ -1,9 +1,13 @@
 'use client';
 
 /**
- * Tela "Pedidos & Propostas" (Tiny ERP). Cards de totais no topo, abas
- * Pedidos/Orçamentos, cada linha com o LEAD vinculado e — no pedido — os
- * ITENS num subcampo expansível (buscados sob demanda no Tiny).
+ * Tela "Pedidos & Propostas" (Tiny ERP). Filtro de período, cards de totais +
+ * card por vendedor, abas Pedidos/Propostas com o LEAD vinculado e os ITENS
+ * num subcampo expansível (buscados sob demanda no Tiny).
+ *
+ * Regra de negócio (padrão): pedidos = só venda efetiva — exclui Cancelado/
+ * Dados Incompletos, exclui origem marketplace (ML/Shopee/Magalu/Amazon) e só
+ * natureza de operação "Venda". Aplicado no backend.
  */
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
@@ -16,10 +20,12 @@ import {
   User,
   Phone,
   Link2Off,
+  Users,
 } from 'lucide-react';
 import {
   tinyService,
   type TinyOrderRow,
+  type TinyPeriod,
 } from '@/features/tiny/services/tiny.service';
 
 function brl(v: number | null | undefined): string {
@@ -40,6 +46,47 @@ function situacaoCls(s: string | null): string {
   return 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400';
 }
 
+// ── Períodos ─────────────────────────────────────────────────────────
+type PeriodKey = 'hoje' | 'ontem' | '7d' | '30d' | 'mes' | 'tudo';
+const PERIOD_LABELS: Record<PeriodKey, string> = {
+  hoje: 'Hoje',
+  ontem: 'Ontem',
+  '7d': '7 dias',
+  '30d': '30 dias',
+  mes: 'Este mês',
+  tudo: 'Tudo',
+};
+function periodRange(k: PeriodKey): TinyPeriod {
+  const now = new Date();
+  const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0);
+  const endOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59);
+  switch (k) {
+    case 'hoje':
+      return { from: startOfDay(now).toISOString(), to: endOfDay(now).toISOString() };
+    case 'ontem': {
+      const y = new Date(now);
+      y.setDate(y.getDate() - 1);
+      return { from: startOfDay(y).toISOString(), to: endOfDay(y).toISOString() };
+    }
+    case '7d': {
+      const s = new Date(now);
+      s.setDate(s.getDate() - 6);
+      return { from: startOfDay(s).toISOString(), to: endOfDay(now).toISOString() };
+    }
+    case '30d': {
+      const s = new Date(now);
+      s.setDate(s.getDate() - 29);
+      return { from: startOfDay(s).toISOString(), to: endOfDay(now).toISOString() };
+    }
+    case 'mes': {
+      const s = new Date(now.getFullYear(), now.getMonth(), 1);
+      return { from: startOfDay(s).toISOString(), to: endOfDay(now).toISOString() };
+    }
+    default:
+      return {};
+  }
+}
+
 function StatCard({
   icon: Icon,
   label,
@@ -57,9 +104,7 @@ function StatCard({
         <Icon className="h-4 w-4" />
         {label}
       </div>
-      <div className="mt-2 text-2xl font-bold text-zinc-900 dark:text-zinc-100">
-        {value}
-      </div>
+      <div className="mt-2 text-2xl font-bold text-zinc-900 dark:text-zinc-100">{value}</div>
       {sub && <div className="mt-0.5 text-xs text-zinc-400">{sub}</div>}
     </div>
   );
@@ -103,9 +148,7 @@ function ItemsSubTable({ docId }: { docId: string }) {
               </td>
               <td className="py-1.5 text-right tabular-nums">{it.quantidade}</td>
               <td className="py-1.5 text-right tabular-nums">{brl(it.valorUnitario)}</td>
-              <td className="py-1.5 text-right font-medium tabular-nums">
-                {brl(it.valorTotal)}
-              </td>
+              <td className="py-1.5 text-right font-medium tabular-nums">{brl(it.valorTotal)}</td>
             </tr>
           ))}
         </tbody>
@@ -160,13 +203,14 @@ function OrderRow({ row }: { row: TinyOrderRow }) {
             </span>
           )}
         </td>
+        <td className="py-2 pr-3 text-xs text-zinc-500">{row.vendedor || '—'}</td>
         <td className="py-2 pr-3 text-right font-semibold tabular-nums text-zinc-800 dark:text-zinc-200">
           {brl(row.valor)}
         </td>
       </tr>
       {open && (
         <tr className="bg-zinc-50/60 dark:bg-zinc-900/40">
-          <td colSpan={6}>
+          <td colSpan={7}>
             <ItemsSubTable docId={row.id} />
           </td>
         </tr>
@@ -178,16 +222,18 @@ function OrderRow({ row }: { row: TinyOrderRow }) {
 export default function TinyOrdersPage() {
   const [tab, setTab] = useState<'PEDIDO' | 'ORCAMENTO'>('PEDIDO');
   const [page, setPage] = useState(1);
+  const [period, setPeriod] = useState<PeriodKey>('tudo');
+  const range = periodRange(period);
 
   const { data: summary } = useQuery({
-    queryKey: ['tiny-summary'],
-    queryFn: () => tinyService.summary(),
+    queryKey: ['tiny-summary', period],
+    queryFn: () => tinyService.summary(range),
     staleTime: 60_000,
   });
 
   const { data: orders, isLoading } = useQuery({
-    queryKey: ['tiny-orders', tab, page],
-    queryFn: () => tinyService.orders(tab, page, 30),
+    queryKey: ['tiny-orders', tab, page, period],
+    queryFn: () => tinyService.orders(tab, page, 30, range),
     staleTime: 30_000,
   });
 
@@ -195,19 +241,44 @@ export default function TinyOrdersPage() {
     setTab(t);
     setPage(1);
   };
+  const switchPeriod = (p: PeriodKey) => {
+    setPeriod(p);
+    setPage(1);
+  };
 
   const rows = orders?.items ?? [];
   const totalPages = orders?.pagination.totalPages ?? 1;
+  const vendors = summary?.porVendedor ?? [];
 
   return (
     <div className="h-full overflow-y-auto">
       <div className="mx-auto w-full max-w-6xl p-6">
-        <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
-          Pedidos &amp; Propostas
-        </h1>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-          Pedidos e propostas comerciais do Tiny ERP, vinculados aos leads do CRM.
-        </p>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+              Pedidos &amp; Propostas
+            </h1>
+            <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+              Vendas efetivas do Tiny ERP (sem marketplace/cancelados) vinculadas aos leads.
+            </p>
+          </div>
+          {/* Filtro de período */}
+          <div className="flex flex-wrap gap-1 rounded-lg border border-zinc-200 p-1 dark:border-zinc-800">
+            {(Object.keys(PERIOD_LABELS) as PeriodKey[]).map((k) => (
+              <button
+                key={k}
+                onClick={() => switchPeriod(k)}
+                className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
+                  period === k
+                    ? 'bg-primary text-white'
+                    : 'text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+                }`}
+              >
+                {PERIOD_LABELS[k]}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* Cards de totais */}
         <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
@@ -234,6 +305,41 @@ export default function TinyOrdersPage() {
             value={String(summary?.orcamentos.count ?? 0)}
           />
         </div>
+
+        {/* Card por vendedor */}
+        {vendors.length > 0 && (
+          <div className="mt-4 rounded-xl border border-zinc-200 p-4 dark:border-zinc-800">
+            <div className="mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
+              <Users className="h-4 w-4" /> Por vendedor
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="text-left text-[11px] uppercase tracking-wide text-zinc-400">
+                  <tr>
+                    <th className="pb-2 pr-3 font-medium">Vendedor</th>
+                    <th className="pb-2 pr-3 text-right font-medium">Pedidos</th>
+                    <th className="pb-2 pr-3 text-right font-medium">R$ pedidos</th>
+                    <th className="pb-2 pr-3 text-right font-medium">Propostas</th>
+                    <th className="pb-2 text-right font-medium">R$ propostas</th>
+                  </tr>
+                </thead>
+                <tbody className="text-zinc-700 dark:text-zinc-300">
+                  {vendors.map((v) => (
+                    <tr key={v.vendedor} className="border-t border-zinc-100 dark:border-zinc-800">
+                      <td className="py-1.5 pr-3 font-medium text-zinc-800 dark:text-zinc-200">
+                        {v.vendedor}
+                      </td>
+                      <td className="py-1.5 pr-3 text-right tabular-nums">{v.pedidosCount}</td>
+                      <td className="py-1.5 pr-3 text-right tabular-nums">{brl(v.pedidosTotal)}</td>
+                      <td className="py-1.5 pr-3 text-right tabular-nums">{v.propostasCount}</td>
+                      <td className="py-1.5 text-right tabular-nums">{brl(v.propostasTotal)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
 
         {/* Abas */}
         <nav className="mt-8 flex gap-1 border-b border-zinc-200 dark:border-zinc-800">
@@ -266,7 +372,7 @@ export default function TinyOrdersPage() {
             </div>
           ) : rows.length === 0 ? (
             <div className="py-16 text-center text-sm text-zinc-400">
-              Nenhum {tab === 'PEDIDO' ? 'pedido' : 'proposta'} encontrado.
+              Nenhum {tab === 'PEDIDO' ? 'pedido' : 'proposta'} no período.
             </div>
           ) : (
             <table className="w-full text-sm">
@@ -277,6 +383,7 @@ export default function TinyOrdersPage() {
                   <th className="py-2 pr-3 font-medium">Situação</th>
                   <th className="py-2 pr-3 font-medium">Data</th>
                   <th className="py-2 pr-3 font-medium">Lead vinculado</th>
+                  <th className="py-2 pr-3 font-medium">Vendedor</th>
                   <th className="py-2 pr-3 text-right font-medium">Valor</th>
                 </tr>
               </thead>
