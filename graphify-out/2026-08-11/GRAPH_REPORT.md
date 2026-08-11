@@ -1,16 +1,16 @@
-# Graph Report - chat-bullq-web  (2026-08-11)
+# Graph Report - chat-bullq-web  (2026-08-10)
 
 ## Corpus Check
-- 175 files · ~109,379 words
+- 168 files · ~104,622 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 171 nodes · 199 edges · 29 communities (8 shown, 21 thin omitted)
+- 154 nodes · 179 edges · 28 communities (7 shown, 21 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `db908b65`
+- Built from commit: `4916fbcd`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -43,19 +43,18 @@
 - zustand
 - lucide-react
 - framer-motion
-- chat-panel.tsx
 
 ## God Nodes (most connected - your core abstractions)
 1. `ImportPage()` - 8 edges
 2. `CanvasInner()` - 5 edges
 3. `scripts` - 5 edges
 4. `NotificationsBell()` - 4 edges
-5. `MessageText()` - 3 edges
-6. `dagreLayout()` - 3 edges
-7. `GraphNodeType` - 3 edges
-8. `WorkflowGraph` - 3 edges
-9. `StagesDialog()` - 3 edges
-10. `StageType` - 3 edges
+5. `dagreLayout()` - 3 edges
+6. `GraphNodeType` - 3 edges
+7. `WorkflowGraph` - 3 edges
+8. `StagesDialog()` - 3 edges
+9. `StageType` - 3 edges
+10. `PipelineStage` - 3 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `SalesData` --references--> `GraphNodeType`  [EXTRACTED]
@@ -70,7 +69,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (29 total, 21 thin omitted)
+## Communities (28 total, 21 thin omitted)
 
 ### Community 0 - "devDependencies"
 Cohesion: 0.12
@@ -100,12 +99,8 @@ Nodes (4): hrefFor(), IncomingNotification, NotificationsBell(), playBeep()
 Cohesion: 0.09
 Nodes (27): CanvasInner(), dagreLayout(), HANDLE_COLOR, nodeTypes, SalesData, SalesNode, TemplatesCtx, toGraph() (+19 more)
 
-### Community 28 - "chat-panel.tsx"
-Cohesion: 0.15
-Nodes (11): ChatPanel(), ChatPanelProps, LinkPreviewCard(), matchSingleUrl(), MessageText(), renderInlineTextWithLinks(), safeHostname(), statusIcons (+3 more)
-
 ## Knowledge Gaps
-- **78 isolated node(s):** `ChatPanelProps`, `statusIcons`, `TemplateButtonShape`, `TemplateElementShape`, `TemplatesCtx` (+73 more)
+- **74 isolated node(s):** `TemplatesCtx`, `TYPE_META`, `HANDLE_COLOR`, `SalesNode`, `nodeTypes` (+69 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **21 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -113,16 +108,14 @@ Nodes (11): ChatPanel(), ChatPanelProps, LinkPreviewCard(), matchSingleUrl(), Me
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `dependencies` connect `dependencies` to `package.json`, `axios`, `clsx`, `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`, `@headlessui/react`, `@hookform/resolvers`, `next-themes`, `next`, `react`, `react-dom`, `react-hook-form`, `socket.io-client`, `sonner`, `@dagrejs/dagre`, `@tanstack/react-query`, `@xyflow/react`, `zod`, `zustand`, `lucide-react`, `framer-motion`?**
-  _High betweenness centrality (0.164) - this node is a cross-community bridge._
+  _High betweenness centrality (0.202) - this node is a cross-community bridge._
 - **Why does `devDependencies` connect `devDependencies` to `package.json`?**
-  _High betweenness centrality (0.072) - this node is a cross-community bridge._
-- **What connects `ChatPanelProps`, `statusIcons`, `TemplateButtonShape` to the rest of the system?**
-  _78 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _High betweenness centrality (0.089) - this node is a cross-community bridge._
+- **What connects `TemplatesCtx`, `TYPE_META`, `HANDLE_COLOR` to the rest of the system?**
+  _74 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `devDependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.11764705882352941 - nodes in this community are weakly interconnected._
 - **Should `pipelines.service.ts` be split into smaller, more focused modules?**
   _Cohesion score 0.0896551724137931 - nodes in this community are weakly interconnected._
 - **Should `cadences.service.ts` be split into smaller, more focused modules?**
   _Cohesion score 0.08602150537634409 - nodes in this community are weakly interconnected._
-- **Should `chat-panel.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.14705882352941177 - nodes in this community are weakly interconnected._

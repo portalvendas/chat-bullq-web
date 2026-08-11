@@ -29,6 +29,39 @@ export interface TinyLeadDocuments {
   orcamentos: TinyDocument[];
 }
 
+export interface TinySummary {
+  pedidos: { count: number; total: number };
+  orcamentos: { count: number; total: number };
+}
+
+export interface TinyOrderRow {
+  id: string;
+  kind: 'PEDIDO' | 'ORCAMENTO';
+  tinyId: string;
+  numero: string | null;
+  situacao: string | null;
+  data: string | null;
+  valor: number | null;
+  clienteNome: string | null;
+  clienteTelefone: string | null;
+  matchedBy: string | null;
+  lead: { id: string; name: string | null; phone: string | null } | null;
+}
+
+export interface TinyOrdersPage {
+  items: TinyOrderRow[];
+  pagination: { page: number; limit: number; total: number; totalPages: number };
+}
+
+export interface TinyItem {
+  descricao: string;
+  sku: string | null;
+  quantidade: number;
+  valorUnitario: number;
+  valorTotal: number;
+  infoAdicional: string | null;
+}
+
 function unwrap<T>(data: any): T {
   return (data?.data ?? data) as T;
 }
@@ -52,5 +85,21 @@ export const tinyService = {
   async documentsForContact(contactId: string): Promise<TinyLeadDocuments> {
     const { data } = await api.get('/tiny/documents', { params: { contactId } });
     return unwrap<TinyLeadDocuments>(data) ?? { pedidos: [], orcamentos: [] };
+  },
+  async summary(): Promise<TinySummary> {
+    const { data } = await api.get('/tiny/summary');
+    return unwrap<TinySummary>(data);
+  },
+  async orders(
+    kind: 'PEDIDO' | 'ORCAMENTO',
+    page = 1,
+    limit = 30,
+  ): Promise<TinyOrdersPage> {
+    const { data } = await api.get('/tiny/orders', { params: { kind, page, limit } });
+    return unwrap<TinyOrdersPage>(data);
+  },
+  async items(docId: string): Promise<TinyItem[]> {
+    const { data } = await api.get(`/tiny/documents/${docId}/items`);
+    return unwrap<{ items: TinyItem[] }>(data)?.items ?? [];
   },
 };

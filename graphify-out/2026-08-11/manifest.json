@@ -135,8 +135,8 @@
     "semantic_hash": ""
   },
   "src/app/(dashboard)/settings/layout.tsx": {
-    "mtime": 1786475833.4404454,
-    "ast_hash": "1b5647094e5a052657b7e311ecd87527",
+    "mtime": 1785958205.452007,
+    "ast_hash": "16fbd51a4ba011d8041e8f779013e004",
     "semantic_hash": ""
   },
   "src/app/(dashboard)/settings/lead-ads/page.tsx": {
@@ -145,8 +145,8 @@
     "semantic_hash": ""
   },
   "src/app/(dashboard)/settings/members/page.tsx": {
-    "mtime": 1786365189.8417492,
-    "ast_hash": "b2e59c7ac0ad41bcbc5eaa733121a64c",
+    "mtime": 1781632678.0,
+    "ast_hash": "7b4b7f13dcb2e239b441e7107abc229c",
     "semantic_hash": ""
   },
   "src/app/(dashboard)/settings/notifications/page.tsx": {
@@ -185,8 +185,8 @@
     "semantic_hash": ""
   },
   "src/components/layout/app-sidebar.tsx": {
-    "mtime": 1786365267.331557,
-    "ast_hash": "3e02f58ba6f3e6efa322b15d6e49ce41",
+    "mtime": 1785719958.4244514,
+    "ast_hash": "f121f9409467fd9c0388285635515dd5",
     "semantic_hash": ""
   },
   "src/components/providers.tsx": {
@@ -400,8 +400,8 @@
     "semantic_hash": ""
   },
   "src/features/cadences/components/salesbot-canvas.tsx": {
-    "mtime": 1786334170.9857404,
-    "ast_hash": "02e7cda7f12f886cf83189437a87c898",
+    "mtime": 1786331694.0480015,
+    "ast_hash": "8a84e557e967a79ceb20f1dfc95a4690",
     "semantic_hash": ""
   },
   "src/features/cadences/graph-utils.ts": {
@@ -410,8 +410,8 @@
     "semantic_hash": ""
   },
   "src/features/cadences/services/cadences.service.ts": {
-    "mtime": 1786366401.274744,
-    "ast_hash": "9d1f802602b24a0b93111b29d2776160",
+    "mtime": 1786331590.5063965,
+    "ast_hash": "afe795617fa289da4c92478ff556d1f5",
     "semantic_hash": ""
   },
   "src/features/channels/components/channel-card.tsx": {
@@ -560,8 +560,8 @@
     "semantic_hash": ""
   },
   "src/features/inbox/components/chat-panel.tsx": {
-    "mtime": 1786476201.9852238,
-    "ast_hash": "1b61454033b23e27677c0a246484e359",
+    "mtime": 1783981747.2877872,
+    "ast_hash": "7a61392e6629e10429cbe4e714fbb6b4",
     "semantic_hash": ""
   },
   "src/features/inbox/components/conversation-ai-toggle.tsx": {
@@ -580,8 +580,8 @@
     "semantic_hash": ""
   },
   "src/features/inbox/components/conversation-header.tsx": {
-    "mtime": 1786365818.3225594,
-    "ast_hash": "e31e265ca932ba166ed25bb242531cd0",
+    "mtime": 1785435307.7117982,
+    "ast_hash": "7477e9c41ea30fb60d915dbaaf766552",
     "semantic_hash": ""
   },
   "src/features/inbox/components/conversation-list.tsx": {
@@ -590,8 +590,8 @@
     "semantic_hash": ""
   },
   "src/features/inbox/components/lead-info-popover.tsx": {
-    "mtime": 1786475790.034913,
-    "ast_hash": "d89f016cd02ae3e0441b4165acce1f62",
+    "mtime": 1785435293.355391,
+    "ast_hash": "975ecb01a1b62d808984565c714e38c4",
     "semantic_hash": ""
   },
   "src/features/inbox/components/media-bubbles.tsx": {
@@ -610,8 +610,8 @@
     "semantic_hash": ""
   },
   "src/features/inbox/components/salesbot-popover.tsx": {
-    "mtime": 1786366441.562504,
-    "ast_hash": "5571fe1d0c6eaa92f5f2fa071d7df1f1",
+    "mtime": 1785193232.439115,
+    "ast_hash": "d9780c1a0be48f9205e68e4ebc98bae6",
     "semantic_hash": ""
   },
   "src/features/inbox/components/story-reply-card.tsx": {
@@ -665,8 +665,8 @@
     "semantic_hash": ""
   },
   "src/features/inbox/services/inbox.service.ts": {
-    "mtime": 1786365548.789381,
-    "ast_hash": "557e802ba6a1d7a138cc2b65d0a435d4",
+    "mtime": 1784396451.0696616,
+    "ast_hash": "e7c1999ee3378446e3decaa8f73686ec",
     "semantic_hash": ""
   },
   "src/features/inbox/services/preferences.service.ts": {
@@ -685,8 +685,8 @@
     "semantic_hash": ""
   },
   "src/features/pipelines/components/card-dialog.tsx": {
-    "mtime": 1786475765.3913062,
-    "ast_hash": "92eda4607374a323643c40e5ebada9c2",
+    "mtime": 1786146178.937305,
+    "ast_hash": "6cf274fa82895fb4e58be277b71627f1",
     "semantic_hash": ""
   },
   "src/features/pipelines/components/kanban-board.tsx": {
@@ -705,8 +705,8 @@
     "semantic_hash": ""
   },
   "src/features/pipelines/components/lead-enrichment.tsx": {
-    "mtime": 1786363322.1560388,
-    "ast_hash": "031dde23a936c56e14f4fe8f93ea0545",
+    "mtime": 1786019884.864328,
+    "ast_hash": "4918e2fde8121776bccad59a891ee321",
     "semantic_hash": ""
   },
   "src/features/pipelines/components/pipelines-tree.tsx": {
@@ -755,8 +755,8 @@
     "semantic_hash": ""
   },
   "src/features/settings/services/members.service.ts": {
-    "mtime": 1786365130.4248755,
-    "ast_hash": "2a72eaad0312ddd2e88d75ceac58c1cf",
+    "mtime": 1781632678.0,
+    "ast_hash": "41ea6493cb0f935b569dd46b53e80d0c",
     "semantic_hash": ""
   },
   "src/features/settings/services/notifications.service.ts": {
@@ -842,41 +842,6 @@
   "src/features/notifications/components/notifications-bell.tsx": {
     "mtime": 1786313971.3817592,
     "ast_hash": "2af6b5e737aa987678391d4e0543b1ae",
-    "semantic_hash": ""
-  },
-  "src/app/(dashboard)/settings/groups/page.tsx": {
-    "mtime": 1786365091.4434545,
-    "ast_hash": "724511b6d4f1639817100734fcca9cff",
-    "semantic_hash": ""
-  },
-  "src/app/(dashboard)/settings/integracoes/page.tsx": {
-    "mtime": 1786475823.724612,
-    "ast_hash": "72c3e805c529b0d177bc193351bca135",
-    "semantic_hash": ""
-  },
-  "src/features/inbox/components/channel-switch-popover.tsx": {
-    "mtime": 1786365838.4852314,
-    "ast_hash": "691c495c424ac1395884a6760ee22d92",
-    "semantic_hash": ""
-  },
-  "src/features/settings/services/permission-groups.service.ts": {
-    "mtime": 1786365039.1882367,
-    "ast_hash": "33048f8f0be598f9a61e39833851d92b",
-    "semantic_hash": ""
-  },
-  "src/features/tiny/components/tiny-lead-panel.tsx": {
-    "mtime": 1786475745.391137,
-    "ast_hash": "fa86a48c9a84a34da73f0942844191e4",
-    "semantic_hash": ""
-  },
-  "src/features/tiny/services/tiny.service.ts": {
-    "mtime": 1786475722.7436213,
-    "ast_hash": "376635a8d284a3506a877fbcf2cd1c20",
-    "semantic_hash": ""
-  },
-  "src/hooks/use-permissions.ts": {
-    "mtime": 1786365205.5297415,
-    "ast_hash": "2223493103d7445de1a3b36640281308",
     "semantic_hash": ""
   }
 }
