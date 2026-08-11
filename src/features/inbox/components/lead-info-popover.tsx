@@ -13,6 +13,7 @@ import {
   LeadHeader,
   LeadEnrichment,
 } from '@/features/pipelines/components/lead-enrichment';
+import { TinyLeadPanel } from '@/features/tiny/components/tiny-lead-panel';
 
 export function LeadInfoPopover({ conversationId }: { conversationId: string }) {
   const [open, setOpen] = useState(false);
@@ -66,6 +67,7 @@ export function LeadInfoPopover({ conversationId }: { conversationId: string }) 
               <div className="space-y-3">
                 <LeadHeader card={detail} />
                 <LeadEnrichment card={detail} />
+                {detail.contactId && <TinyLeadPanel contactId={detail.contactId} />}
               </div>
             )}
           </div>

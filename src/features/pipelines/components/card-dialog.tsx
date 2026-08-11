@@ -9,6 +9,7 @@ import {
   type CardSummary,
 } from '../services/pipelines.service';
 import { LeadHeader, LeadEnrichment } from './lead-enrichment';
+import { TinyLeadPanel } from '@/features/tiny/components/tiny-lead-panel';
 
 interface Props {
   open: boolean;
@@ -292,6 +293,9 @@ export function CardDialog({
 
           {/* Enriquecimento do lead: contato completo + tracking/UTM */}
           {detail && <LeadEnrichment card={detail} />}
+
+          {/* Pedidos e propostas do Tiny ERP vinculados a este lead */}
+          {detail?.contactId && <TinyLeadPanel contactId={detail.contactId} />}
         </div>
 
         <div className="sticky bottom-0 flex items-center justify-between gap-2 border-t border-zinc-200 bg-zinc-50 px-6 py-3 dark:border-zinc-800 dark:bg-zinc-900/50">
