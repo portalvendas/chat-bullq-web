@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, useEffect, useRef, useState, useCallback } from 'react';
+import { Fragment, useEffect, useLayoutEffect, useRef, useState, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Check, CheckCheck, Clock, AlertCircle, ExternalLink, Reply, Trash2, X, Ban } from 'lucide-react';
 import { toast } from 'sonner';
@@ -378,12 +378,44 @@ export function ChatPanel({
 }: ChatPanelProps) {
   const queryClient = useQueryClient();
   const bottomRef = useRef<HTMLDivElement>(null);
+  // Scroll container do histórico. Precisamos da ref pra (a) preservar a
+  // posição de scroll ao carregar mensagens antigas (prepend no topo) e
+  // (b) usar como root do IntersectionObserver da paginação.
+  const scrollRef = useRef<HTMLDivElement>(null);
+  // Sentinela no topo da lista — quando entra em viewport (usuário rolou até
+  // o topo), dispara o carregamento das mensagens mais antigas.
+  const topSentinelRef = useRef<HTMLDivElement>(null);
   const { on, emit, onReconnect } = useSocket();
   const user = useAuthStore((s) => s.user);
 
+  // Paginação "pra cima": mantemos SEMPRE a página 1 (as N mais recentes) e
+  // vamos só aumentando o `limit`. Assim a query key continua estável
+  // (['messages', id]) — todos os handlers de realtime que fazem setQueryData
+  // continuam funcionando sem mudança — e um refetch (foco/reconnect) devolve
+  // a janela inteira já carregada, sem perder as mensagens antigas.
+  const PAGE_SIZE = 50;
+  const limitRef = useRef(PAGE_SIZE);
+  const totalRef = useRef(0);
+  const loadingOlderRef = useRef(false);
+  // Guarda scrollHeight/scrollTop ANTES do prepend pra restaurar a posição
+  // depois que o React pinta as mensagens antigas no topo.
+  const prevScrollRef = useRef<{ height: number; top: number } | null>(null);
+  const [isLoadingOlder, setIsLoadingOlder] = useState(false);
+
+  // Reset ao trocar de conversa (defensivo — o ChatPanel também é remontado
+  // via key prop, mas não custa garantir).
+  useEffect(() => {
+    limitRef.current = PAGE_SIZE;
+    totalRef.current = 0;
+    loadingOlderRef.current = false;
+    prevScrollRef.current = null;
+    setIsLoadingOlder(false);
+  }, [conversation.id]);
+
   const { data, isLoading } = useQuery({
     queryKey: ['messages', conversation.id],
-    queryFn: () => inboxService.getMessages(conversation.id),
+    // Página 1 sempre; o limite cresce conforme o operador rola pro passado.
+    queryFn: () => inboxService.getMessages(conversation.id, 1, limitRef.current),
     // Defenses against socket gaps: refetch when the tab regains focus
     // and on browser-level reconnect. Realtime is the happy path; these
     // catch the case where a `message:new` was missed.
@@ -393,6 +425,58 @@ export function ChatPanel({
   });
 
   const messages = data?.messages || [];
+  const total = data?.pagination?.total ?? messages.length;
+  const hasMore = messages.length < total;
+
+  // Mantém o total conhecido num ref pra lógica do loader (sem re-render).
+  useEffect(() => {
+    if (data?.pagination?.total != null) totalRef.current = data.pagination.total;
+  }, [data?.pagination?.total]);
+
+  // Carrega as PAGE_SIZE mensagens imediatamente anteriores às já carregadas.
+  // Aumenta o limite e refaz a página 1 — o backend devolve as `limit` mais
+  // recentes, então a janela cresce pra trás. A posição de scroll é
+  // preservada no useLayoutEffect abaixo.
+  const loadOlder = useCallback(async () => {
+    if (loadingOlderRef.current) return;
+    if (limitRef.current >= totalRef.current) return;
+    loadingOlderRef.current = true;
+    setIsLoadingOlder(true);
+    const el = scrollRef.current;
+    prevScrollRef.current = el
+      ? { height: el.scrollHeight, top: el.scrollTop }
+      : null;
+    limitRef.current += PAGE_SIZE;
+    try {
+      await queryClient.refetchQueries({
+        queryKey: ['messages', conversation.id],
+        exact: true,
+      });
+    } catch {
+      // Reverte o limite pra não entrar em loop de retry com a sentinela
+      // ainda visível; a próxima rolagem tenta de novo.
+      limitRef.current = Math.max(PAGE_SIZE, limitRef.current - PAGE_SIZE);
+      prevScrollRef.current = null;
+    } finally {
+      setIsLoadingOlder(false);
+      loadingOlderRef.current = false;
+    }
+  }, [conversation.id, queryClient]);
+
+  // Observer na sentinela do topo: dispara loadOlder quando ela aparece.
+  useEffect(() => {
+    const root = scrollRef.current;
+    const sentinel = topSentinelRef.current;
+    if (!root || !sentinel || !hasMore) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) loadOlder();
+      },
+      { root, rootMargin: '150px 0px 0px 0px', threshold: 0 },
+    );
+    io.observe(sentinel);
+    return () => io.disconnect();
+  }, [hasMore, loadOlder]);
 
   useEffect(() => {
     emit('join:conversation', { conversationId: conversation.id });
@@ -571,8 +655,26 @@ export function ChatPanel({
     [conversation.id, queryClient],
   );
 
+  // Auto-scroll pro fim SÓ quando chega mensagem nova no rodapé (ou no load
+  // inicial) — detectado pela mudança do id da ÚLTIMA mensagem. Ao carregar
+  // histórico antigo (prepend no topo) o último id não muda, então a tela
+  // não pula pro fim.
+  const lastMessageId = messages.length ? messages[messages.length - 1].id : null;
   useEffect(() => {
+    if (loadingOlderRef.current) return;
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [lastMessageId]);
+
+  // Preserva a posição de scroll após o prepend de mensagens antigas: mantém
+  // o mesmo conteúdo sob os olhos do usuário em vez de saltar. Roda antes da
+  // pintura (useLayoutEffect) pra não piscar.
+  useLayoutEffect(() => {
+    const el = scrollRef.current;
+    const saved = prevScrollRef.current;
+    if (el && saved) {
+      el.scrollTop = el.scrollHeight - saved.height + saved.top;
+      prevScrollRef.current = null;
+    }
   }, [messages.length]);
 
   // Reply state — quando setado, próxima msg enviada vai com replyToMessageId
@@ -688,7 +790,7 @@ export function ChatPanel({
         messages={messages}
       />
 
-      <div className="min-h-0 flex-1 overflow-y-auto bg-zinc-50 p-4 dark:bg-zinc-900/50">
+      <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto bg-zinc-50 p-4 dark:bg-zinc-900/50">
         {isLoading ? (
           <div className="flex h-full items-center justify-center">
             <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
@@ -699,6 +801,15 @@ export function ChatPanel({
           </div>
         ) : (
           <div className="mx-auto max-w-2xl space-y-2">
+            {/* Sentinela + loader da paginação pra cima. A sentinela fica no
+                topo da lista; ao alcançá-la, carregamos as mensagens
+                anteriores. Sem mais nada pra carregar, some. */}
+            {hasMore && <div ref={topSentinelRef} className="h-px w-full" />}
+            {isLoadingOlder && (
+              <div className="flex justify-center py-2">
+                <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+              </div>
+            )}
             {(() => {
               const reactionMap = new Map<string, string[]>();
               for (const msg of messages) {
