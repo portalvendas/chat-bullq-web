@@ -80,10 +80,14 @@ export interface TinyItem {
 export interface TinyResumo {
   totalProdutos: number | null;
   desconto: number | null;
+  descontoPercent: number | null;
   frete: number | null;
   outrasDespesas: number | null;
   total: number | null;
   condicaoPagamento: string | null;
+  formaRecebimento: string | null;
+  meioPagamento: string | null;
+  contaBancaria: string | null;
 }
 
 export interface TinyItemsResponse {
@@ -162,10 +166,14 @@ export const tinyService = {
         r?.resumo ?? {
           totalProdutos: null,
           desconto: null,
+          descontoPercent: null,
           frete: null,
           outrasDespesas: null,
           total: null,
           condicaoPagamento: null,
+          formaRecebimento: null,
+          meioPagamento: null,
+          contaBancaria: null,
         },
     };
   },

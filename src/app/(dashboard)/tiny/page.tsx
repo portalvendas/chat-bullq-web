@@ -113,10 +113,13 @@ function StatCard({
 /** Linha de resumo (label + valor) no rodapé dos itens. */
 function ResumoLinha({
   label,
+  note,
   value,
   strong,
 }: {
   label: string;
+  /** Texto discreto ao lado do label (ex.: "12%"). */
+  note?: string;
   value: string;
   strong?: boolean;
 }) {
@@ -126,8 +129,23 @@ function ResumoLinha({
         strong ? 'text-zinc-900 dark:text-zinc-100' : 'text-zinc-500'
       }`}
     >
-      <span>{label}</span>
+      <span>
+        {label}
+        {note && <span className="ml-1 text-zinc-400">({note})</span>}
+      </span>
       <span className={`tabular-nums ${strong ? 'font-bold' : 'font-medium'}`}>{value}</span>
+    </div>
+  );
+}
+
+/** Linha de resumo com valor textual (forma de recebimento, conta, etc.). */
+function ResumoInfo({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between gap-4 text-zinc-500">
+      <span>{label}</span>
+      <span className="truncate text-right font-medium text-zinc-700 dark:text-zinc-300">
+        {value}
+      </span>
     </div>
   );
 }
@@ -187,7 +205,17 @@ function ItemsSubTable({ docId }: { docId: string }) {
             <ResumoLinha label="Produtos" value={brl(r.totalProdutos)} />
           )}
           {r.desconto != null && r.desconto > 0 && (
-            <ResumoLinha label="Desconto" value={`- ${brl(r.desconto)}`} />
+            <ResumoLinha
+              label="Desconto"
+              note={
+                r.descontoPercent && r.descontoPercent > 0
+                  ? `${r.descontoPercent.toLocaleString('pt-BR', {
+                      maximumFractionDigits: 2,
+                    })}%`
+                  : undefined
+              }
+              value={`- ${brl(r.desconto)}`}
+            />
           )}
           {r.frete != null && r.frete > 0 && (
             <ResumoLinha label="Frete" value={brl(r.frete)} />
@@ -204,6 +232,23 @@ function ItemsSubTable({ docId }: { docId: string }) {
               <span className="font-medium text-zinc-700 dark:text-zinc-300">
                 {r.condicaoPagamento}
               </span>
+            </div>
+          )}
+          {(r.formaRecebimento || r.meioPagamento || r.contaBancaria) && (
+            <div className="mt-1 space-y-1 border-t border-zinc-100 pt-1 dark:border-zinc-800">
+              {r.formaRecebimento && (
+                <ResumoInfo
+                  label="Forma de recebimento"
+                  value={
+                    r.meioPagamento
+                      ? `${r.formaRecebimento} · ${r.meioPagamento}`
+                      : r.formaRecebimento
+                  }
+                />
+              )}
+              {r.contaBancaria && (
+                <ResumoInfo label="Conta bancária" value={r.contaBancaria} />
+              )}
             </div>
           )}
         </div>
