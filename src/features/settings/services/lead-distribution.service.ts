@@ -4,11 +4,15 @@ export interface LeadWeight {
   userId: string;
   weight: number;
 }
+/** Regra de distribuição de UM funil. pipelineId "*" = padrão dos demais. */
+export interface PipelineRule {
+  pipelineId: string;
+  weights: LeadWeight[];
+}
 export interface LeadDistributionConfig {
   enabled: boolean;
-  weights: LeadWeight[];
-  /** Funis em que a distribuição sorteia. Vazio = todos os funis. */
-  pipelineIds: string[];
+  /** Pesos por funil. Cada funil tem a sua própria classificação. */
+  rules: PipelineRule[];
 }
 
 export const leadDistributionService = {
@@ -18,8 +22,7 @@ export const leadDistributionService = {
   },
   async updateConfig(dto: {
     enabled?: boolean;
-    weights?: LeadWeight[];
-    pipelineIds?: string[];
+    rules?: PipelineRule[];
   }): Promise<LeadDistributionConfig> {
     const { data } = await api.put('/lead-distribution/config', dto);
     return (data?.data ?? data) as LeadDistributionConfig;
