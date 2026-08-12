@@ -53,16 +53,52 @@ function playBeep() {
   }
 }
 
-/** Rota de destino ao clicar numa notificação, conforme o tipo. */
+/** Rota de destino ao clicar numa notificação, conforme os dados. */
 function hrefFor(data?: Record<string, any>): string {
   if (!data) return '/inbox';
-  if (data.kind === 'new_message' && data.conversationId) {
+  // Qualquer notificação com conversa (nova msg, conversa presa/SLA, transfer…)
+  // abre direto a conversa.
+  if (data.conversationId) {
     return `/inbox?conversationId=${data.conversationId}`;
   }
   if (data.kind === 'card_inactive') {
     return data.pipelineId ? `/pipelines/${data.pipelineId}` : '/pipelines';
   }
   return '/inbox';
+}
+
+/**
+ * Tipos que exigem AÇÃO (a resolver) — sobem no topo e ganham selo.
+ * SLA_BREACH = "conversa presa"; CARD_INACTIVE = card parado; etc.
+ */
+const RESOLVE_TYPES = new Set([
+  'SLA_BREACH',
+  'SLA_WARNING',
+  'CARD_INACTIVE',
+  'AI_TOOL_FAILURE',
+  'MENTION',
+]);
+const TYPE_PRIORITY: Record<string, number> = {
+  SLA_BREACH: 0,
+  CARD_INACTIVE: 1,
+  SLA_WARNING: 1,
+  AI_TOOL_FAILURE: 2,
+  MENTION: 2,
+};
+
+/** Ordena: não lidas primeiro, depois tipo prioritário, depois recência. */
+function prioritize(items: Notification[]): Notification[] {
+  return [...items].sort((a, b) => {
+    const ua = a.isRead ? 1 : 0;
+    const ub = b.isRead ? 1 : 0;
+    if (ua !== ub) return ua - ub;
+    const pa = TYPE_PRIORITY[a.type] ?? 5;
+    const pb = TYPE_PRIORITY[b.type] ?? 5;
+    if (pa !== pb) return pa - pb;
+    return (
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  });
 }
 
 export function NotificationsBell() {
@@ -176,23 +212,37 @@ export function NotificationsBell() {
             Nenhuma notificação
           </div>
         ) : (
-          items.slice(0, 12).map((n) => (
-            <DropdownItem
-              key={n.id}
-              onClick={() => handleOpen(n)}
-              className="flex-col items-start gap-0.5"
-            >
-              <div className="flex w-full items-center gap-2">
-                {!n.isRead && (
-                  <span className="size-2 shrink-0 rounded-full bg-red-500" />
-                )}
-                <span className="truncate text-sm font-medium">{n.title}</span>
-              </div>
-              <span className="line-clamp-2 w-full text-xs text-zinc-500 dark:text-zinc-400">
-                {n.body}
-              </span>
-            </DropdownItem>
-          ))
+          prioritize(items)
+            .slice(0, 15)
+            .map((n) => {
+              const resolver = RESOLVE_TYPES.has(n.type) && !n.isRead;
+              return (
+                <DropdownItem
+                  key={n.id}
+                  onClick={() => handleOpen(n)}
+                  className="flex-col items-start gap-0.5"
+                >
+                  <div className="flex w-full items-center gap-2">
+                    {!n.isRead && (
+                      <span
+                        className={`size-2 shrink-0 rounded-full ${
+                          resolver ? 'bg-amber-500' : 'bg-red-500'
+                        }`}
+                      />
+                    )}
+                    <span className="truncate text-sm font-medium">{n.title}</span>
+                    {resolver && (
+                      <span className="ml-auto shrink-0 rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+                        Resolver
+                      </span>
+                    )}
+                  </div>
+                  <span className="line-clamp-2 w-full text-xs text-zinc-500 dark:text-zinc-400">
+                    {n.body}
+                  </span>
+                </DropdownItem>
+              );
+            })
         )}
       </DropdownMenu>
     </Dropdown>

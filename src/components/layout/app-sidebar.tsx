@@ -18,6 +18,7 @@ import { JarvisTree } from '@/features/ai-agents/components/jarvis-tree';
 import { PipelinesTree } from '@/features/pipelines/components/pipelines-tree';
 
 import { useAuthStore } from '@/stores/auth-store';
+import { NotificationsBell } from '@/features/notifications/components/notifications-bell';
 import { Avatar } from '@/components/ui/avatar';
 import {
   Sidebar,
@@ -60,6 +61,8 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
+        <div className="flex items-center gap-1">
+          <div className="min-w-0 flex-1">
         <Dropdown>
           <DropdownButton className="flex w-full min-w-0 items-center gap-2 rounded-lg px-2 py-2.5 text-left text-sm/6 font-semibold text-zinc-950 hover:bg-zinc-950/5 dark:text-white dark:hover:bg-white/5">
             <Avatar
@@ -86,6 +89,10 @@ export function AppSidebar() {
             </DropdownMenu>
           )}
         </Dropdown>
+          </div>
+          {/* Sino sempre visível no desktop (o navbar mobile já tem o seu) */}
+          <NotificationsBell />
+        </div>
       </SidebarHeader>
 
       <SidebarBody>
