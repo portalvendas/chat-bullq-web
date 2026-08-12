@@ -7,6 +7,8 @@ export interface LeadWeight {
 export interface LeadDistributionConfig {
   enabled: boolean;
   weights: LeadWeight[];
+  /** Funis em que a distribuição sorteia. Vazio = todos os funis. */
+  pipelineIds: string[];
 }
 
 export const leadDistributionService = {
@@ -17,6 +19,7 @@ export const leadDistributionService = {
   async updateConfig(dto: {
     enabled?: boolean;
     weights?: LeadWeight[];
+    pipelineIds?: string[];
   }): Promise<LeadDistributionConfig> {
     const { data } = await api.put('/lead-distribution/config', dto);
     return (data?.data ?? data) as LeadDistributionConfig;

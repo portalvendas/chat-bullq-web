@@ -8,8 +8,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { Loader2, Users, Shuffle } from 'lucide-react';
+import { Loader2, Users, Shuffle, Filter } from 'lucide-react';
 import { membersService } from '@/features/settings/services/members.service';
+import { pipelinesService } from '@/features/pipelines/services/pipelines.service';
 import {
   leadDistributionService,
   type LeadWeight,
@@ -22,6 +23,11 @@ export default function DistribuicaoPage() {
     queryFn: () => membersService.list(),
     staleTime: 60_000,
   });
+  const { data: pipelines } = useQuery({
+    queryKey: ['pipelines', 'active'],
+    queryFn: () => pipelinesService.list(false),
+    staleTime: 60_000,
+  });
   const { data: cfg, isLoading } = useQuery({
     queryKey: ['lead-distribution-config'],
     queryFn: () => leadDistributionService.getConfig(),
@@ -31,14 +37,22 @@ export default function DistribuicaoPage() {
   const [enabled, setEnabled] = useState(false);
   // Pesos por userId (string do input pra permitir vazio).
   const [weights, setWeights] = useState<Record<string, string>>({});
+  // Funis selecionados. Vazio = todos os funis.
+  const [pipelineIds, setPipelineIds] = useState<string[]>([]);
   useEffect(() => {
     if (cfg) {
       setEnabled(cfg.enabled);
       const w: Record<string, string> = {};
       for (const it of cfg.weights) w[it.userId] = String(it.weight ?? 0);
       setWeights(w);
+      setPipelineIds(cfg.pipelineIds ?? []);
     }
   }, [cfg]);
+
+  const togglePipeline = (id: string) =>
+    setPipelineIds((prev) =>
+      prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id],
+    );
 
   // Só quem pode receber lead: membros que atendem (exclui ninguém por padrão).
   const sellers = useMemo(
@@ -60,7 +74,7 @@ export default function DistribuicaoPage() {
           weight: parseFloat(weights[m.userId] || '0') || 0,
         }))
         .filter((w) => w.weight > 0);
-      return leadDistributionService.updateConfig({ enabled, weights: payload });
+      return leadDistributionService.updateConfig({ enabled, weights: payload, pipelineIds });
     },
     onSuccess: (updated) => {
       qc.setQueryData(['lead-distribution-config'], updated);
@@ -101,6 +115,39 @@ export default function DistribuicaoPage() {
           Distribuição automática ativa
         </span>
       </label>
+
+      <div className="rounded-lg border border-zinc-200 dark:border-zinc-800">
+        <div className="flex items-center gap-1 border-b border-zinc-200 px-4 py-2 text-[11px] font-medium uppercase tracking-wide text-zinc-400 dark:border-zinc-800">
+          <Filter className="h-3.5 w-3.5" /> Funis que participam do sorteio
+        </div>
+        <div className="flex flex-wrap gap-2 px-4 py-3">
+          {(pipelines ?? []).map((p) => {
+            const on = pipelineIds.includes(p.id);
+            return (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => togglePipeline(p.id)}
+                className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                  on
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-zinc-300 text-zinc-500 hover:border-zinc-400 dark:border-zinc-700'
+                }`}
+              >
+                {p.name}
+              </button>
+            );
+          })}
+          {(pipelines ?? []).length === 0 && (
+            <span className="text-sm text-zinc-400">Nenhum funil ativo.</span>
+          )}
+        </div>
+        <div className="border-t border-zinc-200 px-4 py-2 text-[11px] text-zinc-400 dark:border-zinc-800">
+          {pipelineIds.length === 0
+            ? 'Nenhum funil marcado = sorteia leads de todos os funis.'
+            : `Sorteia apenas leads que entram em ${pipelineIds.length} funil(is). Leads de outros funis seguem o fluxo padrão.`}
+        </div>
+      </div>
 
       <div className="rounded-lg border border-zinc-200 dark:border-zinc-800">
         <div className="flex items-center justify-between border-b border-zinc-200 px-4 py-2 text-[11px] font-medium uppercase tracking-wide text-zinc-400 dark:border-zinc-800">
