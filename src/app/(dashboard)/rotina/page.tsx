@@ -56,6 +56,23 @@ export default function RotinaPage() {
   }
   if (!data) return null;
 
+  if (!data.enabled) {
+    return (
+      <div className="mx-auto max-w-3xl p-6">
+        <div className="rounded-xl border border-zinc-200 bg-white p-8 text-center dark:border-zinc-800 dark:bg-zinc-900">
+          <ClipboardCheck className="mx-auto h-8 w-8 text-zinc-300" />
+          <h1 className="mt-3 text-base font-semibold text-zinc-800 dark:text-zinc-100">
+            Rotina Comercial desativada
+          </h1>
+          <p className="mt-1 text-sm text-zinc-500">
+            A rotina não está ativa para você. Fale com um administrador para
+            ativá-la em Configurações → Rotina.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto max-w-3xl space-y-5 p-4 sm:p-6">
       <Header data={data} progress={progress} />
@@ -69,11 +86,6 @@ export default function RotinaPage() {
           />
         ))}
       </div>
-      {!data.enabled && (
-        <p className="text-center text-xs text-zinc-400">
-          A rotina está desativada nas configurações.
-        </p>
-      )}
     </div>
   );
 }

@@ -48,6 +48,8 @@ export interface RoutineStepConfig {
 }
 export interface RoutineConfig {
   enabled: boolean;
+  userMode: 'ALL' | 'SELECTED';
+  userIds: string[];
   steps: RoutineStepConfig[];
 }
 
@@ -85,6 +87,8 @@ export const routineService = {
   },
   async updateConfig(dto: {
     enabled?: boolean;
+    userMode?: 'ALL' | 'SELECTED';
+    userIds?: string[];
     steps?: Array<{
       key: string;
       stageIds: string[];

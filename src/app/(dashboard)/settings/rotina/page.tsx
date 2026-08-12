@@ -9,6 +9,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Loader2, ClipboardCheck } from 'lucide-react';
+import { membersService } from '@/features/settings/services/members.service';
 import {
   routineService,
   type RoutineStepConfig,
@@ -35,13 +36,22 @@ export default function SettingsRotinaPage() {
     queryFn: () => routineService.options(),
     staleTime: 60_000,
   });
+  const { data: members } = useQuery({
+    queryKey: ['members'],
+    queryFn: () => membersService.list(),
+    staleTime: 60_000,
+  });
 
   const [enabled, setEnabled] = useState(true);
+  const [userMode, setUserMode] = useState<'ALL' | 'SELECTED'>('ALL');
+  const [userIds, setUserIds] = useState<string[]>([]);
   const [steps, setSteps] = useState<StepState[]>([]);
 
   useEffect(() => {
     if (!cfg) return;
     setEnabled(cfg.enabled);
+    setUserMode(cfg.userMode ?? 'ALL');
+    setUserIds(cfg.userIds ?? []);
     setSteps(
       cfg.steps.map((s: RoutineStepConfig) => ({
         key: s.key,
@@ -79,6 +89,8 @@ export default function SettingsRotinaPage() {
     mutationFn: () =>
       routineService.updateConfig({
         enabled,
+        userMode,
+        userIds,
         steps: steps.map((s) => ({
           key: s.key,
           stageIds: s.stageIds,
@@ -127,6 +139,73 @@ export default function SettingsRotinaPage() {
           Rotina ativa (checklist e pop-ups)
         </span>
       </label>
+
+      {/* Escopo por usuário */}
+      <div
+        className={`rounded-lg border border-zinc-200 p-4 dark:border-zinc-800 ${
+          enabled ? '' : 'pointer-events-none opacity-50'
+        }`}
+      >
+        <div className="mb-2 text-[11px] font-medium uppercase tracking-wide text-zinc-400">
+          Aplicar a
+        </div>
+        <div className="flex gap-4 text-sm">
+          <label className="flex items-center gap-2">
+            <input
+              type="radio"
+              name="userMode"
+              checked={userMode === 'ALL'}
+              onChange={() => setUserMode('ALL')}
+            />
+            Todos os vendedores
+          </label>
+          <label className="flex items-center gap-2">
+            <input
+              type="radio"
+              name="userMode"
+              checked={userMode === 'SELECTED'}
+              onChange={() => setUserMode('SELECTED')}
+            />
+            Vendedores selecionados
+          </label>
+        </div>
+
+        {userMode === 'SELECTED' && (
+          <div className="mt-3 flex flex-wrap gap-2">
+            {(members ?? []).map((m) => {
+              const on = userIds.includes(m.userId);
+              return (
+                <button
+                  key={m.userId}
+                  type="button"
+                  onClick={() =>
+                    setUserIds((prev) =>
+                      prev.includes(m.userId)
+                        ? prev.filter((id) => id !== m.userId)
+                        : [...prev, m.userId],
+                    )
+                  }
+                  className={`rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors ${
+                    on
+                      ? 'border-primary bg-primary/10 text-primary'
+                      : 'border-zinc-300 text-zinc-500 hover:border-zinc-400 dark:border-zinc-700'
+                  }`}
+                >
+                  {m.user?.name || m.user?.email}
+                </button>
+              );
+            })}
+            {(members ?? []).length === 0 && (
+              <span className="text-xs text-zinc-400">Nenhum membro.</span>
+            )}
+            {userMode === 'SELECTED' && userIds.length === 0 && (
+              <span className="text-[11px] text-amber-600">
+                Nenhum selecionado — a rotina não aparecerá para ninguém.
+              </span>
+            )}
+          </div>
+        )}
+      </div>
 
       <div className="space-y-4">
         {steps.map((step, i) => (
