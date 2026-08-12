@@ -77,6 +77,20 @@ export interface TinyItem {
   infoAdicional: string | null;
 }
 
+export interface TinyResumo {
+  totalProdutos: number | null;
+  desconto: number | null;
+  frete: number | null;
+  outrasDespesas: number | null;
+  total: number | null;
+  condicaoPagamento: string | null;
+}
+
+export interface TinyItemsResponse {
+  items: TinyItem[];
+  resumo: TinyResumo;
+}
+
 export interface MetaCapiConfig {
   enabled: boolean;
   pixelId: string | null;
@@ -139,9 +153,21 @@ export const tinyService = {
     });
     return unwrap<TinyOrdersPage>(data);
   },
-  async items(docId: string): Promise<TinyItem[]> {
+  async items(docId: string): Promise<TinyItemsResponse> {
     const { data } = await api.get(`/tiny/documents/${docId}/items`);
-    return unwrap<{ items: TinyItem[] }>(data)?.items ?? [];
+    const r = unwrap<TinyItemsResponse>(data);
+    return {
+      items: r?.items ?? [],
+      resumo:
+        r?.resumo ?? {
+          totalProdutos: null,
+          desconto: null,
+          frete: null,
+          outrasDespesas: null,
+          total: null,
+          condicaoPagamento: null,
+        },
+    };
   },
   async capiConfig(): Promise<MetaCapiConfig> {
     const { data } = await api.get('/tiny/capi/config');

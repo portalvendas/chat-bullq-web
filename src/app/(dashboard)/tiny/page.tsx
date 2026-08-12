@@ -110,9 +110,31 @@ function StatCard({
   );
 }
 
-/** Itens do documento — busca lazy ao expandir. */
+/** Linha de resumo (label + valor) no rodapé dos itens. */
+function ResumoLinha({
+  label,
+  value,
+  strong,
+}: {
+  label: string;
+  value: string;
+  strong?: boolean;
+}) {
+  return (
+    <div
+      className={`flex items-center justify-between ${
+        strong ? 'text-zinc-900 dark:text-zinc-100' : 'text-zinc-500'
+      }`}
+    >
+      <span>{label}</span>
+      <span className={`tabular-nums ${strong ? 'font-bold' : 'font-medium'}`}>{value}</span>
+    </div>
+  );
+}
+
+/** Itens do documento + resumo financeiro — busca lazy ao expandir. */
 function ItemsSubTable({ docId }: { docId: string }) {
-  const { data: items, isLoading } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['tiny-items', docId],
     queryFn: () => tinyService.items(docId),
     staleTime: 5 * 60_000,
@@ -125,34 +147,67 @@ function ItemsSubTable({ docId }: { docId: string }) {
       </div>
     );
   }
-  if (!items || items.length === 0) {
+  const items = data?.items ?? [];
+  const r = data?.resumo;
+  if (items.length === 0 && !r?.total) {
     return <div className="px-4 py-3 text-xs text-zinc-400">Sem itens.</div>;
   }
   return (
     <div className="px-4 py-3">
-      <table className="w-full text-xs">
-        <thead>
-          <tr className="text-left text-[10px] uppercase tracking-wide text-zinc-400">
-            <th className="pb-1 font-medium">Produto</th>
-            <th className="pb-1 text-right font-medium">Qtd</th>
-            <th className="pb-1 text-right font-medium">Unit.</th>
-            <th className="pb-1 text-right font-medium">Total</th>
-          </tr>
-        </thead>
-        <tbody className="text-zinc-700 dark:text-zinc-300">
-          {items.map((it, i) => (
-            <tr key={i} className="border-t border-zinc-100 dark:border-zinc-800">
-              <td className="py-1.5">
-                {it.descricao}
-                {it.sku && <span className="ml-1 text-zinc-400">({it.sku})</span>}
-              </td>
-              <td className="py-1.5 text-right tabular-nums">{it.quantidade}</td>
-              <td className="py-1.5 text-right tabular-nums">{brl(it.valorUnitario)}</td>
-              <td className="py-1.5 text-right font-medium tabular-nums">{brl(it.valorTotal)}</td>
+      {items.length > 0 && (
+        <table className="w-full text-xs">
+          <thead>
+            <tr className="text-left text-[10px] uppercase tracking-wide text-zinc-400">
+              <th className="pb-1 font-medium">Produto</th>
+              <th className="pb-1 text-right font-medium">Qtd</th>
+              <th className="pb-1 text-right font-medium">Unit.</th>
+              <th className="pb-1 text-right font-medium">Total</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody className="text-zinc-700 dark:text-zinc-300">
+            {items.map((it, i) => (
+              <tr key={i} className="border-t border-zinc-100 dark:border-zinc-800">
+                <td className="py-1.5">
+                  {it.descricao}
+                  {it.sku && <span className="ml-1 text-zinc-400">({it.sku})</span>}
+                </td>
+                <td className="py-1.5 text-right tabular-nums">{it.quantidade}</td>
+                <td className="py-1.5 text-right tabular-nums">{brl(it.valorUnitario)}</td>
+                <td className="py-1.5 text-right font-medium tabular-nums">{brl(it.valorTotal)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+
+      {/* Resumo financeiro do pedido */}
+      {r && (
+        <div className="ml-auto mt-3 max-w-xs space-y-1 border-t border-zinc-200 pt-2 text-xs dark:border-zinc-700">
+          {r.totalProdutos != null && (
+            <ResumoLinha label="Produtos" value={brl(r.totalProdutos)} />
+          )}
+          {r.desconto != null && r.desconto > 0 && (
+            <ResumoLinha label="Desconto" value={`- ${brl(r.desconto)}`} />
+          )}
+          {r.frete != null && r.frete > 0 && (
+            <ResumoLinha label="Frete" value={brl(r.frete)} />
+          )}
+          {r.outrasDespesas != null && r.outrasDespesas > 0 && (
+            <ResumoLinha label="Outras despesas" value={brl(r.outrasDespesas)} />
+          )}
+          {r.total != null && (
+            <ResumoLinha label="Total do pedido" value={brl(r.total)} strong />
+          )}
+          {r.condicaoPagamento && (
+            <div className="flex items-center justify-between pt-1 text-zinc-500">
+              <span>Pagamento</span>
+              <span className="font-medium text-zinc-700 dark:text-zinc-300">
+                {r.condicaoPagamento}
+              </span>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
