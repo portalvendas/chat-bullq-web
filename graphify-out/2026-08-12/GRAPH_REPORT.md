@@ -1,16 +1,16 @@
-# Graph Report - chat-bullq-web  (2026-08-12)
+# Graph Report - chat-bullq-web  (2026-08-11)
 
 ## Corpus Check
-- 183 files · ~115,624 words
+- 175 files · ~109,379 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 188 nodes · 220 edges · 30 communities (9 shown, 21 thin omitted)
+- 171 nodes · 199 edges · 29 communities (8 shown, 21 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `fd5f459a`
+- Built from commit: `db908b65`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -44,19 +44,18 @@
 - lucide-react
 - framer-motion
 - chat-panel.tsx
-- routine.service.ts
 
 ## God Nodes (most connected - your core abstractions)
 1. `ImportPage()` - 8 edges
 2. `CanvasInner()` - 5 edges
 3. `scripts` - 5 edges
 4. `NotificationsBell()` - 4 edges
-5. `routineService` - 3 edges
-6. `MessageText()` - 3 edges
-7. `dagreLayout()` - 3 edges
-8. `GraphNodeType` - 3 edges
-9. `WorkflowGraph` - 3 edges
-10. `StagesDialog()` - 3 edges
+5. `MessageText()` - 3 edges
+6. `dagreLayout()` - 3 edges
+7. `GraphNodeType` - 3 edges
+8. `WorkflowGraph` - 3 edges
+9. `StagesDialog()` - 3 edges
+10. `StageType` - 3 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `SalesData` --references--> `GraphNodeType`  [EXTRACTED]
@@ -71,7 +70,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (30 total, 21 thin omitted)
+## Communities (29 total, 21 thin omitted)
 
 ### Community 0 - "devDependencies"
 Cohesion: 0.12
@@ -105,12 +104,8 @@ Nodes (27): CanvasInner(), dagreLayout(), HANDLE_COLOR, nodeTypes, SalesData, Sa
 Cohesion: 0.15
 Nodes (11): ChatPanel(), ChatPanelProps, LinkPreviewCard(), matchSingleUrl(), MessageText(), renderInlineTextWithLinks(), safeHostname(), statusIcons (+3 more)
 
-### Community 29 - "routine.service.ts"
-Cohesion: 0.15
-Nodes (8): StepState, RoutineConfig, RoutineOptions, routineService, RoutineStageRef, RoutineStepConfig, RoutineStepToday, RoutineToday
-
 ## Knowledge Gaps
-- **82 isolated node(s):** `StepState`, `RoutineStageRef`, `RoutineConfig`, `RoutineOptions`, `ChatPanelProps` (+77 more)
+- **78 isolated node(s):** `ChatPanelProps`, `statusIcons`, `TemplateButtonShape`, `TemplateElementShape`, `TemplatesCtx` (+73 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **21 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -118,11 +113,11 @@ Nodes (8): StepState, RoutineConfig, RoutineOptions, routineService, RoutineStag
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `dependencies` connect `dependencies` to `package.json`, `axios`, `clsx`, `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`, `@headlessui/react`, `@hookform/resolvers`, `next-themes`, `next`, `react`, `react-dom`, `react-hook-form`, `socket.io-client`, `sonner`, `@dagrejs/dagre`, `@tanstack/react-query`, `@xyflow/react`, `zod`, `zustand`, `lucide-react`, `framer-motion`?**
-  _High betweenness centrality (0.135) - this node is a cross-community bridge._
+  _High betweenness centrality (0.164) - this node is a cross-community bridge._
 - **Why does `devDependencies` connect `devDependencies` to `package.json`?**
-  _High betweenness centrality (0.060) - this node is a cross-community bridge._
-- **What connects `StepState`, `RoutineStageRef`, `RoutineConfig` to the rest of the system?**
-  _82 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _High betweenness centrality (0.072) - this node is a cross-community bridge._
+- **What connects `ChatPanelProps`, `statusIcons`, `TemplateButtonShape` to the rest of the system?**
+  _78 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `devDependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.11764705882352941 - nodes in this community are weakly interconnected._
 - **Should `pipelines.service.ts` be split into smaller, more focused modules?**

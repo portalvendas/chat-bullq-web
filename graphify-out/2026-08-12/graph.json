@@ -4,202 +4,15 @@
   "graph": {},
   "nodes": [
     {
-      "label": "(dashboard)/rotina/page.tsx",
-      "file_type": "code",
-      "source_file": "src/app/(dashboard)/rotina/page.tsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_app_dashboard_rotina_page",
-      "community": 29,
-      "community_name": "routine.service.ts",
-      "norm_label": "(dashboard)/rotina/page.tsx"
-    },
-    {
-      "label": "RotinaPage()",
-      "file_type": "code",
-      "source_file": "src/app/(dashboard)/rotina/page.tsx",
-      "source_location": "L26",
-      "_origin": "ast",
-      "id": "src_app_dashboard_rotina_page_rotinapage",
-      "community": 29,
-      "community_name": "routine.service.ts",
-      "norm_label": "rotinapage()"
-    },
-    {
-      "label": "Header()",
-      "file_type": "code",
-      "source_file": "src/app/(dashboard)/rotina/page.tsx",
-      "source_location": "L93",
-      "_origin": "ast",
-      "id": "src_app_dashboard_rotina_page_header",
-      "community": 29,
-      "community_name": "routine.service.ts",
-      "norm_label": "header()"
-    },
-    {
-      "label": "StepCard()",
-      "file_type": "code",
-      "source_file": "src/app/(dashboard)/rotina/page.tsx",
-      "source_location": "L134",
-      "_origin": "ast",
-      "id": "src_app_dashboard_rotina_page_stepcard",
-      "community": 29,
-      "community_name": "routine.service.ts",
-      "norm_label": "stepcard()"
-    },
-    {
-      "label": "Metric()",
-      "file_type": "code",
-      "source_file": "src/app/(dashboard)/rotina/page.tsx",
-      "source_location": "L232",
-      "_origin": "ast",
-      "id": "src_app_dashboard_rotina_page_metric",
-      "community": 29,
-      "community_name": "routine.service.ts",
-      "norm_label": "metric()"
-    },
-    {
-      "label": "settings/rotina/page.tsx",
-      "file_type": "code",
-      "source_file": "src/app/(dashboard)/settings/rotina/page.tsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_app_dashboard_settings_rotina_page",
-      "community": 29,
-      "community_name": "routine.service.ts",
-      "norm_label": "settings/rotina/page.tsx"
-    },
-    {
-      "label": "StepState",
-      "file_type": "code",
-      "source_file": "src/app/(dashboard)/settings/rotina/page.tsx",
-      "source_location": "L18",
-      "_origin": "ast",
-      "id": "src_app_dashboard_settings_rotina_page_stepstate",
-      "community": 29,
-      "community_name": "routine.service.ts",
-      "norm_label": "stepstate"
-    },
-    {
-      "label": "SettingsRotinaPage()",
-      "file_type": "code",
-      "source_file": "src/app/(dashboard)/settings/rotina/page.tsx",
-      "source_location": "L27",
-      "_origin": "ast",
-      "id": "src_app_dashboard_settings_rotina_page_settingsrotinapage",
-      "community": 29,
-      "community_name": "routine.service.ts",
-      "norm_label": "settingsrotinapage()"
-    },
-    {
-      "label": "routine.service.ts",
-      "file_type": "code",
-      "source_file": "src/features/commercial-routine/services/routine.service.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_features_commercial_routine_services_routine_service",
-      "community": 29,
-      "community_name": "routine.service.ts",
-      "norm_label": "routine.service.ts"
-    },
-    {
-      "label": "RoutineStageRef",
-      "file_type": "code",
-      "source_file": "src/features/commercial-routine/services/routine.service.ts",
-      "source_location": "L3",
-      "_origin": "ast",
-      "id": "src_features_commercial_routine_services_routine_service_routinestageref",
-      "community": 29,
-      "community_name": "routine.service.ts",
-      "norm_label": "routinestageref"
-    },
-    {
-      "label": "RoutineStepToday",
-      "file_type": "code",
-      "source_file": "src/features/commercial-routine/services/routine.service.ts",
-      "source_location": "L9",
-      "_origin": "ast",
-      "id": "src_features_commercial_routine_services_routine_service_routinesteptoday",
-      "community": 29,
-      "community_name": "routine.service.ts",
-      "norm_label": "routinesteptoday"
-    },
-    {
-      "label": "RoutineToday",
-      "file_type": "code",
-      "source_file": "src/features/commercial-routine/services/routine.service.ts",
-      "source_location": "L26",
-      "_origin": "ast",
-      "id": "src_features_commercial_routine_services_routine_service_routinetoday",
-      "community": 29,
-      "community_name": "routine.service.ts",
-      "norm_label": "routinetoday"
-    },
-    {
-      "label": "RoutineStepConfig",
-      "file_type": "code",
-      "source_file": "src/features/commercial-routine/services/routine.service.ts",
-      "source_location": "L40",
-      "_origin": "ast",
-      "id": "src_features_commercial_routine_services_routine_service_routinestepconfig",
-      "community": 29,
-      "community_name": "routine.service.ts",
-      "norm_label": "routinestepconfig"
-    },
-    {
-      "label": "RoutineConfig",
-      "file_type": "code",
-      "source_file": "src/features/commercial-routine/services/routine.service.ts",
-      "source_location": "L49",
-      "_origin": "ast",
-      "id": "src_features_commercial_routine_services_routine_service_routineconfig",
-      "community": 29,
-      "community_name": "routine.service.ts",
-      "norm_label": "routineconfig"
-    },
-    {
-      "label": "RoutineOptions",
-      "file_type": "code",
-      "source_file": "src/features/commercial-routine/services/routine.service.ts",
-      "source_location": "L56",
-      "_origin": "ast",
-      "id": "src_features_commercial_routine_services_routine_service_routineoptions",
-      "community": 29,
-      "community_name": "routine.service.ts",
-      "norm_label": "routineoptions"
-    },
-    {
-      "label": "unwrap()",
-      "file_type": "code",
-      "source_file": "src/features/commercial-routine/services/routine.service.ts",
-      "source_location": "L64",
-      "_origin": "ast",
-      "id": "src_features_commercial_routine_services_routine_service_unwrap",
-      "community": 29,
-      "community_name": "routine.service.ts",
-      "norm_label": "unwrap()"
-    },
-    {
-      "label": "routineService",
-      "file_type": "code",
-      "source_file": "src/features/commercial-routine/services/routine.service.ts",
-      "source_location": "L68",
-      "_origin": "ast",
-      "id": "src_features_commercial_routine_services_routine_service_routineservice",
-      "community": 29,
-      "community_name": "routine.service.ts",
-      "norm_label": "routineservice"
-    },
-    {
       "label": "chat-panel.tsx",
       "file_type": "code",
       "source_file": "src/features/inbox/components/chat-panel.tsx",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "src_features_inbox_components_chat_panel",
       "community": 28,
       "community_name": "chat-panel.tsx",
-      "norm_label": "chat-panel.tsx",
-      "id": "src_features_inbox_components_chat_panel"
+      "norm_label": "chat-panel.tsx"
     },
     {
       "label": "ChatPanelProps",
@@ -207,10 +20,10 @@
       "source_file": "src/features/inbox/components/chat-panel.tsx",
       "source_location": "L23",
       "_origin": "ast",
+      "id": "src_features_inbox_components_chat_panel_chatpanelprops",
       "community": 28,
       "community_name": "chat-panel.tsx",
-      "norm_label": "chatpanelprops",
-      "id": "src_features_inbox_components_chat_panel_chatpanelprops"
+      "norm_label": "chatpanelprops"
     },
     {
       "label": "statusIcons",
@@ -218,10 +31,10 @@
       "source_file": "src/features/inbox/components/chat-panel.tsx",
       "source_location": "L32",
       "_origin": "ast",
+      "id": "src_features_inbox_components_chat_panel_statusicons",
       "community": 28,
       "community_name": "chat-panel.tsx",
-      "norm_label": "statusicons",
-      "id": "src_features_inbox_components_chat_panel_statusicons"
+      "norm_label": "statusicons"
     },
     {
       "label": "EngagementWindowBanner()",
@@ -229,10 +42,10 @@
       "source_file": "src/features/inbox/components/chat-panel.tsx",
       "source_location": "L52",
       "_origin": "ast",
+      "id": "src_features_inbox_components_chat_panel_engagementwindowbanner",
       "community": 28,
       "community_name": "chat-panel.tsx",
-      "norm_label": "engagementwindowbanner()",
-      "id": "src_features_inbox_components_chat_panel_engagementwindowbanner"
+      "norm_label": "engagementwindowbanner()"
     },
     {
       "label": "statusTooltip()",
@@ -240,10 +53,10 @@
       "source_file": "src/features/inbox/components/chat-panel.tsx",
       "source_location": "L99",
       "_origin": "ast",
+      "id": "src_features_inbox_components_chat_panel_statustooltip",
       "community": 28,
       "community_name": "chat-panel.tsx",
-      "norm_label": "statustooltip()",
-      "id": "src_features_inbox_components_chat_panel_statustooltip"
+      "norm_label": "statustooltip()"
     },
     {
       "label": "safeHostname()",
@@ -251,10 +64,10 @@
       "source_file": "src/features/inbox/components/chat-panel.tsx",
       "source_location": "L123",
       "_origin": "ast",
+      "id": "src_features_inbox_components_chat_panel_safehostname",
       "community": 28,
       "community_name": "chat-panel.tsx",
-      "norm_label": "safehostname()",
-      "id": "src_features_inbox_components_chat_panel_safehostname"
+      "norm_label": "safehostname()"
     },
     {
       "label": "LinkPreviewCard()",
@@ -262,10 +75,10 @@
       "source_file": "src/features/inbox/components/chat-panel.tsx",
       "source_location": "L131",
       "_origin": "ast",
+      "id": "src_features_inbox_components_chat_panel_linkpreviewcard",
       "community": 28,
       "community_name": "chat-panel.tsx",
-      "norm_label": "linkpreviewcard()",
-      "id": "src_features_inbox_components_chat_panel_linkpreviewcard"
+      "norm_label": "linkpreviewcard()"
     },
     {
       "label": "matchSingleUrl()",
@@ -273,10 +86,10 @@
       "source_file": "src/features/inbox/components/chat-panel.tsx",
       "source_location": "L172",
       "_origin": "ast",
+      "id": "src_features_inbox_components_chat_panel_matchsingleurl",
       "community": 28,
       "community_name": "chat-panel.tsx",
-      "norm_label": "matchsingleurl()",
-      "id": "src_features_inbox_components_chat_panel_matchsingleurl"
+      "norm_label": "matchsingleurl()"
     },
     {
       "label": "renderInlineTextWithLinks()",
@@ -284,10 +97,10 @@
       "source_file": "src/features/inbox/components/chat-panel.tsx",
       "source_location": "L178",
       "_origin": "ast",
+      "id": "src_features_inbox_components_chat_panel_renderinlinetextwithlinks",
       "community": 28,
       "community_name": "chat-panel.tsx",
-      "norm_label": "renderinlinetextwithlinks()",
-      "id": "src_features_inbox_components_chat_panel_renderinlinetextwithlinks"
+      "norm_label": "renderinlinetextwithlinks()"
     },
     {
       "label": "MessageText()",
@@ -295,10 +108,10 @@
       "source_file": "src/features/inbox/components/chat-panel.tsx",
       "source_location": "L201",
       "_origin": "ast",
+      "id": "src_features_inbox_components_chat_panel_messagetext",
       "community": 28,
       "community_name": "chat-panel.tsx",
-      "norm_label": "messagetext()",
-      "id": "src_features_inbox_components_chat_panel_messagetext"
+      "norm_label": "messagetext()"
     },
     {
       "label": "TemplateButtonShape",
@@ -306,10 +119,10 @@
       "source_file": "src/features/inbox/components/chat-panel.tsx",
       "source_location": "L221",
       "_origin": "ast",
+      "id": "src_features_inbox_components_chat_panel_templatebuttonshape",
       "community": 28,
       "community_name": "chat-panel.tsx",
-      "norm_label": "templatebuttonshape",
-      "id": "src_features_inbox_components_chat_panel_templatebuttonshape"
+      "norm_label": "templatebuttonshape"
     },
     {
       "label": "TemplateElementShape",
@@ -317,10 +130,10 @@
       "source_file": "src/features/inbox/components/chat-panel.tsx",
       "source_location": "L228",
       "_origin": "ast",
+      "id": "src_features_inbox_components_chat_panel_templateelementshape",
       "community": 28,
       "community_name": "chat-panel.tsx",
-      "norm_label": "templateelementshape",
-      "id": "src_features_inbox_components_chat_panel_templateelementshape"
+      "norm_label": "templateelementshape"
     },
     {
       "label": "TemplateButtonRow()",
@@ -328,10 +141,10 @@
       "source_file": "src/features/inbox/components/chat-panel.tsx",
       "source_location": "L236",
       "_origin": "ast",
+      "id": "src_features_inbox_components_chat_panel_templatebuttonrow",
       "community": 28,
       "community_name": "chat-panel.tsx",
-      "norm_label": "templatebuttonrow()",
-      "id": "src_features_inbox_components_chat_panel_templatebuttonrow"
+      "norm_label": "templatebuttonrow()"
     },
     {
       "label": "TemplateMessage()",
@@ -339,10 +152,10 @@
       "source_file": "src/features/inbox/components/chat-panel.tsx",
       "source_location": "L273",
       "_origin": "ast",
+      "id": "src_features_inbox_components_chat_panel_templatemessage",
       "community": 28,
       "community_name": "chat-panel.tsx",
-      "norm_label": "templatemessage()",
-      "id": "src_features_inbox_components_chat_panel_templatemessage"
+      "norm_label": "templatemessage()"
     },
     {
       "label": "ContactAvatar()",
@@ -350,10 +163,10 @@
       "source_file": "src/features/inbox/components/chat-panel.tsx",
       "source_location": "L342",
       "_origin": "ast",
+      "id": "src_features_inbox_components_chat_panel_contactavatar",
       "community": 28,
       "community_name": "chat-panel.tsx",
-      "norm_label": "contactavatar()",
-      "id": "src_features_inbox_components_chat_panel_contactavatar"
+      "norm_label": "contactavatar()"
     },
     {
       "label": "ChatPanel()",
@@ -361,10 +174,10 @@
       "source_file": "src/features/inbox/components/chat-panel.tsx",
       "source_location": "L373",
       "_origin": "ast",
+      "id": "src_features_inbox_components_chat_panel_chatpanel",
       "community": 28,
       "community_name": "chat-panel.tsx",
-      "norm_label": "chatpanel()",
-      "id": "src_features_inbox_components_chat_panel_chatpanel"
+      "norm_label": "chatpanel()"
     },
     {
       "label": "ReplyPreviewBar()",
@@ -372,10 +185,10 @@
       "source_file": "src/features/inbox/components/chat-panel.tsx",
       "source_location": "L1134",
       "_origin": "ast",
+      "id": "src_features_inbox_components_chat_panel_replypreviewbar",
       "community": 28,
       "community_name": "chat-panel.tsx",
-      "norm_label": "replypreviewbar()",
-      "id": "src_features_inbox_components_chat_panel_replypreviewbar"
+      "norm_label": "replypreviewbar()"
     },
     {
       "label": "salesbot-canvas.tsx",
@@ -2076,251 +1889,13 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "src/app/(dashboard)/rotina/page.tsx",
-      "source_location": "L93",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_app_dashboard_rotina_page",
-      "target": "src_app_dashboard_rotina_page_header",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/(dashboard)/rotina/page.tsx",
-      "source_location": "L232",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_app_dashboard_rotina_page",
-      "target": "src_app_dashboard_rotina_page_metric",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/(dashboard)/rotina/page.tsx",
-      "source_location": "L26",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_app_dashboard_rotina_page",
-      "target": "src_app_dashboard_rotina_page_rotinapage",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/(dashboard)/rotina/page.tsx",
-      "source_location": "L134",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_app_dashboard_rotina_page",
-      "target": "src_app_dashboard_rotina_page_stepcard",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/(dashboard)/rotina/page.tsx",
-      "source_location": "L20",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_app_dashboard_rotina_page",
-      "target": "src_features_commercial_routine_services_routine_service",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/(dashboard)/rotina/page.tsx",
-      "source_location": "L20",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_app_dashboard_rotina_page",
-      "target": "src_features_commercial_routine_services_routine_service_routineservice",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/(dashboard)/rotina/page.tsx",
-      "source_location": "L20",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_app_dashboard_rotina_page",
-      "target": "src_features_commercial_routine_services_routine_service_routinesteptoday",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/(dashboard)/rotina/page.tsx",
-      "source_location": "L20",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_app_dashboard_rotina_page",
-      "target": "src_features_commercial_routine_services_routine_service_routinetoday",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/(dashboard)/settings/rotina/page.tsx",
-      "source_location": "L27",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_app_dashboard_settings_rotina_page",
-      "target": "src_app_dashboard_settings_rotina_page_settingsrotinapage",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/(dashboard)/settings/rotina/page.tsx",
-      "source_location": "L18",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_app_dashboard_settings_rotina_page",
-      "target": "src_app_dashboard_settings_rotina_page_stepstate",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/(dashboard)/settings/rotina/page.tsx",
-      "source_location": "L13",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_app_dashboard_settings_rotina_page",
-      "target": "src_features_commercial_routine_services_routine_service",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/(dashboard)/settings/rotina/page.tsx",
-      "source_location": "L13",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_app_dashboard_settings_rotina_page",
-      "target": "src_features_commercial_routine_services_routine_service_routineservice",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/(dashboard)/settings/rotina/page.tsx",
-      "source_location": "L13",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_app_dashboard_settings_rotina_page",
-      "target": "src_features_commercial_routine_services_routine_service_routinestepconfig",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/commercial-routine/services/routine.service.ts",
-      "source_location": "L49",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_commercial_routine_services_routine_service",
-      "target": "src_features_commercial_routine_services_routine_service_routineconfig",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/commercial-routine/services/routine.service.ts",
-      "source_location": "L56",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_commercial_routine_services_routine_service",
-      "target": "src_features_commercial_routine_services_routine_service_routineoptions",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/commercial-routine/services/routine.service.ts",
-      "source_location": "L68",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_commercial_routine_services_routine_service",
-      "target": "src_features_commercial_routine_services_routine_service_routineservice",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/commercial-routine/services/routine.service.ts",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_commercial_routine_services_routine_service",
-      "target": "src_features_commercial_routine_services_routine_service_routinestageref",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/commercial-routine/services/routine.service.ts",
-      "source_location": "L40",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_commercial_routine_services_routine_service",
-      "target": "src_features_commercial_routine_services_routine_service_routinestepconfig",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/commercial-routine/services/routine.service.ts",
-      "source_location": "L9",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_commercial_routine_services_routine_service",
-      "target": "src_features_commercial_routine_services_routine_service_routinesteptoday",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/commercial-routine/services/routine.service.ts",
-      "source_location": "L26",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_commercial_routine_services_routine_service",
-      "target": "src_features_commercial_routine_services_routine_service_routinetoday",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/commercial-routine/services/routine.service.ts",
-      "source_location": "L64",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_commercial_routine_services_routine_service",
-      "target": "src_features_commercial_routine_services_routine_service_unwrap",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "src/features/inbox/components/chat-panel.tsx",
       "source_location": "L373",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_inbox_components_chat_panel",
-      "target": "src_features_inbox_components_chat_panel_chatpanel"
+      "target": "src_features_inbox_components_chat_panel_chatpanel",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2329,9 +1904,9 @@
       "source_location": "L23",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_inbox_components_chat_panel",
-      "target": "src_features_inbox_components_chat_panel_chatpanelprops"
+      "target": "src_features_inbox_components_chat_panel_chatpanelprops",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2340,9 +1915,9 @@
       "source_location": "L342",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_inbox_components_chat_panel",
-      "target": "src_features_inbox_components_chat_panel_contactavatar"
+      "target": "src_features_inbox_components_chat_panel_contactavatar",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2351,9 +1926,9 @@
       "source_location": "L52",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_inbox_components_chat_panel",
-      "target": "src_features_inbox_components_chat_panel_engagementwindowbanner"
+      "target": "src_features_inbox_components_chat_panel_engagementwindowbanner",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2362,9 +1937,9 @@
       "source_location": "L131",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_inbox_components_chat_panel",
-      "target": "src_features_inbox_components_chat_panel_linkpreviewcard"
+      "target": "src_features_inbox_components_chat_panel_linkpreviewcard",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2373,9 +1948,9 @@
       "source_location": "L172",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_inbox_components_chat_panel",
-      "target": "src_features_inbox_components_chat_panel_matchsingleurl"
+      "target": "src_features_inbox_components_chat_panel_matchsingleurl",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2384,9 +1959,9 @@
       "source_location": "L201",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_inbox_components_chat_panel",
-      "target": "src_features_inbox_components_chat_panel_messagetext"
+      "target": "src_features_inbox_components_chat_panel_messagetext",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2395,9 +1970,9 @@
       "source_location": "L178",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_inbox_components_chat_panel",
-      "target": "src_features_inbox_components_chat_panel_renderinlinetextwithlinks"
+      "target": "src_features_inbox_components_chat_panel_renderinlinetextwithlinks",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2406,9 +1981,9 @@
       "source_location": "L1134",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_inbox_components_chat_panel",
-      "target": "src_features_inbox_components_chat_panel_replypreviewbar"
+      "target": "src_features_inbox_components_chat_panel_replypreviewbar",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2417,9 +1992,9 @@
       "source_location": "L123",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_inbox_components_chat_panel",
-      "target": "src_features_inbox_components_chat_panel_safehostname"
+      "target": "src_features_inbox_components_chat_panel_safehostname",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2428,9 +2003,9 @@
       "source_location": "L32",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_inbox_components_chat_panel",
-      "target": "src_features_inbox_components_chat_panel_statusicons"
+      "target": "src_features_inbox_components_chat_panel_statusicons",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2439,9 +2014,9 @@
       "source_location": "L99",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_inbox_components_chat_panel",
-      "target": "src_features_inbox_components_chat_panel_statustooltip"
+      "target": "src_features_inbox_components_chat_panel_statustooltip",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2450,9 +2025,9 @@
       "source_location": "L236",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_inbox_components_chat_panel",
-      "target": "src_features_inbox_components_chat_panel_templatebuttonrow"
+      "target": "src_features_inbox_components_chat_panel_templatebuttonrow",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2461,9 +2036,9 @@
       "source_location": "L221",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_inbox_components_chat_panel",
-      "target": "src_features_inbox_components_chat_panel_templatebuttonshape"
+      "target": "src_features_inbox_components_chat_panel_templatebuttonshape",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2472,9 +2047,9 @@
       "source_location": "L228",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_inbox_components_chat_panel",
-      "target": "src_features_inbox_components_chat_panel_templateelementshape"
+      "target": "src_features_inbox_components_chat_panel_templateelementshape",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2483,9 +2058,9 @@
       "source_location": "L273",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_inbox_components_chat_panel",
-      "target": "src_features_inbox_components_chat_panel_templatemessage"
+      "target": "src_features_inbox_components_chat_panel_templatemessage",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2495,9 +2070,9 @@
       "source_location": "L1020",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_inbox_components_chat_panel_chatpanel",
-      "target": "src_features_inbox_components_chat_panel_statustooltip"
+      "target": "src_features_inbox_components_chat_panel_statustooltip",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2507,9 +2082,9 @@
       "source_location": "L133",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_inbox_components_chat_panel_linkpreviewcard",
-      "target": "src_features_inbox_components_chat_panel_safehostname"
+      "target": "src_features_inbox_components_chat_panel_safehostname",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2519,9 +2094,9 @@
       "source_location": "L210",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_inbox_components_chat_panel_messagetext",
-      "target": "src_features_inbox_components_chat_panel_matchsingleurl"
+      "target": "src_features_inbox_components_chat_panel_matchsingleurl",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2531,9 +2106,9 @@
       "source_location": "L216",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_features_inbox_components_chat_panel_messagetext",
-      "target": "src_features_inbox_components_chat_panel_renderinlinetextwithlinks"
+      "target": "src_features_inbox_components_chat_panel_renderinlinetextwithlinks",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4572,5 +4147,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "fd5f459ad9868b7b23b00e3d54108282e40c62c8"
+  "built_at_commit": "db908b65357b8248f4debf22e6c573c9e189f3e5"
 }

@@ -70,8 +70,8 @@
     "semantic_hash": ""
   },
   "src/app/(dashboard)/layout.tsx": {
-    "mtime": 1786544519.175998,
-    "ast_hash": "922ce1be53a5e6fd13584a031aa1a22f",
+    "mtime": 1786313993.3527923,
+    "ast_hash": "58a75620bdb847f4ef6b06f26efe2c6d",
     "semantic_hash": ""
   },
   "src/app/(dashboard)/pipelines/[id]/page.tsx": {
@@ -135,8 +135,8 @@
     "semantic_hash": ""
   },
   "src/app/(dashboard)/settings/layout.tsx": {
-    "mtime": 1786544574.9014144,
-    "ast_hash": "ab96c71542cb5525e8b2bf91034615e9",
+    "mtime": 1786475833.4404454,
+    "ast_hash": "1b5647094e5a052657b7e311ecd87527",
     "semantic_hash": ""
   },
   "src/app/(dashboard)/settings/lead-ads/page.tsx": {
@@ -185,8 +185,8 @@
     "semantic_hash": ""
   },
   "src/components/layout/app-sidebar.tsx": {
-    "mtime": 1786544528.818023,
-    "ast_hash": "bf4c13a48345609f9d00df766fee7ec7",
+    "mtime": 1786365267.331557,
+    "ast_hash": "3e02f58ba6f3e6efa322b15d6e49ce41",
     "semantic_hash": ""
   },
   "src/components/providers.tsx": {
@@ -840,8 +840,8 @@
     "semantic_hash": ""
   },
   "src/features/notifications/components/notifications-bell.tsx": {
-    "mtime": 1786494459.5032456,
-    "ast_hash": "a0f55c86b2516a28117d7d176ae2b5c5",
+    "mtime": 1786313971.3817592,
+    "ast_hash": "2af6b5e737aa987678391d4e0543b1ae",
     "semantic_hash": ""
   },
   "src/app/(dashboard)/settings/groups/page.tsx": {
@@ -850,8 +850,8 @@
     "semantic_hash": ""
   },
   "src/app/(dashboard)/settings/integracoes/page.tsx": {
-    "mtime": 1786491789.7504222,
-    "ast_hash": "f4e04202dd9a46e7e97e5114365dc442",
+    "mtime": 1786475823.724612,
+    "ast_hash": "72c3e805c529b0d177bc193351bca135",
     "semantic_hash": ""
   },
   "src/features/inbox/components/channel-switch-popover.tsx": {
@@ -870,53 +870,13 @@
     "semantic_hash": ""
   },
   "src/features/tiny/services/tiny.service.ts": {
-    "mtime": 1786541603.3296866,
-    "ast_hash": "5c1e640b6ab7515b26ae6e1798f44925",
+    "mtime": 1786475722.7436213,
+    "ast_hash": "376635a8d284a3506a877fbcf2cd1c20",
     "semantic_hash": ""
   },
   "src/hooks/use-permissions.ts": {
     "mtime": 1786365205.5297415,
     "ast_hash": "2223493103d7445de1a3b36640281308",
-    "semantic_hash": ""
-  },
-  "src/app/(dashboard)/rotina/page.tsx": {
-    "mtime": 1786545882.880362,
-    "ast_hash": "a4fc71d29b0fd88f218acc6f0c8ce47d",
-    "semantic_hash": ""
-  },
-  "src/app/(dashboard)/settings/distribuicao/page.tsx": {
-    "mtime": 1786504674.2385032,
-    "ast_hash": "df8151f46854af2c31ae3524a4971379",
-    "semantic_hash": ""
-  },
-  "src/app/(dashboard)/settings/rotina/page.tsx": {
-    "mtime": 1786545864.0397778,
-    "ast_hash": "ca831b73307dff39c69dbc01a80aad19",
-    "semantic_hash": ""
-  },
-  "src/app/(dashboard)/tiny/page.tsx": {
-    "mtime": 1786541629.9433932,
-    "ast_hash": "b36563f82756ca204abd9fd3dfc1f63c",
-    "semantic_hash": ""
-  },
-  "src/features/commercial-routine/components/routine-nudge.tsx": {
-    "mtime": 1786544508.3794503,
-    "ast_hash": "c9e6eaf644aca218036c656ca3730ff8",
-    "semantic_hash": ""
-  },
-  "src/features/commercial-routine/services/routine.service.ts": {
-    "mtime": 1786545828.9357245,
-    "ast_hash": "28a30424c3e9abe962cf477f4eb6b432",
-    "semantic_hash": ""
-  },
-  "src/features/settings/services/lead-distribution.service.ts": {
-    "mtime": 1786504680.845973,
-    "ast_hash": "a7569e343190d4dd2395e8bd74cd4dce",
-    "semantic_hash": ""
-  },
-  "src/features/tiny/components/meta-capi-card.tsx": {
-    "mtime": 1786491755.714791,
-    "ast_hash": "d190329479922ad7a2110b79005bd322",
     "semantic_hash": ""
   }
 }
