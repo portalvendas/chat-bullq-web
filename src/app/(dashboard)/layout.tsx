@@ -10,6 +10,7 @@ import { authService } from '@/features/auth/services/auth.service';
 import { usePermissionsSync } from '@/features/settings/hooks/use-permissions-sync';
 import { ToolFailureBanner } from '@/features/ai-agents/components/tool-failure-banner';
 import { NotificationsBell } from '@/features/notifications/components/notifications-bell';
+import { RoutineNudge } from '@/features/commercial-routine/components/routine-nudge';
 
 export default function DashboardLayout({
   children,
@@ -74,6 +75,7 @@ export default function DashboardLayout({
     >
       <div className="flex h-full flex-col">
         <ToolFailureBanner />
+        <RoutineNudge />
         <div className="flex-1 min-h-0">{children}</div>
       </div>
     </SidebarLayout>

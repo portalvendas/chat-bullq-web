@@ -11,6 +11,7 @@ import {
   MessageSquareText,
   MessageCircle,
   ShoppingCart,
+  ClipboardCheck,
 } from 'lucide-react';
 import { usePermissions } from '@/hooks/use-permissions';
 import { InboxTree } from '@/features/inbox-views/components/inbox-tree';
@@ -41,6 +42,7 @@ import {
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, mod: 'dashboard' },
+  { href: '/rotina', label: 'Rotina', icon: ClipboardCheck, mod: 'inbox' },
   { href: '/tiny', label: 'Pedidos ERP', icon: ShoppingCart, mod: 'dashboard' },
   { href: '/automations', label: 'Automações', icon: Zap, mod: 'automations' },
   { href: '/comentarios', label: 'Comentários', icon: MessageCircle, mod: 'inbox' },
