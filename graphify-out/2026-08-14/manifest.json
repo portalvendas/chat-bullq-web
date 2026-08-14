@@ -585,8 +585,8 @@
     "semantic_hash": ""
   },
   "src/features/inbox/components/conversation-list.tsx": {
-    "mtime": 1786722236.4368606,
-    "ast_hash": "bae6bc54fc5861ca5419153026c5484c",
+    "mtime": 1784048001.938276,
+    "ast_hash": "8ad2f2d52a3c78caa9d8254753c4ff6e",
     "semantic_hash": ""
   },
   "src/features/inbox/components/lead-info-popover.tsx": {
@@ -670,8 +670,8 @@
     "semantic_hash": ""
   },
   "src/features/inbox/services/preferences.service.ts": {
-    "mtime": 1786722235.4325352,
-    "ast_hash": "58d28ff735a717ecfa08c8cbe0c07731",
+    "mtime": 1781632678.0,
+    "ast_hash": "044da7fbe1d2a478a7f263f2dfa3f09b",
     "semantic_hash": ""
   },
   "src/features/knowledge/services/knowledge.service.ts": {
@@ -890,8 +890,8 @@
     "semantic_hash": ""
   },
   "src/app/(dashboard)/settings/rotina/page.tsx": {
-    "mtime": 1786626636.1730363,
-    "ast_hash": "8b9fb475c4969f800637d6ae12394298",
+    "mtime": 1786545864.0397778,
+    "ast_hash": "ca831b73307dff39c69dbc01a80aad19",
     "semantic_hash": ""
   },
   "src/app/(dashboard)/tiny/page.tsx": {
@@ -900,18 +900,18 @@
     "semantic_hash": ""
   },
   "src/features/commercial-routine/components/routine-nudge.tsx": {
-    "mtime": 1786563201.2483618,
-    "ast_hash": "3af266c3ddc29a31c4493165363a2906",
+    "mtime": 1786544508.3794503,
+    "ast_hash": "c9e6eaf644aca218036c656ca3730ff8",
     "semantic_hash": ""
   },
   "src/features/commercial-routine/services/routine.service.ts": {
-    "mtime": 1786626539.9752715,
-    "ast_hash": "e07db4f10fd43134626f76c6ae68fa5e",
+    "mtime": 1786545828.9357245,
+    "ast_hash": "28a30424c3e9abe962cf477f4eb6b432",
     "semantic_hash": ""
   },
   "src/features/settings/services/lead-distribution.service.ts": {
-    "mtime": 1786722235.861889,
-    "ast_hash": "a38fe753236844fdc96b781c510d6a5e",
+    "mtime": 1786504680.845973,
+    "ast_hash": "a7569e343190d4dd2395e8bd74cd4dce",
     "semantic_hash": ""
   },
   "src/features/tiny/components/meta-capi-card.tsx": {

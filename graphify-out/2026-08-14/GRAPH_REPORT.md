@@ -1,16 +1,16 @@
-# Graph Report - chat-bullq-web  (2026-08-14)
+# Graph Report - chat-bullq-web  (2026-08-12)
 
 ## Corpus Check
-- 183 files · ~116,582 words
+- 183 files · ~115,624 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 208 nodes · 241 edges · 11 communities
+- 188 nodes · 220 edges · 30 communities (9 shown, 21 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `4e78f504`
+- Built from commit: `fd5f459a`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -19,11 +19,30 @@
 - package.json
 - page.tsx
 - dependencies
-- conversation-list.tsx
-- preferences.service.ts
+- axios
+- clsx
 - pipelines.service.ts
+- @dnd-kit/core
+- @dnd-kit/sortable
+- @dnd-kit/utilities
 - notifications-bell.tsx
+- @headlessui/react
+- @hookform/resolvers
+- next-themes
+- next
+- react
+- react-dom
+- react-hook-form
 - cadences.service.ts
+- socket.io-client
+- sonner
+- @dagrejs/dagre
+- @tanstack/react-query
+- @xyflow/react
+- zod
+- zustand
+- lucide-react
+- framer-motion
 - chat-panel.tsx
 - routine.service.ts
 
@@ -31,13 +50,13 @@
 1. `ImportPage()` - 8 edges
 2. `CanvasInner()` - 5 edges
 3. `scripts` - 5 edges
-4. `pipelinesService` - 4 edges
-5. `NotificationsBell()` - 4 edges
-6. `routineService` - 3 edges
-7. `MessageText()` - 3 edges
-8. `dagreLayout()` - 3 edges
-9. `GraphNodeType` - 3 edges
-10. `WorkflowGraph` - 3 edges
+4. `NotificationsBell()` - 4 edges
+5. `routineService` - 3 edges
+6. `MessageText()` - 3 edges
+7. `dagreLayout()` - 3 edges
+8. `GraphNodeType` - 3 edges
+9. `WorkflowGraph` - 3 edges
+10. `StagesDialog()` - 3 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `SalesData` --references--> `GraphNodeType`  [EXTRACTED]
@@ -52,7 +71,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (11 total, 0 thin omitted)
+## Communities (30 total, 21 thin omitted)
 
 ### Community 0 - "devDependencies"
 Cohesion: 0.12
@@ -67,16 +86,8 @@ Cohesion: 0.31
 Nodes (9): BackfillResult, ImportPage(), loadXLSX(), NATIVE, num(), s(), slugify(), toIso() (+1 more)
 
 ### Community 3 - "dependencies"
-Cohesion: 0.04
-Nodes (49): axios, class-variance-authority, clsx, @dagrejs/dagre, @dnd-kit/core, @dnd-kit/sortable, @dnd-kit/utilities, framer-motion (+41 more)
-
-### Community 4 - "conversation-list.tsx"
-Cohesion: 0.13
-Nodes (12): channelIcons, ConversationListProps, filterOptions, ListFilter, ScopeFilter, scopeOptions, statusColors, LeadDistributionConfig (+4 more)
-
-### Community 5 - "preferences.service.ts"
-Cohesion: 0.50
-Nodes (3): InboxPreferences, preferencesService, UserPreferences
+Cohesion: 0.29
+Nodes (7): class-variance-authority, dependencies, class-variance-authority, recharts, tailwind-merge, recharts, tailwind-merge
 
 ### Community 6 - "pipelines.service.ts"
 Cohesion: 0.09
@@ -99,23 +110,24 @@ Cohesion: 0.15
 Nodes (8): StepState, RoutineConfig, RoutineOptions, routineService, RoutineStageRef, RoutineStepConfig, RoutineStepToday, RoutineToday
 
 ## Knowledge Gaps
-- **96 isolated node(s):** `StepState`, `RoutineStageRef`, `RoutineConfig`, `RoutineOptions`, `ScopeFilter` (+91 more)
+- **82 isolated node(s):** `StepState`, `RoutineStageRef`, `RoutineConfig`, `RoutineOptions`, `ChatPanelProps` (+77 more)
   These have ≤1 connection - possible missing edges or undocumented components.
+- **21 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `dependencies` connect `dependencies` to `package.json`?**
-  _High betweenness centrality (0.110) - this node is a cross-community bridge._
+- **Why does `dependencies` connect `dependencies` to `package.json`, `axios`, `clsx`, `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`, `@headlessui/react`, `@hookform/resolvers`, `next-themes`, `next`, `react`, `react-dom`, `react-hook-form`, `socket.io-client`, `sonner`, `@dagrejs/dagre`, `@tanstack/react-query`, `@xyflow/react`, `zod`, `zustand`, `lucide-react`, `framer-motion`?**
+  _High betweenness centrality (0.135) - this node is a cross-community bridge._
 - **Why does `devDependencies` connect `devDependencies` to `package.json`?**
-  _High betweenness centrality (0.049) - this node is a cross-community bridge._
+  _High betweenness centrality (0.060) - this node is a cross-community bridge._
 - **What connects `StepState`, `RoutineStageRef`, `RoutineConfig` to the rest of the system?**
-  _96 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _82 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `devDependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.11764705882352941 - nodes in this community are weakly interconnected._
-- **Should `dependencies` be split into smaller, more focused modules?**
-  _Cohesion score 0.04081632653061224 - nodes in this community are weakly interconnected._
-- **Should `conversation-list.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.13333333333333333 - nodes in this community are weakly interconnected._
 - **Should `pipelines.service.ts` be split into smaller, more focused modules?**
   _Cohesion score 0.0896551724137931 - nodes in this community are weakly interconnected._
+- **Should `cadences.service.ts` be split into smaller, more focused modules?**
+  _Cohesion score 0.08602150537634409 - nodes in this community are weakly interconnected._
+- **Should `chat-panel.tsx` be split into smaller, more focused modules?**
+  _Cohesion score 0.14705882352941177 - nodes in this community are weakly interconnected._
