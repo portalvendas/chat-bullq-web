@@ -36,6 +36,7 @@ import {
 } from '@/features/inbox-views/services/inbox-views.service';
 import { channelsService } from '@/features/channels/services/channels.service';
 import { tagsService } from '@/features/settings/services/tags.service';
+import { leadDistributionService } from '@/features/settings/services/lead-distribution.service';
 import { ZappfyIcon, MetaIcon, InstagramIcon } from '@/components/ui/icons';
 import { useOrgId } from '@/hooks/use-org-query-key';
 import { useSocket } from '../hooks/use-socket';
@@ -151,13 +152,30 @@ export function ConversationList({
   const [selectedChannelId, setSelectedChannelId] = useState<string | null>(null);
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
   const [tagSearch, setTagSearch] = useState('');
+  // Filtro "Vendedores": responsáveis selecionados. Default por papel (o
+  // vendedor logado vê só os dele; gestor vê todos pré-selecionados) —
+  // aplicado uma vez quando os vendedores carregam (ver effect abaixo).
+  const [selectedSellerIds, setSelectedSellerIds] = useState<string[]>([]);
+  const sellerDefaultAppliedRef = useRef(false);
+  // Vendedores = usuários que participam da distribuição de leads.
+  const { data: sellers = [] } = useQuery({
+    queryKey: ['lead-distribution-sellers', orgId],
+    queryFn: () => leadDistributionService.listSellers(),
+    staleTime: 60_000,
+  });
   // showGroups conta como filtro ativo SÓ quando ON (default OFF é o
   // comportamento padrão, não merece badge). Tags contam 1 por tag.
+  // O filtro de vendedores conta como ativo só quando ESTREITA (esconde
+  // alguém) — o default "todos pré-selecionados" não vira badge.
+  const sellerFilterActive =
+    selectedSellerIds.length > 0 &&
+    selectedSellerIds.length !== sellers.length;
   const activeFilterCount =
     (unreadOnly ? 1 : 0) +
     (archivedOnly ? 1 : 0) +
     (showGroups ? 1 : 0) +
-    selectedTagIds.length;
+    selectedTagIds.length +
+    (sellerFilterActive ? 1 : 0);
   const [scope, setScope] = useState<ScopeFilter>('ALL');
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
@@ -196,6 +214,25 @@ export function ConversationList({
     }
   }, [prefsLoaded, savedPrefs]);
 
+  // Default do filtro "Vendedores" (aplicado UMA vez): se já há preferência
+  // salva, usa ela; senão define por papel — o vendedor logado vê só os leads
+  // dele; quem não é vendedor (gestor) vê todos os vendedores pré-selecionados.
+  useEffect(() => {
+    if (!prefsLoaded || sellerDefaultAppliedRef.current) return;
+    if (Array.isArray(savedPrefs.sellerIds)) {
+      sellerDefaultAppliedRef.current = true;
+      setSelectedSellerIds(savedPrefs.sellerIds);
+      return;
+    }
+    if (!sellers.length) return; // espera carregar pra decidir por papel
+    sellerDefaultAppliedRef.current = true;
+    const allSellerIds = sellers.map((s) => s.userId);
+    const isSeller = !!currentUserId && allSellerIds.includes(currentUserId);
+    const next = isSeller ? [currentUserId as string] : allSellerIds;
+    setSelectedSellerIds(next);
+    updatePrefs({ sellerIds: next });
+  }, [prefsLoaded, savedPrefs.sellerIds, sellers, currentUserId, updatePrefs]);
+
   const toggleListFilter = useCallback(
     (value: ListFilter) => {
       if (value === 'unread') {
@@ -226,11 +263,13 @@ export function ConversationList({
     setArchivedOnly(false);
     setShowGroups(false);
     setSelectedTagIds([]);
+    setSelectedSellerIds([]);
     updatePrefs({
       unreadOnly: false,
       archivedOnly: false,
       showGroups: false,
       tagIds: [],
+      sellerIds: [],
     });
   }, [updatePrefs]);
 
@@ -255,6 +294,30 @@ export function ConversationList({
     [updatePrefs],
   );
 
+  const toggleSellerFilter = useCallback(
+    (userId: string) => {
+      setSelectedSellerIds((prev) => {
+        const next = prev.includes(userId)
+          ? prev.filter((id) => id !== userId)
+          : [...prev, userId];
+        updatePrefs({ sellerIds: next });
+        return next;
+      });
+    },
+    [updatePrefs],
+  );
+
+  const selectAllSellers = useCallback(() => {
+    const all = sellers.map((s) => s.userId);
+    setSelectedSellerIds(all);
+    updatePrefs({ sellerIds: all });
+  }, [sellers, updatePrefs]);
+
+  const clearSellerFilter = useCallback(() => {
+    setSelectedSellerIds([]);
+    updatePrefs({ sellerIds: [] });
+  }, [updatePrefs]);
+
   const handleChannelChange = useCallback(
     (next: string | null) => {
       setSelectedChannelId(next);
@@ -267,7 +330,11 @@ export function ConversationList({
     () => [...selectedTagIds].sort().join(','),
     [selectedTagIds],
   );
-  const filterKey = `${unreadOnly ? 'u' : ''}|${archivedOnly ? 'a' : ''}|${showGroups ? 'g' : ''}|t:${tagsKey}`;
+  const sellersKey = useMemo(
+    () => [...selectedSellerIds].sort().join(','),
+    [selectedSellerIds],
+  );
+  const filterKey = `${unreadOnly ? 'u' : ''}|${archivedOnly ? 'a' : ''}|${showGroups ? 'g' : ''}|t:${tagsKey}|s:${sellersKey}`;
 
   const handleSearchChange = useCallback((value: string) => {
     setSearch(value);
@@ -356,7 +423,13 @@ export function ConversationList({
       }
       if (selectedChannelId) params.channelId = selectedChannelId;
       if (selectedTagIds.length > 0) params.tagIds = selectedTagIds.join(',');
-      if (scope === 'MINE' && currentUserId) params.assignedToId = currentUserId;
+      // Filtro "Vendedores" tem precedência: quando há seleção, filtra por
+      // esses responsáveis; senão cai no scope "Minhas conversas".
+      if (selectedSellerIds.length > 0) {
+        params.assignedToIds = selectedSellerIds.join(',');
+      } else if (scope === 'MINE' && currentUserId) {
+        params.assignedToId = currentUserId;
+      }
       if (viewId) {
         return inboxViewsService.getConversations(viewId, params);
       }
@@ -1042,6 +1115,73 @@ export function ConversationList({
                         );
                       })
                     )}
+                  </div>
+                </>
+              )}
+              {sellers.length > 0 && (
+                <>
+                  <div className="mx-2 my-1 border-t border-zinc-100 dark:border-zinc-800" />
+                  <div className="flex items-center justify-between px-2.5 py-1.5">
+                    <p className="text-[11px] font-medium uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+                      Vendedores
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={selectAllSellers}
+                        className="text-[10px] text-zinc-400 transition-colors hover:text-zinc-600 dark:hover:text-zinc-300"
+                      >
+                        Todos
+                      </button>
+                      {selectedSellerIds.length > 0 && (
+                        <button
+                          onClick={clearSellerFilter}
+                          className="text-[10px] text-zinc-400 transition-colors hover:text-zinc-600 dark:hover:text-zinc-300"
+                        >
+                          Limpar
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  <div className="max-h-56 overflow-y-auto scrollbar-thin">
+                    {sellers.map((s) => {
+                      const isActive = selectedSellerIds.includes(s.userId);
+                      const label = s.name || 'Vendedor';
+                      const initials = label.slice(0, 2).toUpperCase();
+                      return (
+                        <button
+                          key={s.userId}
+                          onClick={() => toggleSellerFilter(s.userId)}
+                          className={`flex w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-left text-[13px] transition-colors ${
+                            isActive
+                              ? 'bg-primary/[0.06] font-medium text-primary dark:bg-primary/10'
+                              : 'text-zinc-700 hover:bg-zinc-50 dark:text-zinc-300 dark:hover:bg-zinc-800/60'
+                          }`}
+                        >
+                          <div
+                            className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border transition-colors ${
+                              isActive
+                                ? 'border-primary bg-primary text-white'
+                                : 'border-zinc-300 dark:border-zinc-600'
+                            }`}
+                          >
+                            {isActive && <Check className="h-2.5 w-2.5" />}
+                          </div>
+                          {s.avatarUrl ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={s.avatarUrl}
+                              alt={label}
+                              className="h-4 w-4 shrink-0 rounded-full object-cover"
+                            />
+                          ) : (
+                            <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-zinc-200 text-[8px] font-semibold text-zinc-500 dark:bg-zinc-700 dark:text-zinc-400">
+                              {initials}
+                            </span>
+                          )}
+                          <span className="flex-1 truncate">{label}</span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </>
               )}

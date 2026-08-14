@@ -13,6 +13,9 @@ export interface InboxPreferences {
   /** IDs de tags filtradas (OR — conversa precisa ter pelo menos uma).
    *  Match em tag de conversa OU tag de contato. */
   tagIds?: string[];
+  /** IDs dos vendedores selecionados no filtro "Vendedores" do inbox
+   *  (responsáveis). Vazio/ausente = sem filtro por vendedor. */
+  sellerIds?: string[];
 }
 
 export interface UserPreferences {

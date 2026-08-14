@@ -50,6 +50,7 @@ export interface RoutineConfig {
   enabled: boolean;
   userMode: 'ALL' | 'SELECTED';
   userIds: string[];
+  ignoreAssignment: boolean;
   steps: RoutineStepConfig[];
 }
 
@@ -89,6 +90,7 @@ export const routineService = {
     enabled?: boolean;
     userMode?: 'ALL' | 'SELECTED';
     userIds?: string[];
+    ignoreAssignment?: boolean;
     steps?: Array<{
       key: string;
       stageIds: string[];

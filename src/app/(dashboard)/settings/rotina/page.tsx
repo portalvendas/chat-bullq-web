@@ -45,6 +45,7 @@ export default function SettingsRotinaPage() {
   const [enabled, setEnabled] = useState(true);
   const [userMode, setUserMode] = useState<'ALL' | 'SELECTED'>('ALL');
   const [userIds, setUserIds] = useState<string[]>([]);
+  const [ignoreAssignment, setIgnoreAssignment] = useState(false);
   const [steps, setSteps] = useState<StepState[]>([]);
 
   useEffect(() => {
@@ -52,6 +53,7 @@ export default function SettingsRotinaPage() {
     setEnabled(cfg.enabled);
     setUserMode(cfg.userMode ?? 'ALL');
     setUserIds(cfg.userIds ?? []);
+    setIgnoreAssignment(cfg.ignoreAssignment ?? false);
     setSteps(
       cfg.steps.map((s: RoutineStepConfig) => ({
         key: s.key,
@@ -91,6 +93,7 @@ export default function SettingsRotinaPage() {
         enabled,
         userMode,
         userIds,
+        ignoreAssignment,
         steps: steps.map((s) => ({
           key: s.key,
           stageIds: s.stageIds,
@@ -205,6 +208,24 @@ export default function SettingsRotinaPage() {
             )}
           </div>
         )}
+
+        <label className="mt-4 flex items-start gap-2 border-t border-zinc-100 pt-3 text-sm dark:border-zinc-800">
+          <input
+            type="checkbox"
+            checked={ignoreAssignment}
+            onChange={(e) => setIgnoreAssignment(e.target.checked)}
+            className="mt-0.5 h-4 w-4 rounded border-zinc-300"
+          />
+          <span>
+            <span className="font-medium text-zinc-800 dark:text-zinc-200">
+              Contar leads mesmo sem responsável
+            </span>
+            <span className="block text-[11px] text-zinc-400">
+              Conta todos os leads das etapas, atribuídos ou não. Útil para
+              validação ou operação sem distribuição por vendedor.
+            </span>
+          </span>
+        </label>
       </div>
 
       <div className="space-y-4">
