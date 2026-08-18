@@ -151,6 +151,19 @@ export const platformAdminService = {
     return unwrap<Paginated<AuditLogItem>>(data);
   },
 
+  async exportOrganization(id: string): Promise<Record<string, unknown>> {
+    const { data } = await api.get(
+      `/platform-admin/organizations/${id}/export`,
+    );
+    return unwrap<Record<string, unknown>>(data);
+  },
+
+  async purge(id: string, confirmSlug: string): Promise<void> {
+    await api.delete(`/platform-admin/organizations/${id}`, {
+      data: { confirmSlug },
+    });
+  },
+
   async impersonate(
     organizationId: string,
     userId?: string,

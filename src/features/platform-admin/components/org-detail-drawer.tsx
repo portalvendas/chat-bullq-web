@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { X, Ban, Play, ShieldCheck, Loader2 } from 'lucide-react';
+import { X, Ban, Play, ShieldCheck, Loader2, Download, Trash2 } from 'lucide-react';
 import {
   platformAdminService,
   type ImpersonateResult,
@@ -30,6 +30,7 @@ export function OrgDetailDrawer({
   const [confirmingSuspend, setConfirmingSuspend] = useState(false);
   const [plan, setPlan] = useState<string | null>(null);
   const [impUserId, setImpUserId] = useState<string>('');
+  const [confirmSlug, setConfirmSlug] = useState('');
 
   const invalidate = () => {
     void qc.invalidateQueries({ queryKey: ['pa-org', id] });
@@ -78,6 +79,35 @@ export function OrgDetailDrawer({
     },
     onError: (e: unknown) =>
       toast.error(e instanceof Error ? e.message : 'Falha ao impersonar'),
+  });
+
+  const exportMut = useMutation({
+    mutationFn: () => platformAdminService.exportOrganization(id),
+    onSuccess: (dump) => {
+      const blob = new Blob([JSON.stringify(dump, null, 2)], {
+        type: 'application/json',
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `export-${org?.slug ?? id}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast.success('Exportação gerada');
+    },
+    onError: (e: unknown) =>
+      toast.error(e instanceof Error ? e.message : 'Falha ao exportar'),
+  });
+
+  const purgeMut = useMutation({
+    mutationFn: () => platformAdminService.purge(id, confirmSlug),
+    onSuccess: () => {
+      toast.success('Empresa excluída definitivamente');
+      invalidate();
+      onClose();
+    },
+    onError: (e: unknown) =>
+      toast.error(e instanceof Error ? e.message : 'Falha ao excluir'),
   });
 
   const currentPlan = plan ?? org?.plan ?? '';
@@ -297,6 +327,56 @@ export function OrgDetailDrawer({
                   </li>
                 )}
               </ul>
+            </section>
+
+            {/* Dados / LGPD */}
+            <section className="flex flex-col gap-2">
+              <SectionTitle>Dados (LGPD)</SectionTitle>
+              <button
+                type="button"
+                disabled={exportMut.isPending}
+                onClick={() => exportMut.mutate()}
+                className="inline-flex w-fit items-center gap-1.5 rounded-lg border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-900"
+              >
+                {exportMut.isPending ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <Download className="size-4" />
+                )}
+                Exportar dados (JSON)
+              </button>
+            </section>
+
+            {/* Zona de perigo — exclusão definitiva */}
+            <section className="flex flex-col gap-2 rounded-lg border border-red-300 p-3 dark:border-red-500/30">
+              <SectionTitle>Excluir empresa</SectionTitle>
+              <p className="text-xs text-zinc-500">
+                Exclusão <strong>definitiva e irreversível</strong> de todos os
+                dados. Digite o slug{' '}
+                <code className="rounded bg-zinc-100 px-1 dark:bg-zinc-800">
+                  {org.slug}
+                </code>{' '}
+                para confirmar.
+              </p>
+              <input
+                value={confirmSlug}
+                onChange={(e) => setConfirmSlug(e.target.value)}
+                placeholder={org.slug}
+                className="w-full rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-white"
+              />
+              <button
+                type="button"
+                disabled={purgeMut.isPending || confirmSlug !== org.slug}
+                onClick={() => purgeMut.mutate()}
+                className="inline-flex w-fit items-center gap-1.5 rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
+              >
+                {purgeMut.isPending ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <Trash2 className="size-4" />
+                )}
+                Excluir definitivamente
+              </button>
             </section>
           </div>
         )}
