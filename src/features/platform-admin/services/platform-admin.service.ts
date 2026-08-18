@@ -122,6 +122,23 @@ export const platformAdminService = {
     return unwrap<Paginated<OrgListItem>>(data);
   },
 
+  async createOrganization(input: {
+    name: string;
+    ownerEmail: string;
+    plan?: string;
+    slug?: string;
+  }): Promise<{
+    id: string;
+    name: string;
+    slug: string;
+    ownerEmail: string;
+    inviteToken: string;
+    emailSent: boolean;
+  }> {
+    const { data } = await api.post('/platform-admin/organizations', input);
+    return unwrap(data);
+  },
+
   async getOrganization(id: string): Promise<OrgDetail> {
     const { data } = await api.get(`/platform-admin/organizations/${id}`);
     return unwrap<OrgDetail>(data);

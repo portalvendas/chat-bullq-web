@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
   Building2,
@@ -10,6 +10,8 @@ import {
   Radio,
   Search,
   Loader2,
+  Plus,
+  X,
 } from 'lucide-react';
 import {
   platformAdminService,
@@ -191,12 +193,31 @@ function SearchBox({
 function OrgsTab({ onOpen }: { onOpen: (id: string) => void }) {
   const [raw, setRaw] = useState('');
   const search = useDebounced(raw, 350);
-  const { items, nextCursor, loading, error, loadMore } =
+  const [showNew, setShowNew] = useState(false);
+  const { items, nextCursor, loading, error, loadMore, reload } =
     useCursorList<OrgListItem>(platformAdminService.listOrganizations, search);
 
   return (
     <div className="flex flex-col gap-3">
-      <SearchBox value={raw} onChange={setRaw} placeholder="Buscar por nome ou slug…" />
+      <div className="flex items-center gap-2">
+        <div className="flex-1">
+          <SearchBox
+            value={raw}
+            onChange={setRaw}
+            placeholder="Buscar por nome ou slug…"
+          />
+        </div>
+        <button
+          type="button"
+          onClick={() => setShowNew(true)}
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-foreground"
+        >
+          <Plus className="size-4" /> Nova empresa
+        </button>
+      </div>
+      {showNew && (
+        <NewOrgModal onClose={() => setShowNew(false)} onCreated={reload} />
+      )}
       {error && <ErrorBox message={error} />}
       <div className="overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-800">
         <table className="w-full text-sm">
@@ -412,6 +433,161 @@ export function ErrorBox({ message }: { message: string }) {
   return (
     <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300">
       {message}
+    </div>
+  );
+}
+
+const inputCls =
+  'w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-primary dark:border-zinc-700 dark:bg-zinc-900 dark:text-white';
+
+function Field({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <label className="flex flex-col gap-1">
+      <span className="text-xs font-medium text-zinc-600 dark:text-zinc-300">
+        {label}
+      </span>
+      {children}
+    </label>
+  );
+}
+
+function NewOrgModal({
+  onClose,
+  onCreated,
+}: {
+  onClose: () => void;
+  onCreated: () => void;
+}) {
+  const [name, setName] = useState('');
+  const [ownerEmail, setOwnerEmail] = useState('');
+  const [plan, setPlan] = useState('');
+  const [result, setResult] = useState<{
+    inviteToken: string;
+    emailSent: boolean;
+  } | null>(null);
+
+  const mut = useMutation({
+    mutationFn: () =>
+      platformAdminService.createOrganization({
+        name: name.trim(),
+        ownerEmail: ownerEmail.trim(),
+        plan: plan.trim() || undefined,
+      }),
+    onSuccess: (r) => {
+      setResult({ inviteToken: r.inviteToken, emailSent: r.emailSent });
+      onCreated();
+      toast.success('Empresa criada');
+    },
+    onError: (e: unknown) =>
+      toast.error(e instanceof Error ? e.message : 'Falha ao criar empresa'),
+  });
+
+  const inviteLink = result
+    ? `${typeof window !== 'undefined' ? window.location.origin : ''}/register?invite=${result.inviteToken}`
+    : '';
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div
+        className="absolute inset-0 bg-black/30"
+        onClick={onClose}
+        aria-hidden
+      />
+      <div className="relative w-full max-w-md rounded-xl border border-zinc-200 bg-white p-5 shadow-xl dark:border-zinc-800 dark:bg-zinc-950">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-zinc-950 dark:text-white">
+            Nova empresa
+          </h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-md p-1 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+          >
+            <X className="size-5" />
+          </button>
+        </div>
+
+        {result ? (
+          <div className="flex flex-col gap-3">
+            <p className="text-sm text-zinc-600 dark:text-zinc-300">
+              Empresa criada.{' '}
+              {result.emailSent
+                ? 'Convite enviado por e-mail ao dono.'
+                : 'E-mail não configurado — envie o link abaixo ao dono manualmente.'}
+            </p>
+            <div className="rounded-lg border border-zinc-200 p-2 dark:border-zinc-800">
+              <div className="mb-1 text-xs text-zinc-500">
+                Link do convite (OWNER)
+              </div>
+              <div className="break-all text-xs text-zinc-800 dark:text-zinc-200">
+                {inviteLink}
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  void navigator.clipboard?.writeText(inviteLink);
+                  toast.success('Link copiado');
+                }}
+                className="rounded-lg border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:text-zinc-200"
+              >
+                Copiar link
+              </button>
+              <button
+                type="button"
+                onClick={onClose}
+                className="rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-foreground"
+              >
+                Fechar
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3">
+            <Field label="Nome da empresa">
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className={inputCls}
+                placeholder="Acme Ltda"
+              />
+            </Field>
+            <Field label="E-mail do dono (OWNER)">
+              <input
+                value={ownerEmail}
+                onChange={(e) => setOwnerEmail(e.target.value)}
+                type="email"
+                className={inputCls}
+                placeholder="dono@empresa.com"
+              />
+            </Field>
+            <Field label="Plano (opcional)">
+              <input
+                value={plan}
+                onChange={(e) => setPlan(e.target.value)}
+                className={inputCls}
+                placeholder="free"
+              />
+            </Field>
+            <button
+              type="button"
+              disabled={mut.isPending || !name.trim() || !ownerEmail.trim()}
+              onClick={() => mut.mutate()}
+              className="mt-1 inline-flex items-center justify-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-foreground disabled:opacity-50"
+            >
+              {mut.isPending ? <Loader2 className="size-4 animate-spin" /> : null}
+              Criar empresa
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
