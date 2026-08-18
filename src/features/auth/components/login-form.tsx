@@ -29,7 +29,10 @@ export function LoginForm() {
       localStorage.setItem('access_token', result.accessToken);
       localStorage.setItem('refresh_token', result.refreshToken);
 
-      setAuth(result.user, result.organizations);
+      setAuth(
+        { ...result.user, isPlatformAdmin: result.isPlatformAdmin },
+        result.organizations,
+      );
       // setAuth already picks the best org (stored or first available)
 
       toast.success(`Bem-vindo, ${result.user.name}!`);

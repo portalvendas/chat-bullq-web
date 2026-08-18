@@ -17,6 +17,7 @@ interface AuthUser {
   name: string;
   email: string;
   avatarUrl: string | null;
+  isPlatformAdmin?: boolean;
 }
 
 interface OrgInfo {
@@ -32,11 +33,13 @@ interface AuthResponse {
   organizations: OrgInfo[];
   accessToken: string;
   refreshToken: string;
+  isPlatformAdmin?: boolean;
 }
 
 interface MeResponse {
   user: AuthUser;
   organizations: OrgInfo[];
+  isPlatformAdmin?: boolean;
 }
 
 interface InvitationInfo {

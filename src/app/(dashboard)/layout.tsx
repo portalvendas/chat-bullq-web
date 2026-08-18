@@ -11,6 +11,7 @@ import { usePermissionsSync } from '@/features/settings/hooks/use-permissions-sy
 import { ToolFailureBanner } from '@/features/ai-agents/components/tool-failure-banner';
 import { NotificationsBell } from '@/features/notifications/components/notifications-bell';
 import { RoutineNudge } from '@/features/commercial-routine/components/routine-nudge';
+import { ImpersonationBanner } from '@/features/platform-admin/components/impersonation-banner';
 
 export default function DashboardLayout({
   children,
@@ -38,7 +39,10 @@ export default function DashboardLayout({
     authService
       .getMe()
       .then((data) => {
-        setAuth(data.user, data.organizations);
+        setAuth(
+          { ...data.user, isPlatformAdmin: data.isPlatformAdmin },
+          data.organizations,
+        );
         // Ensure activeOrgId is set (setAuth handles this, but double-check)
         const currentOrgId = localStorage.getItem('active_org_id');
         if (!currentOrgId && data.organizations.length > 0) {
@@ -74,6 +78,7 @@ export default function DashboardLayout({
       }
     >
       <div className="flex h-full flex-col">
+        <ImpersonationBanner />
         <ToolFailureBanner />
         <RoutineNudge />
         <div className="flex-1 min-h-0">{children}</div>

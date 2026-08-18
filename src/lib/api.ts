@@ -24,6 +24,24 @@ api.interceptors.response.use(
   (res) => res,
   async (error) => {
     if (error.response?.status === 401 && typeof window !== 'undefined') {
+      // Durante impersonação o refresh_token é do ADMIN — refrescar aqui
+      // misturaria os contextos. Se o token de 30min expirou, encerra a
+      // impersonação e restaura o admin.
+      if (localStorage.getItem('imp_active')) {
+        const adminToken = localStorage.getItem('imp_admin_token');
+        const adminOrg = localStorage.getItem('imp_admin_org');
+        [
+          'imp_active',
+          'imp_admin_token',
+          'imp_admin_org',
+          'imp_label',
+          'imp_expires_at',
+        ].forEach((k) => localStorage.removeItem(k));
+        if (adminToken) localStorage.setItem('access_token', adminToken);
+        if (adminOrg) localStorage.setItem('active_org_id', adminOrg);
+        window.location.href = '/super-admin';
+        return Promise.reject(new Error('Sessão de impersonação expirada'));
+      }
       const refreshToken = localStorage.getItem('refresh_token');
       if (refreshToken && !error.config._retry) {
         error.config._retry = true;

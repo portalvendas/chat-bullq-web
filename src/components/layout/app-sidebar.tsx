@@ -12,6 +12,7 @@ import {
   MessageCircle,
   ShoppingCart,
   ClipboardCheck,
+  ShieldCheck,
 } from 'lucide-react';
 import { usePermissions } from '@/hooks/use-permissions';
 import { InboxTree } from '@/features/inbox-views/components/inbox-tree';
@@ -110,6 +111,12 @@ export function AppSidebar() {
                 <SidebarLabel>{item.label}</SidebarLabel>
               </SidebarItem>
             ))}
+          {user?.isPlatformAdmin && (
+            <SidebarItem href="/super-admin">
+              <ShieldCheck className="size-5" />
+              <SidebarLabel>Super Admin</SidebarLabel>
+            </SidebarItem>
+          )}
         </SidebarSection>
 
         <SidebarSpacer />
