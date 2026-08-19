@@ -313,6 +313,14 @@ function OrderRow({ row }: { row: TinyOrderRow }) {
             </span>
           )}
         </td>
+        <td
+          className="py-2 pr-3 text-xs tabular-nums text-zinc-500"
+          title="Dias entre a data do orçamento/pedido e a última mensagem enviada ao cliente"
+        >
+          {row.diasOrcamentoUltimaMsg == null
+            ? '—'
+            : `${row.diasOrcamentoUltimaMsg} d`}
+        </td>
         <td className="py-2 pr-3 text-xs text-zinc-500">{row.vendedor || '—'}</td>
         <td className="py-2 pr-3 text-right font-semibold tabular-nums text-zinc-800 dark:text-zinc-200">
           {brl(row.valor)}
@@ -320,7 +328,7 @@ function OrderRow({ row }: { row: TinyOrderRow }) {
       </tr>
       {open && (
         <tr className="bg-zinc-50/60 dark:bg-zinc-900/40">
-          <td colSpan={7}>
+          <td colSpan={8}>
             <ItemsSubTable docId={row.id} />
           </td>
         </tr>
@@ -493,6 +501,7 @@ export default function TinyOrdersPage() {
                   <th className="py-2 pr-3 font-medium">Situação</th>
                   <th className="py-2 pr-3 font-medium">Data</th>
                   <th className="py-2 pr-3 font-medium">Lead vinculado</th>
+                  <th className="py-2 pr-3 font-medium" title="Dias entre a data do orçamento/pedido e a última mensagem enviada ao cliente">Dias (orç.→últ. msg)</th>
                   <th className="py-2 pr-3 font-medium">Vendedor</th>
                   <th className="py-2 pr-3 text-right font-medium">Valor</th>
                 </tr>
