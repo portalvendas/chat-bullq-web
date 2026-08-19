@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Política de Privacidade — Chat BullQ',
+  title: 'Política de Privacidade — Kortia CRM',
   description:
-    'Política de Privacidade da plataforma Chat BullQ (Armazém Decora): como coletamos, usamos, compartilhamos e protegemos dados pessoais, incluindo leads recebidos via Facebook Lead Ads.',
+    'Política de Privacidade da plataforma Kortia CRM (Armazém Decora): como coletamos, usamos, compartilhamos e protegemos dados pessoais, incluindo leads recebidos via Facebook Lead Ads.',
   robots: { index: true, follow: true },
 };
 
@@ -32,7 +32,7 @@ export default function PrivacidadePage() {
   return (
     <main className="mx-auto min-h-screen max-w-3xl bg-white px-6 py-12 dark:bg-zinc-900">
       <header className="border-b border-zinc-200 pb-6 dark:border-zinc-800">
-        <p className="text-sm font-medium text-primary">Chat BullQ</p>
+        <p className="text-sm font-medium text-primary">Kortia CRM</p>
         <h1 className="mt-1 text-2xl font-bold text-zinc-900 dark:text-zinc-100">
           Política de Privacidade
         </h1>
@@ -45,7 +45,7 @@ export default function PrivacidadePage() {
         <Section title="1. Quem somos">
           <p>
             Esta Política de Privacidade descreve como a plataforma{' '}
-            <strong>Chat BullQ</strong>, operada por <strong>Armazém Decora</strong>{' '}
+            <strong>Kortia CRM</strong>, operada por <strong>Armazém Decora</strong>{' '}
             (&quot;nós&quot;, &quot;nossa plataforma&quot;), coleta, utiliza,
             armazena, compartilha e protege dados pessoais, em conformidade com a
             Lei Geral de Proteção de Dados (Lei nº 13.709/2018 — LGPD) e com as
@@ -53,7 +53,7 @@ export default function PrivacidadePage() {
             Instagram).
           </p>
           <p>
-            O Chat BullQ é uma plataforma de atendimento e gestão comercial
+            O Kortia CRM é uma plataforma de atendimento e gestão comercial
             omnichannel, que centraliza conversas e leads de diferentes canais
             (WhatsApp, Facebook, Instagram, marketplaces e formulários de
             anúncios) para equipes de vendas e atendimento.
@@ -82,7 +82,7 @@ export default function PrivacidadePage() {
             </li>
             <li>
               <strong>Dados de usuários da plataforma:</strong> nome, e-mail e
-              credenciais de acesso dos operadores que utilizam o Chat BullQ.
+              credenciais de acesso dos operadores que utilizam o Kortia CRM.
             </li>
           </ul>
         </Section>
@@ -226,7 +226,7 @@ export default function PrivacidadePage() {
       </div>
 
       <footer className="mt-12 border-t border-zinc-200 pt-6 text-sm text-zinc-400 dark:border-zinc-800">
-        © {new Date().getFullYear()} Armazém Decora — Chat BullQ. Todos os
+        © {new Date().getFullYear()} Armazém Decora — Kortia CRM. Todos os
         direitos reservados.
       </footer>
     </main>

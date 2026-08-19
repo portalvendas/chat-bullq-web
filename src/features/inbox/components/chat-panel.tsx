@@ -605,10 +605,10 @@ export function ChatPanel({
       const ok = window.confirm(
         isMarketplace
           ? 'Excluir essa mensagem do inbox? No Mercado Livre não é possível ' +
-              'retratar uma resposta publicada — ela some apenas aqui no Chat BullQ.'
+              'retratar uma resposta publicada — ela some apenas aqui no Kortia CRM.'
           : 'Deletar essa mensagem pra todos? ' +
               'Em WhatsApp via Zappfy a mensagem some no app do cliente. ' +
-              'Em WhatsApp Cloud API e Instagram, ela some apenas no Chat BullQ ' +
+              'Em WhatsApp Cloud API e Instagram, ela some apenas no Kortia CRM ' +
               '(limitação da Meta — o cliente continua vendo no app dele).',
       );
       if (!ok) return;
@@ -620,7 +620,7 @@ export function ChatPanel({
           toast.success('Mensagem deletada pra todos');
         } else {
           toast.warning(
-            'Mensagem deletada só no Chat BullQ. ' +
+            'Mensagem deletada só no Kortia CRM. ' +
               'O cliente ainda vê a mensagem no app dele (limitação do canal).',
           );
         }
@@ -989,7 +989,7 @@ export function ChatPanel({
                           title={
                             msg.revokeSucceededRemote
                               ? 'Mensagem deletada pra todos (provider confirmou).'
-                              : 'Deletada apenas no Chat BullQ — o cliente ainda pode estar vendo no app dele.'
+                              : 'Deletada apenas no Kortia CRM — o cliente ainda pode estar vendo no app dele.'
                           }
                         >
                           <Ban className="h-3.5 w-3.5 shrink-0" />

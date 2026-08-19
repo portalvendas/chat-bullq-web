@@ -75,7 +75,7 @@ export default function IntegracoesPage() {
           Integrações
         </h2>
         <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-          Conecte sistemas externos ao Chat Bullq.
+          Conecte sistemas externos ao Kortia CRM.
         </p>
       </div>
 
