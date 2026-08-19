@@ -9,8 +9,9 @@
  * Dados Incompletos, exclui origem marketplace (ML/Shopee/Magalu/Amazon) e só
  * natureza de operação "Venda". Aplicado no backend.
  */
-import { useState } from 'react';
+import { useState, type MouseEvent } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import {
   ShoppingCart,
@@ -23,6 +24,7 @@ import {
   Link2Off,
   Users,
   MessageSquare,
+  PhoneCall,
 } from 'lucide-react';
 import {
   tinyService,
@@ -261,6 +263,27 @@ function ItemsSubTable({ docId }: { docId: string }) {
 
 function OrderRow({ row }: { row: TinyOrderRow }) {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
+  const [calling, setCalling] = useState(false);
+  const [callErr, setCallErr] = useState<string | null>(null);
+
+  // "Chamar": resolve (ou inicia) a conversa do lead e navega pro inbox.
+  async function handleChamar(e: MouseEvent) {
+    e.stopPropagation();
+    if (calling) return;
+    setCalling(true);
+    setCallErr(null);
+    try {
+      const { conversationId } = await tinyService.openConversation(row.id);
+      router.push(`/inbox?conversationId=${conversationId}`);
+    } catch (err: any) {
+      setCallErr(
+        err?.response?.data?.message || 'Não foi possível abrir a conversa.',
+      );
+      setCalling(false);
+    }
+  }
+
   return (
     <>
       <tr
@@ -297,13 +320,34 @@ function OrderRow({ row }: { row: TinyOrderRow }) {
                   <Phone className="h-3 w-3" /> {row.lead.phone}
                 </span>
               )}
-              {row.lead.conversationId && (
+              {row.lead.conversationId ? (
                 <Link
                   href={`/inbox?conversationId=${row.lead.conversationId}`}
+                  onClick={(e) => e.stopPropagation()}
                   className="mt-0.5 inline-flex w-fit items-center gap-1 text-[11px] font-medium text-primary hover:underline"
                 >
                   <MessageSquare className="h-3 w-3" /> Ver conversa
                 </Link>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    onClick={handleChamar}
+                    disabled={calling}
+                    className="mt-0.5 inline-flex w-fit items-center gap-1 text-[11px] font-medium text-emerald-600 hover:underline disabled:opacity-60 dark:text-emerald-400"
+                    title="Procurar uma conversa deste lead ou iniciar uma nova no WhatsApp"
+                  >
+                    {calling ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <PhoneCall className="h-3 w-3" />
+                    )}
+                    {calling ? 'Abrindo…' : 'Chamar'}
+                  </button>
+                  {callErr && (
+                    <span className="text-[10px] text-red-500">{callErr}</span>
+                  )}
+                </>
               )}
             </div>
           ) : (

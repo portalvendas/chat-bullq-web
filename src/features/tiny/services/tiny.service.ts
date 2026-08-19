@@ -183,6 +183,12 @@ export const tinyService = {
         },
     };
   },
+  async openConversation(
+    docId: string,
+  ): Promise<{ conversationId: string; created: boolean }> {
+    const { data } = await api.post(`/tiny/documents/${docId}/conversation`, {});
+    return unwrap<{ conversationId: string; created: boolean }>(data);
+  },
   async capiConfig(): Promise<MetaCapiConfig> {
     const { data } = await api.get('/tiny/capi/config');
     return unwrap<MetaCapiConfig>(data);
