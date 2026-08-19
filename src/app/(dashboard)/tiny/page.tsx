@@ -10,6 +10,7 @@
  * natureza de operação "Venda". Aplicado no backend.
  */
 import { useState } from 'react';
+import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import {
   ShoppingCart,
@@ -21,6 +22,7 @@ import {
   Phone,
   Link2Off,
   Users,
+  MessageSquare,
 } from 'lucide-react';
 import {
   tinyService,
@@ -294,6 +296,14 @@ function OrderRow({ row }: { row: TinyOrderRow }) {
                 <span className="inline-flex items-center gap-1 text-[11px] text-zinc-400">
                   <Phone className="h-3 w-3" /> {row.lead.phone}
                 </span>
+              )}
+              {row.lead.conversationId && (
+                <Link
+                  href={`/inbox?conversationId=${row.lead.conversationId}`}
+                  className="mt-0.5 inline-flex w-fit items-center gap-1 text-[11px] font-medium text-primary hover:underline"
+                >
+                  <MessageSquare className="h-3 w-3" /> Ver conversa
+                </Link>
               )}
             </div>
           ) : (

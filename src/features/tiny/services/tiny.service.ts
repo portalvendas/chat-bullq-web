@@ -60,7 +60,12 @@ export interface TinyOrderRow {
   clienteTelefone: string | null;
   vendedor: string | null;
   matchedBy: string | null;
-  lead: { id: string; name: string | null; phone: string | null } | null;
+  lead: {
+    id: string;
+    name: string | null;
+    phone: string | null;
+    conversationId: string | null;
+  } | null;
 }
 
 export interface TinyOrdersPage {
