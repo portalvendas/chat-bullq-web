@@ -17,8 +17,10 @@
   --color-card-foreground: oklch(0.145 0 0);
   --color-popover: oklch(1 0 0);
   --color-popover-foreground: oklch(0.145 0 0);
-  --color-primary: oklch(0.205 0.08 265);
-  --color-primary-foreground: oklch(0.985 0 0);
+  --color-primary: #5B2CE0;
+  --color-primary-foreground: #ffffff;
+  --color-brand-aqua: #17E8C0;
+  --color-brand-aqua-deep: #0FA588;
   --color-secondary: oklch(0.97 0 0);
   --color-secondary-foreground: oklch(0.205 0 0);
   --color-muted: oklch(0.97 0 0);
@@ -28,7 +30,7 @@
   --color-destructive: oklch(0.577 0.245 27.325);
   --color-border: oklch(0.922 0 0);
   --color-input: oklch(0.922 0 0);
-  --color-ring: oklch(0.708 0.165 254.624);
+  --color-ring: #5B2CE0;
   --color-sidebar: oklch(0.985 0 0);
   --color-sidebar-foreground: oklch(0.145 0 0);
   --color-sidebar-border: oklch(0.922 0 0);
@@ -47,8 +49,8 @@
   --color-card-foreground: oklch(0.985 0 0);
   --color-popover: oklch(0.205 0 0);
   --color-popover-foreground: oklch(0.985 0 0);
-  --color-primary: oklch(0.708 0.165 254.624);
-  --color-primary-foreground: oklch(0.985 0 0);
+  --color-primary: #6B3BF5;
+  --color-primary-foreground: #ffffff;
   --color-secondary: oklch(0.269 0 0);
   --color-secondary-foreground: oklch(0.985 0 0);
   --color-muted: oklch(0.269 0 0);
@@ -58,7 +60,7 @@
   --color-destructive: oklch(0.577 0.245 27.325);
   --color-border: oklch(0.3 0 0);
   --color-input: oklch(0.3 0 0);
-  --color-ring: oklch(0.708 0.165 254.624);
+  --color-ring: #9B7DFF;
   --color-sidebar: oklch(0.205 0 0);
   --color-sidebar-foreground: oklch(0.985 0 0);
   --color-sidebar-border: oklch(0.3 0 0);
@@ -72,6 +74,9 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-poppins), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   }
   button,
   [role="button"],

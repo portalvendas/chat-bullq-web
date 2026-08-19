@@ -64,6 +64,18 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
+        <div className="mb-1 flex items-center px-2 pt-1">
+          <img
+            src="/brand/kortia-lockup-ink.svg"
+            alt="Kortia CRM"
+            className="h-6 w-auto dark:hidden"
+          />
+          <img
+            src="/brand/kortia-lockup-white.svg"
+            alt="Kortia CRM"
+            className="hidden h-6 w-auto dark:block"
+          />
+        </div>
         <div className="flex items-center gap-1">
           <div className="min-w-0 flex-1">
         <Dropdown>

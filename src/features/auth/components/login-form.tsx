@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
-import { Loader2, MessageSquare } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { loginSchema, type LoginFormData } from '../schemas/login.schema';
 import { authService } from '../services/auth.service';
 import { useAuthStore } from '@/stores/auth-store';
@@ -46,11 +46,19 @@ export function LoginForm() {
 
   return (
     <div className="mx-auto w-full max-w-sm space-y-8">
-      <div className="space-y-2 text-center">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-primary">
-          <MessageSquare className="h-6 w-6 text-primary-foreground" />
+      <div className="space-y-3 text-center">
+        <div className="flex justify-center">
+          <img
+            src="/brand/kortia-lockup-ink.svg"
+            alt="Kortia CRM"
+            className="h-11 w-auto dark:hidden"
+          />
+          <img
+            src="/brand/kortia-lockup-white.svg"
+            alt="Kortia CRM"
+            className="hidden h-11 w-auto dark:block"
+          />
         </div>
-        <h1 className="text-2xl font-bold tracking-tight">Kortia CRM</h1>
         <p className="text-sm text-muted-foreground">
           Entre na sua conta para acessar o painel
         </p>

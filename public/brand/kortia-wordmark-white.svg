@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 190" width="600" height="190" role="img" aria-label="Kortia CRM">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&amp;display=swap');
+    .w{font-family:'Poppins','Montserrat',sans-serif;}
+  </style>
+  <text class="w" x="16" y="126" font-size="130" font-weight="700" letter-spacing="-4" fill="#FFFFFF">kortia</text>
+  <circle cx="322" cy="44" r="15" fill="#17E8C0"/>
+  <text class="w" x="452" y="86" font-size="40" font-weight="600" letter-spacing="6" fill="#9B7DFF">CRM</text>
+</svg>

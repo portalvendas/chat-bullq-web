@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-label="Kortia">
+  <g fill="none" stroke="#FFFFFF" stroke-width="46" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="150" y1="96" x2="150" y2="304"/>
+    <line x1="150" y1="200" x2="298" y2="96"/>
+    <line x1="150" y1="200" x2="298" y2="304"/>
+  </g>
+  <circle cx="298" cy="96" r="33" fill="#17E8C0"/>
+  <circle cx="150" cy="200" r="19" fill="#FFFFFF"/>
+</svg>
