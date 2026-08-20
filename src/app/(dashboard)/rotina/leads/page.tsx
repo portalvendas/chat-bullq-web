@@ -48,7 +48,7 @@ function LeadsView() {
   const parado = state === 'parado';
 
   return (
-    <div className="mx-auto max-w-3xl space-y-4 p-4 sm:p-6">
+    <div className="h-full overflow-y-auto mx-auto max-w-3xl space-y-4 p-4 sm:p-6">
       <div className="flex items-center gap-3">
         <Link
           href="/rotina"

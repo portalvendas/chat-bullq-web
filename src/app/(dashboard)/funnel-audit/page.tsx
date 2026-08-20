@@ -141,7 +141,7 @@ export default function FunnelAuditPage() {
     );
 
   return (
-    <div className="mx-auto max-w-4xl space-y-5 p-4 sm:p-6">
+    <div className="h-full overflow-y-auto mx-auto max-w-4xl space-y-5 p-4 sm:p-6">
       {/* Header */}
       <div className="flex flex-wrap items-center gap-3">
         <ScanSearch className="h-6 w-6 text-primary" />
