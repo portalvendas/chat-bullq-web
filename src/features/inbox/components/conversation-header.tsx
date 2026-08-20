@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
   XCircle,
@@ -23,6 +23,10 @@ import { SalesbotPopover } from './salesbot-popover';
 import { ChannelSwitchPopover } from './channel-switch-popover';
 import { LeadInfoPopover } from './lead-info-popover';
 import { inboxService, type Conversation } from '../services/inbox.service';
+import {
+  pipelinesService,
+  type ConversationCard,
+} from '@/features/pipelines/services/pipelines.service';
 
 interface ConversationHeaderProps {
   conversation: Conversation;
@@ -167,6 +171,7 @@ export function ConversationHeader({
             type={conversation.channel.type}
             name={conversation.channel.name}
           />
+          <HeaderStageBadge conversationId={conversation.id} />
         </div>
       </div>
 
@@ -275,5 +280,35 @@ export function ConversationHeader({
         )}
       </div>
     </div>
+  );
+}
+
+
+/**
+ * Badge da ETAPA do funil do lead no header da conversa. Reaproveita a mesma
+ * query do PipelinePopover (['conversation-pipelines', id]) — cache
+ * compartilhado, sem fetch extra. Mostra o 1º funil; "+N" se houver mais.
+ */
+function HeaderStageBadge({ conversationId }: { conversationId: string }) {
+  const { data: cards } = useQuery<ConversationCard[]>({
+    queryKey: ['conversation-pipelines', conversationId],
+    queryFn: () => pipelinesService.listByConversation(conversationId),
+    staleTime: 30_000,
+  });
+  if (!cards || cards.length === 0) return null;
+  const primary = cards[0];
+  const extra = cards.length - 1;
+  return (
+    <span
+      className="mt-0.5 inline-flex w-fit items-center gap-1 rounded-full bg-zinc-100 px-2 py-0.5 text-[11px] font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300"
+      title={`${primary.pipeline.name} · ${primary.stage.name}`}
+    >
+      <span
+        className="h-1.5 w-1.5 shrink-0 rounded-full"
+        style={{ backgroundColor: primary.stage.color || '#a1a1aa' }}
+      />
+      {primary.stage.name}
+      {extra > 0 && <span className="text-zinc-400">+{extra}</span>}
+    </span>
   );
 }
