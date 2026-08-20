@@ -86,6 +86,34 @@ export interface RoutineLeadsResponse {
   leads: RoutineLead[];
 }
 
+export type RoutineLogStatus = 'today' | 'yesterday' | 'stale' | 'never';
+export interface RoutineLogUser {
+  id: string;
+  name: string;
+  isActive: boolean;
+}
+export interface RoutineLogPerUser {
+  userId: string;
+  name: string;
+  isActive: boolean;
+  lastDay: string | null;
+  status: RoutineLogStatus;
+  totalChecks: number;
+  daysActive: number;
+}
+export interface RoutineLogHistoryDay {
+  day: string;
+  perUser: Array<{ userId: string; count: number }>;
+}
+export interface RoutineLog {
+  range: { from: string; to: string };
+  enabled: boolean;
+  stepsTotal: number;
+  users: RoutineLogUser[];
+  perUser: RoutineLogPerUser[];
+  history: RoutineLogHistoryDay[];
+}
+
 function unwrap<T>(data: any): T {
   return (data?.data ?? data) as T;
 }
@@ -134,5 +162,20 @@ export const routineService = {
       params: { ...(stepKey ? { stepKey } : {}), state },
     });
     return unwrap<RoutineLeadsResponse>(data);
+  },
+  /** Log gerencial da rotina (aderência por vendedor + grade dia x vendedor). */
+  async log(
+    from?: string,
+    to?: string,
+    userId?: string,
+  ): Promise<RoutineLog> {
+    const { data } = await api.get('/commercial-routine/log', {
+      params: {
+        ...(from ? { from } : {}),
+        ...(to ? { to } : {}),
+        ...(userId ? { userId } : {}),
+      },
+    });
+    return unwrap<RoutineLog>(data);
   },
 };

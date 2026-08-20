@@ -16,15 +16,20 @@ import {
   ClipboardCheck,
   AlertTriangle,
   ChevronRight,
+  BarChart3,
 } from 'lucide-react';
 import {
   routineService,
   type RoutineToday,
   type RoutineStepToday,
 } from '@/features/commercial-routine/services/routine.service';
+import { useAuthStore } from '@/stores/auth-store';
 
 export default function RotinaPage() {
   const qc = useQueryClient();
+  const { organizations, activeOrgId } = useAuthStore();
+  const role = organizations.find((o) => o.id === activeOrgId)?.role;
+  const isAdmin = role === 'OWNER' || role === 'ADMIN';
   const { data, isLoading } = useQuery({
     queryKey: ['routine', 'today'],
     queryFn: () => routineService.today(),
@@ -75,7 +80,7 @@ export default function RotinaPage() {
 
   return (
     <div className="h-full overflow-y-auto mx-auto max-w-3xl space-y-5 p-4 sm:p-6">
-      <Header data={data} progress={progress} />
+      <Header data={data} progress={progress} isAdmin={isAdmin} />
       <div className="space-y-3">
         {data.steps.map((step) => (
           <StepCard
@@ -90,7 +95,15 @@ export default function RotinaPage() {
   );
 }
 
-function Header({ data, progress }: { data: RoutineToday; progress: number }) {
+function Header({
+  data,
+  progress,
+  isAdmin,
+}: {
+  data: RoutineToday;
+  progress: number;
+  isAdmin: boolean;
+}) {
   const { allDone, totalPending, totalParados } = data.summary;
   return (
     <div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
@@ -99,9 +112,19 @@ function Header({ data, progress }: { data: RoutineToday; progress: number }) {
         <h1 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
           Rotina Comercial
         </h1>
-        <span className="ml-auto text-sm font-medium text-zinc-500">
-          {data.summary.stepsDone}/{data.summary.stepsTotal}
-        </span>
+        <div className="ml-auto flex items-center gap-2">
+          {isAdmin && (
+            <Link
+              href="/rotina/log"
+              className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-300"
+            >
+              <BarChart3 className="h-3.5 w-3.5" /> Log
+            </Link>
+          )}
+          <span className="text-sm font-medium text-zinc-500">
+            {data.summary.stepsDone}/{data.summary.stepsTotal}
+          </span>
+        </div>
       </div>
       <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
         <div
