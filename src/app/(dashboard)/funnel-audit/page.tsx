@@ -3,7 +3,8 @@
 /**
  * Auditoria de Funil — varre os cards OPEN ativos nos últimos 60 dias e sugere
  * mudança de etapa (híbrido: regras filtram, IA analisa). Revisão manual:
- * aplicar move o card de verdade; ignorar descarta.
+ * aplicar move o card; ignorar descarta; "Salesbot" inicia um fluxo no card.
+ * Dá pra escolher quais funis analisar antes de rodar.
  */
 import { useState } from 'react';
 import Link from 'next/link';
@@ -20,11 +21,18 @@ import {
   Sparkles,
   AlertTriangle,
   CheckCircle2,
+  Bot,
+  ChevronDown,
 } from 'lucide-react';
 import {
   funnelAuditService,
   type AuditSuggestion,
 } from '@/features/funnel-audit/services/funnel-audit.service';
+import { pipelinesService } from '@/features/pipelines/services/pipelines.service';
+import {
+  chatbotService,
+  type ChatbotFlow,
+} from '@/features/chatbot/services/chatbot.service';
 
 function brl(v: number | null): string {
   if (v == null) return '';
@@ -60,6 +68,20 @@ function confBadge(c: string): { label: string; cls: string } {
 export default function FunnelAuditPage() {
   const qc = useQueryClient();
   const [status, setStatus] = useState<string>('PENDING');
+  const [selectedPipes, setSelectedPipes] = useState<string[]>([]);
+
+  const { data: pipelines } = useQuery({
+    queryKey: ['pipelines', 'list'],
+    queryFn: () => pipelinesService.list(false),
+    staleTime: 60_000,
+  });
+
+  const { data: bots } = useQuery({
+    queryKey: ['chatbot', 'flows'],
+    queryFn: () => chatbotService.list(),
+    staleTime: 60_000,
+  });
+  const activeBots = (bots ?? []).filter((b) => b.isActive);
 
   const { data: run } = useQuery({
     queryKey: ['funnel-audit', 'latest'],
@@ -67,19 +89,17 @@ export default function FunnelAuditPage() {
     refetchInterval: (q) =>
       (q.state.data as any)?.status === 'RUNNING' ? 4000 : false,
   });
-
   const running = run?.status === 'RUNNING';
 
   const { data: page, isLoading } = useQuery({
     queryKey: ['funnel-audit', 'suggestions', run?.id, status],
-    queryFn: () =>
-      funnelAuditService.suggestions({ runId: run?.id, status }),
+    queryFn: () => funnelAuditService.suggestions({ runId: run?.id, status }),
     enabled: !!run && run.status === 'DONE',
     staleTime: 15_000,
   });
 
   const runAudit = useMutation({
-    mutationFn: () => funnelAuditService.run(),
+    mutationFn: () => funnelAuditService.run(selectedPipes),
     onSuccess: (r) => {
       qc.invalidateQueries({ queryKey: ['funnel-audit', 'latest'] });
       toast.success(
@@ -107,6 +127,18 @@ export default function FunnelAuditPage() {
     },
     onError: () => toast.error('Não foi possível ignorar'),
   });
+  const startBot = useMutation({
+    mutationFn: (v: { flowId: string; conversationId: string }) =>
+      chatbotService.start(v.flowId, v.conversationId),
+    onSuccess: (r) => toast.success(`Salesbot "${r.flowName}" iniciado no lead`),
+    onError: (e: any) =>
+      toast.error(e?.response?.data?.message || 'Não foi possível iniciar o salesbot'),
+  });
+
+  const togglePipe = (id: string) =>
+    setSelectedPipes((arr) =>
+      arr.includes(id) ? arr.filter((x) => x !== id) : [...arr, id],
+    );
 
   return (
     <div className="mx-auto max-w-4xl space-y-5 p-4 sm:p-6">
@@ -136,13 +168,63 @@ export default function FunnelAuditPage() {
         </button>
       </div>
 
+      {/* Seletor de funis */}
+      {pipelines && pipelines.length > 0 && (
+        <div className="rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900">
+          <div className="mb-2 flex items-center justify-between">
+            <span className="text-xs font-medium text-zinc-600 dark:text-zinc-300">
+              Funis a analisar
+            </span>
+            <span className="text-[11px] text-zinc-400">
+              {selectedPipes.length === 0
+                ? 'todos'
+                : `${selectedPipes.length} selecionado(s)`}
+            </span>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {pipelines.map((p) => {
+              const on =
+                selectedPipes.length === 0 || selectedPipes.includes(p.id);
+              return (
+                <button
+                  key={p.id}
+                  onClick={() => togglePipe(p.id)}
+                  className={`rounded-full px-2.5 py-1 text-xs font-medium ${
+                    selectedPipes.includes(p.id)
+                      ? 'bg-primary text-white'
+                      : on
+                        ? 'bg-primary/10 text-primary'
+                        : 'bg-zinc-100 text-zinc-500 dark:bg-zinc-800'
+                  }`}
+                  title={
+                    selectedPipes.length === 0
+                      ? 'Todos os funis (clique para restringir)'
+                      : undefined
+                  }
+                >
+                  {p.name}
+                </button>
+              );
+            })}
+          </div>
+          {selectedPipes.length > 0 && (
+            <button
+              onClick={() => setSelectedPipes([])}
+              className="mt-2 text-[11px] text-zinc-400 hover:underline"
+            >
+              limpar seleção (analisar todos)
+            </button>
+          )}
+        </div>
+      )}
+
       {/* Status do run */}
       {run && (
         <div className="rounded-xl border border-zinc-200 bg-white p-4 text-sm dark:border-zinc-800 dark:bg-zinc-900">
           {run.status === 'RUNNING' && (
             <span className="inline-flex items-center gap-2 text-zinc-600 dark:text-zinc-300">
               <Loader2 className="h-4 w-4 animate-spin text-primary" />
-              Analisando os cards… isso roda em segundo plano, pode levar alguns
+              Analisando os cards… roda em segundo plano, pode levar alguns
               minutos.
             </span>
           )}
@@ -171,7 +253,8 @@ export default function FunnelAuditPage() {
 
       {!run && (
         <div className="rounded-xl border border-dashed border-zinc-300 bg-white p-8 text-center text-sm text-zinc-500 dark:border-zinc-700 dark:bg-zinc-900">
-          Nenhuma auditoria ainda. Clique em <b>Auditar funil</b> para começar.
+          Nenhuma auditoria ainda. Escolha os funis (ou deixe todos) e clique em{' '}
+          <b>Auditar funil</b>.
         </div>
       )}
 
@@ -210,9 +293,18 @@ export default function FunnelAuditPage() {
               <SuggestionRow
                 key={s.id}
                 s={s}
+                bots={activeBots}
                 busy={apply.isPending || dismiss.isPending}
+                botBusy={startBot.isPending}
                 onApply={() => apply.mutate(s.id)}
                 onDismiss={() => dismiss.mutate(s.id)}
+                onStartBot={(flowId) =>
+                  s.lead.conversationId &&
+                  startBot.mutate({
+                    flowId,
+                    conversationId: s.lead.conversationId,
+                  })
+                }
               />
             ))}
           </ul>
@@ -223,18 +315,26 @@ export default function FunnelAuditPage() {
 
 function SuggestionRow({
   s,
+  bots,
   busy,
+  botBusy,
   onApply,
   onDismiss,
+  onStartBot,
 }: {
   s: AuditSuggestion;
+  bots: ChatbotFlow[];
   busy: boolean;
+  botBusy: boolean;
   onApply: () => void;
   onDismiss: () => void;
+  onStartBot: (flowId: string) => void;
 }) {
   const act = actionBadge(s.action);
   const conf = confBadge(s.confidence);
   const pending = s.status === 'PENDING';
+  const [botOpen, setBotOpen] = useState(false);
+  const canBot = !!s.lead.conversationId && bots.length > 0;
 
   return (
     <li className="rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900">
@@ -283,14 +383,53 @@ function SuggestionRow({
             {s.reason}
           </p>
 
-          {s.lead.conversationId && (
-            <Link
-              href={`/inbox?conversationId=${s.lead.conversationId}`}
-              className="mt-1 inline-flex items-center gap-1 text-[11px] font-medium text-primary hover:underline"
-            >
-              <MessageSquare className="h-3 w-3" /> Ver conversa
-            </Link>
-          )}
+          <div className="mt-1 flex items-center gap-3">
+            {s.lead.conversationId && (
+              <Link
+                href={`/inbox?conversationId=${s.lead.conversationId}`}
+                className="inline-flex items-center gap-1 text-[11px] font-medium text-primary hover:underline"
+              >
+                <MessageSquare className="h-3 w-3" /> Ver conversa
+              </Link>
+            )}
+
+            {/* Salesbot */}
+            <div className="relative">
+              <button
+                type="button"
+                disabled={!canBot || botBusy}
+                onClick={() => setBotOpen((o) => !o)}
+                title={
+                  !s.lead.conversationId
+                    ? 'Lead sem conversa'
+                    : bots.length === 0
+                      ? 'Nenhum salesbot ativo'
+                      : 'Iniciar um salesbot neste lead'
+                }
+                className="inline-flex items-center gap-1 text-[11px] font-medium text-violet-600 hover:underline disabled:opacity-40 disabled:no-underline"
+              >
+                <Bot className="h-3 w-3" /> Salesbot
+                <ChevronDown className="h-3 w-3" />
+              </button>
+              {botOpen && canBot && (
+                <div className="absolute left-0 z-10 mt-1 w-56 rounded-lg border border-zinc-200 bg-white p-1 shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
+                  {bots.map((b) => (
+                    <button
+                      key={b.id}
+                      onClick={() => {
+                        setBotOpen(false);
+                        onStartBot(b.id);
+                      }}
+                      className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-xs text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800"
+                    >
+                      <Bot className="h-3.5 w-3.5 text-violet-500" />
+                      <span className="truncate">{b.name}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
         {pending && (

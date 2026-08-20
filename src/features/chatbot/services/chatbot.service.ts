@@ -56,6 +56,15 @@ export const chatbotService = {
     return data.data;
   },
 
+  async start(
+    id: string,
+    conversationId: string,
+  ): Promise<{ ok: boolean; flowName: string }> {
+    const { data } = await api.post(`/chatbot-flows/${id}/start`, {
+      conversationId,
+    });
+    return (data?.data ?? data) as { ok: boolean; flowName: string };
+  },
   async linkChannels(id: string, channelIds: string[]): Promise<ChatbotFlow> {
     const { data } = await api.post(`/chatbot-flows/${id}/channels`, { channelIds });
     return data.data;

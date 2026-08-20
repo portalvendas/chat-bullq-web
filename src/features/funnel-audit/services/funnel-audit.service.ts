@@ -47,8 +47,12 @@ export interface AuditSuggestionsPage {
 }
 
 export const funnelAuditService = {
-  async run(): Promise<{ runId: string; alreadyRunning: boolean }> {
-    const { data } = await api.post('/funnel-audit/run', {});
+  async run(
+    pipelineIds?: string[],
+  ): Promise<{ runId: string; alreadyRunning: boolean }> {
+    const { data } = await api.post('/funnel-audit/run', {
+      pipelineIds: pipelineIds?.length ? pipelineIds : undefined,
+    });
     return unwrap(data);
   },
   async latest(): Promise<AuditRun | null> {
