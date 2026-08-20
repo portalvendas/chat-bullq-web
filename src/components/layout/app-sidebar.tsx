@@ -12,6 +12,7 @@ import {
   MessageCircle,
   ShoppingCart,
   ClipboardCheck,
+  ScanSearch,
   ShieldCheck,
 } from 'lucide-react';
 import { usePermissions } from '@/hooks/use-permissions';
@@ -44,6 +45,7 @@ import {
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, mod: 'dashboard' },
   { href: '/rotina', label: 'Rotina', icon: ClipboardCheck, mod: 'inbox' },
+  { href: '/funnel-audit', label: 'Auditoria de Funil', icon: ScanSearch, mod: 'pipelines' },
   { href: '/tiny', label: 'Pedidos ERP', icon: ShoppingCart, mod: 'dashboard' },
   { href: '/automations', label: 'Automações', icon: Zap, mod: 'automations' },
   { href: '/comentarios', label: 'Comentários', icon: MessageCircle, mod: 'inbox' },
