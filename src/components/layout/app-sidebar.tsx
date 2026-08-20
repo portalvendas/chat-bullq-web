@@ -68,12 +68,12 @@ export function AppSidebar() {
           <img
             src="/brand/kortia-lockup-ink.svg"
             alt="Kortia CRM"
-            className="h-9 w-auto dark:hidden"
+            className="h-[63px] w-auto dark:hidden"
           />
           <img
             src="/brand/kortia-lockup-white.svg"
             alt="Kortia CRM"
-            className="hidden h-9 w-auto dark:block"
+            className="hidden h-[63px] w-auto dark:block"
           />
         </div>
         <div className="flex items-center gap-1">
