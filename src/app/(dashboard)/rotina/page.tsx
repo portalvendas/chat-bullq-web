@@ -117,14 +117,20 @@ function Header({ data, progress }: { data: RoutineToday; progress: number }) {
             <CheckCircle2 className="h-3.5 w-3.5" /> Tudo em dia hoje
           </span>
         ) : (
-          <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-1 font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+          <Link
+            href="/rotina/leads?state=pending"
+            className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-1 font-medium text-amber-700 transition hover:opacity-80 dark:bg-amber-900/30 dark:text-amber-400"
+          >
             {totalPending} lead(s) aguardando ação
-          </span>
+          </Link>
         )}
         {totalParados > 0 && (
-          <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-1 font-medium text-red-700 dark:bg-red-900/30 dark:text-red-400">
+          <Link
+            href="/rotina/leads?state=parado"
+            className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-1 font-medium text-red-700 transition hover:opacity-80 dark:bg-red-900/30 dark:text-red-400"
+          >
             <AlertTriangle className="h-3.5 w-3.5" /> {totalParados} parado(s)
-          </span>
+          </Link>
         )}
       </div>
     </div>
@@ -199,9 +205,19 @@ function StepCard({
                   value={step.pending}
                   label={step.requireCheck ? 'p/ conferir' : 'pendentes'}
                   tone={step.pending > 0 ? 'amber' : 'zinc'}
+                  href={
+                    step.pending > 0
+                      ? `/rotina/leads?step=${step.key}&state=pending`
+                      : undefined
+                  }
                 />
                 {step.parados > 0 && (
-                  <Metric value={step.parados} label="parados" tone="red" />
+                  <Metric
+                    value={step.parados}
+                    label="parados"
+                    tone="red"
+                    href={`/rotina/leads?step=${step.key}&state=parado`}
+                  />
                 )}
                 <span className="text-[11px] text-zinc-400">
                   {step.total} no total
@@ -233,10 +249,12 @@ function Metric({
   value,
   label,
   tone,
+  href,
 }: {
   value: number;
   label: string;
   tone: 'amber' | 'red' | 'zinc';
+  href?: string;
 }) {
   const cls =
     tone === 'amber'
@@ -244,11 +262,20 @@ function Metric({
       : tone === 'red'
         ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
         : 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300';
-  return (
+  const inner = (
     <span
-      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold tabular-nums ${cls}`}
+      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold tabular-nums ${cls} ${
+        href ? 'cursor-pointer transition hover:opacity-80' : ''
+      }`}
     >
       {value} {label}
     </span>
+  );
+  return href ? (
+    <Link href={href} title="Ver estes leads">
+      {inner}
+    </Link>
+  ) : (
+    inner
   );
 }

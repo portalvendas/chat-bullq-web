@@ -62,6 +62,30 @@ export interface RoutineOptions {
   }>;
 }
 
+export interface RoutineLead {
+  id: string;
+  title: string;
+  value: number | null;
+  currency: string;
+  stageId: string;
+  stageName: string | null;
+  pipelineId: string | null;
+  contactId: string | null;
+  contactName: string | null;
+  contactPhone: string | null;
+  conversationId: string | null;
+  lastActivityAt: string;
+  assignedToName: string | null;
+  stepKey: string;
+}
+export interface RoutineLeadsResponse {
+  stepKey: string | null;
+  state: 'pending' | 'parado';
+  label: string;
+  count: number;
+  leads: RoutineLead[];
+}
+
 function unwrap<T>(data: any): T {
   return (data?.data ?? data) as T;
 }
@@ -100,5 +124,15 @@ export const routineService = {
   }): Promise<RoutineConfig> {
     const { data } = await api.put('/commercial-routine/config', dto);
     return unwrap<RoutineConfig>(data);
+  },
+  /** Leads exatos de um passo/estado. stepKey null = todos os passos. */
+  async stepLeads(
+    stepKey: string | null,
+    state: 'pending' | 'parado',
+  ): Promise<RoutineLeadsResponse> {
+    const { data } = await api.get('/commercial-routine/leads', {
+      params: { ...(stepKey ? { stepKey } : {}), state },
+    });
+    return unwrap<RoutineLeadsResponse>(data);
   },
 };

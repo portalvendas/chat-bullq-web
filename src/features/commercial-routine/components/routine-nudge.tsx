@@ -76,6 +76,15 @@ export function RoutineNudge() {
     router.push('/rotina');
   };
 
+  const goToLeads = (stepKey: string | null, state: 'pending' | 'parado') => {
+    setOpen(false);
+    const q = new URLSearchParams({
+      state,
+      ...(stepKey ? { step: stepKey } : {}),
+    });
+    router.push(`/rotina/leads?${q.toString()}`);
+  };
+
   return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4"
@@ -101,13 +110,21 @@ export function RoutineNudge() {
         {/* Corpo */}
         <div className="px-6 py-5">
           <div className="mb-4 flex flex-wrap gap-2">
-            <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1.5 text-sm font-semibold text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
+            <button
+              type="button"
+              onClick={() => goToLeads(null, 'pending')}
+              className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1.5 text-sm font-semibold text-amber-700 transition hover:opacity-80 dark:bg-amber-900/30 dark:text-amber-300"
+            >
               {totalPending} lead(s) aguardando ação
-            </span>
+            </button>
             {totalParados > 0 && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-3 py-1.5 text-sm font-semibold text-red-700 dark:bg-red-900/30 dark:text-red-300">
+              <button
+                type="button"
+                onClick={() => goToLeads(null, 'parado')}
+                className="inline-flex items-center gap-1 rounded-full bg-red-50 px-3 py-1.5 text-sm font-semibold text-red-700 transition hover:opacity-80 dark:bg-red-900/30 dark:text-red-300"
+              >
                 <AlertTriangle className="h-4 w-4" /> {totalParados} parado(s)
-              </span>
+              </button>
             )}
           </div>
 
@@ -127,14 +144,24 @@ export function RoutineNudge() {
                 </div>
                 <div className="flex shrink-0 items-center gap-1.5">
                   {s.pending > 0 && (
-                    <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold tabular-nums text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+                    <button
+                      type="button"
+                      onClick={() => goToLeads(s.key, 'pending')}
+                      title="Ver estes leads"
+                      className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold tabular-nums text-amber-800 transition hover:opacity-80 dark:bg-amber-900/30 dark:text-amber-300"
+                    >
                       {s.pending}
-                    </span>
+                    </button>
                   )}
                   {s.parados > 0 && (
-                    <span className="rounded-full bg-red-100 px-2 py-0.5 text-[11px] font-semibold tabular-nums text-red-800 dark:bg-red-900/30 dark:text-red-300">
+                    <button
+                      type="button"
+                      onClick={() => goToLeads(s.key, 'parado')}
+                      title="Ver estes leads"
+                      className="rounded-full bg-red-100 px-2 py-0.5 text-[11px] font-semibold tabular-nums text-red-800 transition hover:opacity-80 dark:bg-red-900/30 dark:text-red-300"
+                    >
                       {s.parados} parados
-                    </span>
+                    </button>
                   )}
                 </div>
               </li>
