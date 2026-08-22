@@ -51,12 +51,12 @@ export function LoginForm() {
           <img
             src="/brand/kortia-lockup-ink.svg"
             alt="Kortia CRM"
-            className="h-11 w-auto dark:hidden"
+            className="h-16 w-auto dark:hidden"
           />
           <img
             src="/brand/kortia-lockup-white.svg"
             alt="Kortia CRM"
-            className="hidden h-11 w-auto dark:block"
+            className="hidden h-16 w-auto dark:block"
           />
         </div>
         <p className="text-sm text-muted-foreground">
