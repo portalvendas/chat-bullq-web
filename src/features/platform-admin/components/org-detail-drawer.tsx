@@ -9,6 +9,7 @@ import {
   type ImpersonateResult,
 } from '../services/platform-admin.service';
 import { enterImpersonation } from '../hooks/use-impersonation';
+import { SuperAdminAiKey } from './super-admin-ai-key';
 import { Spinner, ErrorBox, fmtDate } from './super-admin-console';
 
 const PLAN_OPTIONS = ['free', 'starter', 'pro', 'business', 'enterprise'];
@@ -345,6 +346,11 @@ export function OrgDetailDrawer({
                 )}
                 Exportar dados (JSON)
               </button>
+            </section>
+
+            {/* Chave do Claude (IA) — BYOK por empresa */}
+            <section className="flex flex-col gap-2">
+              <SuperAdminAiKey id={id} />
             </section>
 
             {/* Zona de perigo — exclusão definitiva */}

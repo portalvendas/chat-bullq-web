@@ -181,6 +181,30 @@ export const platformAdminService = {
     });
   },
 
+  async getAiKey(
+    id: string,
+  ): Promise<{ configured: boolean; hint: string | null; encryptedAtRest: boolean }> {
+    const { data } = await api.get(`/platform-admin/organizations/${id}/ai-key`);
+    return unwrap(data);
+  },
+
+  async setAiKey(
+    id: string,
+    apiKey: string,
+  ): Promise<{ configured: boolean; hint: string | null; encryptedAtRest: boolean }> {
+    const { data } = await api.put(`/platform-admin/organizations/${id}/ai-key`, {
+      apiKey,
+    });
+    return unwrap(data);
+  },
+
+  async removeAiKey(
+    id: string,
+  ): Promise<{ configured: boolean; hint: string | null; encryptedAtRest: boolean }> {
+    const { data } = await api.delete(`/platform-admin/organizations/${id}/ai-key`);
+    return unwrap(data);
+  },
+
   async impersonate(
     organizationId: string,
     userId?: string,

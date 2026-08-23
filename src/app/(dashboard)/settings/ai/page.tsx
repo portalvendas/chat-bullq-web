@@ -14,6 +14,7 @@ import {
   type Weekday,
 } from '@/features/ai-agents/services/ai-settings.service';
 import { channelsService, type Channel } from '@/features/channels/services/channels.service';
+import { AiKeyCard } from '@/features/ai-agents/components/ai-key-card';
 
 const TIMEZONES = [
   'America/Sao_Paulo',
@@ -225,6 +226,10 @@ export default function SettingsAiPage() {
       </div>
 
       {/* Kill switch */}
+      <div className="mt-6">
+        <AiKeyCard />
+      </div>
+
       <section className="mt-6 rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
         <label className="flex cursor-pointer items-start justify-between gap-4">
           <div>

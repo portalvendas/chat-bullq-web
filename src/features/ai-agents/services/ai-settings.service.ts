@@ -98,3 +98,32 @@ export const DEFAULT_BUSINESS_HOURS: BusinessHoursConfig = {
   saturday: { enabled: false, windows: [] },
   sunday: { enabled: false, windows: [] },
 };
+
+// ─── Chave da API do Claude (BYOK, por empresa) ────────────────────
+export interface AiKeyStatus {
+  /** true = empresa tem chave própria configurada. */
+  configured: boolean;
+  /** Mascarado (ex.: "sk-ant-…a1b2"); null quando não configurada. */
+  hint: string | null;
+  /** true quando a chave é cifrada em repouso (ENCRYPTION_KEY setada). */
+  encryptedAtRest: boolean;
+}
+
+function unwrapKey<T>(data: unknown): T {
+  return ((data as { data?: T })?.data ?? data) as T;
+}
+
+export const aiKeyService = {
+  async getStatus(): Promise<AiKeyStatus> {
+    const { data } = await api.get('/organizations/current/ai-key');
+    return unwrapKey<AiKeyStatus>(data);
+  },
+  async setKey(apiKey: string): Promise<AiKeyStatus> {
+    const { data } = await api.put('/organizations/current/ai-key', { apiKey });
+    return unwrapKey<AiKeyStatus>(data);
+  },
+  async removeKey(): Promise<AiKeyStatus> {
+    const { data } = await api.delete('/organizations/current/ai-key');
+    return unwrapKey<AiKeyStatus>(data);
+  },
+};
