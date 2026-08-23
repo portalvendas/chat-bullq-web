@@ -74,6 +74,15 @@ export interface ChannelSyncJob {
   updatedAt: string;
 }
 
+export interface ChannelQrResult {
+  /** false quando o canal não usa QR (ex.: WhatsApp oficial). */
+  supported: boolean;
+  connected: boolean;
+  status: string;
+  /** data-URI da imagem do QR, ou null quando conectado/indisponível. */
+  qrcode: string | null;
+}
+
 export const channelsService = {
   async list(): Promise<Channel[]> {
     const { data } = await api.get<{ data: Channel[] }>('/channels');
@@ -99,6 +108,11 @@ export const channelsService = {
     await api.delete(`/channels/${id}`, {
       params: { confirmName },
     });
+  },
+
+  async getQr(id: string): Promise<ChannelQrResult> {
+    const { data } = await api.get<{ data: ChannelQrResult }>(`/channels/${id}/qr`);
+    return data.data;
   },
 
   async testConnection(id: string): Promise<TestConnectionResult> {

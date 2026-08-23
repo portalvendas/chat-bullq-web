@@ -15,13 +15,14 @@ import {
   CheckCircle2,
   XCircle,
   Lock,
-  Globe, ShoppingBag} from 'lucide-react';
+  Globe, ShoppingBag, QrCode} from 'lucide-react';
 import { toast } from 'sonner';
 import type { Channel } from '../services/channels.service';
 import { channelsService } from '../services/channels.service';
 import { useChannelSync } from '../hooks/use-channel-sync';
 import { ZappfyIcon, MetaIcon, InstagramIcon } from '@/components/ui/icons';
 import { EditChannelDialog } from './edit-channel-dialog';
+import { ChannelQrDialog } from './channel-qr-dialog';
 
 const channelTypeMap: Record<string, { label: string; icon: React.ElementType; color: string }> = {
   WHATSAPP_ZAPPFY: { label: 'WhatsApp (Zappfy)', icon: ZappfyIcon, color: 'bg-zinc-50 dark:bg-zinc-800' },
@@ -40,6 +41,7 @@ export function ChannelCard({ channel, onUpdate }: ChannelCardProps) {
   const [isTesting, setIsTesting] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [pairing, setPairing] = useState(false);
   const meta = channelTypeMap[channel.type] || { label: channel.type, icon: MessageSquare, color: 'bg-gray-500' };
   const Icon = meta.icon;
   const sync = useChannelSync({ channelId: channel.id, channelType: channel.type });
@@ -232,6 +234,16 @@ export function ChannelCard({ channel, onUpdate }: ChannelCardProps) {
             )}
             Testar Conexão
           </button>
+          {(channel.type === 'WHATSAPP_ZAPPFY' ||
+            channel.type === 'WHATSAPP_ZAPI') && (
+            <button
+              onClick={() => setPairing(true)}
+              className="inline-flex items-center gap-1.5 rounded-md bg-emerald-50 px-2.5 py-1.5 text-xs font-medium text-emerald-700 transition-colors hover:bg-emerald-100 dark:bg-emerald-950 dark:text-emerald-400 dark:hover:bg-emerald-900"
+            >
+              <QrCode className="h-3 w-3" />
+              Parear (QR)
+            </button>
+          )}
           {sync.supported && (
             <button
               onClick={handleSync}
@@ -304,6 +316,14 @@ export function ChannelCard({ channel, onUpdate }: ChannelCardProps) {
           </>
         )}
       </div>
+      {pairing && (
+        <ChannelQrDialog
+          channelId={channel.id}
+          channelName={channel.name}
+          onClose={() => setPairing(false)}
+          onConnected={onUpdate}
+        />
+      )}
       <EditChannelDialog
         channel={editing ? channel : null}
         onClose={() => setEditing(false)}
