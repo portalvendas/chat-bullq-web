@@ -98,6 +98,62 @@ export interface AgentPerformance {
   avgResolutionMinutes: number | null;
 }
 
+export interface CommercialData {
+  overview: {
+    leads: number;
+    qualificados: number;
+    qualificadosPct: number;
+    orcamentos: number;
+    orcamentosValor: number;
+    pedidos: number;
+    pedidosValor: number;
+    ganhos: number;
+    perdidos: number;
+    valorGanho: number;
+    ticketMedio: number;
+    gasto: number | null;
+    cac: number | null;
+    roas: number | null;
+  };
+  funnel: {
+    leads: number;
+    orcamentos: number;
+    pedidos: number;
+    leadParaOrcamentoPct: number;
+    orcamentoParaPedidoPct: number;
+    leadParaPedidoPct: number;
+  };
+  quality: {
+    avancaram: number;
+    naoAvancaram: number;
+    comOrcamentoOuPedido: number;
+    ganhos: number;
+    perdidos: number;
+    temperatura: { quente: number; morno: number; frio: number; semScore: number };
+  };
+  byOrigin: Array<{
+    origem: string;
+    leads: number;
+    ganhos: number;
+    orcamentos: number;
+    pedidos: number;
+    valorGanho: number;
+    conversaoPct: number;
+  }>;
+  byCampaign: Array<{
+    campanha: string;
+    leads: number;
+    ganhos: number;
+    orcamentos: number;
+    pedidos: number;
+    valorGanho: number;
+    conversaoPct: number;
+    gasto: number | null;
+    cac: number | null;
+    roas: number | null;
+  }>;
+}
+
 export const dashboardService = {
   async getOverview(from?: string, to?: string): Promise<DashboardOverview> {
     const params: Record<string, string> = {};
@@ -191,6 +247,13 @@ export const dashboardService = {
     if (to) params.to = to;
     if (limit) params.limit = String(limit);
     const { data } = await api.get('/dashboard/top-tags', { params });
+    return data.data;
+  },
+  async getCommercial(from?: string, to?: string): Promise<CommercialData> {
+    const params: Record<string, string> = {};
+    if (from) params.from = from;
+    if (to) params.to = to;
+    const { data } = await api.get('/dashboard/commercial', { params });
     return data.data;
   },
 };

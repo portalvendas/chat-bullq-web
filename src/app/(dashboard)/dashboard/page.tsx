@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   LineChart, Line, BarChart, Bar, Cell,
@@ -15,6 +16,7 @@ import { dashboardService, type SparklinePoint } from '@/features/dashboard/serv
 import { useOrgId } from '@/hooks/use-org-query-key';
 import { Heatmap } from '@/features/dashboard/components/Heatmap';
 import { AgentList } from '@/features/dashboard/components/AgentList';
+import { CommercialSection } from '@/features/dashboard/components/CommercialSection';
 
 const CHANNEL_COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4'];
 
@@ -165,8 +167,32 @@ const tooltipStyle = {
   fontSize: 11, padding: '6px 10px', color: '#fff',
 };
 
+function TabBar({ tab, setTab }: { tab: 'atendimento' | 'comercial'; setTab: (t: 'atendimento' | 'comercial') => void }) {
+  const base =
+    'rounded-lg px-4 py-1.5 text-sm font-medium transition-colors';
+  return (
+    <div className="mt-4 inline-flex gap-1 rounded-xl border border-zinc-200 bg-white p-1 dark:border-zinc-800 dark:bg-zinc-900">
+      <button
+        type="button"
+        onClick={() => setTab('atendimento')}
+        className={`${base} ${tab === 'atendimento' ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900' : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200'}`}
+      >
+        Atendimento
+      </button>
+      <button
+        type="button"
+        onClick={() => setTab('comercial')}
+        className={`${base} ${tab === 'comercial' ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900' : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200'}`}
+      >
+        Comercial
+      </button>
+    </div>
+  );
+}
+
 export default function DashboardPage() {
   const orgId = useOrgId();
+  const [tab, setTab] = useState<'atendimento' | 'comercial'>('atendimento');
   const { data: overview, isLoading: loadingOverview } = useQuery({
     queryKey: ['dashboard-overview', orgId],
     queryFn: () => dashboardService.getOverview(),
@@ -216,10 +242,25 @@ export default function DashboardPage() {
     queryFn: () => dashboardService.getMarketplaceStats(),
   });
 
+  if (tab === 'comercial') {
+    return (
+      <div className="h-full min-h-0 overflow-y-auto">
+        <div className="mx-auto w-full max-w-6xl p-6">
+          <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Dashboard</h1>
+          <TabBar tab={tab} setTab={setTab} />
+          <div className="mt-6">
+            <CommercialSection />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="h-full min-h-0 overflow-y-auto">
       <div className="mx-auto w-full max-w-6xl p-6">
       <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Dashboard</h1>
+      <TabBar tab={tab} setTab={setTab} />
       <p className="mt-1 text-sm text-zinc-500">Últimos 30 dias</p>
 
       {/* HERO KPIs */}
