@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { MessageSquare } from 'lucide-react';
 import { ConversationList } from '@/features/inbox/components/conversation-list';
 import { ChatPanel } from '@/features/inbox/components/chat-panel';
-import { AgentRunsSidebar } from '@/features/inbox/components/agent-runs-sidebar';
+import { ConversationTimeline } from '@/features/inbox/components/conversation-timeline';
 import { inboxService, type Conversation } from '@/features/inbox/services/inbox.service';
 
 const AGENT_LOGS_PREF_KEY = 'inbox.agentLogsOpen';
@@ -116,7 +116,7 @@ export default function InboxPage() {
             agentLogsOpen={agentLogsOpen}
           />
           {agentLogsOpen && (
-            <AgentRunsSidebar
+            <ConversationTimeline
               key={`logs-${activeConversation.id}`}
               conversationId={activeConversation.id}
               onClose={toggleAgentLogs}
