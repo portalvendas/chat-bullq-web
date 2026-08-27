@@ -215,4 +215,22 @@ export const platformAdminService = {
     );
     return unwrap<ImpersonateResult>(data);
   },
+
+  async resendInvite(
+    id: string,
+    input?: { ownerEmail?: string; role?: 'OWNER' | 'ADMIN' | 'AGENT' },
+  ): Promise<{
+    organizationId: string;
+    ownerEmail: string;
+    role: string;
+    inviteToken: string;
+    inviteUrl: string;
+    emailSent: boolean;
+  }> {
+    const { data } = await api.post(
+      `/platform-admin/organizations/${id}/resend-invite`,
+      input ?? {},
+    );
+    return unwrap(data);
+  },
 };

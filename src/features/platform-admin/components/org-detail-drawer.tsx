@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { X, Ban, Play, ShieldCheck, Loader2, Download, Trash2 } from 'lucide-react';
+import { X, Ban, Play, ShieldCheck, Loader2, Download, Trash2, Send, Copy } from 'lucide-react';
 import {
   platformAdminService,
   type ImpersonateResult,
@@ -32,6 +32,12 @@ export function OrgDetailDrawer({
   const [plan, setPlan] = useState<string | null>(null);
   const [impUserId, setImpUserId] = useState<string>('');
   const [confirmSlug, setConfirmSlug] = useState('');
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteResult, setInviteResult] = useState<{
+    inviteUrl: string;
+    emailSent: boolean;
+    ownerEmail: string;
+  } | null>(null);
 
   const invalidate = () => {
     void qc.invalidateQueries({ queryKey: ['pa-org', id] });
@@ -80,6 +86,27 @@ export function OrgDetailDrawer({
     },
     onError: (e: unknown) =>
       toast.error(e instanceof Error ? e.message : 'Falha ao impersonar'),
+  });
+
+  const resendMut = useMutation({
+    mutationFn: () =>
+      platformAdminService.resendInvite(id, {
+        ownerEmail: inviteEmail.trim() || undefined,
+      }),
+    onSuccess: (r) => {
+      setInviteResult({
+        inviteUrl: r.inviteUrl,
+        emailSent: r.emailSent,
+        ownerEmail: r.ownerEmail,
+      });
+      toast.success(
+        r.emailSent
+          ? `Convite reenviado para ${r.ownerEmail}`
+          : 'Convite gerado — copie o link abaixo',
+      );
+    },
+    onError: (e: unknown) =>
+      toast.error(e instanceof Error ? e.message : 'Falha ao reenviar convite'),
   });
 
   const exportMut = useMutation({
@@ -224,6 +251,60 @@ export function OrgDetailDrawer({
                 <p className="text-xs text-zinc-500">
                   Empresa suspensa — reative antes de impersonar.
                 </p>
+              )}
+            </section>
+
+            {/* Convite do dono (OWNER) */}
+            <section className="flex flex-col gap-2">
+              <SectionTitle>Convite do dono</SectionTitle>
+              <p className="text-xs text-zinc-500">
+                Reenvia o acesso ao dono (OWNER): gera um link novo e invalida o
+                anterior. Deixe o e-mail em branco para reusar o do último
+                convite desta empresa.
+              </p>
+              <div className="flex gap-2">
+                <input
+                  type="email"
+                  value={inviteEmail}
+                  onChange={(e) => setInviteEmail(e.target.value)}
+                  placeholder="e-mail do dono (opcional)"
+                  className="flex-1 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-white"
+                />
+                <button
+                  type="button"
+                  disabled={resendMut.isPending}
+                  onClick={() => resendMut.mutate()}
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-foreground disabled:opacity-50"
+                >
+                  {resendMut.isPending ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    <Send className="size-4" />
+                  )}
+                  Reenviar
+                </button>
+              </div>
+              {inviteResult && (
+                <div className="flex flex-col gap-2 rounded-lg border border-zinc-200 p-2 dark:border-zinc-800">
+                  <div className="text-xs text-zinc-500">
+                    {inviteResult.emailSent
+                      ? `Convite enviado por e-mail para ${inviteResult.ownerEmail}.`
+                      : 'E-mail não enviado — copie o link e envie manualmente.'}
+                  </div>
+                  <div className="break-all text-xs text-zinc-800 dark:text-zinc-200">
+                    {inviteResult.inviteUrl}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      void navigator.clipboard?.writeText(inviteResult.inviteUrl);
+                      toast.success('Link copiado');
+                    }}
+                    className="inline-flex w-fit items-center gap-1.5 rounded-lg border border-zinc-300 px-3 py-1.5 text-xs dark:border-zinc-700 dark:text-zinc-200"
+                  >
+                    <Copy className="size-3.5" /> Copiar link
+                  </button>
+                </div>
               )}
             </section>
 
