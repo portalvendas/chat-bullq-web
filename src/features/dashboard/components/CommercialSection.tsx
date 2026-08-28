@@ -160,13 +160,12 @@ export function CommercialSection() {
       <OrigemFilter origins={d.origins} value={origem} onChange={setOrigem} />
 
       {/* KPIs */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         <Kpi label="Leads" value={o.leads} sub={`${o.qualificados} qualificados (${pct(o.qualificadosPct)})`} icon={Users} accent="#3b82f6" />
         <Kpi label="Orçamentos" value={o.orcamentos} sub={brl(o.orcamentosValor)} icon={FileText} accent="#8b5cf6" />
         <Kpi label="Pedidos" value={o.pedidos} sub={brl(o.pedidosValor)} icon={ShoppingBag} accent="#10b981" />
         <Kpi label="Conversão lead→pedido" value={pct(d.funnel.leadParaPedidoPct)} sub={`${o.ganhos} ganhos · ${o.perdidos} perdidos`} icon={TrendingUp} accent="#f59e0b" />
         <Kpi label="Ticket médio" value={brl(o.ticketMedio)} sub="por pedido" icon={DollarSign} accent="#06b6d4" />
-        <Kpi label="Gasto / ROAS" value="—" sub="disponível na Fase 2 (Meta Ads)" icon={Megaphone} accent="#a1a1aa" />
       </div>
 
       <EvolutionCharts series={d.series} />
