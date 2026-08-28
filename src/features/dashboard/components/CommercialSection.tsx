@@ -97,6 +97,8 @@ export function CommercialSection() {
   const [period, setPeriod] = useState<Period>(30);
   const [customFrom, setCustomFrom] = useState('');
   const [customTo, setCustomTo] = useState('');
+  const [origem, setOrigem] = useState('all');
+  const [hideNoCampaign, setHideNoCampaign] = useState(false);
 
   const { from, to } = useMemo(() => {
     if (period === 'custom' && customFrom && customTo) {
@@ -112,8 +114,8 @@ export function CommercialSection() {
   }, [period, customFrom, customTo]);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['dashboard-commercial', orgId, from, to],
-    queryFn: () => dashboardService.getCommercial(from, to),
+    queryKey: ['dashboard-commercial', orgId, from, to, origem],
+    queryFn: () => dashboardService.getCommercial(from, to, origem),
     placeholderData: (prev) => prev,
   });
 
@@ -150,6 +152,8 @@ export function CommercialSection() {
         customTo={customTo}
         setCustomTo={setCustomTo}
       />
+
+      <OrigemFilter origins={d.origins} value={origem} onChange={setOrigem} />
 
       {/* KPIs */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
@@ -209,6 +213,7 @@ export function CommercialSection() {
 
       {/* Por Campanha */}
       <SectionCard title="Leads por campanha" icon={Megaphone} subtitle="Atribuição por utm_campaign / Meta Lead Ads">
+        <CampaignFilter hideNoCampaign={hideNoCampaign} setHideNoCampaign={setHideNoCampaign} />
         <div className="overflow-x-auto">
           <table className="w-full min-w-[640px] text-sm">
             <thead>
@@ -230,7 +235,9 @@ export function CommercialSection() {
               {d.byCampaign.length === 0 && (
                 <tr><td colSpan={9} className="py-4 text-center text-zinc-400">Sem campanhas no período.</td></tr>
               )}
-              {d.byCampaign.map((r) => (
+              {d.byCampaign
+                .filter((r) => !hideNoCampaign || r.campanha !== '(sem campanha)')
+                .map((r) => (
                 <tr key={r.campanha} className="border-b border-zinc-50 last:border-0 dark:border-zinc-800/50">
                   <td className="py-2 pr-2 text-zinc-800 dark:text-zinc-200">{r.campanha}</td>
                   <td className="px-2 py-2 text-right tabular-nums">{r.leads}</td>
@@ -349,6 +356,63 @@ function PeriodFilter({
           />
         </div>
       )}
+    </div>
+  );
+}
+
+function OrigemFilter({
+  origins, value, onChange,
+}: {
+  origins: string[];
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const chip = (active: boolean) =>
+    `rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+      active
+        ? 'bg-blue-600 text-white'
+        : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700'
+    }`;
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      <div className="flex items-center gap-1.5 text-xs text-zinc-500">
+        <MapPin className="h-4 w-4" /> Origem
+      </div>
+      <button type="button" onClick={() => onChange('all')} className={chip(value === 'all')}>
+        Todas
+      </button>
+      {origins.map((o) => (
+        <button key={o} type="button" onClick={() => onChange(o)} className={chip(value === o)}>
+          {o}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function CampaignFilter({
+  hideNoCampaign, setHideNoCampaign,
+}: {
+  hideNoCampaign: boolean;
+  setHideNoCampaign: (v: boolean) => void;
+}) {
+  return (
+    <div className="mb-3 flex flex-wrap items-center gap-2">
+      <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">
+        Com leads no período
+      </span>
+      <span className="inline-flex items-center gap-1 rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-400 dark:bg-zinc-800">
+        Ativas na Meta <Info className="h-3 w-3" /> Fase 2
+      </span>
+      <label className="ml-auto flex cursor-pointer items-center gap-1.5 text-xs text-zinc-500">
+        <input
+          type="checkbox"
+          checked={hideNoCampaign}
+          onChange={(e) => setHideNoCampaign(e.target.checked)}
+          className="h-3.5 w-3.5 rounded border-zinc-300"
+        />
+        Ocultar &quot;sem campanha&quot;
+      </label>
     </div>
   );
 }

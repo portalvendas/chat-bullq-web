@@ -99,6 +99,8 @@ export interface AgentPerformance {
 }
 
 export interface CommercialData {
+  origins: string[];
+  appliedOrigem: string | null;
   overview: {
     leads: number;
     qualificados: number;
@@ -249,10 +251,11 @@ export const dashboardService = {
     const { data } = await api.get('/dashboard/top-tags', { params });
     return data.data;
   },
-  async getCommercial(from?: string, to?: string): Promise<CommercialData> {
+  async getCommercial(from?: string, to?: string, origem?: string): Promise<CommercialData> {
     const params: Record<string, string> = {};
     if (from) params.from = from;
     if (to) params.to = to;
+    if (origem && origem !== 'all') params.origem = origem;
     const { data } = await api.get('/dashboard/commercial', { params });
     return data.data;
   },
