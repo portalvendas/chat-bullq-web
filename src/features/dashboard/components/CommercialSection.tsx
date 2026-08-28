@@ -1,9 +1,10 @@
 'use client';
 
+import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   Users, Target, FileText, ShoppingBag, TrendingUp, DollarSign,
-  Flame, Thermometer, Snowflake, HelpCircle, Megaphone, MapPin, Info,
+  Flame, Thermometer, Snowflake, HelpCircle, Megaphone, MapPin, Info, CalendarDays,
 } from 'lucide-react';
 import {
   dashboardService,
@@ -89,11 +90,31 @@ function Phase2Badge() {
   );
 }
 
+type Period = 7 | 30 | 90 | 'custom';
+
 export function CommercialSection() {
   const orgId = useOrgId();
+  const [period, setPeriod] = useState<Period>(30);
+  const [customFrom, setCustomFrom] = useState('');
+  const [customTo, setCustomTo] = useState('');
+
+  const { from, to } = useMemo(() => {
+    if (period === 'custom' && customFrom && customTo) {
+      return {
+        from: new Date(`${customFrom}T00:00:00`).toISOString(),
+        to: new Date(`${customTo}T23:59:59`).toISOString(),
+      };
+    }
+    const n = typeof period === 'number' ? period : 30;
+    const toD = new Date();
+    const fromD = new Date(toD.getTime() - n * 86400000);
+    return { from: fromD.toISOString(), to: toD.toISOString() };
+  }, [period, customFrom, customTo]);
+
   const { data, isLoading, error } = useQuery({
-    queryKey: ['dashboard-commercial', orgId],
-    queryFn: () => dashboardService.getCommercial(),
+    queryKey: ['dashboard-commercial', orgId, from, to],
+    queryFn: () => dashboardService.getCommercial(from, to),
+    placeholderData: (prev) => prev,
   });
 
   if (isLoading) {
@@ -121,6 +142,15 @@ export function CommercialSection() {
 
   return (
     <div className="space-y-6">
+      <PeriodFilter
+        period={period}
+        setPeriod={setPeriod}
+        customFrom={customFrom}
+        setCustomFrom={setCustomFrom}
+        customTo={customTo}
+        setCustomTo={setCustomTo}
+      />
+
       {/* KPIs */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         <Kpi label="Leads" value={o.leads} sub={`${o.qualificados} qualificados (${pct(o.qualificadosPct)})`} icon={Users} accent="#3b82f6" />
@@ -261,4 +291,64 @@ function Cell({ label, value }: { label: string; value: string | number }) {
 
 function Empty() {
   return <p className="py-4 text-center text-sm text-zinc-400">Sem leads no período.</p>;
+}
+
+function PeriodFilter({
+  period, setPeriod, customFrom, setCustomFrom, customTo, setCustomTo,
+}: {
+  period: 7 | 30 | 90 | 'custom';
+  setPeriod: (p: 7 | 30 | 90 | 'custom') => void;
+  customFrom: string;
+  setCustomFrom: (v: string) => void;
+  customTo: string;
+  setCustomTo: (v: string) => void;
+}) {
+  const presets: Array<{ v: 7 | 30 | 90 | 'custom'; label: string }> = [
+    { v: 7, label: '7 dias' },
+    { v: 30, label: '30 dias' },
+    { v: 90, label: '90 dias' },
+    { v: 'custom', label: 'Personalizado' },
+  ];
+  const inputCls =
+    'rounded-lg border border-zinc-300 bg-white px-2 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-900 dark:text-white';
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      <div className="flex items-center gap-1.5 text-xs text-zinc-500">
+        <CalendarDays className="h-4 w-4" /> Período
+      </div>
+      <div className="inline-flex gap-1 rounded-xl border border-zinc-200 bg-white p-1 dark:border-zinc-800 dark:bg-zinc-900">
+        {presets.map((p) => (
+          <button
+            key={String(p.v)}
+            type="button"
+            onClick={() => setPeriod(p.v)}
+            className={`rounded-lg px-3 py-1 text-xs font-medium transition-colors ${
+              period === p.v
+                ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
+                : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200'
+            }`}
+          >
+            {p.label}
+          </button>
+        ))}
+      </div>
+      {period === 'custom' && (
+        <div className="flex items-center gap-1.5">
+          <input
+            type="date"
+            value={customFrom}
+            onChange={(e) => setCustomFrom(e.target.value)}
+            className={inputCls}
+          />
+          <span className="text-xs text-zinc-400">até</span>
+          <input
+            type="date"
+            value={customTo}
+            onChange={(e) => setCustomTo(e.target.value)}
+            className={inputCls}
+          />
+        </div>
+      )}
+    </div>
+  );
 }
