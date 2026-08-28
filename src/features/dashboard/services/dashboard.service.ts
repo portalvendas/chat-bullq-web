@@ -101,6 +101,12 @@ export interface AgentPerformance {
 export interface CommercialData {
   origins: string[];
   appliedOrigem: string | null;
+  series: {
+    origins: string[];
+    weekly: boolean;
+    conversion: Array<Record<string, number | string | null>>;
+    orcamentos: Array<Record<string, number | string>>;
+  };
   overview: {
     leads: number;
     qualificados: number;

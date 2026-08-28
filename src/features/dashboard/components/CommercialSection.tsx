@@ -7,6 +7,9 @@ import {
   Flame, Thermometer, Snowflake, HelpCircle, Megaphone, MapPin, Info, CalendarDays,
 } from 'lucide-react';
 import {
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+} from 'recharts';
+import {
   dashboardService,
   type CommercialData,
 } from '@/features/dashboard/services/dashboard.service';
@@ -164,6 +167,8 @@ export function CommercialSection() {
         <Kpi label="Ticket médio" value={brl(o.ticketMedio)} sub="por pedido" icon={DollarSign} accent="#06b6d4" />
         <Kpi label="Gasto / ROAS" value="—" sub="disponível na Fase 2 (Meta Ads)" icon={Megaphone} accent="#a1a1aa" />
       </div>
+
+      <EvolutionCharts series={d.series} />
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Funil de conversão */}
@@ -413,6 +418,77 @@ function CampaignFilter({
         />
         Ocultar &quot;sem campanha&quot;
       </label>
+    </div>
+  );
+}
+
+const EVO_COLORS = ['#3b82f6', '#8b5cf6', '#10b981', '#f59e0b', '#ec4899', '#06b6d4', '#a1a1aa'];
+const evoTooltip = {
+  background: 'rgba(24,24,27,0.92)', border: 'none', borderRadius: 6,
+  fontSize: 11, padding: '6px 10px', color: '#fff',
+};
+
+function EvolutionCharts({ series }: { series: CommercialData['series'] }) {
+  const origins = series.origins;
+  if (origins.length === 0) {
+    return (
+      <SectionCard title="Evolução por origem" icon={TrendingUp} subtitle="conversão e orçamentos ao longo do período">
+        <Empty />
+      </SectionCard>
+    );
+  }
+  const lines = origins.map((o, i) => (
+    <Line
+      key={o}
+      type="monotone"
+      dataKey={o}
+      stroke={EVO_COLORS[i % EVO_COLORS.length]}
+      strokeWidth={2}
+      dot={false}
+      connectNulls={false}
+      isAnimationActive={false}
+    />
+  ));
+  return (
+    <div className="grid gap-6 lg:grid-cols-2">
+      <SectionCard title="Evolução da conversão" icon={TrendingUp} subtitle="% lead→pedido por origem">
+        <div className="h-64">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={series.conversion} margin={{ top: 5, right: 8, bottom: 0, left: -18 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" strokeOpacity={0.4} />
+              <XAxis dataKey="date" tickFormatter={(x) => String(x).slice(5)} fontSize={10} />
+              <YAxis unit="%" fontSize={10} />
+              <Tooltip contentStyle={evoTooltip} formatter={(v) => (v == null ? ['—', ''] : [`${v}%`, ''])} />
+              <Legend wrapperStyle={{ fontSize: 11 }} />
+              {lines}
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </SectionCard>
+      <SectionCard title="Evolução de orçamentos" icon={FileText} subtitle="orçamentos gerados por origem">
+        <div className="h-64">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={series.orcamentos} margin={{ top: 5, right: 8, bottom: 0, left: -18 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" strokeOpacity={0.4} />
+              <XAxis dataKey="date" tickFormatter={(x) => String(x).slice(5)} fontSize={10} />
+              <YAxis allowDecimals={false} fontSize={10} />
+              <Tooltip contentStyle={evoTooltip} />
+              <Legend wrapperStyle={{ fontSize: 11 }} />
+              {origins.map((o, i) => (
+                <Line
+                  key={o}
+                  type="monotone"
+                  dataKey={o}
+                  stroke={EVO_COLORS[i % EVO_COLORS.length]}
+                  strokeWidth={2}
+                  dot={false}
+                  isAnimationActive={false}
+                />
+              ))}
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </SectionCard>
     </div>
   );
 }
