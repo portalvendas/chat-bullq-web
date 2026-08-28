@@ -304,7 +304,7 @@ export default function DashboardPage() {
               accent="#f59e0b"
               sparkline={sparklines?.firstResponse}
               sparklineSuffix="min"
-              footer={<span>Média do período · menor é melhor</span>}
+              footer={<span>Mediana · horário comercial · menor é melhor</span>}
             />
             <HeroKpi
               label="SLA Compliance"
