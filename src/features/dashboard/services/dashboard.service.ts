@@ -162,6 +162,25 @@ export interface CommercialData {
   }>;
 }
 
+export interface IntakeHealth {
+  total: number;
+  janelaDias: number;
+  comTelefone: number;
+  comTelefonePct: number;
+  comUtmSource: number;
+  comUtmSourcePct: number;
+  comUtmCampaign: number;
+  comUtmCampaignPct: number;
+  sample: Array<{
+    date: string;
+    nome: string | null;
+    telefone: string | null;
+    utmSource: string | null;
+    utmCampaign: string | null;
+    source: string | null;
+  }>;
+}
+
 export const dashboardService = {
   async getOverview(from?: string, to?: string): Promise<DashboardOverview> {
     const params: Record<string, string> = {};
@@ -263,6 +282,10 @@ export const dashboardService = {
     if (to) params.to = to;
     if (origem && origem !== 'all') params.origem = origem;
     const { data } = await api.get('/dashboard/commercial', { params });
+    return data.data;
+  },
+  async getIntakeHealth(): Promise<IntakeHealth> {
+    const { data } = await api.get('/dashboard/lead-intake-health');
     return data.data;
   },
 };

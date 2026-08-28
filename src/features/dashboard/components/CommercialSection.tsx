@@ -12,6 +12,7 @@ import {
 import {
   dashboardService,
   type CommercialData,
+  type IntakeHealth,
 } from '@/features/dashboard/services/dashboard.service';
 import { useOrgId } from '@/hooks/use-org-query-key';
 
@@ -262,6 +263,8 @@ export function CommercialSection() {
           Gasto, CAC e ROAS entram na Fase 2, ao ligar a integração Meta Ads (permissão da Meta pendente).
         </p>
       </SectionCard>
+
+      <IntakeHealthPanel />
     </div>
   );
 }
@@ -419,6 +422,79 @@ function CampaignFilter({
         Ocultar &quot;sem campanha&quot;
       </label>
     </div>
+  );
+}
+
+function HealthPill({ label, pct, n, total, good }: { label: string; pct: number; n: number; total: number; good: number }) {
+  const color = pct >= good ? '#10b981' : pct >= good / 2 ? '#f59e0b' : '#ef4444';
+  return (
+    <div className="rounded-lg border border-zinc-100 p-3 dark:border-zinc-800">
+      <div className="text-[11px] font-medium text-zinc-500">{label}</div>
+      <div className="mt-1 text-2xl font-bold tabular-nums" style={{ color }}>{pct}%</div>
+      <div className="text-[10px] text-zinc-400">{n} de {total}</div>
+    </div>
+  );
+}
+
+function IntakeHealthPanel() {
+  const orgId = useOrgId();
+  const { data, isLoading } = useQuery({
+    queryKey: ['lead-intake-health', orgId],
+    queryFn: () => dashboardService.getIntakeHealth(),
+    staleTime: 60000,
+  });
+  const d: IntakeHealth | undefined = data;
+  return (
+    <SectionCard
+      title="Diagnóstico de captação (n8n → CRM)"
+      icon={Info}
+      subtitle="Os leads estão chegando com telefone e UTMs? (últimos 30 dias)"
+    >
+      {isLoading || !d ? (
+        <p className="text-sm text-zinc-400">Carregando…</p>
+      ) : d.total === 0 ? (
+        <Empty />
+      ) : (
+        <div className="space-y-4">
+          <div className="grid grid-cols-3 gap-3">
+            <HealthPill label="Com telefone" pct={d.comTelefonePct} n={d.comTelefone} total={d.total} good={80} />
+            <HealthPill label="Com utm_source" pct={d.comUtmSourcePct} n={d.comUtmSource} total={d.total} good={70} />
+            <HealthPill label="Com utm_campaign" pct={d.comUtmCampaignPct} n={d.comUtmCampaign} total={d.total} good={70} />
+          </div>
+          <div className="rounded-lg border border-zinc-200 bg-zinc-50/60 p-2 text-xs text-zinc-600 dark:border-zinc-800 dark:bg-zinc-950/40 dark:text-zinc-300">
+            {d.comUtmSourcePct < 40
+              ? 'A maioria dos leads está chegando SEM utm_source — verifique o mapeamento no n8n e a captura de UTM na landing page.'
+              : d.comTelefonePct < 80
+                ? 'Alguns leads chegam sem telefone — sem ele não há fusão com a conversa do WhatsApp.'
+                : 'Captação saudável: telefone e UTMs chegando na maioria dos leads.'}
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[560px] text-xs">
+              <thead>
+                <tr className="border-b border-zinc-100 text-left uppercase tracking-wide text-zinc-400 dark:border-zinc-800">
+                  <th className="py-1.5 pr-2 font-medium">Quando</th>
+                  <th className="px-2 py-1.5 font-medium">Nome</th>
+                  <th className="px-2 py-1.5 font-medium">Telefone</th>
+                  <th className="px-2 py-1.5 font-medium">utm_source</th>
+                  <th className="px-2 py-1.5 font-medium">utm_campaign</th>
+                </tr>
+              </thead>
+              <tbody>
+                {d.sample.map((r, i) => (
+                  <tr key={i} className="border-b border-zinc-50 last:border-0 dark:border-zinc-800/50">
+                    <td className="py-1.5 pr-2 text-zinc-500">{new Date(r.date).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</td>
+                    <td className="px-2 py-1.5 text-zinc-800 dark:text-zinc-200">{r.nome ?? '—'}</td>
+                    <td className={`px-2 py-1.5 ${r.telefone ? 'text-zinc-700 dark:text-zinc-300' : 'text-red-500'}`}>{r.telefone ?? 'faltando'}</td>
+                    <td className={`px-2 py-1.5 ${r.utmSource ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500'}`}>{r.utmSource ?? 'faltando'}</td>
+                    <td className={`px-2 py-1.5 ${r.utmCampaign ? 'text-zinc-700 dark:text-zinc-300' : 'text-zinc-400'}`}>{r.utmCampaign ?? '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </SectionCard>
   );
 }
 
