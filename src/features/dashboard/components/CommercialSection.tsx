@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import {
   Users, Target, FileText, ShoppingBag, TrendingUp, DollarSign,
   Flame, Thermometer, Snowflake, HelpCircle, Megaphone, MapPin, Info, CalendarDays,
@@ -13,6 +14,7 @@ import {
   dashboardService,
   type CommercialData,
   type IntakeHealth,
+  type MetaAdsStatus,
 } from '@/features/dashboard/services/dashboard.service';
 import { useOrgId } from '@/hooks/use-org-query-key';
 
@@ -168,6 +170,8 @@ export function CommercialSection() {
         <Kpi label="Ticket médio" value={brl(o.ticketMedio)} sub="por pedido" icon={DollarSign} accent="#06b6d4" />
       </div>
 
+      <MetaAdsPanel overview={d.overview} />
+
       <EvolutionCharts series={d.series} />
 
       <div className="grid gap-6 lg:grid-cols-2">
@@ -250,9 +254,9 @@ export function CommercialSection() {
                   <td className="px-2 py-2 text-right tabular-nums">{r.pedidos}</td>
                   <td className="px-2 py-2 text-right tabular-nums">{pct(r.conversaoPct)}</td>
                   <td className="px-2 py-2 text-right tabular-nums">{brl(r.valorGanho)}</td>
-                  <td className="px-2 py-2 text-right tabular-nums text-zinc-300 dark:text-zinc-600">—</td>
-                  <td className="px-2 py-2 text-right tabular-nums text-zinc-300 dark:text-zinc-600">—</td>
-                  <td className="pl-2 py-2 text-right tabular-nums text-zinc-300 dark:text-zinc-600">—</td>
+                  <td className="px-2 py-2 text-right tabular-nums">{r.gasto != null ? brl(r.gasto) : '—'}</td>
+                  <td className="px-2 py-2 text-right tabular-nums">{r.cac != null ? brl(r.cac) : '—'}</td>
+                  <td className="pl-2 py-2 text-right tabular-nums">{r.roas != null ? `${r.roas}x` : '—'}</td>
                 </tr>
               ))}
             </tbody>
@@ -491,6 +495,116 @@ function IntakeHealthPanel() {
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+    </SectionCard>
+  );
+}
+
+function MetaAdsPanel({ overview }: { overview: CommercialData['overview'] }) {
+  const qc = useQueryClient();
+  const { data: status } = useQuery<MetaAdsStatus>({
+    queryKey: ['meta-ads-status'],
+    queryFn: () => dashboardService.getMetaAds(),
+    staleTime: 60000,
+  });
+  const [adAccountId, setAdAccountId] = useState('');
+  const [token, setToken] = useState('');
+  const invalidate = () => {
+    void qc.invalidateQueries({ queryKey: ['meta-ads-status'] });
+    void qc.invalidateQueries({ queryKey: ['dashboard-commercial'] });
+  };
+  const saveMut = useMutation({
+    mutationFn: () => dashboardService.setMetaAds(adAccountId.trim(), token.trim()),
+    onSuccess: () => {
+      toast.success('Meta Ads conectada');
+      setToken('');
+      invalidate();
+    },
+    onError: (e: unknown) => toast.error(e instanceof Error ? e.message : 'Falha ao conectar'),
+  });
+  const clearMut = useMutation({
+    mutationFn: () => dashboardService.clearMetaAds(),
+    onSuccess: () => {
+      toast.success('Integração removida');
+      invalidate();
+    },
+  });
+  const cls =
+    'mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-white';
+
+  return (
+    <SectionCard
+      title="Investimento e retorno (Meta Ads)"
+      icon={DollarSign}
+      subtitle={
+        status?.configured
+          ? `Conta ${status.adAccountId} · gasto por campanha da Meta`
+          : 'Conecte a conta de anúncios (token com ads_read) para ver Gasto, CAC e ROAS'
+      }
+    >
+      {status?.configured ? (
+        <div className="space-y-3">
+          <div className="grid grid-cols-3 gap-3">
+            <div className="rounded-lg border border-zinc-100 p-3 dark:border-zinc-800">
+              <div className="text-[11px] text-zinc-500">Gasto (período)</div>
+              <div className="mt-1 text-2xl font-bold tabular-nums text-zinc-900 dark:text-zinc-100">
+                {overview.gasto != null ? brl(overview.gasto) : '—'}
+              </div>
+            </div>
+            <div className="rounded-lg border border-zinc-100 p-3 dark:border-zinc-800">
+              <div className="text-[11px] text-zinc-500">CAC (custo por pedido)</div>
+              <div className="mt-1 text-2xl font-bold tabular-nums text-zinc-900 dark:text-zinc-100">
+                {overview.cac != null ? brl(overview.cac) : '—'}
+              </div>
+            </div>
+            <div className="rounded-lg border border-zinc-100 p-3 dark:border-zinc-800">
+              <div className="text-[11px] text-zinc-500">ROAS</div>
+              <div className="mt-1 text-2xl font-bold tabular-nums text-emerald-600 dark:text-emerald-400">
+                {overview.roas != null ? `${overview.roas}x` : '—'}
+              </div>
+            </div>
+          </div>
+          {status.lastError && (
+            <p className="text-xs text-red-500">Erro na última leitura da Meta: {status.lastError}</p>
+          )}
+          <button
+            type="button"
+            onClick={() => clearMut.mutate()}
+            className="text-xs text-zinc-400 hover:text-red-500"
+          >
+            Remover integração
+          </button>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
+          <div className="sm:w-40">
+            <label className="text-[11px] text-zinc-500">ID da conta</label>
+            <input
+              value={adAccountId}
+              onChange={(e) => setAdAccountId(e.target.value)}
+              placeholder="1234567890"
+              className={cls}
+            />
+          </div>
+          <div className="flex-1">
+            <label className="text-[11px] text-zinc-500">Token (Usuário do Sistema · ads_read)</label>
+            <input
+              type="password"
+              value={token}
+              onChange={(e) => setToken(e.target.value)}
+              placeholder="EAAB..."
+              className={cls}
+            />
+          </div>
+          <button
+            type="button"
+            disabled={saveMut.isPending || !adAccountId.trim() || !token.trim()}
+            onClick={() => saveMut.mutate()}
+            className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:opacity-50"
+          >
+            Conectar
+          </button>
         </div>
       )}
     </SectionCard>

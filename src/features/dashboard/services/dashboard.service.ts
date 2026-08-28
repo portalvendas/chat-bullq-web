@@ -181,6 +181,15 @@ export interface IntakeHealth {
   }>;
 }
 
+export interface MetaAdsStatus {
+  configured: boolean;
+  adAccountId: string | null;
+  status: string | null;
+  lastError: string | null;
+  lastSyncAt: string | null;
+  encryptedAtRest: boolean;
+}
+
 export const dashboardService = {
   async getOverview(from?: string, to?: string): Promise<DashboardOverview> {
     const params: Record<string, string> = {};
@@ -287,5 +296,17 @@ export const dashboardService = {
   async getIntakeHealth(): Promise<IntakeHealth> {
     const { data } = await api.get('/dashboard/lead-intake-health');
     return data.data;
+  },
+  async getMetaAds(): Promise<MetaAdsStatus> {
+    const { data } = await api.get('/integrations/meta-ads');
+    return data?.data ?? data;
+  },
+  async setMetaAds(adAccountId: string, accessToken: string): Promise<MetaAdsStatus> {
+    const { data } = await api.put('/integrations/meta-ads', { adAccountId, accessToken });
+    return data?.data ?? data;
+  },
+  async clearMetaAds(): Promise<MetaAdsStatus> {
+    const { data } = await api.delete('/integrations/meta-ads');
+    return data?.data ?? data;
   },
 };
