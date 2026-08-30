@@ -263,7 +263,55 @@ export function CommercialSection() {
           </table>
         </div>
         <p className="mt-3 text-[11px] text-zinc-400">
-          Gasto, CAC e ROAS entram na Fase 2, ao ligar a integração Meta Ads (permissão da Meta pendente).
+          Gasto, CAC e ROAS são preenchidos quando a integração Meta Ads está conectada (painel acima).
+        </p>
+      </SectionCard>
+
+      {/* Gasto por campanha (fonte de verdade: Meta) */}
+      <SectionCard
+        title="Gasto por campanha (Meta)"
+        icon={DollarSign}
+        subtitle="Valor investido por campanha no período, direto da Meta"
+      >
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[640px] text-sm">
+            <thead>
+              <tr className="border-b border-zinc-100 text-left text-[11px] uppercase tracking-wide text-zinc-400 dark:border-zinc-800">
+                <th className="py-2 pr-2 font-medium">Campanha</th>
+                <th className="px-2 py-2 text-right font-medium">Gasto</th>
+                <th className="px-2 py-2 text-right font-medium">Leads</th>
+                <th className="px-2 py-2 text-right font-medium">Pedidos</th>
+                <th className="px-2 py-2 text-right font-medium">Valor ganho</th>
+                <th className="px-2 py-2 text-right font-medium">CAC</th>
+                <th className="pl-2 py-2 text-right font-medium">ROAS</th>
+              </tr>
+            </thead>
+            <tbody>
+              {d.spendByCampaign.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="py-4 text-center text-zinc-400">
+                    {d.overview.gasto != null
+                      ? 'Sem gasto por campanha no período.'
+                      : 'Conecte a Meta Ads no painel acima para ver o gasto por campanha.'}
+                  </td>
+                </tr>
+              )}
+              {d.spendByCampaign.map((r) => (
+                <tr key={r.campanha} className="border-b border-zinc-50 last:border-0 dark:border-zinc-800/50">
+                  <td className="py-2 pr-2 text-zinc-800 dark:text-zinc-200">{r.campanha}</td>
+                  <td className="px-2 py-2 text-right tabular-nums font-medium text-zinc-900 dark:text-zinc-100">{brl(r.gasto)}</td>
+                  <td className="px-2 py-2 text-right tabular-nums">{r.leads}</td>
+                  <td className="px-2 py-2 text-right tabular-nums">{r.pedidos}</td>
+                  <td className="px-2 py-2 text-right tabular-nums">{brl(r.valorGanho)}</td>
+                  <td className="px-2 py-2 text-right tabular-nums">{r.cac != null ? brl(r.cac) : '—'}</td>
+                  <td className="pl-2 py-2 text-right tabular-nums">{r.roas != null ? `${r.roas}x` : '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="mt-3 text-[11px] text-zinc-400">
+          O gasto vem direto da Meta, por campanha. Leads/pedidos/CAC/ROAS aparecem quando o utm_campaign do lead casa com o nome da campanha na Meta.
         </p>
       </SectionCard>
 
@@ -539,7 +587,7 @@ function MetaAdsPanel({ overview }: { overview: CommercialData['overview'] }) {
       icon={DollarSign}
       subtitle={
         status?.configured
-          ? `Conta ${status.adAccountId} · gasto por campanha da Meta`
+          ? `${status.adAccountIds?.length ?? 1} conta(s) de anúncios · gasto por campanha da Meta`
           : 'Conecte a conta de anúncios (token com ads_read) para ver Gasto, CAC e ROAS'
       }
     >
@@ -578,14 +626,15 @@ function MetaAdsPanel({ overview }: { overview: CommercialData['overview'] }) {
         </div>
       ) : (
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
-          <div className="sm:w-40">
-            <label className="text-[11px] text-zinc-500">ID da conta</label>
+          <div className="sm:w-56">
+            <label className="text-[11px] text-zinc-500">IDs da conta</label>
             <input
               value={adAccountId}
               onChange={(e) => setAdAccountId(e.target.value)}
-              placeholder="1234567890"
+              placeholder="1234567890, 9876543210"
               className={cls}
             />
+            <p className="mt-1 text-[10px] text-zinc-400">Só o número. Várias contas? separe por vírgula.</p>
           </div>
           <div className="flex-1">
             <label className="text-[11px] text-zinc-500">Token (Usuário do Sistema · ads_read)</label>

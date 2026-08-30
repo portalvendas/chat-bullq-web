@@ -160,6 +160,18 @@ export interface CommercialData {
     cac: number | null;
     roas: number | null;
   }>;
+  /** Gasto por campanha vindo do Meta (fonte de verdade). Toda campanha que
+   *  gastou no período aparece aqui, casada com leads/pedidos quando o nome bate. */
+  spendByCampaign: Array<{
+    campanha: string;
+    gasto: number;
+    leads: number;
+    orcamentos: number;
+    pedidos: number;
+    valorGanho: number;
+    cac: number | null;
+    roas: number | null;
+  }>;
 }
 
 export interface IntakeHealth {
@@ -184,6 +196,7 @@ export interface IntakeHealth {
 export interface MetaAdsStatus {
   configured: boolean;
   adAccountId: string | null;
+  adAccountIds: string[];
   status: string | null;
   lastError: string | null;
   lastSyncAt: string | null;
