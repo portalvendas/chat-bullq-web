@@ -43,6 +43,11 @@ export interface TinySummary {
   porVendedor: TinyVendorRow[];
 }
 
+export interface TinyVendors {
+  vendedores: string[];
+  hasSemVendedor: boolean;
+}
+
 export interface TinyPeriod {
   from?: string;
   to?: string;
@@ -148,18 +153,25 @@ export const tinyService = {
     const { data } = await api.get('/tiny/documents', { params: { contactId } });
     return unwrap<TinyLeadDocuments>(data) ?? { pedidos: [], orcamentos: [] };
   },
-  async summary(period: TinyPeriod = {}): Promise<TinySummary> {
-    const { data } = await api.get('/tiny/summary', { params: period });
+  async summary(period: TinyPeriod = {}, vendedor?: string): Promise<TinySummary> {
+    const { data } = await api.get('/tiny/summary', {
+      params: { ...period, ...(vendedor ? { vendedor } : {}) },
+    });
     return unwrap<TinySummary>(data);
+  },
+  async vendors(period: TinyPeriod = {}): Promise<TinyVendors> {
+    const { data } = await api.get('/tiny/vendors', { params: period });
+    return unwrap<TinyVendors>(data) ?? { vendedores: [], hasSemVendedor: false };
   },
   async orders(
     kind: 'PEDIDO' | 'ORCAMENTO',
     page = 1,
     limit = 30,
     period: TinyPeriod = {},
+    vendedor?: string,
   ): Promise<TinyOrdersPage> {
     const { data } = await api.get('/tiny/orders', {
-      params: { kind, page, limit, ...period },
+      params: { kind, page, limit, ...period, ...(vendedor ? { vendedor } : {}) },
     });
     return unwrap<TinyOrdersPage>(data);
   },

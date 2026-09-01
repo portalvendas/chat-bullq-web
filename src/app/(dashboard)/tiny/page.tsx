@@ -396,17 +396,25 @@ export default function TinyOrdersPage() {
   const [period, setPeriod] = useState<PeriodKey>('tudo');
   const [customFrom, setCustomFrom] = useState('');
   const [customTo, setCustomTo] = useState('');
+  const [vendedor, setVendedor] = useState(''); // '' = todos; '__sem__' = sem vendedor
   const range = periodRange(period, customFrom, customTo);
 
   const { data: summary } = useQuery({
-    queryKey: ['tiny-summary', period, customFrom, customTo],
-    queryFn: () => tinyService.summary(range),
+    queryKey: ['tiny-summary', period, customFrom, customTo, vendedor],
+    queryFn: () => tinyService.summary(range, vendedor || undefined),
+    staleTime: 60_000,
+  });
+
+  // Opcoes do dropdown de vendedor -- independem do vendedor selecionado.
+  const { data: vendorOptions } = useQuery({
+    queryKey: ['tiny-vendors', period, customFrom, customTo],
+    queryFn: () => tinyService.vendors(range),
     staleTime: 60_000,
   });
 
   const { data: orders, isLoading } = useQuery({
-    queryKey: ['tiny-orders', tab, page, period, customFrom, customTo],
-    queryFn: () => tinyService.orders(tab, page, 30, range),
+    queryKey: ['tiny-orders', tab, page, period, customFrom, customTo, vendedor],
+    queryFn: () => tinyService.orders(tab, page, 30, range, vendedor || undefined),
     staleTime: 30_000,
   });
 
@@ -460,6 +468,23 @@ export default function TinyOrdersPage() {
               </button>
             ))}
           </div>
+          {/* Filtro por vendedor */}
+          <select
+            value={vendedor}
+            onChange={(e) => {
+              setVendedor(e.target.value);
+              setPage(1);
+            }}
+            className="rounded-lg border border-zinc-200 bg-white px-2.5 py-1.5 text-xs font-medium text-zinc-700 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200"
+          >
+            <option value="">Todos os vendedores</option>
+            {(vendorOptions?.vendedores ?? []).map((v) => (
+              <option key={v} value={v}>
+                {v}
+              </option>
+            ))}
+            {vendorOptions?.hasSemVendedor && <option value="__sem__">Sem vendedor</option>}
+          </select>
           {period === 'custom' && (
             <div className="flex w-full flex-wrap justify-end gap-2">
               <label className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
