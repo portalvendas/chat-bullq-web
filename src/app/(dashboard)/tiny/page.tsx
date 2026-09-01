@@ -12,7 +12,7 @@
 import { useState, type MouseEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   ShoppingCart,
   FileText,
@@ -25,11 +25,13 @@ import {
   Users,
   MessageSquare,
   PhoneCall,
+  Pencil,
 } from 'lucide-react';
 import {
   tinyService,
   type TinyOrderRow,
   type TinyPeriod,
+  type TinyVendors,
 } from '@/features/tiny/services/tiny.service';
 
 function brl(v: number | null | undefined): string {
@@ -270,8 +272,25 @@ function ItemsSubTable({ docId }: { docId: string }) {
   );
 }
 
-function OrderRow({ row }: { row: TinyOrderRow }) {
+function OrderRow({
+  row,
+  vendorOptions,
+}: {
+  row: TinyOrderRow;
+  vendorOptions?: TinyVendors;
+}) {
   const [open, setOpen] = useState(false);
+  const [editingVend, setEditingVend] = useState(false);
+  const qc = useQueryClient();
+  const vendMut = useMutation({
+    mutationFn: (v: string | null) => tinyService.setVendedor(row.id, v),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['tiny-orders'] });
+      qc.invalidateQueries({ queryKey: ['tiny-summary'] });
+      qc.invalidateQueries({ queryKey: ['tiny-vendors'] });
+      setEditingVend(false);
+    },
+  });
   const router = useRouter();
   const [calling, setCalling] = useState(false);
   const [callErr, setCallErr] = useState<string | null>(null);
@@ -374,7 +393,46 @@ function OrderRow({ row }: { row: TinyOrderRow }) {
             ? '—'
             : `${row.diasOrcamentoUltimaMsg} d`}
         </td>
-        <td className="py-2 pr-3 text-xs text-zinc-500">{row.vendedor || '—'}</td>
+        <td
+          className="py-2 pr-3 text-xs text-zinc-500"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {editingVend ? (
+            <select
+              autoFocus
+              defaultValue={row.vendedor ?? ''}
+              disabled={vendMut.isPending}
+              onChange={(e) => vendMut.mutate(e.target.value || null)}
+              onBlur={() => setEditingVend(false)}
+              className="rounded-md border border-zinc-300 bg-white px-1.5 py-1 text-xs dark:border-zinc-700 dark:bg-zinc-900 dark:text-white"
+            >
+              <option value="">Sem vendedor</option>
+              {(vendorOptions?.vendedores ?? []).map((v) => (
+                <option key={v} value={v}>
+                  {v}
+                </option>
+              ))}
+              {row.vendedor &&
+                !(vendorOptions?.vendedores ?? []).includes(row.vendedor) && (
+                  <option value={row.vendedor}>{row.vendedor}</option>
+                )}
+            </select>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setEditingVend(true)}
+              className="group inline-flex items-center gap-1 rounded px-1 py-0.5 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              title="Editar vendedor"
+            >
+              {vendMut.isPending ? (
+                <Loader2 className="h-3 w-3 animate-spin" />
+              ) : (
+                <Pencil className="h-3 w-3 text-zinc-300 group-hover:text-zinc-500" />
+              )}
+              {row.vendedor || '—'}
+            </button>
+          )}
+        </td>
         <td className="py-2 pr-3 text-right font-semibold tabular-nums text-zinc-800 dark:text-zinc-200">
           {brl(row.valor)}
         </td>
@@ -627,7 +685,7 @@ export default function TinyOrdersPage() {
               </thead>
               <tbody>
                 {rows.map((row) => (
-                  <OrderRow key={row.id} row={row} />
+                  <OrderRow key={row.id} row={row} vendorOptions={vendorOptions} />
                 ))}
               </tbody>
             </table>

@@ -163,6 +163,9 @@ export const tinyService = {
     const { data } = await api.get('/tiny/vendors', { params: period });
     return unwrap<TinyVendors>(data) ?? { vendedores: [], hasSemVendedor: false };
   },
+  async setVendedor(docId: string, vendedor: string | null): Promise<void> {
+    await api.patch(`/tiny/documents/${docId}/vendedor`, { vendedor });
+  },
   async orders(
     kind: 'PEDIDO' | 'ORCAMENTO',
     page = 1,
