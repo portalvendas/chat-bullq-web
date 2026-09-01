@@ -51,7 +51,7 @@ function situacaoCls(s: string | null): string {
 }
 
 // ── Períodos ─────────────────────────────────────────────────────────
-type PeriodKey = 'hoje' | 'ontem' | '7d' | '30d' | 'mes' | 'tudo';
+type PeriodKey = 'hoje' | 'ontem' | '7d' | '30d' | 'mes' | 'tudo' | 'custom';
 const PERIOD_LABELS: Record<PeriodKey, string> = {
   hoje: 'Hoje',
   ontem: 'Ontem',
@@ -59,8 +59,9 @@ const PERIOD_LABELS: Record<PeriodKey, string> = {
   '30d': '30 dias',
   mes: 'Este mês',
   tudo: 'Tudo',
+  custom: 'Personalizado',
 };
-function periodRange(k: PeriodKey): TinyPeriod {
+function periodRange(k: PeriodKey, customFrom?: string, customTo?: string): TinyPeriod {
   const now = new Date();
   const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0);
   const endOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59);
@@ -85,6 +86,14 @@ function periodRange(k: PeriodKey): TinyPeriod {
     case 'mes': {
       const s = new Date(now.getFullYear(), now.getMonth(), 1);
       return { from: startOfDay(s).toISOString(), to: endOfDay(now).toISOString() };
+    }
+    case 'custom': {
+      if (!customFrom || !customTo) return {};
+      const f = new Date(`${customFrom}T00:00:00`);
+      const t = new Date(`${customTo}T00:00:00`);
+      if (isNaN(f.getTime()) || isNaN(t.getTime())) return {};
+      const [a, b] = f <= t ? [f, t] : [t, f];
+      return { from: startOfDay(a).toISOString(), to: endOfDay(b).toISOString() };
     }
     default:
       return {};
@@ -385,16 +394,18 @@ export default function TinyOrdersPage() {
   const [tab, setTab] = useState<'PEDIDO' | 'ORCAMENTO'>('PEDIDO');
   const [page, setPage] = useState(1);
   const [period, setPeriod] = useState<PeriodKey>('tudo');
-  const range = periodRange(period);
+  const [customFrom, setCustomFrom] = useState('');
+  const [customTo, setCustomTo] = useState('');
+  const range = periodRange(period, customFrom, customTo);
 
   const { data: summary } = useQuery({
-    queryKey: ['tiny-summary', period],
+    queryKey: ['tiny-summary', period, customFrom, customTo],
     queryFn: () => tinyService.summary(range),
     staleTime: 60_000,
   });
 
   const { data: orders, isLoading } = useQuery({
-    queryKey: ['tiny-orders', tab, page, period],
+    queryKey: ['tiny-orders', tab, page, period, customFrom, customTo],
     queryFn: () => tinyService.orders(tab, page, 30, range),
     staleTime: 30_000,
   });
@@ -404,6 +415,15 @@ export default function TinyOrdersPage() {
     setPage(1);
   };
   const switchPeriod = (p: PeriodKey) => {
+    if (p === 'custom' && (!customFrom || !customTo)) {
+      const now = new Date();
+      const s = new Date(now);
+      s.setDate(s.getDate() - 29);
+      const iso = (d: Date) =>
+        `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      setCustomFrom(iso(s));
+      setCustomTo(iso(now));
+    }
     setPeriod(p);
     setPage(1);
   };
@@ -440,6 +460,36 @@ export default function TinyOrdersPage() {
               </button>
             ))}
           </div>
+          {period === 'custom' && (
+            <div className="flex w-full flex-wrap justify-end gap-2">
+              <label className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
+                De
+                <input
+                  type="date"
+                  value={customFrom}
+                  max={customTo || undefined}
+                  onChange={(e) => {
+                    setCustomFrom(e.target.value);
+                    setPage(1);
+                  }}
+                  className="rounded-md border border-zinc-300 bg-white px-2 py-1 text-xs dark:border-zinc-700 dark:bg-zinc-900 dark:text-white"
+                />
+              </label>
+              <label className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
+                Até
+                <input
+                  type="date"
+                  value={customTo}
+                  min={customFrom || undefined}
+                  onChange={(e) => {
+                    setCustomTo(e.target.value);
+                    setPage(1);
+                  }}
+                  className="rounded-md border border-zinc-300 bg-white px-2 py-1 text-xs dark:border-zinc-700 dark:bg-zinc-900 dark:text-white"
+                />
+              </label>
+            </div>
+          )}
         </div>
 
         {/* Cards de totais */}
