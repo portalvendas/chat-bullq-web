@@ -306,6 +306,16 @@ export const dashboardService = {
     const { data } = await api.get('/dashboard/commercial', { params });
     return data.data;
   },
+  async exportCommercial(from?: string, to?: string): Promise<Blob> {
+    const params: Record<string, string> = {};
+    if (from) params.from = from;
+    if (to) params.to = to;
+    const { data } = await api.get('/dashboard/commercial/export', {
+      params,
+      responseType: 'blob',
+    });
+    return data as Blob;
+  },
   async getIntakeHealth(): Promise<IntakeHealth> {
     const { data } = await api.get('/dashboard/lead-intake-health');
     return data.data;

@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
   Users, Target, FileText, ShoppingBag, TrendingUp, DollarSign,
-  Flame, Thermometer, Snowflake, HelpCircle, Megaphone, MapPin, Info, CalendarDays,
+  Flame, Thermometer, Snowflake, HelpCircle, Megaphone, MapPin, Info, CalendarDays, Download,
 } from 'lucide-react';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
@@ -98,6 +98,41 @@ function Phase2Badge() {
 
 type Period = 7 | 30 | 90 | 'custom';
 
+function ExportButton({ from, to }: { from: string; to: string }) {
+  const [loading, setLoading] = useState(false);
+  const onExport = async () => {
+    try {
+      setLoading(true);
+      const blob = await dashboardService.exportCommercial(from, to);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `comercial_${from.slice(0, 10)}_a_${to.slice(0, 10)}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      toast.success('Planilha exportada.');
+    } catch {
+      toast.error('Falha ao exportar a planilha.');
+    } finally {
+      setLoading(false);
+    }
+  };
+  return (
+    <button
+      type="button"
+      onClick={onExport}
+      disabled={loading}
+      title="Exporta campanha x conjunto x criativo x vendas/orcamentos em .xlsx"
+      className="inline-flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-700 shadow-sm hover:bg-zinc-50 disabled:opacity-60 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
+    >
+      <Download className="h-4 w-4" />
+      {loading ? 'Gerando…' : 'Exportar Excel'}
+    </button>
+  );
+}
+
 export function CommercialSection() {
   const orgId = useOrgId();
   const [period, setPeriod] = useState<Period>(30);
@@ -150,6 +185,10 @@ export function CommercialSection() {
 
   return (
     <div className="space-y-6">
+      <div className="flex items-center justify-end">
+        <ExportButton from={from} to={to} />
+      </div>
+
       <PeriodFilter
         period={period}
         setPeriod={setPeriod}
