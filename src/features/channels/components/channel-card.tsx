@@ -246,6 +246,22 @@ export function ChannelCard({ channel, onUpdate }: ChannelCardProps) {
               Parear (QR)
             </button>
           )}
+          {channel.type === 'INSTAGRAM' && (
+            <button
+              onClick={async () => {
+                try {
+                  const url = await channelsService.getInstagramAuthUrl(channel.id);
+                  window.location.href = url;
+                } catch (err) {
+                  toast.error(err instanceof Error ? err.message : 'Erro ao reconectar');
+                }
+              }}
+              className="inline-flex items-center gap-1.5 rounded-md bg-pink-50 px-2.5 py-1.5 text-xs font-medium text-pink-700 transition-colors hover:bg-pink-100 dark:bg-pink-950 dark:text-pink-400 dark:hover:bg-pink-900"
+            >
+              <RefreshCw className="h-3 w-3" />
+              Reconectar
+            </button>
+          )}
           {sync.supported && (
             <button
               onClick={handleSync}

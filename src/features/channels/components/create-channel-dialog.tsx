@@ -102,12 +102,6 @@ const waOfficialSchema = z.object({
 
 const instagramSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
-  accessToken: z.string().min(1, 'Access Token é obrigatório'),
-  appSecret: z.string().min(1, 'App Secret é obrigatório'),
-  igBusinessId: z.string().optional(),
-  igAppId: z.string().optional(),
-  webhookSecret: z.string().optional(),
-  commentAutoReplyText: z.string().optional(),
 });
 
 const mercadoLivreSchema = z.object({
@@ -171,7 +165,7 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
 
   const igForm = useForm<InstagramFormData>({
     resolver: zodResolver(instagramSchema),
-    defaultValues: { name: '', accessToken: '', appSecret: '', igBusinessId: '', igAppId: '', webhookSecret: '', commentAutoReplyText: '' },
+    defaultValues: { name: '' },
   });
 
   const mlForm = useForm<MlFormData>({
@@ -237,20 +231,23 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
       data.webhookSecret,
     );
 
-  const onSubmitInstagram = (data: InstagramFormData) =>
-    submitChannel(
-      'INSTAGRAM',
-      data.name,
-      {
-        accessToken: data.accessToken,
-        appSecret: data.appSecret,
-        igBusinessId: data.igBusinessId || undefined,
-        igAppId: data.igAppId || undefined,
-        apiVersion: 'v21.0',
-        commentAutoReplyText: data.commentAutoReplyText?.trim() || undefined,
-      },
-      data.webhookSecret,
-    );
+  const onSubmitInstagram = async (data: InstagramFormData) => {
+    setIsLoading(true);
+    try {
+      const channel = await channelsService.create({
+        type: 'INSTAGRAM',
+        name: data.name,
+        config: {},
+        visibility,
+      });
+      toast.success('Canal criado! Redirecionando para o Instagram...');
+      const url = await channelsService.getInstagramAuthUrl(channel.id);
+      window.location.href = url;
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Erro ao criar canal');
+      setIsLoading(false);
+    }
+  };
 
   const onSubmitMercadoLivre = async (data: MlFormData) => {
     setIsLoading(true);
@@ -427,13 +424,10 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
         ) : selectedType === 'INSTAGRAM' ? (
           <form onSubmit={igForm.handleSubmit(onSubmitInstagram)} className="mt-6 space-y-4">
             <Field label="Nome do canal" placeholder="Ex: Instagram Loja" error={igForm.formState.errors.name?.message} {...igForm.register('name')} />
-            <Field label="Access Token" type="text" placeholder="Instagram User Access Token (IGAAN...)" error={igForm.formState.errors.accessToken?.message} {...igForm.register('accessToken')} />
-            <Field label="App Secret" type="text" placeholder="Chave secreta do app (para validar webhooks)" error={igForm.formState.errors.appSecret?.message} {...igForm.register('appSecret')} />
-            <Field label="Instagram Business ID" placeholder="Opcional — detectado automaticamente" optional {...igForm.register('igBusinessId')} />
-            <Field label="Instagram App ID" placeholder="Opcional — ID do app do Instagram" optional {...igForm.register('igAppId')} />
-            <Field label="Webhook Verify Token" placeholder="Token que você definiu no Meta" optional {...igForm.register('webhookSecret')} />
-            <Field label="Auto-DM em comentários" placeholder="Ex: Oi! Vi seu comentário 💛 Te chamei no direct pra te ajudar." optional {...igForm.register('commentAutoReplyText')} />
-            <WebhookUrl url={`${apiBaseUrl}/webhooks/INSTAGRAM`} copied={copied} onCopy={() => handleCopyWebhook('INSTAGRAM')} />
+            <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-3 text-xs text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800/50 space-y-2">
+              <p className="font-medium">Conexão via Instagram (login com a conta profissional).</p>
+              <p className="text-zinc-500">Ao criar, você será redirecionado ao Instagram para autorizar — sem colar token nem configurar webhook.</p>
+            </div>
             <FormFooter isLoading={isLoading} onBack={() => setStep('type')} />
           </form>
         ) : selectedType === 'SHOPEE' ? (

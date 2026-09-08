@@ -132,6 +132,12 @@ export const channelsService = {
     return data?.data?.url ?? data?.url;
   },
 
+  /** Retorna a URL de consentimento OAuth do Instagram para o canal. */
+  async getInstagramAuthUrl(channelId: string): Promise<string> {
+    const { data } = await api.get<any>('/integrations/instagram/oauth/authorize-url', { params: { channelId } });
+    return data?.data?.url ?? data?.url;
+  },
+
   /** Conclui o onboarding Coexistence (WhatsApp via QR) — envia code+wabaId. */
   async completeWhatsAppEmbeddedSignup(payload: {
     code: string;
