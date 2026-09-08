@@ -27,6 +27,7 @@ import { ChannelQrDialog } from './channel-qr-dialog';
 const channelTypeMap: Record<string, { label: string; icon: React.ElementType; color: string }> = {
   WHATSAPP_ZAPPFY: { label: 'WhatsApp (Zappfy)', icon: ZappfyIcon, color: 'bg-zinc-50 dark:bg-zinc-800' },
   WHATSAPP_ZAPI: { label: 'WhatsApp (Z-API)', icon: ZappfyIcon, color: 'bg-zinc-50 dark:bg-zinc-800' },
+  WHATSAPP_BAILEYS: { label: 'WhatsApp (Nativo/QR)', icon: ZappfyIcon, color: 'bg-zinc-50 dark:bg-zinc-800' },
   MERCADO_LIVRE: { label: 'Mercado Livre', icon: ShoppingBag, color: 'bg-zinc-50 dark:bg-zinc-800' },
   WHATSAPP_OFFICIAL: { label: 'WhatsApp Official', icon: MetaIcon, color: 'bg-zinc-50 dark:bg-zinc-800' },
   INSTAGRAM: { label: 'Instagram', icon: InstagramIcon, color: 'bg-zinc-50 dark:bg-zinc-800' },
@@ -235,7 +236,8 @@ export function ChannelCard({ channel, onUpdate }: ChannelCardProps) {
             Testar Conexão
           </button>
           {(channel.type === 'WHATSAPP_ZAPPFY' ||
-            channel.type === 'WHATSAPP_ZAPI') && (
+            channel.type === 'WHATSAPP_ZAPI' ||
+            channel.type === 'WHATSAPP_BAILEYS') && (
             <button
               onClick={() => setPairing(true)}
               className="inline-flex items-center gap-1.5 rounded-md bg-emerald-50 px-2.5 py-1.5 text-xs font-medium text-emerald-700 transition-colors hover:bg-emerald-100 dark:bg-emerald-950 dark:text-emerald-400 dark:hover:bg-emerald-900"

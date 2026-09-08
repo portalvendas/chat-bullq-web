@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
-import { Loader2, X, Copy, Check, ShoppingBag, Store } from 'lucide-react';
+import { Loader2, X, Copy, Check, ShoppingBag, Store, QrCode } from 'lucide-react';
 import { channelsService, type ChannelType } from '../services/channels.service';
 import { WhatsAppCoexistenceButton } from './whatsapp-coexistence-button';
 import { ZappfyIcon, MetaIcon, InstagramIcon } from '@/components/ui/icons';
@@ -27,6 +27,14 @@ const channelTypes: { value: ChannelType; label: string; icon: React.ElementType
     icon: ZappfyIcon,
     color: 'bg-zinc-50 dark:bg-zinc-800',
     description: 'Conecte via Z-API — instância + token + Client-Token',
+    category: 'Mensageria',
+  },
+  {
+    value: 'WHATSAPP_BAILEYS',
+    label: 'WhatsApp (Nativo/QR)',
+    icon: QrCode,
+    color: 'bg-zinc-50 dark:bg-zinc-800',
+    description: 'Conecte pelo QR Code — nativo no Kortia, sem provedor externo',
     category: 'Mensageria',
   },
   {
@@ -78,6 +86,11 @@ const zapiSchema = z.object({
   clientToken: z.string().min(1, 'Client-Token (token de segurança da conta) é obrigatório'),
 });
 
+// WhatsApp nativo (Baileys): pareado por QR gerado pelo backend — só o nome.
+const baileysSchema = z.object({
+  name: z.string().min(1, 'Nome é obrigatório'),
+});
+
 const waOfficialSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
   phoneNumberId: z.string().min(1, 'Phone Number ID é obrigatório'),
@@ -111,6 +124,7 @@ const shopeeSchema = z.object({
 
 type ZappfyFormData = z.infer<typeof zappfySchema>;
 type ZapiFormData = z.infer<typeof zapiSchema>;
+type BaileysFormData = z.infer<typeof baileysSchema>;
 type WaOfficialFormData = z.infer<typeof waOfficialSchema>;
 type InstagramFormData = z.infer<typeof instagramSchema>;
 type MlFormData = z.infer<typeof mercadoLivreSchema>;
@@ -143,6 +157,11 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
   const zapiForm = useForm<ZapiFormData>({
     resolver: zodResolver(zapiSchema),
     defaultValues: { name: '', instanceId: '', token: '', clientToken: '' },
+  });
+
+  const baileysForm = useForm<BaileysFormData>({
+    resolver: zodResolver(baileysSchema),
+    defaultValues: { name: '' },
   });
 
   const waForm = useForm<WaOfficialFormData>({
@@ -201,6 +220,9 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
       token: data.token,
       clientToken: data.clientToken,
     });
+
+  const onSubmitBaileys = (data: BaileysFormData) =>
+    submitChannel('WHATSAPP_BAILEYS', data.name, {});
 
   const onSubmitWaOfficial = (data: WaOfficialFormData) =>
     submitChannel(
@@ -271,6 +293,7 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
     setSelectedType(null);
     zappfyForm.reset();
     zapiForm.reset();
+    baileysForm.reset();
     waForm.reset();
     igForm.reset();
     mlForm.reset();
@@ -283,6 +306,7 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
   const titleMap: Record<string, string> = {
     WHATSAPP_ZAPPFY: 'Configurar Zappfy',
     WHATSAPP_ZAPI: 'Configurar Z-API',
+    WHATSAPP_BAILEYS: 'Conectar WhatsApp (QR)',
     WHATSAPP_OFFICIAL: 'Configurar WhatsApp Official',
     INSTAGRAM: 'Configurar Instagram',
     MERCADO_LIVRE: 'Conectar Mercado Livre',
@@ -351,6 +375,15 @@ export function CreateChannelDialog({ open, onClose, onCreated }: CreateChannelD
             <p className="text-xs text-zinc-500 dark:text-zinc-400">
               No painel do Z-API, cole essa URL em <strong>Ao receber</strong> (on-message-received).
             </p>
+            <FormFooter isLoading={isLoading} onBack={() => setStep('type')} />
+          </form>
+        ) : selectedType === 'WHATSAPP_BAILEYS' ? (
+          <form onSubmit={baileysForm.handleSubmit(onSubmitBaileys)} className="mt-6 space-y-4">
+            <Field label="Nome do canal" placeholder="Ex: WhatsApp Atendimento" error={baileysForm.formState.errors.name?.message} {...baileysForm.register('name')} />
+            <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-3 text-xs text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800/50 space-y-1.5">
+              <p className="font-medium">Conexão nativa por QR Code — sem provedor externo.</p>
+              <p className="text-zinc-500">Depois de criar, clique em <strong>Parear (QR)</strong> no canal e escaneie o código pelo WhatsApp do celular (Aparelhos conectados), igual ao WhatsApp Web.</p>
+            </div>
             <FormFooter isLoading={isLoading} onBack={() => setStep('type')} />
           </form>
         ) : selectedType === 'WHATSAPP_OFFICIAL' ? (
