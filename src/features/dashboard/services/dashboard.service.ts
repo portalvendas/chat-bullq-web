@@ -145,6 +145,7 @@ export interface CommercialData {
     ganhos: number;
     orcamentos: number;
     pedidos: number;
+    valorOrcado: number;
     valorGanho: number;
     conversaoPct: number;
   }>;

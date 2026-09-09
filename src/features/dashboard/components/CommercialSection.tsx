@@ -305,8 +305,9 @@ export function CommercialSection() {
               <div className="col-span-5">
                 <Bar label={r.origem} value={r.leads} max={originMax} color="#3b82f6" />
               </div>
-              <div className="col-span-7 grid grid-cols-4 gap-1 text-center text-[11px]">
+              <div className="col-span-7 grid grid-cols-5 gap-1 text-center text-[11px]">
                 <Cell label="orç." value={r.orcamentos} />
+                <Cell label="orçado" value={brl(r.valorOrcado)} />
                 <Cell label="ped." value={r.pedidos} />
                 <Cell label="conv." value={pct(r.conversaoPct)} />
                 <Cell label="ganho" value={brl(r.valorGanho)} />
