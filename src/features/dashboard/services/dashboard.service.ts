@@ -316,6 +316,17 @@ export const dashboardService = {
     });
     return data as Blob;
   },
+
+  async exportGoogleLeads(from?: string, to?: string): Promise<Blob> {
+    const params: Record<string, string> = {};
+    if (from) params.from = from;
+    if (to) params.to = to;
+    const { data } = await api.get('/dashboard/google-leads/export', {
+      params,
+      responseType: 'blob',
+    });
+    return data as Blob;
+  },
   async getIntakeHealth(): Promise<IntakeHealth> {
     const { data } = await api.get('/dashboard/lead-intake-health');
     return data.data;

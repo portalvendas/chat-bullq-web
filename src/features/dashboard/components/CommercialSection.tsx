@@ -133,6 +133,41 @@ function ExportButton({ from, to }: { from: string; to: string }) {
   );
 }
 
+function GoogleExportButton({ from, to }: { from: string; to: string }) {
+  const [loading, setLoading] = useState(false);
+  const onExport = async () => {
+    try {
+      setLoading(true);
+      const blob = await dashboardService.exportGoogleLeads(from, to);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `google_leads_${from.slice(0, 10)}_a_${to.slice(0, 10)}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      toast.success('Planilha do Google exportada.');
+    } catch {
+      toast.error('Falha ao exportar a planilha do Google.');
+    } finally {
+      setLoading(false);
+    }
+  };
+  return (
+    <button
+      type="button"
+      onClick={onExport}
+      disabled={loading}
+      title="Leads com gclid (Google) + orcamentos/pedidos — pronto p/ conversao offline no Google Ads"
+      className="inline-flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-700 shadow-sm hover:bg-zinc-50 disabled:opacity-60 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
+    >
+      <Download className="h-4 w-4" />
+      {loading ? 'Gerando…' : 'Exportar Google (gclid)'}
+    </button>
+  );
+}
+
 export function CommercialSection() {
   const orgId = useOrgId();
   const [period, setPeriod] = useState<Period>(30);
@@ -185,7 +220,8 @@ export function CommercialSection() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-end">
+      <div className="flex items-center justify-end gap-2">
+        <GoogleExportButton from={from} to={to} />
         <ExportButton from={from} to={to} />
       </div>
 
