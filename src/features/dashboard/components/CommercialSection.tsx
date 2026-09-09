@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
@@ -173,7 +173,28 @@ export function CommercialSection() {
   const [period, setPeriod] = useState<Period>(30);
   const [customFrom, setCustomFrom] = useState('');
   const [customTo, setCustomTo] = useState('');
-  const [origem, setOrigem] = useState('all');
+  const ORIGENS_LS_KEY = 'kortia:comercial:origens';
+  const [origens, setOrigens] = useState<string[]>(() => {
+    try {
+      const raw =
+        typeof window !== 'undefined'
+          ? window.localStorage.getItem(ORIGENS_LS_KEY)
+          : null;
+      const arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr.filter((x) => typeof x === 'string') : [];
+    } catch {
+      return [];
+    }
+  });
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(ORIGENS_LS_KEY, JSON.stringify(origens));
+    } catch {
+      /* ignore */
+    }
+  }, [origens]);
+  // Vazio = todas. Multi-origem vai como lista separada por virgula pro backend.
+  const origemParam = origens.length ? origens.join(',') : 'all';
   const [hideNoCampaign, setHideNoCampaign] = useState(false);
 
   const { from, to } = useMemo(() => {
@@ -190,8 +211,8 @@ export function CommercialSection() {
   }, [period, customFrom, customTo]);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['dashboard-commercial', orgId, from, to, origem],
-    queryFn: () => dashboardService.getCommercial(from, to, origem),
+    queryKey: ['dashboard-commercial', orgId, from, to, origemParam],
+    queryFn: () => dashboardService.getCommercial(from, to, origemParam),
     placeholderData: (prev) => prev,
   });
 
@@ -234,7 +255,7 @@ export function CommercialSection() {
         setCustomTo={setCustomTo}
       />
 
-      <OrigemFilter origins={d.origins} value={origem} onChange={setOrigem} />
+      <OrigemFilter origins={d.origins} value={origens} onChange={setOrigens} />
 
       {/* KPIs */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
@@ -498,8 +519,8 @@ function OrigemFilter({
   origins, value, onChange,
 }: {
   origins: string[];
-  value: string;
-  onChange: (v: string) => void;
+  value: string[];
+  onChange: (v: string[]) => void;
 }) {
   const chip = (active: boolean) =>
     `rounded-full px-3 py-1 text-xs font-medium transition-colors ${
@@ -507,16 +528,24 @@ function OrigemFilter({
         ? 'bg-blue-600 text-white'
         : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700'
     }`;
+  const allActive = value.length === 0;
+  const toggle = (o: string) =>
+    onChange(value.includes(o) ? value.filter((x) => x !== o) : [...value, o]);
   return (
     <div className="flex flex-wrap items-center gap-2">
       <div className="flex items-center gap-1.5 text-xs text-zinc-500">
         <MapPin className="h-4 w-4" /> Origem
       </div>
-      <button type="button" onClick={() => onChange('all')} className={chip(value === 'all')}>
+      <button type="button" onClick={() => onChange([])} className={chip(allActive)}>
         Todas
       </button>
       {origins.map((o) => (
-        <button key={o} type="button" onClick={() => onChange(o)} className={chip(value === o)}>
+        <button
+          key={o}
+          type="button"
+          onClick={() => toggle(o)}
+          className={chip(value.includes(o))}
+        >
           {o}
         </button>
       ))}
