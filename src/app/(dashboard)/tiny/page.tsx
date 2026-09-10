@@ -29,6 +29,7 @@ import {
   MessageSquare,
   PhoneCall,
   Pencil,
+  TrendingUp,
 } from 'lucide-react';
 import {
   tinyService,
@@ -588,6 +589,51 @@ function OrderRow({
   );
 }
 
+function convPct(a: number, b: number): number | null {
+  return b > 0 ? (a / b) * 100 : null;
+}
+function convPctLabel(v: number | null): string {
+  return v == null
+    ? '—'
+    : `${v.toLocaleString('pt-BR', { maximumFractionDigits: 1 })}%`;
+}
+
+/** Uma taxa do funil: rótulo, % e "num / den". */
+function ConversionRow({
+  label,
+  num,
+  den,
+  denLabel,
+}: {
+  label: string;
+  num: number;
+  den: number;
+  denLabel: string;
+}) {
+  const p = convPct(num, den);
+  return (
+    <div>
+      <div className="flex items-center justify-between text-sm">
+        <span className="text-zinc-600 dark:text-zinc-300">{label}</span>
+        <span className="font-semibold tabular-nums text-zinc-900 dark:text-zinc-100">
+          {convPctLabel(p)}
+        </span>
+      </div>
+      <div className="mt-1 flex items-center gap-2">
+        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
+          <div
+            className="h-full rounded-full bg-primary"
+            style={{ width: `${Math.min(100, p ?? 0)}%` }}
+          />
+        </div>
+        <span className="whitespace-nowrap text-[11px] tabular-nums text-zinc-400">
+          {num.toLocaleString('pt-BR')} / {den.toLocaleString('pt-BR')} {denLabel}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export default function TinyOrdersPage() {
   const [tab, setTab] = useState<'PEDIDO' | 'ORCAMENTO'>('PEDIDO');
   const [page, setPage] = useState(1);
@@ -740,6 +786,39 @@ export default function TinyOrdersPage() {
             value={String(summary?.orcamentos.count ?? 0)}
           />
         </div>
+
+        {/* Card de conversão (funil) */}
+        {summary && (
+          <div className="mt-4 rounded-xl border border-zinc-200 p-4 dark:border-zinc-800">
+            <div className="mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
+              <TrendingUp className="h-4 w-4" /> Conversão (funil)
+            </div>
+            <div className="grid gap-4 sm:grid-cols-3">
+              <ConversionRow
+                label="Leads → Propostas"
+                num={summary.orcamentos.count}
+                den={summary.leads.count}
+                denLabel="leads"
+              />
+              <ConversionRow
+                label="Leads → Pedidos"
+                num={summary.pedidos.count}
+                den={summary.leads.count}
+                denLabel="leads"
+              />
+              <ConversionRow
+                label="Propostas → Pedidos"
+                num={summary.pedidos.count}
+                den={summary.orcamentos.count}
+                denLabel="propostas"
+              />
+            </div>
+            <p className="mt-3 text-[11px] text-zinc-400">
+              Leads = criados no período (toda a base, não filtram por vendedor).
+              Propostas e Pedidos seguem o filtro de vendedor selecionado.
+            </p>
+          </div>
+        )}
 
         {/* Card por vendedor */}
         {vendors.length > 0 && (

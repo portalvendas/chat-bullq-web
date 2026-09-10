@@ -40,6 +40,7 @@ export interface TinyVendorRow {
 export interface TinySummary {
   pedidos: { count: number; total: number };
   orcamentos: { count: number; total: number };
+  leads: { count: number };
   porVendedor: TinyVendorRow[];
 }
 
