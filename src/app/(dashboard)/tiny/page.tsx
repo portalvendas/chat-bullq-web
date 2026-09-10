@@ -442,6 +442,14 @@ function OrderRow({
               <span className="inline-flex items-center gap-1 text-sm text-zinc-800 dark:text-zinc-200">
                 <User className="h-3.5 w-3.5 text-zinc-400" />
                 {row.lead.name || 'Lead'}
+                {(row.matchedBy === 'name_partial' || row.matchedBy === 'name') && (
+                  <span
+                    title="Vínculo por semelhança de nome — confira se é o lead certo"
+                    className="rounded bg-amber-100 px-1 py-0.5 text-[9px] font-semibold uppercase text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
+                  >
+                    aprox.
+                  </span>
+                )}
               </span>
               {row.lead.phone && (
                 <span className="inline-flex items-center gap-1 text-[11px] text-zinc-400">
