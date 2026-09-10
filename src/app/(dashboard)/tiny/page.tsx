@@ -604,13 +604,17 @@ function ConversionRow({
   num,
   den,
   denLabel,
+  value,
 }: {
   label: string;
   num: number;
   den: number;
   denLabel: string;
+  /** Opcional: conversão também em R$ (valor pedidos / valor propostas). */
+  value?: { num: number; den: number };
 }) {
   const p = convPct(num, den);
+  const pv = value ? convPct(value.num, value.den) : null;
   return (
     <div>
       <div className="flex items-center justify-between text-sm">
@@ -630,6 +634,19 @@ function ConversionRow({
           {num.toLocaleString('pt-BR')} / {den.toLocaleString('pt-BR')} {denLabel}
         </span>
       </div>
+      {value && (
+        <div className="mt-1.5 flex items-center justify-between text-[11px] text-zinc-400">
+          <span>
+            em valor (R$):{' '}
+            <span className="font-semibold text-zinc-600 dark:text-zinc-300">
+              {convPctLabel(pv)}
+            </span>
+          </span>
+          <span className="whitespace-nowrap tabular-nums">
+            {brl(value.num)} / {brl(value.den)}
+          </span>
+        </div>
+      )}
     </div>
   );
 }
@@ -811,6 +828,7 @@ export default function TinyOrdersPage() {
                 num={summary.pedidos.count}
                 den={summary.orcamentos.count}
                 denLabel="propostas"
+                value={{ num: summary.pedidos.total, den: summary.orcamentos.total }}
               />
             </div>
             <p className="mt-3 text-[11px] text-zinc-400">
