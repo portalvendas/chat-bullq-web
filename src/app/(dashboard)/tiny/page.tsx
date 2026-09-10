@@ -9,7 +9,7 @@
  * Dados Incompletos, exclui origem marketplace (ML/Shopee/Magalu/Amazon) e só
  * natureza de operação "Venda". Aplicado no backend.
  */
-import { useState, type MouseEvent } from 'react';
+import { useState, useEffect, type MouseEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -22,6 +22,9 @@ import {
   User,
   Phone,
   Link2Off,
+  Link2,
+  Search,
+  X,
   Users,
   MessageSquare,
   PhoneCall,
@@ -272,6 +275,93 @@ function ItemsSubTable({ docId }: { docId: string }) {
   );
 }
 
+/**
+ * Popover de busca pra vincular MANUALMENTE um lead ao pedido/orçamento quando
+ * o match automático não achou. Busca por nome/telefone/CPF/e-mail.
+ */
+function LeadLinker({
+  docId,
+  defaultQuery,
+  onClose,
+  onLinked,
+}: {
+  docId: string;
+  defaultQuery: string;
+  onClose: () => void;
+  onLinked: () => void;
+}) {
+  const [q, setQ] = useState(defaultQuery);
+  const [debounced, setDebounced] = useState(defaultQuery.trim());
+  useEffect(() => {
+    const t = setTimeout(() => setDebounced(q.trim()), 250);
+    return () => clearTimeout(t);
+  }, [q]);
+  const { data: results, isFetching } = useQuery({
+    queryKey: ['tiny-lead-search', debounced],
+    queryFn: () => tinyService.searchLeads(debounced),
+    enabled: debounced.length >= 2,
+    staleTime: 30_000,
+  });
+  const linkMut = useMutation({
+    mutationFn: (contactId: string) => tinyService.setLead(docId, contactId),
+    onSuccess: () => {
+      onLinked();
+      onClose();
+    },
+  });
+  return (
+    <div
+      className="absolute left-0 top-full z-20 mt-1 w-72 rounded-lg border border-zinc-200 bg-white p-2 shadow-lg dark:border-zinc-700 dark:bg-zinc-900"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="flex items-center gap-1.5 rounded-md border border-zinc-200 px-2 py-1 dark:border-zinc-700">
+        <Search className="h-3.5 w-3.5 shrink-0 text-zinc-400" />
+        <input
+          autoFocus
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Nome, telefone, CPF ou e-mail…"
+          className="w-full bg-transparent text-xs text-zinc-800 outline-none placeholder:text-zinc-400 dark:text-zinc-100"
+        />
+        <button type="button" onClick={onClose} title="Fechar">
+          <X className="h-3.5 w-3.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200" />
+        </button>
+      </div>
+      <div className="mt-1 max-h-56 overflow-y-auto">
+        {debounced.length < 2 ? (
+          <p className="px-2 py-3 text-[11px] text-zinc-400">Digite ao menos 2 caracteres.</p>
+        ) : isFetching ? (
+          <p className="flex items-center gap-1 px-2 py-3 text-[11px] text-zinc-400">
+            <Loader2 className="h-3 w-3 animate-spin" /> buscando…
+          </p>
+        ) : results && results.length > 0 ? (
+          results.map((c) => (
+            <button
+              key={c.id}
+              type="button"
+              disabled={linkMut.isPending}
+              onClick={() => linkMut.mutate(c.id)}
+              className="flex w-full flex-col items-start rounded-md px-2 py-1.5 text-left hover:bg-zinc-100 disabled:opacity-60 dark:hover:bg-zinc-800"
+            >
+              <span className="text-xs font-medium text-zinc-800 dark:text-zinc-200">
+                {c.name || '(sem nome)'}
+              </span>
+              <span className="text-[10px] text-zinc-400">
+                {[c.phone, c.email].filter(Boolean).join(' · ') || '—'}
+              </span>
+            </button>
+          ))
+        ) : (
+          <p className="px-2 py-3 text-[11px] text-zinc-400">Nenhum lead encontrado.</p>
+        )}
+      </div>
+      {linkMut.isError && (
+        <p className="px-2 pt-1 text-[10px] text-red-500">Falha ao vincular. Tente de novo.</p>
+      )}
+    </div>
+  );
+}
+
 function OrderRow({
   row,
   vendorOptions,
@@ -280,6 +370,7 @@ function OrderRow({
   vendorOptions?: TinyVendors;
 }) {
   const [open, setOpen] = useState(false);
+  const [linking, setLinking] = useState(false);
   const [editingVend, setEditingVend] = useState(false);
   const qc = useQueryClient();
   const vendMut = useMutation({
@@ -290,6 +381,14 @@ function OrderRow({
       qc.invalidateQueries({ queryKey: ['tiny-vendors'] });
       setEditingVend(false);
     },
+  });
+  const invalidateAll = () => {
+    qc.invalidateQueries({ queryKey: ['tiny-orders'] });
+    qc.invalidateQueries({ queryKey: ['tiny-summary'] });
+  };
+  const unlinkMut = useMutation({
+    mutationFn: () => tinyService.setLead(row.id, null),
+    onSuccess: () => invalidateAll(),
   });
   const router = useRouter();
   const [calling, setCalling] = useState(false);
@@ -336,7 +435,7 @@ function OrderRow({
           )}
         </td>
         <td className="py-2 pr-3 text-xs text-zinc-500">{fmtDate(row.data)}</td>
-        <td className="py-2 pr-3">
+        <td className="relative py-2 pr-3">
           {row.lead ? (
             <div className="flex flex-col">
               <span className="inline-flex items-center gap-1 text-sm text-zinc-800 dark:text-zinc-200">
@@ -377,12 +476,53 @@ function OrderRow({
                   )}
                 </>
               )}
+              <div
+                className="mt-0.5 flex items-center gap-2 text-[10px] text-zinc-400"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button
+                  type="button"
+                  onClick={() => setLinking(true)}
+                  className="hover:text-zinc-600 hover:underline dark:hover:text-zinc-300"
+                >
+                  trocar
+                </button>
+                <span>·</span>
+                <button
+                  type="button"
+                  disabled={unlinkMut.isPending}
+                  onClick={() => unlinkMut.mutate()}
+                  className="hover:text-red-500 hover:underline disabled:opacity-60"
+                >
+                  desvincular
+                </button>
+              </div>
             </div>
           ) : (
-            <span className="inline-flex items-center gap-1 text-xs text-zinc-400">
-              <Link2Off className="h-3.5 w-3.5" />
-              {row.clienteNome ? `${row.clienteNome} (sem lead)` : 'sem lead'}
-            </span>
+            <div
+              className="flex flex-col gap-0.5"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <span className="inline-flex items-center gap-1 text-xs text-zinc-400">
+                <Link2Off className="h-3.5 w-3.5" />
+                {row.clienteNome ? `${row.clienteNome} (sem lead)` : 'sem lead'}
+              </span>
+              <button
+                type="button"
+                onClick={() => setLinking(true)}
+                className="inline-flex w-fit items-center gap-1 text-[11px] font-medium text-primary hover:underline"
+              >
+                <Link2 className="h-3 w-3" /> Vincular lead
+              </button>
+            </div>
+          )}
+          {linking && (
+            <LeadLinker
+              docId={row.id}
+              defaultQuery={row.clienteNome ?? ''}
+              onClose={() => setLinking(false)}
+              onLinked={invalidateAll}
+            />
           )}
         </td>
         <td

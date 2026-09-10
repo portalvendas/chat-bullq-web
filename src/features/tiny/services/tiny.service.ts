@@ -74,6 +74,13 @@ export interface TinyOrderRow {
   } | null;
 }
 
+export interface TinyLeadCandidate {
+  id: string;
+  name: string | null;
+  phone: string | null;
+  email: string | null;
+}
+
 export interface TinyOrdersPage {
   items: TinyOrderRow[];
   pagination: { page: number; limit: number; total: number; totalPages: number };
@@ -203,6 +210,17 @@ export const tinyService = {
   ): Promise<{ conversationId: string; created: boolean }> {
     const { data } = await api.post(`/tiny/documents/${docId}/conversation`, {});
     return unwrap<{ conversationId: string; created: boolean }>(data);
+  },
+  async searchLeads(q: string, limit = 10): Promise<TinyLeadCandidate[]> {
+    const { data } = await api.get('/tiny/lead-search', { params: { q, limit } });
+    return unwrap<{ items: TinyLeadCandidate[] }>(data)?.items ?? [];
+  },
+  async setLead(
+    docId: string,
+    contactId: string | null,
+  ): Promise<{ ok: true; lead: { id: string; name: string | null; phone: string | null } | null }> {
+    const { data } = await api.patch(`/tiny/documents/${docId}/lead`, { contactId });
+    return unwrap(data);
   },
   async capiConfig(): Promise<MetaCapiConfig> {
     const { data } = await api.get('/tiny/capi/config');
