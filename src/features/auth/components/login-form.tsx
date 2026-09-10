@@ -101,6 +101,14 @@ export function LoginForm() {
               {form.formState.errors.password.message}
             </p>
           )}
+          <div className="text-right">
+            <Link
+              href="/forgot-password"
+              className="text-xs font-medium text-primary hover:underline"
+            >
+              Esqueci minha senha
+            </Link>
+          </div>
         </div>
 
         <button
