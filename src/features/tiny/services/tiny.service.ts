@@ -212,6 +212,10 @@ export const tinyService = {
     const { data } = await api.post(`/tiny/documents/${docId}/conversation`, {});
     return unwrap<{ conversationId: string; created: boolean }>(data);
   },
+  async enrichContacts(): Promise<{ scanned: number; enriched: number }> {
+    const { data } = await api.post('/tiny/enrich-contacts', {});
+    return unwrap<{ scanned: number; enriched: number }>(data) ?? { scanned: 0, enriched: 0 };
+  },
   async searchLeads(q: string, limit = 10): Promise<TinyLeadCandidate[]> {
     const { data } = await api.get('/tiny/lead-search', { params: { q, limit } });
     return unwrap<{ items: TinyLeadCandidate[] }>(data)?.items ?? [];

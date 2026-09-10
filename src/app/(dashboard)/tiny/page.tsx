@@ -30,6 +30,7 @@ import {
   PhoneCall,
   Pencil,
   TrendingUp,
+  Sparkles,
 } from 'lucide-react';
 import {
   tinyService,
@@ -37,6 +38,7 @@ import {
   type TinyPeriod,
   type TinyVendors,
 } from '@/features/tiny/services/tiny.service';
+import { toast } from 'sonner';
 
 function brl(v: number | null | undefined): string {
   if (v == null) return '—';
@@ -687,6 +689,20 @@ export default function TinyOrdersPage() {
     staleTime: 30_000,
   });
 
+  const qc = useQueryClient();
+  const enrichMut = useMutation({
+    mutationFn: () => tinyService.enrichContacts(),
+    onSuccess: (r) => {
+      toast.success(
+        r.enriched > 0
+          ? `${r.enriched} lead(s) enriquecido(s) com dados dos pedidos/orçamentos`
+          : 'Nada novo para enriquecer — os leads já estão completos',
+      );
+      qc.invalidateQueries({ queryKey: ['tiny-orders'] });
+    },
+    onError: () => toast.error('Não foi possível enriquecer os leads agora.'),
+  });
+
   const switchTab = (t: 'PEDIDO' | 'ORCAMENTO') => {
     setTab(t);
     setPage(1);
@@ -754,6 +770,20 @@ export default function TinyOrdersPage() {
             ))}
             {vendorOptions?.hasSemVendedor && <option value="__sem__">Sem vendedor</option>}
           </select>
+          <button
+            type="button"
+            onClick={() => enrichMut.mutate()}
+            disabled={enrichMut.isPending}
+            title="Preenche e-mail, CPF e endereço VAZIOS dos leads com os dados dos pedidos/orçamentos vinculados (não sobrescreve)."
+            className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 px-2.5 py-1.5 text-xs font-medium text-zinc-700 transition-colors hover:bg-zinc-100 disabled:opacity-60 dark:border-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-800"
+          >
+            {enrichMut.isPending ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Sparkles className="h-3.5 w-3.5" />
+            )}
+            Enriquecer leads
+          </button>
           {period === 'custom' && (
             <div className="flex w-full flex-wrap justify-end gap-2">
               <label className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
