@@ -96,13 +96,10 @@ export default function SettingsAiPage() {
         aiReviewMode,
         aiSignature: aiSignature.trim() || null,
         aiTimezone,
-        aiBusinessHours: alwaysOn ? null : hours,
-        aiOutOfHoursMessage: outOfHoursMessage,
         aiBusinessNotes: businessNotes.trim() ? businessNotes : null,
         aiAutoDisableOnHuman: autoDisable,
         aiMonthlyTokenCap: tokenCap ? parseInt(tokenCap, 10) : null,
         watchdogEnabled,
-        watchdogBusinessHours: watchdogAlwaysOn ? null : watchdogHours,
         watchdogConfig: watchdogConfig,
         allowedUrlDomains: parsedDomains.length > 0 ? parsedDomains : null,
       });
@@ -296,130 +293,11 @@ export default function SettingsAiPage() {
         </label>
       </section>
 
-      {/* Business hours */}
-      <section className="mt-4 rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="flex items-center justify-between gap-4">
-          <div className="min-w-0">
-            <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
-              Horário de atendimento
-            </p>
-            <p className="mt-0.5 text-xs text-zinc-500">
-              {alwaysOn
-                ? 'IA responde a qualquer hora — 24 horas por dia, todos os dias.'
-                : 'Fora desses horários a IA não responde.'}
-            </p>
-          </div>
-          <div className="flex shrink-0 items-center gap-3">
-            <label className="flex cursor-pointer items-center gap-2">
-              <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
-                Atendimento 24/7
-              </span>
-              <Toggle checked={alwaysOn} onChange={setAlwaysOn} />
-            </label>
-            <select
-              value={aiTimezone}
-              onChange={(e) => setAiTimezone(e.target.value)}
-              disabled={alwaysOn}
-              className="rounded-md border border-zinc-300 bg-white px-2 py-1 text-xs disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
-            >
-              {TIMEZONES.map((tz) => (
-                <option key={tz} value={tz}>
-                  {tz}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        {alwaysOn ? null : (
-        <div className="mt-4 space-y-3">
-          {WEEKDAYS.map(({ key, label }) => {
-            const day = hours[key] ?? { enabled: false, windows: [] };
-            return (
-              <div
-                key={key}
-                className="flex flex-wrap items-center gap-3 rounded-lg border border-zinc-100 bg-zinc-50/40 px-3 py-2 dark:border-zinc-800 dark:bg-zinc-900/40"
-              >
-                <label className="flex w-24 cursor-pointer items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={day.enabled}
-                    onChange={(e) =>
-                      updateDay(key, { enabled: e.target.checked })
-                    }
-                    className="h-3.5 w-3.5 rounded border-zinc-300"
-                  />
-                  <span className="text-sm text-zinc-700 dark:text-zinc-300">
-                    {label}
-                  </span>
-                </label>
-
-                {day.enabled ? (
-                  <div className="flex flex-1 flex-wrap items-center gap-2">
-                    {(day.windows ?? []).map(([from, to], i) => (
-                      <div key={i} className="flex items-center gap-1">
-                        <input
-                          type="time"
-                          value={from}
-                          onChange={(e) => {
-                            const updated = [...(day.windows ?? [])];
-                            updated[i] = [e.target.value, to];
-                            updateDay(key, { windows: updated });
-                          }}
-                          className="rounded-md border border-zinc-300 bg-white px-2 py-1 text-xs dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
-                        />
-                        <span className="text-xs text-zinc-400">até</span>
-                        <input
-                          type="time"
-                          value={to}
-                          onChange={(e) => {
-                            const updated = [...(day.windows ?? [])];
-                            updated[i] = [from, e.target.value];
-                            updateDay(key, { windows: updated });
-                          }}
-                          className="rounded-md border border-zinc-300 bg-white px-2 py-1 text-xs dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
-                        />
-                        <button
-                          onClick={() => removeWindow(key, i)}
-                          className="rounded p-1 text-zinc-400 hover:bg-red-50 hover:text-red-500"
-                        >
-                          <Trash2 className="h-3 w-3" />
-                        </button>
-                      </div>
-                    ))}
-                    <button
-                      onClick={() => addWindow(key)}
-                      className="inline-flex items-center gap-1 rounded-md border border-dashed border-zinc-300 px-2 py-1 text-[11px] text-zinc-500 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
-                    >
-                      <Plus className="h-3 w-3" /> Janela
-                    </button>
-                  </div>
-                ) : (
-                  <span className="text-xs text-zinc-400">Não atende</span>
-                )}
-              </div>
-            );
-          })}
-        </div>
-        )}
-      </section>
-
-      {/* Out of hours message */}
-      <section className="mt-4 rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
-        <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
-          Mensagem fora de horário (opcional)
-        </p>
-        <p className="mt-0.5 text-xs text-zinc-500">
-          Texto enviado automaticamente quando alguém manda mensagem fora do
-          horário configurado. Vazio = não responde nada.
-        </p>
-        <textarea
-          value={outOfHoursMessage}
-          onChange={(e) => setOutOfHoursMessage(e.target.value)}
-          rows={2}
-          placeholder="Olá! No momento estamos fora do horário de atendimento. Voltamos amanhã às 9h e respondemos sua mensagem por aqui."
-          className="mt-3 w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
-        />
+      {/* Horário movido para Configurações › Geral › Expediente */}
+      <section className="mt-4 rounded-xl border border-amber-200 bg-amber-50/60 p-4 text-xs text-amber-800 dark:border-amber-900/40 dark:bg-amber-900/10 dark:text-amber-300">
+        O horário de atendimento agora vem do <b>Expediente</b> (Configurações ›
+        Geral) — fonte única que vale para a IA, o watchdog e os salesbots. A
+        mensagem de fora de horário também fica lá.
       </section>
 
       {/* Business notes — vai pro contexto de TODOS os agentes da org */}
@@ -591,104 +469,12 @@ Reembolso:
         </div>
       </section>
 
-      {/* Watchdog business hours */}
-      <section className="mt-4 rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="flex items-center justify-between gap-4">
-          <div className="min-w-0">
-            <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
-              Horário de atuação do watchdog
-            </p>
-            <p className="mt-0.5 text-xs text-zinc-500">
-              {watchdogAlwaysOn
-                ? 'Watchdog roda 24/7. Reativa conversas a qualquer hora.'
-                : 'Fora desse horário o watchdog não reativa conversas.'}
-            </p>
-          </div>
-          <div className="flex shrink-0 items-center gap-3">
-            <label className="flex cursor-pointer items-center gap-2">
-              <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
-                24/7
-              </span>
-              <Toggle
-                checked={watchdogAlwaysOn}
-                onChange={setWatchdogAlwaysOn}
-              />
-            </label>
-          </div>
-        </div>
-
-        {watchdogAlwaysOn ? null : (
-          <div className="mt-4 space-y-3">
-            {WEEKDAYS.map(({ key, label }) => {
-              const day = watchdogHours[key] ?? { enabled: false, windows: [] };
-              return (
-                <div
-                  key={key}
-                  className="flex flex-wrap items-center gap-3 rounded-lg border border-zinc-100 bg-zinc-50/40 px-3 py-2 dark:border-zinc-800 dark:bg-zinc-900/40"
-                >
-                  <label className="flex w-24 cursor-pointer items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={day.enabled}
-                      onChange={(e) =>
-                        updateWatchdogDay(key, { enabled: e.target.checked })
-                      }
-                      className="h-3.5 w-3.5 rounded border-zinc-300"
-                    />
-                    <span className="text-sm text-zinc-700 dark:text-zinc-300">
-                      {label}
-                    </span>
-                  </label>
-
-                  {day.enabled ? (
-                    <div className="flex flex-1 flex-wrap items-center gap-2">
-                      {(day.windows ?? []).map(([from, to], i) => (
-                        <div key={i} className="flex items-center gap-1">
-                          <input
-                            type="time"
-                            value={from}
-                            onChange={(e) => {
-                              const updated = [...(day.windows ?? [])];
-                              updated[i] = [e.target.value, to];
-                              updateWatchdogDay(key, { windows: updated });
-                            }}
-                            className="rounded-md border border-zinc-300 bg-white px-2 py-1 text-xs dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
-                          />
-                          <span className="text-xs text-zinc-400">até</span>
-                          <input
-                            type="time"
-                            value={to}
-                            onChange={(e) => {
-                              const updated = [...(day.windows ?? [])];
-                              updated[i] = [from, e.target.value];
-                              updateWatchdogDay(key, { windows: updated });
-                            }}
-                            className="rounded-md border border-zinc-300 bg-white px-2 py-1 text-xs dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
-                          />
-                          <button
-                            onClick={() => removeWatchdogWindow(key, i)}
-                            className="rounded p-1 text-zinc-400 hover:bg-red-50 hover:text-red-500"
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </button>
-                        </div>
-                      ))}
-                      <button
-                        onClick={() => addWatchdogWindow(key)}
-                        className="inline-flex items-center gap-1 rounded-md border border-dashed border-zinc-300 px-2 py-1 text-[11px] text-zinc-500 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
-                      >
-                        <Plus className="h-3 w-3" /> Janela
-                      </button>
-                    </div>
-                  ) : (
-                    <span className="text-xs text-zinc-400">Não atua</span>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
+      {/* Horário do watchdog movido para o Expediente (Geral) */}
+      <section className="mt-4 rounded-xl border border-amber-200 bg-amber-50/60 p-4 text-xs text-amber-800 dark:border-amber-900/40 dark:bg-amber-900/10 dark:text-amber-300">
+        O watchdog agora respeita o <b>Expediente</b> (Configurações › Geral):
+        fora do horário definido lá, ele não reativa conversas.
       </section>
+
     </div>
   );
 }

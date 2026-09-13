@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { lossReasonsService } from '@/features/settings/services/loss-reasons.service';
 import { organizationService } from '@/features/settings/services/organization.service';
+import { ExpedienteCard } from '@/features/settings/components/expediente-card';
 import { useAuthStore } from '@/stores/auth-store';
 
 export default function SettingsGeneralPage() {
@@ -126,6 +127,11 @@ export default function SettingsGeneralPage() {
           </button>
         </div>
       )}
+
+      <div className="my-8 border-t border-zinc-200 dark:border-zinc-800" />
+
+      {/* Expediente (horário de funcionamento) */}
+      <ExpedienteCard />
 
       <div className="my-8 border-t border-zinc-200 dark:border-zinc-800" />
 
