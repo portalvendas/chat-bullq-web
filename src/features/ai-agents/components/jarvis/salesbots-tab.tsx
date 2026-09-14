@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { Workflow, Plus, Trash2, Loader2, Loader, X, Upload } from 'lucide-react';
+import { Workflow, Plus, Trash2, Loader2, Loader, X, Upload, Copy } from 'lucide-react';
 import {
   cadencesService,
   type Cadence,
@@ -60,6 +60,14 @@ export function JarvisSalesbotsTab() {
       cadencesService.update(c.id, { name: c.name, active: !c.active }),
     onSuccess: () => invalidate(),
     onError: () => toast.error('Erro ao atualizar'),
+  });
+  const duplicate = useMutation({
+    mutationFn: (id: string) => cadencesService.duplicate(id),
+    onSuccess: () => {
+      toast.success('Salesbot duplicado (pausado) — revise e ative');
+      invalidate();
+    },
+    onError: () => toast.error('Erro ao duplicar'),
   });
   const importKommo = useMutation({
     mutationFn: async (files: File[]) => {
@@ -213,9 +221,18 @@ export function JarvisSalesbotsTab() {
                 </div>
               </button>
               <button
+                onClick={() => duplicate.mutate(c.id)}
+                disabled={duplicate.isPending}
+                title="Duplicar"
+                className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 disabled:opacity-50 dark:hover:bg-zinc-800 dark:hover:text-zinc-300"
+              >
+                <Copy className="h-4 w-4" />
+              </button>
+              <button
                 onClick={() =>
                   confirm(`Remover o Salesbot "${c.name}"?`) && remove.mutate(c.id)
                 }
+                title="Remover"
                 className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-400 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20"
               >
                 <Trash2 className="h-4 w-4" />

@@ -119,6 +119,10 @@ export const cadencesService = {
   async remove(id: string): Promise<void> {
     await api.delete(`/cadences/${id}`);
   },
+  async duplicate(id: string): Promise<Cadence> {
+    const { data } = await api.post(`/cadences/${id}/duplicate`, {});
+    return data.data ?? data;
+  },
   async start(id: string, conversationId: string): Promise<{ started: boolean; reason?: string }> {
     const { data } = await api.post(`/cadences/${id}/start`, { conversationId });
     return unwrap(data);
