@@ -37,6 +37,7 @@ import {
 import { channelsService } from '@/features/channels/services/channels.service';
 import { tagsService } from '@/features/settings/services/tags.service';
 import { leadDistributionService } from '@/features/settings/services/lead-distribution.service';
+import { membersService } from '@/features/settings/services/members.service';
 import { ZappfyIcon, MetaIcon, InstagramIcon } from '@/components/ui/icons';
 import { useOrgId } from '@/hooks/use-org-query-key';
 import { useSocket } from '../hooks/use-socket';
@@ -168,15 +169,34 @@ export function ConversationList({
   });
   // Gestor/admin = usuário que NÃO participa da distribuição (não é vendedor).
   // Só pra ele mostramos a opção "Sem vendedor" (ver leads não atribuídos).
+  // TODOS os membros da org (não só a distribuição): uma conversa pode ser
+  // atribuída a qualquer membro (inclusive admin/owner), então o filtro por
+  // responsável precisa listar todos — senão conversas de um admin somem.
+  const { data: members = [] } = useQuery({
+    queryKey: ['org-members'],
+    queryFn: () => membersService.list(),
+    staleTime: 60_000,
+  });
+  const responsibles = useMemo(
+    () =>
+      members.map((m) => ({
+        userId: m.user.id,
+        name: m.user.name,
+        avatarUrl: m.user.avatarUrl,
+      })),
+    [members],
+  );
+  // Gestor/admin = quem NÃO participa da distribuição de leads (não é vendedor).
+  // Só pra ele mostramos "Sem vendedor" e o default já abre tudo.
   const isManagerView =
     !!currentUserId &&
-    sellers.length > 0 &&
+    members.length > 0 &&
     !sellers.some((s) => s.userId === currentUserId);
   // showGroups conta como filtro ativo SÓ quando ON (default OFF é o
   // comportamento padrão, não merece badge). Tags contam 1 por tag.
   // O filtro de vendedores conta como ativo só quando ESTREITA (esconde
   // alguém) — o default "todos pré-selecionados" não vira badge.
-  const sellerOptionCount = sellers.length + (isManagerView ? 1 : 0);
+  const sellerOptionCount = responsibles.length + (isManagerView ? 1 : 0);
   const sellerFilterActive =
     selectedSellerIds.length > 0 &&
     selectedSellerIds.length !== sellerOptionCount;
@@ -231,20 +251,28 @@ export function ConversationList({
     if (!prefsLoaded || sellerDefaultAppliedRef.current) return;
     if (Array.isArray(savedPrefs.sellerIds)) {
       sellerDefaultAppliedRef.current = true;
-      setSelectedSellerIds(savedPrefs.sellerIds);
+      // Garante que o usuário SEMPRE veja as conversas atribuídas a ele mesmo,
+      // mesmo com uma preferência antiga salva (ex.: admin que não estava na
+      // lista de vendedores e por isso não conseguia acessar as próprias).
+      const restored =
+        currentUserId && !savedPrefs.sellerIds.includes(currentUserId)
+          ? [...savedPrefs.sellerIds, currentUserId]
+          : savedPrefs.sellerIds;
+      setSelectedSellerIds(restored);
       return;
     }
-    if (!sellers.length) return; // espera carregar pra decidir por papel
+    if (!members.length) return; // espera os membros carregarem
     sellerDefaultAppliedRef.current = true;
-    const allSellerIds = sellers.map((s) => s.userId);
-    const isSeller = !!currentUserId && allSellerIds.includes(currentUserId);
-    // Gestor vê todos os vendedores + os SEM vendedor (não atribuídos).
+    const isSeller =
+      !!currentUserId && sellers.some((x) => x.userId === currentUserId);
+    const allMemberIds = members.map((m) => m.user.id);
+    // Vendedor vê só o dele; gestor vê TODOS os membros + os SEM vendedor.
     const next = isSeller
       ? [currentUserId as string]
-      : [...allSellerIds, UNASSIGNED_SELLER_ID];
+      : [...allMemberIds, UNASSIGNED_SELLER_ID];
     setSelectedSellerIds(next);
     updatePrefs({ sellerIds: next });
-  }, [prefsLoaded, savedPrefs.sellerIds, sellers, currentUserId, updatePrefs]);
+  }, [prefsLoaded, savedPrefs.sellerIds, sellers, members, currentUserId, updatePrefs]);
 
   const toggleListFilter = useCallback(
     (value: ListFilter) => {
@@ -321,14 +349,12 @@ export function ConversationList({
   );
 
   const selectAllSellers = useCallback(() => {
-    const all = sellers.map((s) => s.userId);
+    const all = responsibles.map((r) => r.userId);
     // "Todos" para o gestor inclui os SEM vendedor.
-    if (currentUserId && !all.includes(currentUserId)) {
-      all.push(UNASSIGNED_SELLER_ID);
-    }
+    if (isManagerView) all.push(UNASSIGNED_SELLER_ID);
     setSelectedSellerIds(all);
     updatePrefs({ sellerIds: all });
-  }, [sellers, currentUserId, updatePrefs]);
+  }, [responsibles, isManagerView, updatePrefs]);
 
   const clearSellerFilter = useCallback(() => {
     setSelectedSellerIds([]);
@@ -1150,12 +1176,12 @@ export function ConversationList({
                   </div>
                 </>
               )}
-              {sellers.length > 0 && (
+              {responsibles.length > 0 && (
                 <>
                   <div className="mx-2 my-1 border-t border-zinc-100 dark:border-zinc-800" />
                   <div className="flex items-center justify-between px-2.5 py-1.5">
                     <p className="text-[11px] font-medium uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
-                      Vendedores
+                      Responsável
                     </p>
                     <div className="flex items-center gap-2">
                       <button
@@ -1206,7 +1232,7 @@ export function ConversationList({
                           </button>
                         );
                       })()}
-                    {sellers.map((s) => {
+                    {responsibles.map((s) => {
                       const isActive = selectedSellerIds.includes(s.userId);
                       const label = s.name || 'Vendedor';
                       const initials = label.slice(0, 2).toUpperCase();
