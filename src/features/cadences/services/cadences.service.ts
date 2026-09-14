@@ -131,6 +131,10 @@ export const cadencesService = {
     const { data } = await api.get(`/cadences/active/${conversationId}`);
     return unwrap<ActiveSalesbot[]>(data) ?? [];
   },
+  async stopRun(runId: string): Promise<{ stopped: boolean }> {
+    const { data } = await api.post(`/cadences/runs/${runId}/stop`, {});
+    return unwrap(data);
+  },
   async importKommo(
     files: Array<{ name: string; model: unknown }>,
   ): Promise<KommoImportResult> {

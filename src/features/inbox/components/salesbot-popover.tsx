@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
-import { ChevronDown, Workflow, Loader2, Play } from 'lucide-react';
+import { ChevronDown, Workflow, Loader2, Play, Square } from 'lucide-react';
 import { toast } from 'sonner';
 import { cadencesService, type Cadence } from '@/features/cadences/services/cadences.service';
 import { type Conversation } from '../services/inbox.service';
@@ -19,6 +19,8 @@ interface Props {
  */
 export function SalesbotPopover({ conversation }: Props) {
   const [busy, setBusy] = useState<string | null>(null);
+  const [stopping, setStopping] = useState<string | null>(null);
+  const qc = useQueryClient();
 
   const { data: bots = [], isLoading } = useQuery<Cadence[]>({
     queryKey: ['cadences'],
@@ -54,6 +56,19 @@ export function SalesbotPopover({ conversation }: Props) {
       toast.error(err?.response?.data?.message || 'Erro ao iniciar o Salesbot');
     } finally {
       setBusy(null);
+    }
+  };
+
+  const stop = async (runId: string, name: string) => {
+    setStopping(runId);
+    try {
+      await cadencesService.stopRun(runId);
+      toast.success(`Salesbot "${name}" parado`);
+      qc.invalidateQueries({ queryKey: ['salesbot-active', conversation.id] });
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || 'Erro ao parar o Salesbot');
+    } finally {
+      setStopping(null);
     }
   };
 
@@ -101,10 +116,22 @@ export function SalesbotPopover({ conversation }: Props) {
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
                 </span>
-                <span className="truncate font-medium">{r.name}</span>
-                <span className="text-[10px] text-emerald-600 dark:text-emerald-400">
+                <span className="min-w-0 flex-1 truncate font-medium">{r.name}</span>
+                <span className="shrink-0 text-[10px] text-emerald-600 dark:text-emerald-400">
                   {r.status === 'WAITING' ? 'aguardando' : 'ativo'}
                 </span>
+                <button
+                  onClick={() => stop(r.runId, r.name)}
+                  disabled={stopping === r.runId}
+                  title="Parar este Salesbot"
+                  className="flex h-5 w-5 shrink-0 items-center justify-center rounded text-emerald-700 hover:bg-emerald-100 disabled:opacity-50 dark:text-emerald-300 dark:hover:bg-emerald-900/30"
+                >
+                  {stopping === r.runId ? (
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                  ) : (
+                    <Square className="h-3 w-3 fill-current" />
+                  )}
+                </button>
               </div>
             ))}
           </div>
