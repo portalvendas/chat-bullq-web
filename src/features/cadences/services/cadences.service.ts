@@ -57,6 +57,8 @@ export type CadenceTrigger =
   | 'TAG_ADDED'
   | 'STAGE_ENTERED'
   | 'INACTIVITY';
+export type RunWindow = 'ALWAYS' | 'BUSINESS_HOURS' | 'OUTSIDE_HOURS';
+
 export interface Cadence {
   id: string;
   name: string;
@@ -66,6 +68,7 @@ export interface Cadence {
   triggerValue: string | null;
   stopOnReply: boolean;
   businessHoursOnly: boolean;
+  runWindow: RunWindow;
   /** Origens permitidas (channelIds). Vazio = todas. */
   channelFilter: string[];
   steps: WorkflowStep[];
@@ -81,6 +84,7 @@ export interface CadenceInput {
   triggerValue?: string | null;
   stopOnReply?: boolean;
   businessHoursOnly?: boolean;
+  runWindow?: RunWindow;
   channelFilter?: string[];
   steps?: WorkflowStep[];
   graph?: WorkflowGraph;

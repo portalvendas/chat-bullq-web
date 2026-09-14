@@ -8,6 +8,7 @@ import {
   cadencesService,
   type Cadence,
   type CadenceTrigger,
+  type RunWindow,
   type WorkflowGraph,
 } from '@/features/cadences/services/cadences.service';
 import {
@@ -260,6 +261,9 @@ function SalesbotEditor({
   const [businessHoursOnly, setBusinessHoursOnly] = useState(
     bot?.businessHoursOnly ?? false,
   );
+  const [runWindow, setRunWindow] = useState<RunWindow>(
+    bot?.runWindow ?? 'ALWAYS',
+  );
   const [channelFilter, setChannelFilter] = useState<string[]>(
     bot?.channelFilter ?? [],
   );
@@ -292,6 +296,7 @@ function SalesbotEditor({
           triggerType === 'MANUAL' ? null : triggerValue.trim() || null,
         stopOnReply,
         businessHoursOnly,
+        runWindow,
         channelFilter,
         graph,
         onEnd: {},
@@ -392,12 +397,17 @@ function SalesbotEditor({
         </label>
 
         <label className="flex items-center gap-1.5 text-xs text-zinc-600 dark:text-zinc-300">
-          <input
-            type="checkbox"
-            checked={businessHoursOnly}
-            onChange={(e) => setBusinessHoursOnly(e.target.checked)}
-          />
-          só em horário comercial
+          <span>Quando rodar:</span>
+          <select
+            value={runWindow}
+            onChange={(e) => setRunWindow(e.target.value as RunWindow)}
+            title="Baseado no Expediente (Configurações › Geral)"
+            className="rounded-md border border-zinc-300 bg-white px-2 py-1 text-xs text-zinc-700 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200"
+          >
+            <option value="ALWAYS">Qualquer horário</option>
+            <option value="BUSINESS_HOURS">Só em horário comercial</option>
+            <option value="OUTSIDE_HOURS">Só fora do horário</option>
+          </select>
         </label>
 
         {/* Filtro de ORIGEM: de quais canais este bot pode disparar. */}
