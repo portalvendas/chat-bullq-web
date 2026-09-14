@@ -90,6 +90,9 @@ const statusColors: Record<string, string> = {
 
 type ListFilter = 'unread' | 'archived' | 'groups';
 
+// Sentinela do filtro "Sem vendedor" (conversas com assignedToId null).
+const UNASSIGNED_SELLER_ID = '__unassigned__';
+
 const filterOptions: { label: string; value: ListFilter; icon: React.ElementType; description: string }[] = [
   {
     label: 'Não lidas',
@@ -163,13 +166,20 @@ export function ConversationList({
     queryFn: () => leadDistributionService.listSellers(),
     staleTime: 60_000,
   });
+  // Gestor/admin = usuário que NÃO participa da distribuição (não é vendedor).
+  // Só pra ele mostramos a opção "Sem vendedor" (ver leads não atribuídos).
+  const isManagerView =
+    !!currentUserId &&
+    sellers.length > 0 &&
+    !sellers.some((s) => s.userId === currentUserId);
   // showGroups conta como filtro ativo SÓ quando ON (default OFF é o
   // comportamento padrão, não merece badge). Tags contam 1 por tag.
   // O filtro de vendedores conta como ativo só quando ESTREITA (esconde
   // alguém) — o default "todos pré-selecionados" não vira badge.
+  const sellerOptionCount = sellers.length + (isManagerView ? 1 : 0);
   const sellerFilterActive =
     selectedSellerIds.length > 0 &&
-    selectedSellerIds.length !== sellers.length;
+    selectedSellerIds.length !== sellerOptionCount;
   const activeFilterCount =
     (unreadOnly ? 1 : 0) +
     (archivedOnly ? 1 : 0) +
@@ -228,7 +238,10 @@ export function ConversationList({
     sellerDefaultAppliedRef.current = true;
     const allSellerIds = sellers.map((s) => s.userId);
     const isSeller = !!currentUserId && allSellerIds.includes(currentUserId);
-    const next = isSeller ? [currentUserId as string] : allSellerIds;
+    // Gestor vê todos os vendedores + os SEM vendedor (não atribuídos).
+    const next = isSeller
+      ? [currentUserId as string]
+      : [...allSellerIds, UNASSIGNED_SELLER_ID];
     setSelectedSellerIds(next);
     updatePrefs({ sellerIds: next });
   }, [prefsLoaded, savedPrefs.sellerIds, sellers, currentUserId, updatePrefs]);
@@ -309,9 +322,13 @@ export function ConversationList({
 
   const selectAllSellers = useCallback(() => {
     const all = sellers.map((s) => s.userId);
+    // "Todos" para o gestor inclui os SEM vendedor.
+    if (currentUserId && !all.includes(currentUserId)) {
+      all.push(UNASSIGNED_SELLER_ID);
+    }
     setSelectedSellerIds(all);
     updatePrefs({ sellerIds: all });
-  }, [sellers, updatePrefs]);
+  }, [sellers, currentUserId, updatePrefs]);
 
   const clearSellerFilter = useCallback(() => {
     setSelectedSellerIds([]);
@@ -425,9 +442,24 @@ export function ConversationList({
       if (selectedTagIds.length > 0) params.tagIds = selectedTagIds.join(',');
       // Filtro "Vendedores" tem precedência: quando há seleção, filtra por
       // esses responsáveis; senão cai no scope "Minhas conversas".
-      if (selectedSellerIds.length > 0) {
-        params.assignedToIds = selectedSellerIds.join(',');
-      } else if (scope === 'MINE' && currentUserId) {
+      // "Sem vendedor" (sentinela) vira includeUnassigned; os demais viram
+      // assignedToIds. Combináveis (ids selecionados OU sem responsável).
+      const realSellerIds = selectedSellerIds.filter(
+        (id) => id !== UNASSIGNED_SELLER_ID,
+      );
+      const wantsUnassigned = selectedSellerIds.includes(UNASSIGNED_SELLER_ID);
+      if (realSellerIds.length > 0) {
+        params.assignedToIds = realSellerIds.join(',');
+      }
+      if (wantsUnassigned) {
+        params.includeUnassigned = 'true';
+      }
+      if (
+        realSellerIds.length === 0 &&
+        !wantsUnassigned &&
+        scope === 'MINE' &&
+        currentUserId
+      ) {
         params.assignedToId = currentUserId;
       }
       if (viewId) {
@@ -1143,6 +1175,37 @@ export function ConversationList({
                     </div>
                   </div>
                   <div className="max-h-56 overflow-y-auto scrollbar-thin">
+                    {isManagerView &&
+                      (() => {
+                        const isActive =
+                          selectedSellerIds.includes(UNASSIGNED_SELLER_ID);
+                        return (
+                          <button
+                            onClick={() =>
+                              toggleSellerFilter(UNASSIGNED_SELLER_ID)
+                            }
+                            className={`flex w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-left text-[13px] transition-colors ${
+                              isActive
+                                ? 'bg-primary/[0.06] font-medium text-primary dark:bg-primary/10'
+                                : 'text-zinc-700 hover:bg-zinc-50 dark:text-zinc-300 dark:hover:bg-zinc-800/60'
+                            }`}
+                          >
+                            <div
+                              className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border transition-colors ${
+                                isActive
+                                  ? 'border-primary bg-primary text-white'
+                                  : 'border-zinc-300 dark:border-zinc-600'
+                              }`}
+                            >
+                              {isActive && <Check className="h-2.5 w-2.5" />}
+                            </div>
+                            <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-dashed border-zinc-300 text-[8px] font-semibold text-zinc-400 dark:border-zinc-600">
+                              —
+                            </span>
+                            <span className="flex-1 truncate">Sem vendedor</span>
+                          </button>
+                        );
+                      })()}
                     {sellers.map((s) => {
                       const isActive = selectedSellerIds.includes(s.userId);
                       const label = s.name || 'Vendedor';
