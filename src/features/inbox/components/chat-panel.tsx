@@ -750,6 +750,7 @@ export function ChatPanel({
     type?: string;
     mimeType?: string;
     url?: string;
+    fileName?: string;
   }): 'IMAGE' | 'VIDEO' | 'AUDIO' | 'DOCUMENT' => {
     const t = String(media.type ?? '').trim().toUpperCase();
     if (t === 'IMAGE' || t === 'VIDEO' || t === 'AUDIO' || t === 'DOCUMENT') {
@@ -759,6 +760,21 @@ export function ChatPanel({
     if (mime.startsWith('image/')) return 'IMAGE';
     if (mime.startsWith('video/')) return 'VIDEO';
     if (mime.startsWith('audio/')) return 'AUDIO';
+    // Último recurso: extensão do arquivo/URL. Cobre anexos antigos sem
+    // mimeType e com `type` inválido (senão iriam como DOCUMENT e o WhatsApp
+    // rejeita uma imagem enviada como documento).
+    const ext = (media.fileName || media.url || '')
+      .toLowerCase()
+      .split('?')[0]
+      .match(/\.([a-z0-9]+)$/)?.[1];
+    if (ext) {
+      if (['png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp', 'heic', 'heif'].includes(ext))
+        return 'IMAGE';
+      if (['mp4', 'mov', '3gp', 'webm', 'mkv', 'avi', 'm4v'].includes(ext))
+        return 'VIDEO';
+      if (['mp3', 'ogg', 'oga', 'm4a', 'wav', 'aac', 'amr', 'opus'].includes(ext))
+        return 'AUDIO';
+    }
     return 'DOCUMENT';
   };
 
