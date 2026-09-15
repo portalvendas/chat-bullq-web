@@ -40,16 +40,16 @@ interface DraftStage {
   name: string;
   color: string;
   type: StageType;
-  // Prazo de inatividade (horas) da etapa. null = herda do funil.
-  inactivityHours: number | null;
+  // Prazo de inatividade (minutos) da etapa. null = herda do funil.
+  inactivityMinutes: number | null;
 }
 
 interface Props {
   open: boolean;
   pipelineId: string;
   initialStages: PipelineStage[];
-  /** Prazo padrão do funil (horas). null = alerta de inatividade desligado. */
-  pipelineInactivityHours?: number | null;
+  /** Prazo padrão do funil (minutos). null = alerta de inatividade desligado. */
+  pipelineInactivityMinutes?: number | null;
   onClose: () => void;
   onSaved: () => void;
 }
@@ -171,16 +171,16 @@ function SortableRow({
 
           <div className="ml-1 h-4 w-px bg-zinc-200 dark:bg-zinc-700" />
 
-          {/* Prazo de inatividade da etapa (horas). Vazio = herda do funil. */}
+          {/* Prazo de inatividade da etapa (minutos). Vazio = herda do funil. */}
           <label className="flex items-center gap-1 text-[11px] text-zinc-500">
             Parado após
             <input
               type="number"
               min={1}
-              value={stage.inactivityHours ?? ''}
+              value={stage.inactivityMinutes ?? ''}
               onChange={(e) =>
                 onChange({
-                  inactivityHours:
+                  inactivityMinutes:
                     e.target.value === ''
                       ? null
                       : Math.max(1, parseInt(e.target.value, 10) || 1),
@@ -189,7 +189,7 @@ function SortableRow({
               placeholder="herda"
               className="w-16 rounded-md border border-zinc-300 bg-white px-1.5 py-0.5 text-xs dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
             />
-            h
+            min
           </label>
         </div>
       </div>
@@ -210,13 +210,13 @@ export function StagesDialog({
   open,
   pipelineId,
   initialStages,
-  pipelineInactivityHours,
+  pipelineInactivityMinutes,
   onClose,
   onSaved,
 }: Props) {
   const qc = useQueryClient();
   const [stages, setStages] = useState<DraftStage[]>([]);
-  const [pipelineHours, setPipelineHours] = useState<number | null>(null);
+  const [pipelineMinutes, setPipelineMinutes] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -228,12 +228,12 @@ export function StagesDialog({
           name: s.name,
           color: s.color ?? 'zinc',
           type: s.type,
-          inactivityHours: s.inactivityHours ?? null,
+          inactivityMinutes: s.inactivityMinutes ?? null,
         })),
       );
-      setPipelineHours(pipelineInactivityHours ?? null);
+      setPipelineMinutes(pipelineInactivityMinutes ?? null);
     }
-  }, [open, initialStages, pipelineInactivityHours]);
+  }, [open, initialStages, pipelineInactivityMinutes]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -260,7 +260,7 @@ export function StagesDialog({
         name: '',
         color: 'zinc',
         type: 'NORMAL',
-        inactivityHours: null,
+        inactivityMinutes: null,
       },
     ]);
   };
@@ -274,7 +274,7 @@ export function StagesDialog({
     try {
       // Prazo padrão do funil (default de inatividade de todas as etapas).
       await pipelinesService.update(pipelineId, {
-        inactivityHours: pipelineHours,
+        inactivityMinutes: pipelineMinutes,
       });
       await pipelinesService.upsertStages(
         pipelineId,
@@ -284,7 +284,7 @@ export function StagesDialog({
           color: s.color,
           type: s.type,
           order: idx,
-          inactivityHours: s.inactivityHours,
+          inactivityMinutes: s.inactivityMinutes,
         })),
       );
       toast.success('Stages atualizadas');
@@ -330,9 +330,9 @@ export function StagesDialog({
             <input
               type="number"
               min={1}
-              value={pipelineHours ?? ''}
+              value={pipelineMinutes ?? ''}
               onChange={(e) =>
-                setPipelineHours(
+                setPipelineMinutes(
                   e.target.value === ''
                     ? null
                     : Math.max(1, parseInt(e.target.value, 10) || 1),
@@ -342,7 +342,7 @@ export function StagesDialog({
               className="w-24 rounded-md border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
             />
             <span className="text-sm text-zinc-700 dark:text-zinc-300">
-              horas
+              minutos
             </span>
             <span className="ml-auto text-[11px] text-zinc-400">
               Vazio = alerta desligado. Cada etapa pode ter prazo próprio.
