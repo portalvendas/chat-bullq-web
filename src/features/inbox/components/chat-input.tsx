@@ -1,6 +1,13 @@
 'use client';
 
-import { useState, useRef, useCallback, useMemo } from 'react';
+import {
+  useState,
+  useRef,
+  useCallback,
+  useMemo,
+  forwardRef,
+  useImperativeHandle,
+} from 'react';
 import { Send, Paperclip, Mic, Trash2, Square, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAudioRecorder } from '../hooks/use-audio-recorder';
@@ -44,15 +51,23 @@ const FILE_ACCEPT = [
   '.zip',
 ].join(',');
 
-export function ChatInput({
-  onSend,
-  onSendAudio,
-  onSendFile,
-  disabled,
-  contactName,
-  agentName,
-  onSendQuickReplyMedia,
-}: ChatInputProps) {
+export interface ChatInputHandle {
+  applyQuickReply: (reply: QuickReply) => void;
+}
+
+export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
+  function ChatInput(
+    {
+      onSend,
+      onSendAudio,
+      onSendFile,
+      disabled,
+      contactName,
+      agentName,
+      onSendQuickReplyMedia,
+    }: ChatInputProps,
+    ref,
+  ) {
   const [text, setText] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [isSendingAudio, setIsSendingAudio] = useState(false);
@@ -124,6 +139,8 @@ export function ChatInput({
     },
     [contactName, agentName, onSendQuickReplyMedia],
   );
+
+  useImperativeHandle(ref, () => ({ applyQuickReply }), [applyQuickReply]);
 
   const onChangeText = (v: string) => {
     setText(v);
@@ -400,4 +417,4 @@ export function ChatInput({
       )}
     </div>
   );
-}
+});

@@ -13,6 +13,7 @@ import {
   Mail,
   Send,
   Activity,
+  MessageSquareText,
   ShoppingBag,
 } from 'lucide-react';
 import { ConversationAiToggle } from './conversation-ai-toggle';
@@ -34,6 +35,9 @@ interface ConversationHeaderProps {
   /** When provided, renders a toggle button for the agent-runs sidebar. */
   onToggleAgentLogs?: () => void;
   agentLogsOpen?: boolean;
+  /** Toggle do painel de respostas rápidas (lado direito). */
+  onToggleQuickReplies?: () => void;
+  quickRepliesOpen?: boolean;
 }
 
 function ChannelBadge({ type, name }: { type: string; name: string }) {
@@ -114,6 +118,8 @@ export function ConversationHeader({
   onUpdate,
   onToggleAgentLogs,
   agentLogsOpen,
+  onToggleQuickReplies,
+  quickRepliesOpen,
 }: ConversationHeaderProps) {
   const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState(false);
@@ -236,6 +242,23 @@ export function ConversationHeader({
             }`}
           >
             <Activity className="h-3.5 w-3.5" />
+          </button>
+        )}
+        {onToggleQuickReplies && (
+          <button
+            onClick={onToggleQuickReplies}
+            title={
+              quickRepliesOpen
+                ? 'Fechar respostas rápidas'
+                : 'Listar respostas rápidas'
+            }
+            className={`inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium transition-colors ${
+              quickRepliesOpen
+                ? 'bg-primary/10 text-primary dark:bg-primary/15'
+                : 'text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-300'
+            }`}
+          >
+            <MessageSquareText className="h-3.5 w-3.5" /> Respostas
           </button>
         )}
         {conversation.status !== 'CLOSED' && (

@@ -2,10 +2,15 @@
 
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Check, CheckCheck, Clock, AlertCircle, ExternalLink, Reply, Trash2, X, Ban } from 'lucide-react';
+import { Check, CheckCheck, Clock, AlertCircle, ExternalLink, Reply, Trash2, X, Ban, Search, Paperclip, MessageSquareText } from 'lucide-react';
 import { toast } from 'sonner';
 import { inboxService, type Conversation, type Message } from '../services/inbox.service';
-import { ChatInput } from './chat-input';
+import { ChatInput, type ChatInputHandle } from './chat-input';
+import {
+  quickRepliesService,
+  renderQuickReplyVars,
+  type QuickReply,
+} from '@/features/quick-replies/services/quick-replies.service';
 import { ConversationHeader } from './conversation-header';
 import { StoryReplyCard } from './story-reply-card';
 import { AudioMessagePlayer } from './audio-message-player';
@@ -387,6 +392,12 @@ export function ChatPanel({
   const topSentinelRef = useRef<HTMLDivElement>(null);
   const { on, emit, onReconnect } = useSocket();
   const user = useAuthStore((s) => s.user);
+
+  // Ref imperativo para o composer — o painel lateral de respostas rápidas
+  // injeta a resposta escolhida no ChatInput sem precisar levantar estado.
+  const composerRef = useRef<ChatInputHandle>(null);
+  // Painel lateral direito "Respostas rápidas" (botão no cabeçalho).
+  const [showQuickReplies, setShowQuickReplies] = useState(false);
 
   // Paginação "pra cima": mantemos SEMPRE a página 1 (as N mais recentes) e
   // vamos só aumentando o `limit`. Assim a query key continua estável
@@ -795,16 +806,20 @@ export function ChatPanel({
   };
 
   return (
-    // min-h-0 é load-bearing: sem ele, o scroll-container interno cresce
-    // pelo conteúdo (default min-height de flex children) e empurra o
-    // ChatInput pra fora do painel — quebra dramaticamente quando o pai
-    // é um modal com altura fixa.
+    // Linha: coluna do chat + (opcional) painel lateral de respostas rápidas.
+    <div className="flex min-h-0 min-w-0 flex-1">
+    {/* min-h-0 é load-bearing: sem ele, o scroll-container interno cresce
+        pelo conteúdo (default min-height de flex children) e empurra o
+        ChatInput pra fora do painel — quebra dramaticamente quando o pai
+        é um modal com altura fixa. */}
     <div className="flex min-h-0 min-w-0 flex-1 flex-col">
       <ConversationHeader
         conversation={conversation}
         onUpdate={onConversationUpdate}
         onToggleAgentLogs={onToggleAgentLogs}
         agentLogsOpen={agentLogsOpen}
+        onToggleQuickReplies={() => setShowQuickReplies((v) => !v)}
+        quickRepliesOpen={showQuickReplies}
       />
 
       <PendingActionsList conversationId={conversation.id} />
@@ -1141,6 +1156,7 @@ export function ChatPanel({
         <ReplyPreviewBar message={replyingTo} onCancel={cancelReply} />
       )}
       <ChatInput
+        ref={composerRef}
         onSend={handleSend}
         onSendAudio={handleSendAudio}
         onSendFile={handleSendFile}
@@ -1149,6 +1165,16 @@ export function ChatPanel({
         agentName={user?.name}
         onSendQuickReplyMedia={handleSendQuickReplyMedia}
       />
+    </div>
+
+      {showQuickReplies && (
+        <QuickRepliesPanel
+          contactName={conversation.isGroup ? null : conversation.contact?.name}
+          agentName={user?.name}
+          onPick={(r) => composerRef.current?.applyQuickReply(r)}
+          onClose={() => setShowQuickReplies(false)}
+        />
+      )}
     </div>
   );
 }
@@ -1191,5 +1217,131 @@ function ReplyPreviewBar({
         <X className="h-4 w-4" />
       </button>
     </div>
+  );
+}
+
+/**
+ * Painel lateral direito "Respostas rápidas". Abre pelo botão do cabeçalho.
+ * Lista as respostas cadastradas (empresa + pessoais), com busca e agrupamento.
+ * Clicar aplica a resposta no composer via `onPick` (ref imperativo do
+ * ChatInput) — texto vai pra caixa (com variáveis já resolvidas) e anexos
+ * são disparados direto pelo próprio ChatInput.
+ */
+function QuickRepliesPanel({
+  contactName,
+  agentName,
+  onPick,
+  onClose,
+}: {
+  contactName?: string | null;
+  agentName?: string | null;
+  onPick: (reply: QuickReply) => void;
+  onClose: () => void;
+}) {
+  const [q, setQ] = useState('');
+  const { data: replies = [], isLoading } = useQuery({
+    queryKey: ['quick-replies'],
+    queryFn: () => quickRepliesService.list(),
+    staleTime: 30_000,
+  });
+
+  const term = q.trim().toLowerCase();
+  const filtered = term
+    ? replies.filter(
+        (r) =>
+          r.title.toLowerCase().includes(term) ||
+          r.shortcut.toLowerCase().includes(term) ||
+          r.content.toLowerCase().includes(term),
+      )
+    : replies;
+
+  const org = filtered.filter((r) => !r.userId);
+  const mine = filtered.filter((r) => !!r.userId);
+
+  const preview = (r: QuickReply) =>
+    renderQuickReplyVars(r.content, { contactName, agentName }) ||
+    (r.attachments?.length ? 'Anexo' : '');
+
+  const Group = ({ label, items }: { label: string; items: QuickReply[] }) => {
+    if (!items.length) return null;
+    return (
+      <div className="mb-2">
+        <div className="px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-zinc-400">
+          {label}
+        </div>
+        {items.map((r) => (
+          <button
+            key={r.id}
+            type="button"
+            onClick={() => onPick(r)}
+            className="flex w-full items-start gap-2 px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800"
+          >
+            <code className="mt-0.5 shrink-0 rounded bg-zinc-100 px-1 text-[11px] font-medium text-primary dark:bg-zinc-800">
+              /{r.shortcut}
+            </code>
+            <span className="min-w-0 flex-1">
+              <span className="flex items-center gap-1 truncate text-xs font-medium text-zinc-800 dark:text-zinc-100">
+                {r.title}
+                {r.attachments && r.attachments.length > 0 && (
+                  <Paperclip className="h-3 w-3 shrink-0 text-zinc-400" />
+                )}
+              </span>
+              <span className="mt-0.5 block truncate text-[11px] text-zinc-500">
+                {preview(r)}
+              </span>
+            </span>
+          </button>
+        ))}
+      </div>
+    );
+  };
+
+  return (
+    <aside className="flex w-72 shrink-0 flex-col border-l border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
+      <div className="flex items-center justify-between border-b border-zinc-200 px-3 py-2.5 dark:border-zinc-800">
+        <div className="flex items-center gap-1.5 text-sm font-semibold text-zinc-700 dark:text-zinc-200">
+          <MessageSquareText className="h-4 w-4" /> Respostas rápidas
+        </div>
+        <button
+          type="button"
+          onClick={onClose}
+          className="rounded-md p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+          aria-label="Fechar respostas rápidas"
+        >
+          <X className="h-4 w-4" />
+        </button>
+      </div>
+
+      <div className="border-b border-zinc-200 p-2 dark:border-zinc-800">
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Buscar resposta ou /atalho"
+            className="w-full rounded-md border border-zinc-200 bg-zinc-50 py-1.5 pl-7 pr-2 text-xs text-zinc-800 outline-none focus:border-primary dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+          />
+        </div>
+      </div>
+
+      <div className="min-h-0 flex-1 overflow-y-auto py-1">
+        {isLoading ? (
+          <div className="px-3 py-6 text-center text-xs text-zinc-400">
+            Carregando…
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="px-3 py-6 text-center text-xs text-zinc-400">
+            {replies.length === 0
+              ? 'Nenhuma resposta cadastrada.'
+              : 'Nenhuma resposta encontrada.'}
+          </div>
+        ) : (
+          <>
+            <Group label="Da empresa" items={org} />
+            <Group label="Minhas" items={mine} />
+          </>
+        )}
+      </div>
+    </aside>
   );
 }
