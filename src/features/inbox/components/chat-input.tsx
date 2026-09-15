@@ -16,7 +16,6 @@ import {
   quickRepliesService,
   renderQuickReplyVars,
   type QuickReply,
-  type QuickReplyAttachment,
 } from '@/features/quick-replies/services/quick-replies.service';
 
 interface ChatInputProps {
@@ -27,11 +26,6 @@ interface ChatInputProps {
   /** Contexto p/ variáveis das respostas rápidas ({{cliente}}/{{vendedor}}). */
   contactName?: string | null;
   agentName?: string | null;
-  /** Envia um anexo (já no storage) de uma resposta rápida, por URL. */
-  onSendQuickReplyMedia?: (
-    media: QuickReplyAttachment,
-    caption?: string,
-  ) => Promise<void> | void;
 }
 
 // Espelha o whitelist do backend (UploadsService.ALLOWED_MEDIA_MIME) — o
@@ -64,7 +58,6 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
       disabled,
       contactName,
       agentName,
-      onSendQuickReplyMedia,
     }: ChatInputProps,
     ref,
   ) {
@@ -106,24 +99,13 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
 
   const applyQuickReply = useCallback(
     (reply: QuickReply) => {
+      // Sempre insere o texto (com variáveis resolvidas) no campo pra
+      // revisar/editar antes de enviar. O envio direto — inclusive de
+      // anexos — é feito pelo botão de envio ao lado de cada resposta.
       const rendered = renderQuickReplyVars(reply.content, {
         contactName,
         agentName,
       });
-      const atts = reply.attachments ?? [];
-      // Com anexo: envia a mídia direto (texto vira legenda do 1º anexo) e
-      // limpa o campo. Sem anexo: insere o texto no campo pra editar/enviar.
-      if (atts.length > 0 && onSendQuickReplyMedia) {
-        setText('');
-        setQrDismissed(true);
-        setQrIndex(0);
-        atts.forEach((a, i) => {
-          Promise.resolve(
-            onSendQuickReplyMedia(a, i === 0 ? rendered || undefined : undefined),
-          ).catch(() => undefined);
-        });
-        return;
-      }
       setText(rendered);
       setQrDismissed(true);
       setQrIndex(0);
@@ -137,7 +119,7 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
         }
       });
     },
-    [contactName, agentName, onSendQuickReplyMedia],
+    [contactName, agentName],
   );
 
   useImperativeHandle(ref, () => ({ applyQuickReply }), [applyQuickReply]);

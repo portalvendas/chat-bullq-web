@@ -758,8 +758,44 @@ export function ChatPanel({
         },
       });
       if (sent?.id) mergeMessage(sent);
-    } catch {
+    } catch (err) {
       queryClient.invalidateQueries({ queryKey: ['messages', conversation.id] });
+      throw err;
+    }
+  };
+
+  // Envio DIRETO de uma resposta rápida ao cliente (botão ao lado da resposta),
+  // sem passar pela caixa de digitação. Com anexo(s): o texto vira legenda do
+  // 1º anexo. Sem anexo: envia como mensagem de texto.
+  const handleSendQuickReplyDirect = async (reply: QuickReply) => {
+    const rendered = renderQuickReplyVars(reply.content, {
+      contactName: conversation.isGroup ? null : conversation.contact?.name,
+      agentName: user?.name,
+    });
+    const atts = reply.attachments ?? [];
+    try {
+      if (atts.length > 0) {
+        for (let i = 0; i < atts.length; i++) {
+          await handleSendQuickReplyMedia(
+            atts[i],
+            i === 0 ? rendered || undefined : undefined,
+          );
+        }
+      } else if (rendered.trim()) {
+        const sent = await inboxService.sendMessage({
+          conversationId: conversation.id,
+          type: 'TEXT',
+          content: { text: rendered },
+        });
+        if (sent?.id) mergeMessage(sent);
+      } else {
+        return;
+      }
+      toast.success('Resposta enviada');
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : 'Erro ao enviar a resposta',
+      );
     }
   };
 
@@ -1163,7 +1199,6 @@ export function ChatPanel({
         disabled={conversation.status === 'CLOSED'}
         contactName={conversation.isGroup ? null : conversation.contact?.name}
         agentName={user?.name}
-        onSendQuickReplyMedia={handleSendQuickReplyMedia}
       />
     </div>
 
@@ -1172,6 +1207,7 @@ export function ChatPanel({
           contactName={conversation.isGroup ? null : conversation.contact?.name}
           agentName={user?.name}
           onPick={(r) => composerRef.current?.applyQuickReply(r)}
+          onSendDirect={handleSendQuickReplyDirect}
           onClose={() => setShowQuickReplies(false)}
         />
       )}
@@ -1296,34 +1332,49 @@ function QuickRepliesPanel({
           </span>
         </div>
         {items.map((r) => (
-          <button
+          <div
             key={r.id}
-            type="button"
-            onClick={() => onPick(r)}
-            className="block w-full px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            className="group flex items-stretch gap-1 pr-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800"
           >
-            {/* Linha 1: título (dominante) + selos + atalho discreto no fim. */}
-            <span className="flex items-center gap-1.5">
-              <span className="min-w-0 flex-1 truncate text-xs font-medium text-zinc-800 dark:text-zinc-100">
-                {r.title}
-              </span>
-              {r.attachments && r.attachments.length > 0 && (
-                <Paperclip className="h-3 w-3 shrink-0 text-zinc-400" />
-              )}
-              {r.userId && (
-                <span className="shrink-0 rounded bg-amber-100 px-1 text-[9px] font-medium uppercase tracking-wide text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
-                  Pessoal
+            {/* Corpo clicável: insere o texto na caixa pra revisar/editar. */}
+            <button
+              type="button"
+              onClick={() => onPick(r)}
+              title="Inserir na caixa de mensagem"
+              className="min-w-0 flex-1 py-2 pl-3 text-left"
+            >
+              {/* Linha 1: título (dominante) + selos + atalho discreto no fim. */}
+              <span className="flex items-center gap-1.5">
+                <span className="min-w-0 flex-1 truncate text-xs font-medium text-zinc-800 dark:text-zinc-100">
+                  {r.title}
                 </span>
-              )}
-              <code className="inline-block max-w-[6rem] shrink-0 truncate rounded bg-zinc-100 px-1 align-middle text-[10px] font-medium text-zinc-400 dark:bg-zinc-800">
-                /{r.shortcut}
-              </code>
-            </span>
-            {/* Linha 2: prévia do conteúdo (início). */}
-            <span className="mt-0.5 block truncate text-[11px] text-zinc-500">
-              {preview(r)}
-            </span>
-          </button>
+                {r.attachments && r.attachments.length > 0 && (
+                  <Paperclip className="h-3 w-3 shrink-0 text-zinc-400" />
+                )}
+                {r.userId && (
+                  <span className="shrink-0 rounded bg-amber-100 px-1 text-[9px] font-medium uppercase tracking-wide text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
+                    Pessoal
+                  </span>
+                )}
+                <code className="inline-block max-w-[6rem] shrink-0 truncate rounded bg-zinc-100 px-1 align-middle text-[10px] font-medium text-zinc-400 dark:bg-zinc-800">
+                  /{r.shortcut}
+                </code>
+              </span>
+              {/* Linha 2: prévia do conteúdo (início). */}
+              <span className="mt-0.5 block truncate text-[11px] text-zinc-500">
+                {preview(r)}
+              </span>
+            </button>
+            {/* Botão de ENVIO DIRETO ao cliente (texto + anexos), sem caixa. */}
+            <button
+              type="button"
+              onClick={() => onSendDirect(r)}
+              title="Enviar direto para o cliente"
+              className="my-1 flex w-8 shrink-0 items-center justify-center rounded-md text-zinc-400 hover:bg-primary hover:text-primary-foreground"
+            >
+              <Send className="h-3.5 w-3.5" />
+            </button>
+          </div>
         ))}
       </div>
     );
