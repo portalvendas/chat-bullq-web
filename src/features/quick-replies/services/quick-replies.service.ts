@@ -1,6 +1,15 @@
 import { api } from '@/lib/api';
 
 export type QuickReplyScope = 'ORG' | 'PERSONAL';
+export type QuickReplyMediaType = 'IMAGE' | 'VIDEO' | 'AUDIO' | 'DOCUMENT';
+
+export interface QuickReplyAttachment {
+  url: string;
+  type: QuickReplyMediaType;
+  mimeType?: string;
+  fileName?: string;
+  size?: number;
+}
 
 export interface QuickReply {
   id: string;
@@ -10,6 +19,7 @@ export interface QuickReply {
   shortcut: string;
   title: string;
   content: string;
+  attachments: QuickReplyAttachment[];
   createdAt: string;
   updatedAt: string;
 }
@@ -18,6 +28,7 @@ export interface QuickReplyInput {
   shortcut: string;
   title: string;
   content: string;
+  attachments?: QuickReplyAttachment[];
   scope?: QuickReplyScope;
 }
 
@@ -40,6 +51,41 @@ export const quickRepliesService = {
   },
   async remove(id: string): Promise<void> {
     await api.delete(`/quick-replies/${id}`);
+  },
+  /**
+   * Sobe um anexo (áudio vai pro endpoint de áudio; imagem/vídeo/doc pro de
+   * mídia) e devolve o metadado pronto pra guardar na resposta rápida.
+   */
+  async uploadAttachment(file: File): Promise<QuickReplyAttachment> {
+    const isAudio = (file.type || '').startsWith('audio/');
+    const form = new FormData();
+    form.append('file', file, file.name);
+    const { data } = await api.post(
+      isAudio ? '/messages/uploads/audio' : '/messages/uploads/media',
+      form,
+      { headers: { 'Content-Type': 'multipart/form-data' }, timeout: 120000 },
+    );
+    const up = (data?.data ?? data) as {
+      url: string;
+      mimeType?: string;
+      size?: number;
+      filename?: string;
+    };
+    const mime = up.mimeType || file.type || '';
+    const type: QuickReplyMediaType = mime.startsWith('image/')
+      ? 'IMAGE'
+      : mime.startsWith('video/')
+        ? 'VIDEO'
+        : mime.startsWith('audio/')
+          ? 'AUDIO'
+          : 'DOCUMENT';
+    return {
+      url: up.url,
+      type,
+      mimeType: mime,
+      fileName: up.filename || file.name,
+      size: up.size,
+    };
   },
 };
 

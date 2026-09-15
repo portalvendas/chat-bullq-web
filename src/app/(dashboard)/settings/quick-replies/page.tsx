@@ -12,11 +12,17 @@ import {
   X,
   Building2,
   User as UserIcon,
+  Paperclip,
+  Image as ImageIcon,
+  Video as VideoIcon,
+  Music,
+  FileText,
 } from 'lucide-react';
 import {
   quickRepliesService,
   type QuickReply,
   type QuickReplyScope,
+  type QuickReplyAttachment,
 } from '@/features/quick-replies/services/quick-replies.service';
 
 interface Draft {
@@ -25,9 +31,24 @@ interface Draft {
   title: string;
   content: string;
   scope: QuickReplyScope;
+  attachments: QuickReplyAttachment[];
 }
 
-const EMPTY: Draft = { shortcut: '', title: '', content: '', scope: 'ORG' };
+const EMPTY: Draft = {
+  shortcut: '',
+  title: '',
+  content: '',
+  scope: 'ORG',
+  attachments: [],
+};
+
+function AttIcon({ type }: { type: QuickReplyAttachment['type'] }) {
+  const cls = 'h-3.5 w-3.5';
+  if (type === 'IMAGE') return <ImageIcon className={cls} />;
+  if (type === 'VIDEO') return <VideoIcon className={cls} />;
+  if (type === 'AUDIO') return <Music className={cls} />;
+  return <FileText className={cls} />;
+}
 
 // Variáveis disponíveis no conteúdo (resolvidas no envio).
 const VARS: { token: string; label: string; hint: string }[] = [
@@ -46,6 +67,8 @@ export default function QuickRepliesPage() {
   const [draft, setDraft] = useState<Draft | null>(null);
   const invalidate = () => qc.invalidateQueries({ queryKey: ['quick-replies'] });
   const contentRef = useRef<HTMLTextAreaElement>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
 
   // Insere a variável na posição do cursor do textarea de conteúdo.
   const insertVar = (token: string) => {
@@ -64,6 +87,33 @@ export default function QuickRepliesPage() {
     });
   };
 
+  const onPickFiles = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    setUploading(true);
+    try {
+      const uploaded: QuickReplyAttachment[] = [];
+      for (const f of Array.from(files)) {
+        uploaded.push(await quickRepliesService.uploadAttachment(f));
+      }
+      setDraft((d) =>
+        d ? { ...d, attachments: [...d.attachments, ...uploaded] } : d,
+      );
+    } catch (err: unknown) {
+      const msg =
+        (err as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message || 'Erro ao subir o anexo';
+      toast.error(msg);
+    } finally {
+      setUploading(false);
+      if (fileRef.current) fileRef.current.value = '';
+    }
+  };
+
+  const removeAtt = (idx: number) =>
+    setDraft((d) =>
+      d ? { ...d, attachments: d.attachments.filter((_, i) => i !== idx) } : d,
+    );
+
   const save = useMutation({
     mutationFn: (d: Draft) => {
       const shortcut = d.shortcut.trim().replace(/^\/+/, '').toLowerCase();
@@ -71,6 +121,7 @@ export default function QuickRepliesPage() {
         shortcut,
         title: d.title.trim(),
         content: d.content,
+        attachments: d.attachments,
         scope: d.scope,
       };
       return d.id
@@ -106,7 +157,7 @@ export default function QuickRepliesPage() {
     !!draft &&
     draft.shortcut.trim().length > 0 &&
     draft.title.trim().length > 0 &&
-    draft.content.trim().length > 0;
+    (draft.content.trim().length > 0 || draft.attachments.length > 0);
 
   return (
     <div className="max-w-2xl">
@@ -223,6 +274,51 @@ export default function QuickRepliesPage() {
             </p>
           </div>
 
+          <div className="mt-3">
+            <label className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-300">
+              Anexos (imagem, vídeo, áudio, documento)
+            </label>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv"
+              multiple
+              hidden
+              onChange={(e) => onPickFiles(e.target.files)}
+            />
+            <div className="flex flex-wrap items-center gap-2">
+              {draft.attachments.map((a, i) => (
+                <span
+                  key={i}
+                  className="inline-flex max-w-[220px] items-center gap-1.5 rounded-md border border-zinc-200 bg-zinc-50 px-2 py-1 text-xs text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
+                >
+                  <AttIcon type={a.type} />
+                  <span className="truncate">{a.fileName || a.type}</span>
+                  <button
+                    type="button"
+                    onClick={() => removeAtt(i)}
+                    className="rounded p-0.5 text-zinc-400 hover:text-red-500"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
+              ))}
+              <button
+                type="button"
+                onClick={() => fileRef.current?.click()}
+                disabled={uploading}
+                className="inline-flex items-center gap-1 rounded-md border border-dashed border-zinc-300 px-2.5 py-1.5 text-xs text-zinc-600 hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+              >
+                {uploading ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Paperclip className="h-3.5 w-3.5" />
+                )}
+                Anexar
+              </button>
+            </div>
+          </div>
+
           <div className="mt-4 flex items-center gap-2">
             <button
               onClick={() => draft && save.mutate(draft)}
@@ -278,6 +374,12 @@ export default function QuickRepliesPage() {
                         <div className="mt-0.5 line-clamp-2 whitespace-pre-wrap text-xs text-zinc-500">
                           {r.content}
                         </div>
+                        {r.attachments && r.attachments.length > 0 && (
+                          <div className="mt-1 inline-flex items-center gap-1 text-[11px] text-zinc-400">
+                            <Paperclip className="h-3 w-3" />
+                            {r.attachments.length} anexo(s)
+                          </div>
+                        )}
                       </div>
                       <div className="flex shrink-0 items-center gap-1">
                         <button
@@ -288,6 +390,7 @@ export default function QuickRepliesPage() {
                               title: r.title,
                               content: r.content,
                               scope: r.userId ? 'PERSONAL' : 'ORG',
+                              attachments: r.attachments ?? [],
                             })
                           }
                           className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800"

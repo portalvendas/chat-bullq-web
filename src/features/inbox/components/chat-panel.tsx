@@ -728,6 +728,30 @@ export function ChatPanel({
     }
   };
 
+  // Resposta rápida COM anexo: a mídia já está no storage (foi subida no
+  // cadastro), então envia direto por URL — sem re-upload. O texto vira
+  // legenda do primeiro anexo.
+  const handleSendQuickReplyMedia = async (
+    media: { url: string; type: string; mimeType?: string; fileName?: string },
+    caption?: string,
+  ) => {
+    try {
+      const sent = await inboxService.sendMessage({
+        conversationId: conversation.id,
+        type: media.type as 'IMAGE' | 'VIDEO' | 'AUDIO' | 'DOCUMENT',
+        content: {
+          mediaUrl: media.url,
+          ...(media.mimeType ? { mimeType: media.mimeType } : {}),
+          ...(media.fileName ? { fileName: media.fileName } : {}),
+          ...(caption ? { caption } : {}),
+        },
+      });
+      if (sent?.id) mergeMessage(sent);
+    } catch {
+      queryClient.invalidateQueries({ queryKey: ['messages', conversation.id] });
+    }
+  };
+
   // Hora embaixo de cada bolha. Se a msg não for de hoje, prefixa com
   // a data curta ("DD/MM 16:58") pra não precisar caçar o separador
   // rolando o histórico inteiro.
@@ -1123,6 +1147,7 @@ export function ChatPanel({
         disabled={conversation.status === 'CLOSED'}
         contactName={conversation.isGroup ? null : conversation.contact?.name}
         agentName={user?.name}
+        onSendQuickReplyMedia={handleSendQuickReplyMedia}
       />
     </div>
   );
