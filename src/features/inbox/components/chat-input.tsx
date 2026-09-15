@@ -8,7 +8,7 @@ import {
   forwardRef,
   useImperativeHandle,
 } from 'react';
-import { Send, Paperclip, Mic, Trash2, Square, Loader2 } from 'lucide-react';
+import { Send, Paperclip, Mic, Trash2, Square, Loader2, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAudioRecorder } from '../hooks/use-audio-recorder';
 import { useQuery } from '@tanstack/react-query';
@@ -16,6 +16,7 @@ import {
   quickRepliesService,
   renderQuickReplyVars,
   type QuickReply,
+  type QuickReplyAttachment,
 } from '@/features/quick-replies/services/quick-replies.service';
 
 interface ChatInputProps {
@@ -26,6 +27,12 @@ interface ChatInputProps {
   /** Contexto p/ variáveis das respostas rápidas ({{cliente}}/{{vendedor}}). */
   contactName?: string | null;
   agentName?: string | null;
+  /** Envia anexos (já no storage) que foram "carregados" de uma resposta
+   *  rápida na caixa; o texto atual vira legenda do 1º anexo. */
+  onSendStagedMedia?: (
+    atts: QuickReplyAttachment[],
+    caption?: string,
+  ) => Promise<void> | void;
 }
 
 // Espelha o whitelist do backend (UploadsService.ALLOWED_MEDIA_MIME) — o
@@ -58,6 +65,7 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
       disabled,
       contactName,
       agentName,
+      onSendStagedMedia,
     }: ChatInputProps,
     ref,
   ) {
@@ -65,6 +73,8 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
   const [isSending, setIsSending] = useState(false);
   const [isSendingAudio, setIsSendingAudio] = useState(false);
   const [isSendingFile, setIsSendingFile] = useState(false);
+  // Anexos "carregados" de uma resposta rápida, aguardando revisão/envio.
+  const [pendingAtts, setPendingAtts] = useState<QuickReplyAttachment[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const recorder = useAudioRecorder();
@@ -107,6 +117,7 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
         agentName,
       });
       setText(rendered);
+      setPendingAtts(reply.attachments ?? []);
       setQrDismissed(true);
       setQrIndex(0);
       requestAnimationFrame(() => {
@@ -132,18 +143,27 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
 
   const handleSubmit = useCallback(async () => {
     const trimmed = text.trim();
-    if (!trimmed || isSending) return;
+    const hasAtts = pendingAtts.length > 0;
+    // Precisa de texto OU de anexo carregado pra enviar.
+    if ((!trimmed && !hasAtts) || isSending) return;
     setIsSending(true);
     try {
-      await onSend(trimmed);
-      setText('');
+      if (hasAtts && onSendStagedMedia) {
+        // Envia os anexos carregados (texto vira legenda do 1º) e limpa tudo.
+        await onSendStagedMedia(pendingAtts, trimmed || undefined);
+        setPendingAtts([]);
+        setText('');
+      } else if (trimmed) {
+        await onSend(trimmed);
+        setText('');
+      }
       if (textareaRef.current) {
         textareaRef.current.style.height = 'auto';
       }
     } finally {
       setIsSending(false);
     }
-  }, [text, isSending, onSend]);
+  }, [text, isSending, onSend, pendingAtts, onSendStagedMedia]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (qrOpen) {
@@ -301,7 +321,8 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
 
   // IDLE MODE: text input + mic button.
   const canRecord = !!onSendAudio;
-  const showMic = canRecord && !text.trim();
+  const hasPendingAtts = pendingAtts.length > 0;
+  const showMic = canRecord && !text.trim() && !hasPendingAtts;
 
   return (
     <div className="relative border-t border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-950">
@@ -340,6 +361,29 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
                 </span>
               </span>
             </button>
+          ))}
+        </div>
+      )}
+      {hasPendingAtts && (
+        <div className="mb-2 flex flex-wrap gap-1.5">
+          {pendingAtts.map((a, i) => (
+            <span
+              key={`${a.url}-${i}`}
+              className="inline-flex max-w-[220px] items-center gap-1.5 rounded-md border border-zinc-200 bg-zinc-50 py-1 pl-2 pr-1 text-xs text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
+            >
+              <Paperclip className="h-3.5 w-3.5 shrink-0 text-zinc-400" />
+              <span className="truncate">{a.fileName || a.type}</span>
+              <button
+                type="button"
+                onClick={() =>
+                  setPendingAtts((prev) => prev.filter((_, idx) => idx !== i))
+                }
+                className="shrink-0 rounded p-0.5 text-zinc-400 hover:bg-zinc-200 hover:text-zinc-600 dark:hover:bg-zinc-700"
+                aria-label="Remover anexo"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </span>
           ))}
         </div>
       )}
@@ -386,7 +430,7 @@ export const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
         ) : (
           <button
             onClick={handleSubmit}
-            disabled={!text.trim() || isSending}
+            disabled={(!text.trim() && !hasPendingAtts) || isSending}
             className="mb-1 rounded-lg bg-primary p-2.5 text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
             aria-label="Enviar mensagem"
           >

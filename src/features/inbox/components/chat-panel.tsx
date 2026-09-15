@@ -10,6 +10,7 @@ import {
   quickRepliesService,
   renderQuickReplyVars,
   type QuickReply,
+  type QuickReplyAttachment,
 } from '@/features/quick-replies/services/quick-replies.service';
 import { ConversationHeader } from './conversation-header';
 import { StoryReplyCard } from './story-reply-card';
@@ -823,6 +824,20 @@ export function ChatPanel({
     }
   };
 
+  // Envia os anexos "carregados" na caixa (via clique numa resposta rápida),
+  // com o texto atual como legenda do 1º anexo. Erros sobem pra caixa tratar.
+  const handleSendStagedMedia = async (
+    atts: QuickReplyAttachment[],
+    caption?: string,
+  ) => {
+    for (let i = 0; i < atts.length; i++) {
+      await handleSendQuickReplyMedia(
+        atts[i],
+        i === 0 ? caption || undefined : undefined,
+      );
+    }
+  };
+
   // Hora embaixo de cada bolha. Se a msg não for de hoje, prefixa com
   // a data curta ("DD/MM 16:58") pra não precisar caçar o separador
   // rolando o histórico inteiro.
@@ -1223,6 +1238,7 @@ export function ChatPanel({
         disabled={conversation.status === 'CLOSED'}
         contactName={conversation.isGroup ? null : conversation.contact?.name}
         agentName={user?.name}
+        onSendStagedMedia={handleSendStagedMedia}
       />
     </div>
 
