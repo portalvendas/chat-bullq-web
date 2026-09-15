@@ -1267,11 +1267,13 @@ function QuickRepliesPanel({
   contactName,
   agentName,
   onPick,
+  onSendDirect,
   onClose,
 }: {
   contactName?: string | null;
   agentName?: string | null;
   onPick: (reply: QuickReply) => void;
+  onSendDirect: (reply: QuickReply) => void;
   onClose: () => void;
 }) {
   const [q, setQ] = useState('');
