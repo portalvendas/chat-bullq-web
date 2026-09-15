@@ -19,6 +19,8 @@ export interface QuickReply {
   shortcut: string;
   title: string;
   content: string;
+  /** TIPO/categoria livre p/ agrupar. null/'' = sem tipo. */
+  category: string | null;
   attachments: QuickReplyAttachment[];
   createdAt: string;
   updatedAt: string;
@@ -28,6 +30,7 @@ export interface QuickReplyInput {
   shortcut: string;
   title: string;
   content: string;
+  category?: string | null;
   attachments?: QuickReplyAttachment[];
   scope?: QuickReplyScope;
 }

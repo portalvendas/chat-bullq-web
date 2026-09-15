@@ -2,7 +2,7 @@
 
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Check, CheckCheck, Clock, AlertCircle, ExternalLink, Reply, Trash2, X, Ban, Search, Paperclip, MessageSquareText } from 'lucide-react';
+import { Check, CheckCheck, Clock, AlertCircle, ExternalLink, Reply, Trash2, X, Ban, Search, Paperclip, MessageSquareText, Tag } from 'lucide-react';
 import { toast } from 'sonner';
 import { inboxService, type Conversation, type Message } from '../services/inbox.service';
 import { ChatInput, type ChatInputHandle } from './chat-input';
@@ -1255,8 +1255,31 @@ function QuickRepliesPanel({
       )
     : replies;
 
-  const org = filtered.filter((r) => !r.userId);
-  const mine = filtered.filter((r) => !!r.userId);
+  // Agrupa por TIPO (categoria livre). "Sem tipo" fica por último; dentro do
+  // tipo, empresa antes de pessoal, depois por título.
+  const SEM_TIPO = 'Sem tipo';
+  const byCat = new Map<string, QuickReply[]>();
+  for (const r of filtered) {
+    const key = (r.category ?? '').trim() || SEM_TIPO;
+    const arr = byCat.get(key) ?? [];
+    arr.push(r);
+    byCat.set(key, arr);
+  }
+  const groups = Array.from(byCat.keys())
+    .sort((a, b) => {
+      if (a === SEM_TIPO) return 1;
+      if (b === SEM_TIPO) return -1;
+      return a.localeCompare(b, 'pt-BR', { sensitivity: 'base' });
+    })
+    .map((name) => ({
+      key: name,
+      rows: (byCat.get(name) ?? []).sort((a, b) => {
+        const sa = a.userId ? 1 : 0;
+        const sb = b.userId ? 1 : 0;
+        if (sa !== sb) return sa - sb;
+        return a.title.localeCompare(b.title, 'pt-BR', { sensitivity: 'base' });
+      }),
+    }));
 
   const preview = (r: QuickReply) =>
     renderQuickReplyVars(r.content, { contactName, agentName }) ||
@@ -1266,8 +1289,11 @@ function QuickRepliesPanel({
     if (!items.length) return null;
     return (
       <div className="mb-2">
-        <div className="px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-zinc-400">
-          {label}
+        <div className="flex items-center gap-1 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-zinc-400">
+          <Tag className="h-3 w-3" /> {label}
+          <span className="font-normal normal-case tracking-normal text-zinc-300 dark:text-zinc-600">
+            · {items.length}
+          </span>
         </div>
         {items.map((r) => (
           <button
@@ -1284,6 +1310,11 @@ function QuickRepliesPanel({
                 {r.title}
                 {r.attachments && r.attachments.length > 0 && (
                   <Paperclip className="h-3 w-3 shrink-0 text-zinc-400" />
+                )}
+                {r.userId && (
+                  <span className="shrink-0 rounded bg-amber-100 px-1 text-[9px] font-medium uppercase tracking-wide text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
+                    Pessoal
+                  </span>
                 )}
               </span>
               <span className="mt-0.5 block truncate text-[11px] text-zinc-500">
@@ -1337,8 +1368,9 @@ function QuickRepliesPanel({
           </div>
         ) : (
           <>
-            <Group label="Da empresa" items={org} />
-            <Group label="Minhas" items={mine} />
+            {groups.map((g) => (
+              <Group key={g.key} label={g.key} items={g.rows} />
+            ))}
           </>
         )}
       </div>

@@ -12,6 +12,7 @@ import {
   X,
   Building2,
   User as UserIcon,
+  Tag,
   Paperclip,
   Image as ImageIcon,
   Video as VideoIcon,
@@ -30,6 +31,7 @@ interface Draft {
   shortcut: string;
   title: string;
   content: string;
+  category: string;
   scope: QuickReplyScope;
   attachments: QuickReplyAttachment[];
 }
@@ -38,6 +40,7 @@ const EMPTY: Draft = {
   shortcut: '',
   title: '',
   content: '',
+  category: '',
   scope: 'ORG',
   attachments: [],
 };
@@ -121,6 +124,7 @@ export default function QuickRepliesPage() {
         shortcut,
         title: d.title.trim(),
         content: d.content,
+        category: d.category.trim() || null,
         attachments: d.attachments,
         scope: d.scope,
       };
@@ -150,8 +154,45 @@ export default function QuickRepliesPage() {
     onError: () => toast.error('Erro ao remover'),
   });
 
-  const orgItems = useMemo(() => items.filter((i) => !i.userId), [items]);
-  const personalItems = useMemo(() => items.filter((i) => i.userId), [items]);
+  // Tipos já cadastrados — alimenta o autocomplete do campo TIPO.
+  const categoryOptions = useMemo(() => {
+    const set = new Set<string>();
+    for (const i of items) {
+      const c = (i.category ?? '').trim();
+      if (c) set.add(c);
+    }
+    return Array.from(set).sort((a, b) =>
+      a.localeCompare(b, 'pt-BR', { sensitivity: 'base' }),
+    );
+  }, [items]);
+
+  // Agrupamento por TIPO: cada tipo é um cabeçalho; "Sem tipo" fica por último.
+  // Dentro do tipo, respostas da empresa antes das pessoais, depois por título.
+  const SEM_TIPO = 'Sem tipo';
+  const groups = useMemo(() => {
+    const byCat = new Map<string, QuickReply[]>();
+    for (const i of items) {
+      const key = (i.category ?? '').trim() || SEM_TIPO;
+      const arr = byCat.get(key) ?? [];
+      arr.push(i);
+      byCat.set(key, arr);
+    }
+    const names = Array.from(byCat.keys()).sort((a, b) => {
+      if (a === SEM_TIPO) return 1;
+      if (b === SEM_TIPO) return -1;
+      return a.localeCompare(b, 'pt-BR', { sensitivity: 'base' });
+    });
+    return names.map((name) => ({
+      key: name,
+      label: name,
+      rows: (byCat.get(name) ?? []).sort((a, b) => {
+        const sa = a.userId ? 1 : 0;
+        const sb = b.userId ? 1 : 0;
+        if (sa !== sb) return sa - sb;
+        return a.title.localeCompare(b.title, 'pt-BR', { sensitivity: 'base' });
+      }),
+    }));
+  }, [items]);
 
   const canSave =
     !!draft &&
@@ -228,6 +269,24 @@ export default function QuickRepliesPage() {
                 <option value="PERSONAL">Pessoal (só eu)</option>
               </select>
             </div>
+          </div>
+
+          <div className="mt-3">
+            <label className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-300">
+              Tipo (agrupa as respostas — texto livre)
+            </label>
+            <input
+              value={draft.category}
+              onChange={(e) => setDraft({ ...draft, category: e.target.value })}
+              placeholder="Ex.: Saudações, Cobrança, Pós-venda"
+              list="quick-reply-categories"
+              className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm outline-none focus:border-primary dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+            />
+            <datalist id="quick-reply-categories">
+              {categoryOptions.map((c) => (
+                <option key={c} value={c} />
+              ))}
+            </datalist>
           </div>
 
           <div className="mt-3">
@@ -348,15 +407,13 @@ export default function QuickRepliesPage() {
         </p>
       ) : (
         <div className="space-y-5">
-          {[
-            { key: 'org', label: 'Da empresa', rows: orgItems, Icon: Building2 },
-            { key: 'me', label: 'Minhas', rows: personalItems, Icon: UserIcon },
-          ]
-            .filter((g) => g.rows.length > 0)
-            .map((g) => (
+          {groups.map((g) => (
               <div key={g.key}>
                 <div className="mb-1.5 flex items-center gap-1.5 px-0.5 text-[11px] font-medium uppercase tracking-wider text-zinc-400">
-                  <g.Icon className="h-3 w-3" /> {g.label}
+                  <Tag className="h-3 w-3" /> {g.label}
+                  <span className="font-normal normal-case tracking-normal text-zinc-300 dark:text-zinc-600">
+                    · {g.rows.length}
+                  </span>
                 </div>
                 <div className="space-y-1.5">
                   {g.rows.map((r: QuickReply) => (
@@ -368,8 +425,27 @@ export default function QuickRepliesPage() {
                         /{r.shortcut}
                       </code>
                       <div className="min-w-0 flex-1">
-                        <div className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                          {r.title}
+                        <div className="flex items-center gap-1.5">
+                          <span className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                            {r.title}
+                          </span>
+                          <span
+                            className={`inline-flex shrink-0 items-center gap-0.5 rounded px-1 py-px text-[10px] font-medium ${
+                              r.userId
+                                ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300'
+                                : 'bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400'
+                            }`}
+                          >
+                            {r.userId ? (
+                              <>
+                                <UserIcon className="h-2.5 w-2.5" /> Pessoal
+                              </>
+                            ) : (
+                              <>
+                                <Building2 className="h-2.5 w-2.5" /> Empresa
+                              </>
+                            )}
+                          </span>
                         </div>
                         <div className="mt-0.5 line-clamp-2 whitespace-pre-wrap text-xs text-zinc-500">
                           {r.content}
@@ -389,6 +465,7 @@ export default function QuickRepliesPage() {
                               shortcut: r.shortcut,
                               title: r.title,
                               content: r.content,
+                              category: r.category ?? '',
                               scope: r.userId ? 'PERSONAL' : 'ORG',
                               attachments: r.attachments ?? [],
                             })
