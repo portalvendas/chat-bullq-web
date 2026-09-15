@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
@@ -29,6 +29,12 @@ interface Draft {
 
 const EMPTY: Draft = { shortcut: '', title: '', content: '', scope: 'ORG' };
 
+// Variáveis disponíveis no conteúdo (resolvidas no envio).
+const VARS: { token: string; label: string; hint: string }[] = [
+  { token: '{{cliente}}', label: 'Cliente', hint: 'Primeiro nome do contato' },
+  { token: '{{vendedor}}', label: 'Vendedor', hint: 'Primeiro nome do atendente' },
+];
+
 export default function QuickRepliesPage() {
   const qc = useQueryClient();
   const { data: items = [], isLoading } = useQuery({
@@ -39,6 +45,24 @@ export default function QuickRepliesPage() {
 
   const [draft, setDraft] = useState<Draft | null>(null);
   const invalidate = () => qc.invalidateQueries({ queryKey: ['quick-replies'] });
+  const contentRef = useRef<HTMLTextAreaElement>(null);
+
+  // Insere a variável na posição do cursor do textarea de conteúdo.
+  const insertVar = (token: string) => {
+    if (!draft) return;
+    const el = contentRef.current;
+    const cur = draft.content;
+    const start = el?.selectionStart ?? cur.length;
+    const end = el?.selectionEnd ?? cur.length;
+    const next = cur.slice(0, start) + token + cur.slice(end);
+    setDraft({ ...draft, content: next });
+    requestAnimationFrame(() => {
+      if (!el) return;
+      el.focus();
+      const pos = start + token.length;
+      el.setSelectionRange(pos, pos);
+    });
+  };
 
   const save = useMutation({
     mutationFn: (d: Draft) => {
@@ -171,13 +195,32 @@ export default function QuickRepliesPage() {
             <label className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-300">
               Conteúdo
             </label>
+            <div className="mb-1.5 flex flex-wrap items-center gap-1.5">
+              <span className="text-[11px] text-zinc-400">Inserir variável:</span>
+              {VARS.map((v) => (
+                <button
+                  key={v.token}
+                  type="button"
+                  onClick={() => insertVar(v.token)}
+                  title={v.hint}
+                  className="inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/5 px-2 py-0.5 text-[11px] font-medium text-primary hover:bg-primary/10"
+                >
+                  <span className="opacity-60">{v.label}:</span>
+                  <code>{v.token}</code>
+                </button>
+              ))}
+            </div>
             <textarea
+              ref={contentRef}
               value={draft.content}
               onChange={(e) => setDraft({ ...draft, content: e.target.value })}
               rows={4}
               placeholder={'Oi {{cliente}}! Aqui é {{vendedor}}, da Armazém Decora. Como posso te ajudar?'}
               className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm outline-none focus:border-primary dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
             />
+            <p className="mt-1 text-[11px] text-zinc-400">
+              As variáveis são trocadas pelo nome real no momento do envio.
+            </p>
           </div>
 
           <div className="mt-4 flex items-center gap-2">
