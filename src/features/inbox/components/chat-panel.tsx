@@ -742,17 +742,41 @@ export function ChatPanel({
   // Resposta rápida COM anexo: a mídia já está no storage (foi subida no
   // cadastro), então envia direto por URL — sem re-upload. O texto vira
   // legenda do primeiro anexo.
+  // Normaliza o tipo do anexo p/ o enum aceito pelo backend
+  // (TEXT/IMAGE/AUDIO/VIDEO/DOCUMENT). Cobre anexos antigos salvos com o
+  // valor minúsculo ("image") ou com o MIME ("image/png").
+  const normalizeMediaType = (media: {
+    type?: string;
+    mimeType?: string;
+    url?: string;
+  }): 'IMAGE' | 'VIDEO' | 'AUDIO' | 'DOCUMENT' => {
+    const t = String(media.type ?? '').trim().toUpperCase();
+    if (t === 'IMAGE' || t === 'VIDEO' || t === 'AUDIO' || t === 'DOCUMENT') {
+      return t;
+    }
+    const mime = String(media.mimeType ?? media.type ?? '').toLowerCase();
+    if (mime.startsWith('image/')) return 'IMAGE';
+    if (mime.startsWith('video/')) return 'VIDEO';
+    if (mime.startsWith('audio/')) return 'AUDIO';
+    return 'DOCUMENT';
+  };
+
   const handleSendQuickReplyMedia = async (
     media: { url: string; type: string; mimeType?: string; fileName?: string },
     caption?: string,
   ) => {
     try {
+      // mimeType efetivo: usa o do anexo; se vazio mas o `type` for um MIME
+      // ("image/png"), aproveita ele.
+      const effMime =
+        media.mimeType ||
+        (String(media.type ?? '').includes('/') ? media.type : undefined);
       const sent = await inboxService.sendMessage({
         conversationId: conversation.id,
-        type: media.type as 'IMAGE' | 'VIDEO' | 'AUDIO' | 'DOCUMENT',
+        type: normalizeMediaType(media),
         content: {
           mediaUrl: media.url,
-          ...(media.mimeType ? { mimeType: media.mimeType } : {}),
+          ...(effMime ? { mimeType: effMime } : {}),
           ...(media.fileName ? { fileName: media.fileName } : {}),
           ...(caption ? { caption } : {}),
         },
