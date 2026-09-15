@@ -1,15 +1,23 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useMemo } from 'react';
 import { Send, Paperclip, Mic, Trash2, Square, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAudioRecorder } from '../hooks/use-audio-recorder';
+import { useQuery } from '@tanstack/react-query';
+import {
+  quickRepliesService,
+  renderQuickReplyVars,
+} from '@/features/quick-replies/services/quick-replies.service';
 
 interface ChatInputProps {
   onSend: (text: string) => Promise<void>;
   onSendAudio?: (blob: Blob) => Promise<void>;
   onSendFile?: (file: File) => Promise<void>;
   disabled?: boolean;
+  /** Contexto p/ variáveis das respostas rápidas ({{cliente}}/{{vendedor}}). */
+  contactName?: string | null;
+  agentName?: string | null;
 }
 
 // Espelha o whitelist do backend (UploadsService.ALLOWED_MEDIA_MIME) — o
@@ -29,7 +37,14 @@ const FILE_ACCEPT = [
   '.zip',
 ].join(',');
 
-export function ChatInput({ onSend, onSendAudio, onSendFile, disabled }: ChatInputProps) {
+export function ChatInput({
+  onSend,
+  onSendAudio,
+  onSendFile,
+  disabled,
+  contactName,
+  agentName,
+}: ChatInputProps) {
   const [text, setText] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [isSendingAudio, setIsSendingAudio] = useState(false);
@@ -37,6 +52,59 @@ export function ChatInput({ onSend, onSendAudio, onSendFile, disabled }: ChatInp
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const recorder = useAudioRecorder();
+
+  // ── Respostas rápidas ("/") ──────────────────────────────
+  const [qrIndex, setQrIndex] = useState(0);
+  const [qrDismissed, setQrDismissed] = useState(false);
+  const { data: quickReplies = [] } = useQuery({
+    queryKey: ['quick-replies'],
+    queryFn: () => quickRepliesService.list(),
+    staleTime: 60_000,
+  });
+  const qrQuery = text.startsWith('/') ? text.slice(1).toLowerCase() : null;
+  const qrMatches = useMemo(() => {
+    if (qrQuery === null || qrDismissed) return [];
+    const q = qrQuery.trim();
+    return quickReplies
+      .filter(
+        (r) =>
+          q === '' ||
+          r.shortcut.toLowerCase().includes(q) ||
+          r.title.toLowerCase().includes(q),
+      )
+      .sort((a, b) => {
+        const as = a.shortcut.toLowerCase().startsWith(q) ? 0 : 1;
+        const bs = b.shortcut.toLowerCase().startsWith(q) ? 0 : 1;
+        return as - bs;
+      });
+  }, [qrQuery, qrDismissed, quickReplies]);
+  const qrOpen = qrMatches.length > 0;
+  const qrActive = qrOpen ? Math.min(qrIndex, qrMatches.length - 1) : 0;
+
+  const applyQuickReply = useCallback(
+    (content: string) => {
+      const rendered = renderQuickReplyVars(content, { contactName, agentName });
+      setText(rendered);
+      setQrDismissed(true);
+      setQrIndex(0);
+      requestAnimationFrame(() => {
+        const el = textareaRef.current;
+        if (el) {
+          el.focus();
+          el.setSelectionRange(rendered.length, rendered.length);
+          el.style.height = 'auto';
+          el.style.height = Math.min(el.scrollHeight, 160) + 'px';
+        }
+      });
+    },
+    [contactName, agentName],
+  );
+
+  const onChangeText = (v: string) => {
+    setText(v);
+    if (!v.startsWith('/')) setQrDismissed(false);
+    setQrIndex(0);
+  };
 
   const handleSubmit = useCallback(async () => {
     const trimmed = text.trim();
@@ -54,6 +122,28 @@ export function ChatInput({ onSend, onSendAudio, onSendFile, disabled }: ChatInp
   }, [text, isSending, onSend]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (qrOpen) {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        setQrIndex((i) => (i + 1) % qrMatches.length);
+        return;
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setQrIndex((i) => (i - 1 + qrMatches.length) % qrMatches.length);
+        return;
+      }
+      if (e.key === 'Enter' || e.key === 'Tab') {
+        e.preventDefault();
+        applyQuickReply(qrMatches[qrActive].content);
+        return;
+      }
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        setQrDismissed(true);
+        return;
+      }
+    }
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit();
@@ -190,7 +280,42 @@ export function ChatInput({ onSend, onSendAudio, onSendFile, disabled }: ChatInp
   const showMic = canRecord && !text.trim();
 
   return (
-    <div className="border-t border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-950">
+    <div className="relative border-t border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-950">
+      {qrOpen && (
+        <div className="absolute bottom-full left-3 right-3 z-30 mb-2 max-h-64 overflow-y-auto rounded-lg border border-zinc-200 bg-white p-1 shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
+          <div className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-zinc-400">
+            Respostas rápidas
+          </div>
+          {qrMatches.map((r, i) => (
+            <button
+              key={r.id}
+              type="button"
+              onMouseDown={(e) => {
+                e.preventDefault();
+                applyQuickReply(r.content);
+              }}
+              onMouseEnter={() => setQrIndex(i)}
+              className={`flex w-full items-start gap-2 rounded-md px-2 py-1.5 text-left ${
+                i === qrActive
+                  ? 'bg-primary/10'
+                  : 'hover:bg-zinc-100 dark:hover:bg-zinc-800'
+              }`}
+            >
+              <code className="mt-0.5 shrink-0 rounded bg-zinc-100 px-1 text-[11px] font-medium text-primary dark:bg-zinc-800">
+                /{r.shortcut}
+              </code>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-xs font-medium text-zinc-800 dark:text-zinc-100">
+                  {r.title}
+                </span>
+                <span className="block truncate text-[11px] text-zinc-500">
+                  {r.content}
+                </span>
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
       <div className="flex items-end gap-2">
         <input
           ref={fileInputRef}
@@ -215,7 +340,7 @@ export function ChatInput({ onSend, onSendAudio, onSendFile, disabled }: ChatInp
         <textarea
           ref={textareaRef}
           value={text}
-          onChange={(e) => setText(e.target.value)}
+          onChange={(e) => onChangeText(e.target.value)}
           onKeyDown={handleKeyDown}
           onInput={handleInput}
           placeholder="Digite uma mensagem..."

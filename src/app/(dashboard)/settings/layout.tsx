@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Radio, Users, Tags, Bell, Building2, KeyRound, Sparkles, BookUser, BookOpen, Facebook, ListChecks, Upload, Copy, Shield, Plug, Shuffle, ClipboardCheck } from 'lucide-react';
+import { Radio, Users, Tags, Bell, Building2, KeyRound, Sparkles, BookUser, BookOpen, Facebook, ListChecks, Upload, Copy, Shield, Plug, Shuffle, ClipboardCheck, MessageSquareText } from 'lucide-react';
 
 const tabs = [
   { href: '/settings/channels', label: 'Canais', icon: Radio },
@@ -10,6 +10,7 @@ const tabs = [
   { href: '/settings/integracoes', label: 'Integrações', icon: Plug },
   { href: '/settings/distribuicao', label: 'Distribuição', icon: Shuffle },
   { href: '/settings/rotina', label: 'Rotina', icon: ClipboardCheck },
+  { href: '/settings/quick-replies', label: 'Respostas rápidas', icon: MessageSquareText },
   { href: '/settings/general', label: 'Geral', icon: Building2 },
   { href: '/settings/ai', label: 'IA', icon: Sparkles },
   { href: '/settings/knowledge', label: 'Conhecimento', icon: BookOpen },

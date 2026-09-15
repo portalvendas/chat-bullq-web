@@ -1121,6 +1121,8 @@ export function ChatPanel({
         onSendAudio={handleSendAudio}
         onSendFile={handleSendFile}
         disabled={conversation.status === 'CLOSED'}
+        contactName={conversation.isGroup ? null : conversation.contact?.name}
+        agentName={user?.name}
       />
     </div>
   );
