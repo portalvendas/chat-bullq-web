@@ -215,10 +215,10 @@ export function PipelinePopover({ conversation, onChanged }: Props) {
     <Popover className="relative">
       <PopoverButton
         title="Gerenciar pipelines da conversa"
-        className="inline-flex items-center gap-1.5 rounded-md bg-zinc-100 px-2.5 py-1.5 text-xs font-medium text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
+        className="inline-flex h-8 items-center gap-1 rounded-md bg-zinc-100 px-2 text-xs font-medium text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
       >
         <KanbanSquare className="h-3.5 w-3.5" />
-        <span className="max-w-[120px] truncate">{buttonLabel()}</span>
+        <span className="max-w-[96px] truncate">{buttonLabel()}</span>
         <ChevronDown className="h-3 w-3 text-zinc-400" />
       </PopoverButton>
 

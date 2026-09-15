@@ -181,7 +181,7 @@ export function ConversationHeader({
         </div>
       </div>
 
-      <div className="flex min-w-0 flex-1 flex-wrap items-center justify-end gap-1.5">
+      <div className="flex min-w-0 flex-1 flex-wrap items-center justify-end gap-1">
         <ChannelSwitchPopover
           conversationId={conversation.id}
           currentChannelId={conversation.channel.id}
@@ -252,13 +252,13 @@ export function ConversationHeader({
                 ? 'Fechar respostas rápidas'
                 : 'Listar respostas rápidas'
             }
-            className={`inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium transition-colors ${
+            className={`inline-flex h-8 w-8 items-center justify-center rounded-md transition-colors ${
               quickRepliesOpen
                 ? 'bg-primary/10 text-primary dark:bg-primary/15'
-                : 'text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-300'
+                : 'text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-300'
             }`}
           >
-            <MessageSquareText className="h-3.5 w-3.5" /> Respostas
+            <MessageSquareText className="h-3.5 w-3.5" />
           </button>
         )}
         {conversation.status !== 'CLOSED' && (
@@ -280,10 +280,10 @@ export function ConversationHeader({
               )
             }
             disabled={isLoading}
-            className="inline-flex items-center gap-1.5 rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-medium text-zinc-700 hover:bg-red-50 hover:text-red-600 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-red-900/20 dark:hover:text-red-400"
+            title="Encerrar conversa"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-zinc-100 text-zinc-500 hover:bg-red-50 hover:text-red-600 disabled:opacity-50 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-red-900/20 dark:hover:text-red-400"
           >
             <XCircle className="h-3.5 w-3.5" />
-            Encerrar
           </button>
         )}
         {conversation.status === 'CLOSED' && (
@@ -295,10 +295,10 @@ export function ConversationHeader({
               )
             }
             disabled={isLoading}
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
+            title="Reabrir conversa"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
           >
             <RotateCcw className="h-3.5 w-3.5" />
-            Reabrir
           </button>
         )}
       </div>

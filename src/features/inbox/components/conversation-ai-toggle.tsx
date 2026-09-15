@@ -83,7 +83,7 @@ export function ConversationAiToggle({
         }}
         disabled={disabled}
         title={meta.hint}
-        className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors ${meta.badgeCls}`}
+        className={`inline-flex h-8 items-center gap-1 rounded-md px-2 text-xs font-medium transition-colors ${meta.badgeCls}`}
       >
         <Icon className={`h-3.5 w-3.5 ${meta.iconCls}`} />
         {meta.label}

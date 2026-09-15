@@ -80,7 +80,7 @@ export function SalesbotPopover({ conversation }: Props) {
             ? `Salesbot rodando: ${runningBot.name}`
             : 'Iniciar um Salesbot nesta conversa'
         }
-        className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium ${
+        className={`inline-flex h-8 items-center gap-1 rounded-md px-2 text-xs font-medium ${
           runningBot
             ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-300'
             : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700'
@@ -94,7 +94,7 @@ export function SalesbotPopover({ conversation }: Props) {
         ) : (
           <Workflow className="h-3.5 w-3.5" />
         )}
-        <span className="max-w-[120px] truncate">
+        <span className="max-w-[96px] truncate">
           {runningBot ? runningBot.name : 'Salesbot'}
         </span>
         <ChevronDown className="h-3 w-3 text-zinc-400" />

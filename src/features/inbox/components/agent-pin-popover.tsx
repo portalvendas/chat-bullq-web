@@ -80,10 +80,10 @@ export function AgentPinPopover({ conversation, onChanged }: Props) {
 
   return (
     <Popover className="relative">
-      <PopoverButton className="inline-flex items-center gap-1.5 rounded-md bg-violet-50 px-2.5 py-1.5 text-xs font-medium text-violet-700 hover:bg-violet-100 dark:bg-violet-900/20 dark:text-violet-300 dark:hover:bg-violet-900/30">
+      <PopoverButton className="inline-flex h-8 items-center gap-1 rounded-md bg-violet-50 px-2 text-xs font-medium text-violet-700 hover:bg-violet-100 dark:bg-violet-900/20 dark:text-violet-300 dark:hover:bg-violet-900/30">
         <Sparkles className="h-3.5 w-3.5" />
         {currentAgent ? (
-          <span className="max-w-[120px] truncate">{currentAgent.name}</span>
+          <span className="max-w-[96px] truncate">{currentAgent.name}</span>
         ) : (
           <span>IA</span>
         )}

@@ -59,14 +59,13 @@ export function ChannelSwitchPopover({
             ? 'Conversa travada por 24h — troque para um WhatsApp livre (Z-API) para chamar o cliente'
             : 'Trocar canal de WhatsApp'
         }
-        className={`inline-flex h-8 items-center gap-1.5 rounded-md border px-2 text-xs font-medium transition-colors ${
+        className={`inline-flex h-8 w-8 items-center justify-center rounded-md border transition-colors ${
           highlight
             ? 'animate-pulse border-red-300 bg-red-50 text-red-600 hover:bg-red-100 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400'
-            : 'border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700'
+            : 'border-zinc-200 bg-white text-zinc-500 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700'
         }`}
       >
         <Repeat className="h-3.5 w-3.5" />
-        {highlight ? 'Trocar canal (+24h)' : 'Canal'}
       </button>
       {open && (
         <>

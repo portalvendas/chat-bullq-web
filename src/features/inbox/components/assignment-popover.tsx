@@ -103,7 +103,7 @@ export function AssignmentPopover({ conversation, onChanged }: Props) {
   return (
     <Popover className="relative">
       <PopoverButton
-        className="inline-flex items-center gap-1.5 rounded-md bg-zinc-100 px-2.5 py-1.5 text-xs font-medium text-zinc-700 hover:bg-zinc-200 disabled:opacity-50 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
+        className="inline-flex h-8 items-center gap-1 rounded-md bg-zinc-100 px-2 text-xs font-medium text-zinc-700 hover:bg-zinc-200 disabled:opacity-50 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
         disabled={busy}
       >
         {currentAssignee ? (
@@ -113,7 +113,7 @@ export function AssignmentPopover({ conversation, onChanged }: Props) {
               avatarUrl={currentAssignee.user.avatarUrl}
               size={18}
             />
-            <span className="max-w-[120px] truncate">
+            <span className="max-w-[96px] truncate">
               {currentAssignee.user.name}
             </span>
           </>
