@@ -1300,26 +1300,28 @@ function QuickRepliesPanel({
             key={r.id}
             type="button"
             onClick={() => onPick(r)}
-            className="flex w-full items-start gap-2 px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            className="block w-full px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800"
           >
-            <code className="mt-0.5 shrink-0 rounded bg-zinc-100 px-1 text-[11px] font-medium text-primary dark:bg-zinc-800">
-              /{r.shortcut}
-            </code>
-            <span className="min-w-0 flex-1">
-              <span className="flex items-center gap-1 truncate text-xs font-medium text-zinc-800 dark:text-zinc-100">
+            {/* Linha 1: título (dominante) + selos + atalho discreto no fim. */}
+            <span className="flex items-center gap-1.5">
+              <span className="min-w-0 flex-1 truncate text-xs font-medium text-zinc-800 dark:text-zinc-100">
                 {r.title}
-                {r.attachments && r.attachments.length > 0 && (
-                  <Paperclip className="h-3 w-3 shrink-0 text-zinc-400" />
-                )}
-                {r.userId && (
-                  <span className="shrink-0 rounded bg-amber-100 px-1 text-[9px] font-medium uppercase tracking-wide text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
-                    Pessoal
-                  </span>
-                )}
               </span>
-              <span className="mt-0.5 block truncate text-[11px] text-zinc-500">
-                {preview(r)}
-              </span>
+              {r.attachments && r.attachments.length > 0 && (
+                <Paperclip className="h-3 w-3 shrink-0 text-zinc-400" />
+              )}
+              {r.userId && (
+                <span className="shrink-0 rounded bg-amber-100 px-1 text-[9px] font-medium uppercase tracking-wide text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
+                  Pessoal
+                </span>
+              )}
+              <code className="inline-block max-w-[6rem] shrink-0 truncate rounded bg-zinc-100 px-1 align-middle text-[10px] font-medium text-zinc-400 dark:bg-zinc-800">
+                /{r.shortcut}
+              </code>
+            </span>
+            {/* Linha 2: prévia do conteúdo (início). */}
+            <span className="mt-0.5 block truncate text-[11px] text-zinc-500">
+              {preview(r)}
             </span>
           </button>
         ))}
