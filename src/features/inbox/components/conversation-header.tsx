@@ -160,14 +160,14 @@ export function ConversationHeader({
   };
 
   return (
-    <div className="flex items-center justify-between border-b border-zinc-200 bg-white px-4 py-3 dark:border-zinc-800 dark:bg-zinc-950">
-      <div className="flex items-center gap-3">
+    <div className="flex items-start justify-between gap-3 border-b border-zinc-200 bg-white px-4 py-3 dark:border-zinc-800 dark:bg-zinc-950">
+      <div className="flex min-w-0 shrink-0 items-center gap-3">
         <HeaderAvatar
           name={conversation.contact.name}
           avatarUrl={conversation.contact.avatarUrl}
         />
         <div className="flex flex-col">
-          <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+          <div className="truncate text-sm font-semibold text-zinc-900 dark:text-zinc-100">
             {conversation.contact.name || conversation.contact.phone || 'Desconhecido'}
           </div>
           {conversation.contact.phone && conversation.contact.name && (
@@ -181,7 +181,7 @@ export function ConversationHeader({
         </div>
       </div>
 
-      <div className="flex items-center gap-1.5">
+      <div className="flex min-w-0 flex-1 flex-wrap items-center justify-end gap-1.5">
         <ChannelSwitchPopover
           conversationId={conversation.id}
           currentChannelId={conversation.channel.id}
