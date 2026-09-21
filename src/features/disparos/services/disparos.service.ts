@@ -13,6 +13,7 @@ export interface AudienceFilter {
   tagMatch?: 'ANY' | 'ALL';
   hasPedido?: boolean;
   hasOrcamento?: boolean;
+  excludePedido?: boolean;
   from?: string;
   to?: string;
   excludeOptedOut?: boolean;

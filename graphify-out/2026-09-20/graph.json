@@ -4,15 +4,411 @@
   "graph": {},
   "nodes": [
     {
+      "label": "disparos/[id]/page.tsx",
+      "file_type": "code",
+      "source_file": "src/app/(dashboard)/disparos/[id]/page.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_app_dashboard_disparos_id_page",
+      "community": 1,
+      "community_name": "disparos.service.ts",
+      "norm_label": "disparos/[id]/page.tsx"
+    },
+    {
+      "label": "REC_STATUS",
+      "file_type": "code",
+      "source_file": "src/app/(dashboard)/disparos/[id]/page.tsx",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "src_app_dashboard_disparos_id_page_rec_status",
+      "community": 1,
+      "community_name": "disparos.service.ts",
+      "norm_label": "rec_status"
+    },
+    {
+      "label": "DisparoDetailPage()",
+      "file_type": "code",
+      "source_file": "src/app/(dashboard)/disparos/[id]/page.tsx",
+      "source_location": "L18",
+      "_origin": "ast",
+      "id": "src_app_dashboard_disparos_id_page_disparodetailpage",
+      "community": 1,
+      "community_name": "disparos.service.ts",
+      "norm_label": "disparodetailpage()"
+    },
+    {
+      "label": "Card()",
+      "file_type": "code",
+      "source_file": "src/app/(dashboard)/disparos/[id]/page.tsx",
+      "source_location": "L124",
+      "_origin": "ast",
+      "id": "src_app_dashboard_disparos_id_page_card",
+      "community": 1,
+      "community_name": "disparos.service.ts",
+      "norm_label": "card()"
+    },
+    {
+      "label": "Btn()",
+      "file_type": "code",
+      "source_file": "src/app/(dashboard)/disparos/[id]/page.tsx",
+      "source_location": "L132",
+      "_origin": "ast",
+      "id": "src_app_dashboard_disparos_id_page_btn",
+      "community": 1,
+      "community_name": "disparos.service.ts",
+      "norm_label": "btn()"
+    },
+    {
+      "label": "importar/page.tsx",
+      "file_type": "code",
+      "source_file": "src/app/(dashboard)/disparos/importar/page.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_app_dashboard_disparos_importar_page",
+      "community": 7,
+      "community_name": "importar/page.tsx",
+      "norm_label": "importar/page.tsx"
+    },
+    {
+      "label": "loadXlsx()",
+      "file_type": "code",
+      "source_file": "src/app/(dashboard)/disparos/importar/page.tsx",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "src_app_dashboard_disparos_importar_page_loadxlsx",
+      "community": 7,
+      "community_name": "importar/page.tsx",
+      "norm_label": "loadxlsx()"
+    },
+    {
+      "label": "Row",
+      "file_type": "code",
+      "source_file": "src/app/(dashboard)/disparos/importar/page.tsx",
+      "source_location": "L27",
+      "_origin": "ast",
+      "id": "src_app_dashboard_disparos_importar_page_row",
+      "community": 7,
+      "community_name": "importar/page.tsx",
+      "norm_label": "row"
+    },
+    {
+      "label": "pick()",
+      "file_type": "code",
+      "source_file": "src/app/(dashboard)/disparos/importar/page.tsx",
+      "source_location": "L29",
+      "_origin": "ast",
+      "id": "src_app_dashboard_disparos_importar_page_pick",
+      "community": 7,
+      "community_name": "importar/page.tsx",
+      "norm_label": "pick()"
+    },
+    {
+      "label": "ImportarContatosPage()",
+      "file_type": "code",
+      "source_file": "src/app/(dashboard)/disparos/importar/page.tsx",
+      "source_location": "L40",
+      "_origin": "ast",
+      "id": "src_app_dashboard_disparos_importar_page_importarcontatospage",
+      "community": 7,
+      "community_name": "importar/page.tsx",
+      "norm_label": "importarcontatospage()"
+    },
+    {
+      "label": "Stat()",
+      "file_type": "code",
+      "source_file": "src/app/(dashboard)/disparos/importar/page.tsx",
+      "source_location": "L174",
+      "_origin": "ast",
+      "id": "src_app_dashboard_disparos_importar_page_stat",
+      "community": 7,
+      "community_name": "importar/page.tsx",
+      "norm_label": "stat()"
+    },
+    {
+      "label": "novo/page.tsx",
+      "file_type": "code",
+      "source_file": "src/app/(dashboard)/disparos/novo/page.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_app_dashboard_disparos_novo_page",
+      "community": 1,
+      "community_name": "disparos.service.ts",
+      "norm_label": "novo/page.tsx"
+    },
+    {
+      "label": "CONTACT_FIELDS",
+      "file_type": "code",
+      "source_file": "src/app/(dashboard)/disparos/novo/page.tsx",
+      "source_location": "L24",
+      "_origin": "ast",
+      "id": "src_app_dashboard_disparos_novo_page_contact_fields",
+      "community": 1,
+      "community_name": "disparos.service.ts",
+      "norm_label": "contact_fields"
+    },
+    {
+      "label": "NovoDisparoPage()",
+      "file_type": "code",
+      "source_file": "src/app/(dashboard)/disparos/novo/page.tsx",
+      "source_location": "L31",
+      "_origin": "ast",
+      "id": "src_app_dashboard_disparos_novo_page_novodisparopage",
+      "community": 1,
+      "community_name": "disparos.service.ts",
+      "norm_label": "novodisparopage()"
+    },
+    {
+      "label": "Field()",
+      "file_type": "code",
+      "source_file": "src/app/(dashboard)/disparos/novo/page.tsx",
+      "source_location": "L323",
+      "_origin": "ast",
+      "id": "src_app_dashboard_disparos_novo_page_field",
+      "community": 1,
+      "community_name": "disparos.service.ts",
+      "norm_label": "field()"
+    },
+    {
+      "label": "Stat()",
+      "file_type": "code",
+      "source_file": "src/app/(dashboard)/disparos/novo/page.tsx",
+      "source_location": "L333",
+      "_origin": "ast",
+      "id": "src_app_dashboard_disparos_novo_page_stat",
+      "community": 1,
+      "community_name": "disparos.service.ts",
+      "norm_label": "stat()"
+    },
+    {
+      "label": "disparos/page.tsx",
+      "file_type": "code",
+      "source_file": "src/app/(dashboard)/disparos/page.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_app_dashboard_disparos_page",
+      "community": 1,
+      "community_name": "disparos.service.ts",
+      "norm_label": "disparos/page.tsx"
+    },
+    {
+      "label": "STATUS_LABEL",
+      "file_type": "code",
+      "source_file": "src/app/(dashboard)/disparos/page.tsx",
+      "source_location": "L18",
+      "_origin": "ast",
+      "id": "src_app_dashboard_disparos_page_status_label",
+      "community": 1,
+      "community_name": "disparos.service.ts",
+      "norm_label": "status_label"
+    },
+    {
+      "label": "DisparosPage()",
+      "file_type": "code",
+      "source_file": "src/app/(dashboard)/disparos/page.tsx",
+      "source_location": "L28",
+      "_origin": "ast",
+      "id": "src_app_dashboard_disparos_page_disparospage",
+      "community": 1,
+      "community_name": "disparos.service.ts",
+      "norm_label": "disparospage()"
+    },
+    {
+      "label": "BroadcastRow()",
+      "file_type": "code",
+      "source_file": "src/app/(dashboard)/disparos/page.tsx",
+      "source_location": "L119",
+      "_origin": "ast",
+      "id": "src_app_dashboard_disparos_page_broadcastrow",
+      "community": 1,
+      "community_name": "disparos.service.ts",
+      "norm_label": "broadcastrow()"
+    },
+    {
+      "label": "app-sidebar.tsx",
+      "file_type": "code",
+      "source_file": "src/components/layout/app-sidebar.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_components_layout_app_sidebar",
+      "community": 10,
+      "community_name": "notifications-bell.tsx",
+      "norm_label": "app-sidebar.tsx"
+    },
+    {
+      "label": "navItems",
+      "file_type": "code",
+      "source_file": "src/components/layout/app-sidebar.tsx",
+      "source_location": "L46",
+      "_origin": "ast",
+      "id": "src_components_layout_app_sidebar_navitems",
+      "community": 10,
+      "community_name": "notifications-bell.tsx",
+      "norm_label": "navitems"
+    },
+    {
+      "label": "AppSidebar()",
+      "file_type": "code",
+      "source_file": "src/components/layout/app-sidebar.tsx",
+      "source_location": "L57",
+      "_origin": "ast",
+      "id": "src_components_layout_app_sidebar_appsidebar",
+      "community": 10,
+      "community_name": "notifications-bell.tsx",
+      "norm_label": "appsidebar()"
+    },
+    {
+      "label": "disparos.service.ts",
+      "file_type": "code",
+      "source_file": "src/features/disparos/services/disparos.service.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_features_disparos_services_disparos_service",
+      "community": 1,
+      "community_name": "disparos.service.ts",
+      "norm_label": "disparos.service.ts"
+    },
+    {
+      "label": "MessageCategory",
+      "file_type": "code",
+      "source_file": "src/features/disparos/services/disparos.service.ts",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "src_features_disparos_services_disparos_service_messagecategory",
+      "community": 1,
+      "community_name": "disparos.service.ts",
+      "norm_label": "messagecategory"
+    },
+    {
+      "label": "AudienceFilter",
+      "file_type": "code",
+      "source_file": "src/features/disparos/services/disparos.service.ts",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "src_features_disparos_services_disparos_service_audiencefilter",
+      "community": 1,
+      "community_name": "disparos.service.ts",
+      "norm_label": "audiencefilter"
+    },
+    {
+      "label": "RateCardRow",
+      "file_type": "code",
+      "source_file": "src/features/disparos/services/disparos.service.ts",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "src_features_disparos_services_disparos_service_ratecardrow",
+      "community": 1,
+      "community_name": "disparos.service.ts",
+      "norm_label": "ratecardrow"
+    },
+    {
+      "label": "BudgetUsage",
+      "file_type": "code",
+      "source_file": "src/features/disparos/services/disparos.service.ts",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "src_features_disparos_services_disparos_service_budgetusage",
+      "community": 1,
+      "community_name": "disparos.service.ts",
+      "norm_label": "budgetusage"
+    },
+    {
+      "label": "EstimateResult",
+      "file_type": "code",
+      "source_file": "src/features/disparos/services/disparos.service.ts",
+      "source_location": "L32",
+      "_origin": "ast",
+      "id": "src_features_disparos_services_disparos_service_estimateresult",
+      "community": 1,
+      "community_name": "disparos.service.ts",
+      "norm_label": "estimateresult"
+    },
+    {
+      "label": "ApprovedTemplate",
+      "file_type": "code",
+      "source_file": "src/features/disparos/services/disparos.service.ts",
+      "source_location": "L41",
+      "_origin": "ast",
+      "id": "src_features_disparos_services_disparos_service_approvedtemplate",
+      "community": 1,
+      "community_name": "disparos.service.ts",
+      "norm_label": "approvedtemplate"
+    },
+    {
+      "label": "Broadcast",
+      "file_type": "code",
+      "source_file": "src/features/disparos/services/disparos.service.ts",
+      "source_location": "L50",
+      "_origin": "ast",
+      "id": "src_features_disparos_services_disparos_service_broadcast",
+      "community": 1,
+      "community_name": "disparos.service.ts",
+      "norm_label": "broadcast"
+    },
+    {
+      "label": "BroadcastRecipient",
+      "file_type": "code",
+      "source_file": "src/features/disparos/services/disparos.service.ts",
+      "source_location": "L70",
+      "_origin": "ast",
+      "id": "src_features_disparos_services_disparos_service_broadcastrecipient",
+      "community": 1,
+      "community_name": "disparos.service.ts",
+      "norm_label": "broadcastrecipient"
+    },
+    {
+      "label": "unwrap()",
+      "file_type": "code",
+      "source_file": "src/features/disparos/services/disparos.service.ts",
+      "source_location": "L80",
+      "_origin": "ast",
+      "id": "src_features_disparos_services_disparos_service_unwrap",
+      "community": 1,
+      "community_name": "disparos.service.ts",
+      "norm_label": "unwrap()"
+    },
+    {
+      "label": "microsToBRL()",
+      "file_type": "code",
+      "source_file": "src/features/disparos/services/disparos.service.ts",
+      "source_location": "L83",
+      "_origin": "ast",
+      "id": "src_features_disparos_services_disparos_service_microstobrl",
+      "community": 1,
+      "community_name": "disparos.service.ts",
+      "norm_label": "microstobrl()"
+    },
+    {
+      "label": "fmtBRL()",
+      "file_type": "code",
+      "source_file": "src/features/disparos/services/disparos.service.ts",
+      "source_location": "L87",
+      "_origin": "ast",
+      "id": "src_features_disparos_services_disparos_service_fmtbrl",
+      "community": 1,
+      "community_name": "disparos.service.ts",
+      "norm_label": "fmtbrl()"
+    },
+    {
+      "label": "disparosService",
+      "file_type": "code",
+      "source_file": "src/features/disparos/services/disparos.service.ts",
+      "source_location": "L94",
+      "_origin": "ast",
+      "id": "src_features_disparos_services_disparos_service_disparosservice",
+      "community": 1,
+      "community_name": "disparos.service.ts",
+      "norm_label": "disparosservice"
+    },
+    {
       "label": "settings/rotina/page.tsx",
       "file_type": "code",
       "source_file": "src/app/(dashboard)/settings/rotina/page.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_app_dashboard_settings_rotina_page",
       "community": 29,
       "community_name": "routine.service.ts",
-      "norm_label": "settings/rotina/page.tsx"
+      "norm_label": "settings/rotina/page.tsx",
+      "id": "src_app_dashboard_settings_rotina_page"
     },
     {
       "label": "StepState",
@@ -20,10 +416,10 @@
       "source_file": "src/app/(dashboard)/settings/rotina/page.tsx",
       "source_location": "L18",
       "_origin": "ast",
-      "id": "src_app_dashboard_settings_rotina_page_stepstate",
       "community": 29,
       "community_name": "routine.service.ts",
-      "norm_label": "stepstate"
+      "norm_label": "stepstate",
+      "id": "src_app_dashboard_settings_rotina_page_stepstate"
     },
     {
       "label": "SettingsRotinaPage()",
@@ -31,10 +427,10 @@
       "source_file": "src/app/(dashboard)/settings/rotina/page.tsx",
       "source_location": "L27",
       "_origin": "ast",
-      "id": "src_app_dashboard_settings_rotina_page_settingsrotinapage",
       "community": 29,
       "community_name": "routine.service.ts",
-      "norm_label": "settingsrotinapage()"
+      "norm_label": "settingsrotinapage()",
+      "id": "src_app_dashboard_settings_rotina_page_settingsrotinapage"
     },
     {
       "label": "routine.service.ts",
@@ -42,10 +438,10 @@
       "source_file": "src/features/commercial-routine/services/routine.service.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_features_commercial_routine_services_routine_service",
       "community": 29,
       "community_name": "routine.service.ts",
-      "norm_label": "routine.service.ts"
+      "norm_label": "routine.service.ts",
+      "id": "src_features_commercial_routine_services_routine_service"
     },
     {
       "label": "RoutineStageRef",
@@ -53,10 +449,10 @@
       "source_file": "src/features/commercial-routine/services/routine.service.ts",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "src_features_commercial_routine_services_routine_service_routinestageref",
       "community": 29,
       "community_name": "routine.service.ts",
-      "norm_label": "routinestageref"
+      "norm_label": "routinestageref",
+      "id": "src_features_commercial_routine_services_routine_service_routinestageref"
     },
     {
       "label": "RoutineStepToday",
@@ -64,10 +460,10 @@
       "source_file": "src/features/commercial-routine/services/routine.service.ts",
       "source_location": "L9",
       "_origin": "ast",
-      "id": "src_features_commercial_routine_services_routine_service_routinesteptoday",
       "community": 29,
       "community_name": "routine.service.ts",
-      "norm_label": "routinesteptoday"
+      "norm_label": "routinesteptoday",
+      "id": "src_features_commercial_routine_services_routine_service_routinesteptoday"
     },
     {
       "label": "RoutineToday",
@@ -75,10 +471,10 @@
       "source_file": "src/features/commercial-routine/services/routine.service.ts",
       "source_location": "L26",
       "_origin": "ast",
-      "id": "src_features_commercial_routine_services_routine_service_routinetoday",
       "community": 29,
       "community_name": "routine.service.ts",
-      "norm_label": "routinetoday"
+      "norm_label": "routinetoday",
+      "id": "src_features_commercial_routine_services_routine_service_routinetoday"
     },
     {
       "label": "RoutineStepConfig",
@@ -86,10 +482,10 @@
       "source_file": "src/features/commercial-routine/services/routine.service.ts",
       "source_location": "L40",
       "_origin": "ast",
-      "id": "src_features_commercial_routine_services_routine_service_routinestepconfig",
       "community": 29,
       "community_name": "routine.service.ts",
-      "norm_label": "routinestepconfig"
+      "norm_label": "routinestepconfig",
+      "id": "src_features_commercial_routine_services_routine_service_routinestepconfig"
     },
     {
       "label": "RoutineConfig",
@@ -97,10 +493,10 @@
       "source_file": "src/features/commercial-routine/services/routine.service.ts",
       "source_location": "L49",
       "_origin": "ast",
-      "id": "src_features_commercial_routine_services_routine_service_routineconfig",
       "community": 29,
       "community_name": "routine.service.ts",
-      "norm_label": "routineconfig"
+      "norm_label": "routineconfig",
+      "id": "src_features_commercial_routine_services_routine_service_routineconfig"
     },
     {
       "label": "RoutineOptions",
@@ -108,10 +504,10 @@
       "source_file": "src/features/commercial-routine/services/routine.service.ts",
       "source_location": "L57",
       "_origin": "ast",
-      "id": "src_features_commercial_routine_services_routine_service_routineoptions",
       "community": 29,
       "community_name": "routine.service.ts",
-      "norm_label": "routineoptions"
+      "norm_label": "routineoptions",
+      "id": "src_features_commercial_routine_services_routine_service_routineoptions"
     },
     {
       "label": "unwrap()",
@@ -119,10 +515,10 @@
       "source_file": "src/features/commercial-routine/services/routine.service.ts",
       "source_location": "L65",
       "_origin": "ast",
-      "id": "src_features_commercial_routine_services_routine_service_unwrap",
       "community": 29,
       "community_name": "routine.service.ts",
-      "norm_label": "unwrap()"
+      "norm_label": "unwrap()",
+      "id": "src_features_commercial_routine_services_routine_service_unwrap"
     },
     {
       "label": "routineService",
@@ -130,10 +526,10 @@
       "source_file": "src/features/commercial-routine/services/routine.service.ts",
       "source_location": "L69",
       "_origin": "ast",
-      "id": "src_features_commercial_routine_services_routine_service_routineservice",
       "community": 29,
       "community_name": "routine.service.ts",
-      "norm_label": "routineservice"
+      "norm_label": "routineservice",
+      "id": "src_features_commercial_routine_services_routine_service_routineservice"
     },
     {
       "label": "conversation-list.tsx",
@@ -141,10 +537,10 @@
       "source_file": "src/features/inbox/components/conversation-list.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_features_inbox_components_conversation_list",
       "community": 4,
       "community_name": "conversation-list.tsx",
-      "norm_label": "conversation-list.tsx"
+      "norm_label": "conversation-list.tsx",
+      "id": "src_features_inbox_components_conversation_list"
     },
     {
       "label": "ListAvatar()",
@@ -152,10 +548,10 @@
       "source_file": "src/features/inbox/components/conversation-list.tsx",
       "source_location": "L50",
       "_origin": "ast",
-      "id": "src_features_inbox_components_conversation_list_listavatar",
       "community": 4,
       "community_name": "conversation-list.tsx",
-      "norm_label": "listavatar()"
+      "norm_label": "listavatar()",
+      "id": "src_features_inbox_components_conversation_list_listavatar"
     },
     {
       "label": "ScopeFilter",
@@ -163,10 +559,10 @@
       "source_file": "src/features/inbox/components/conversation-list.tsx",
       "source_location": "L70",
       "_origin": "ast",
-      "id": "src_features_inbox_components_conversation_list_scopefilter",
       "community": 4,
       "community_name": "conversation-list.tsx",
-      "norm_label": "scopefilter"
+      "norm_label": "scopefilter",
+      "id": "src_features_inbox_components_conversation_list_scopefilter"
     },
     {
       "label": "scopeOptions",
@@ -174,10 +570,10 @@
       "source_file": "src/features/inbox/components/conversation-list.tsx",
       "source_location": "L72",
       "_origin": "ast",
-      "id": "src_features_inbox_components_conversation_list_scopeoptions",
       "community": 4,
       "community_name": "conversation-list.tsx",
-      "norm_label": "scopeoptions"
+      "norm_label": "scopeoptions",
+      "id": "src_features_inbox_components_conversation_list_scopeoptions"
     },
     {
       "label": "channelIcons",
@@ -185,10 +581,10 @@
       "source_file": "src/features/inbox/components/conversation-list.tsx",
       "source_location": "L77",
       "_origin": "ast",
-      "id": "src_features_inbox_components_conversation_list_channelicons",
       "community": 4,
       "community_name": "conversation-list.tsx",
-      "norm_label": "channelicons"
+      "norm_label": "channelicons",
+      "id": "src_features_inbox_components_conversation_list_channelicons"
     },
     {
       "label": "statusColors",
@@ -196,10 +592,10 @@
       "source_file": "src/features/inbox/components/conversation-list.tsx",
       "source_location": "L83",
       "_origin": "ast",
-      "id": "src_features_inbox_components_conversation_list_statuscolors",
       "community": 4,
       "community_name": "conversation-list.tsx",
-      "norm_label": "statuscolors"
+      "norm_label": "statuscolors",
+      "id": "src_features_inbox_components_conversation_list_statuscolors"
     },
     {
       "label": "ListFilter",
@@ -207,10 +603,10 @@
       "source_file": "src/features/inbox/components/conversation-list.tsx",
       "source_location": "L91",
       "_origin": "ast",
-      "id": "src_features_inbox_components_conversation_list_listfilter",
       "community": 4,
       "community_name": "conversation-list.tsx",
-      "norm_label": "listfilter"
+      "norm_label": "listfilter",
+      "id": "src_features_inbox_components_conversation_list_listfilter"
     },
     {
       "label": "filterOptions",
@@ -218,10 +614,10 @@
       "source_file": "src/features/inbox/components/conversation-list.tsx",
       "source_location": "L93",
       "_origin": "ast",
-      "id": "src_features_inbox_components_conversation_list_filteroptions",
       "community": 4,
       "community_name": "conversation-list.tsx",
-      "norm_label": "filteroptions"
+      "norm_label": "filteroptions",
+      "id": "src_features_inbox_components_conversation_list_filteroptions"
     },
     {
       "label": "ConversationListProps",
@@ -229,10 +625,10 @@
       "source_file": "src/features/inbox/components/conversation-list.tsx",
       "source_location": "L114",
       "_origin": "ast",
-      "id": "src_features_inbox_components_conversation_list_conversationlistprops",
       "community": 4,
       "community_name": "conversation-list.tsx",
-      "norm_label": "conversationlistprops"
+      "norm_label": "conversationlistprops",
+      "id": "src_features_inbox_components_conversation_list_conversationlistprops"
     },
     {
       "label": "ConversationList()",
@@ -240,10 +636,10 @@
       "source_file": "src/features/inbox/components/conversation-list.tsx",
       "source_location": "L132",
       "_origin": "ast",
-      "id": "src_features_inbox_components_conversation_list_conversationlist",
       "community": 4,
       "community_name": "conversation-list.tsx",
-      "norm_label": "conversationlist()"
+      "norm_label": "conversationlist()",
+      "id": "src_features_inbox_components_conversation_list_conversationlist"
     },
     {
       "label": "preferences.service.ts",
@@ -251,10 +647,10 @@
       "source_file": "src/features/inbox/services/preferences.service.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_features_inbox_services_preferences_service",
       "community": 5,
       "community_name": "preferences.service.ts",
-      "norm_label": "preferences.service.ts"
+      "norm_label": "preferences.service.ts",
+      "id": "src_features_inbox_services_preferences_service"
     },
     {
       "label": "InboxPreferences",
@@ -262,10 +658,10 @@
       "source_file": "src/features/inbox/services/preferences.service.ts",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "src_features_inbox_services_preferences_service_inboxpreferences",
       "community": 5,
       "community_name": "preferences.service.ts",
-      "norm_label": "inboxpreferences"
+      "norm_label": "inboxpreferences",
+      "id": "src_features_inbox_services_preferences_service_inboxpreferences"
     },
     {
       "label": "UserPreferences",
@@ -273,10 +669,10 @@
       "source_file": "src/features/inbox/services/preferences.service.ts",
       "source_location": "L21",
       "_origin": "ast",
-      "id": "src_features_inbox_services_preferences_service_userpreferences",
       "community": 5,
       "community_name": "preferences.service.ts",
-      "norm_label": "userpreferences"
+      "norm_label": "userpreferences",
+      "id": "src_features_inbox_services_preferences_service_userpreferences"
     },
     {
       "label": "preferencesService",
@@ -284,10 +680,10 @@
       "source_file": "src/features/inbox/services/preferences.service.ts",
       "source_location": "L26",
       "_origin": "ast",
-      "id": "src_features_inbox_services_preferences_service_preferencesservice",
       "community": 5,
       "community_name": "preferences.service.ts",
-      "norm_label": "preferencesservice"
+      "norm_label": "preferencesservice",
+      "id": "src_features_inbox_services_preferences_service_preferencesservice"
     },
     {
       "label": "lead-distribution.service.ts",
@@ -295,10 +691,10 @@
       "source_file": "src/features/settings/services/lead-distribution.service.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_features_settings_services_lead_distribution_service",
       "community": 4,
       "community_name": "conversation-list.tsx",
-      "norm_label": "lead-distribution.service.ts"
+      "norm_label": "lead-distribution.service.ts",
+      "id": "src_features_settings_services_lead_distribution_service"
     },
     {
       "label": "LeadWeight",
@@ -306,10 +702,10 @@
       "source_file": "src/features/settings/services/lead-distribution.service.ts",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "src_features_settings_services_lead_distribution_service_leadweight",
       "community": 4,
       "community_name": "conversation-list.tsx",
-      "norm_label": "leadweight"
+      "norm_label": "leadweight",
+      "id": "src_features_settings_services_lead_distribution_service_leadweight"
     },
     {
       "label": "PipelineRule",
@@ -317,10 +713,10 @@
       "source_file": "src/features/settings/services/lead-distribution.service.ts",
       "source_location": "L8",
       "_origin": "ast",
-      "id": "src_features_settings_services_lead_distribution_service_pipelinerule",
       "community": 4,
       "community_name": "conversation-list.tsx",
-      "norm_label": "pipelinerule"
+      "norm_label": "pipelinerule",
+      "id": "src_features_settings_services_lead_distribution_service_pipelinerule"
     },
     {
       "label": "LeadDistributionConfig",
@@ -328,10 +724,10 @@
       "source_file": "src/features/settings/services/lead-distribution.service.ts",
       "source_location": "L12",
       "_origin": "ast",
-      "id": "src_features_settings_services_lead_distribution_service_leaddistributionconfig",
       "community": 4,
       "community_name": "conversation-list.tsx",
-      "norm_label": "leaddistributionconfig"
+      "norm_label": "leaddistributionconfig",
+      "id": "src_features_settings_services_lead_distribution_service_leaddistributionconfig"
     },
     {
       "label": "Seller",
@@ -339,10 +735,10 @@
       "source_file": "src/features/settings/services/lead-distribution.service.ts",
       "source_location": "L19",
       "_origin": "ast",
-      "id": "src_features_settings_services_lead_distribution_service_seller",
       "community": 4,
       "community_name": "conversation-list.tsx",
-      "norm_label": "seller"
+      "norm_label": "seller",
+      "id": "src_features_settings_services_lead_distribution_service_seller"
     },
     {
       "label": "leadDistributionService",
@@ -350,10 +746,10 @@
       "source_file": "src/features/settings/services/lead-distribution.service.ts",
       "source_location": "L25",
       "_origin": "ast",
-      "id": "src_features_settings_services_lead_distribution_service_leaddistributionservice",
       "community": 4,
       "community_name": "conversation-list.tsx",
-      "norm_label": "leaddistributionservice"
+      "norm_label": "leaddistributionservice",
+      "id": "src_features_settings_services_lead_distribution_service_leaddistributionservice"
     },
     {
       "label": "(dashboard)/rotina/page.tsx",
@@ -939,14 +1335,14 @@
       "id": "src_features_cadences_services_cadences_service_kommoimportresult"
     },
     {
-      "label": "[id]/page.tsx",
+      "label": "pipelines/[id]/page.tsx",
       "file_type": "code",
       "source_file": "src/app/(dashboard)/pipelines/[id]/page.tsx",
       "source_location": "L1",
       "_origin": "ast",
       "community": 6,
       "community_name": "pipelines.service.ts",
-      "norm_label": "[id]/page.tsx",
+      "norm_label": "pipelines/[id]/page.tsx",
       "id": "src_app_dashboard_pipelines_id_page"
     },
     {
@@ -1472,8 +1868,8 @@
       "source_file": "package.json",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 1,
-      "community_name": "package.json",
+      "community": 0,
+      "community_name": "devDependencies",
       "norm_label": "package.json",
       "id": "package"
     },
@@ -1483,8 +1879,8 @@
       "source_file": "package.json",
       "source_location": "L2",
       "_origin": "ast",
-      "community": 1,
-      "community_name": "package.json",
+      "community": 0,
+      "community_name": "devDependencies",
       "norm_label": "name",
       "id": "package_name"
     },
@@ -1494,8 +1890,8 @@
       "source_file": "package.json",
       "source_location": "L3",
       "_origin": "ast",
-      "community": 1,
-      "community_name": "package.json",
+      "community": 0,
+      "community_name": "devDependencies",
       "norm_label": "version",
       "id": "package_version"
     },
@@ -1505,8 +1901,8 @@
       "source_file": "package.json",
       "source_location": "L4",
       "_origin": "ast",
-      "community": 1,
-      "community_name": "package.json",
+      "community": 0,
+      "community_name": "devDependencies",
       "norm_label": "private",
       "id": "package_private"
     },
@@ -1516,8 +1912,8 @@
       "source_file": "package.json",
       "source_location": "L5",
       "_origin": "ast",
-      "community": 1,
-      "community_name": "package.json",
+      "community": 0,
+      "community_name": "devDependencies",
       "norm_label": "scripts",
       "id": "package_scripts"
     },
@@ -1527,8 +1923,8 @@
       "source_file": "package.json",
       "source_location": "L6",
       "_origin": "ast",
-      "community": 1,
-      "community_name": "package.json",
+      "community": 0,
+      "community_name": "devDependencies",
       "norm_label": "dev",
       "id": "package_scripts_dev"
     },
@@ -1538,8 +1934,8 @@
       "source_file": "package.json",
       "source_location": "L7",
       "_origin": "ast",
-      "community": 1,
-      "community_name": "package.json",
+      "community": 0,
+      "community_name": "devDependencies",
       "norm_label": "build",
       "id": "package_scripts_build"
     },
@@ -1549,8 +1945,8 @@
       "source_file": "package.json",
       "source_location": "L8",
       "_origin": "ast",
-      "community": 1,
-      "community_name": "package.json",
+      "community": 0,
+      "community_name": "devDependencies",
       "norm_label": "start",
       "id": "package_scripts_start"
     },
@@ -1560,8 +1956,8 @@
       "source_file": "package.json",
       "source_location": "L9",
       "_origin": "ast",
-      "community": 1,
-      "community_name": "package.json",
+      "community": 0,
+      "community_name": "devDependencies",
       "norm_label": "lint",
       "id": "package_scripts_lint"
     },
@@ -2296,13 +2692,667 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/[id]/page.tsx",
+      "source_location": "L132",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_id_page",
+      "target": "src_app_dashboard_disparos_id_page_btn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/[id]/page.tsx",
+      "source_location": "L124",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_id_page",
+      "target": "src_app_dashboard_disparos_id_page_card",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/[id]/page.tsx",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_id_page",
+      "target": "src_app_dashboard_disparos_id_page_disparodetailpage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/[id]/page.tsx",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_id_page",
+      "target": "src_app_dashboard_disparos_id_page_rec_status",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/[id]/page.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_id_page",
+      "target": "src_features_disparos_services_disparos_service",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/[id]/page.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_id_page",
+      "target": "src_features_disparos_services_disparos_service_disparosservice",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/[id]/page.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_id_page",
+      "target": "src_features_disparos_services_disparos_service_fmtbrl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/app/(dashboard)/disparos/[id]/page.tsx",
+      "source_location": "L90",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_id_page_disparodetailpage",
+      "target": "src_features_disparos_services_disparos_service_fmtbrl"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/importar/page.tsx",
+      "source_location": "L40",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_importar_page",
+      "target": "src_app_dashboard_disparos_importar_page_importarcontatospage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/importar/page.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_importar_page",
+      "target": "src_app_dashboard_disparos_importar_page_loadxlsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/importar/page.tsx",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_importar_page",
+      "target": "src_app_dashboard_disparos_importar_page_pick",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/importar/page.tsx",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_importar_page",
+      "target": "src_app_dashboard_disparos_importar_page_row",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/importar/page.tsx",
+      "source_location": "L174",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_importar_page",
+      "target": "src_app_dashboard_disparos_importar_page_stat",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/importar/page.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_importar_page",
+      "target": "src_features_disparos_services_disparos_service",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/importar/page.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_importar_page",
+      "target": "src_features_disparos_services_disparos_service_disparosservice",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/importar/page.tsx",
+      "source_location": "L64",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_importar_page_importarcontatospage",
+      "target": "src_app_dashboard_disparos_importar_page_loadxlsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/importar/page.tsx",
+      "source_location": "L71",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_importar_page_importarcontatospage",
+      "target": "src_app_dashboard_disparos_importar_page_pick",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/novo/page.tsx",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_novo_page",
+      "target": "src_app_dashboard_disparos_novo_page_contact_fields",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/novo/page.tsx",
+      "source_location": "L323",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_novo_page",
+      "target": "src_app_dashboard_disparos_novo_page_field",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/novo/page.tsx",
+      "source_location": "L31",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_novo_page",
+      "target": "src_app_dashboard_disparos_novo_page_novodisparopage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/novo/page.tsx",
+      "source_location": "L333",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_novo_page",
+      "target": "src_app_dashboard_disparos_novo_page_stat",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/novo/page.tsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_novo_page",
+      "target": "src_features_disparos_services_disparos_service",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/novo/page.tsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_novo_page",
+      "target": "src_features_disparos_services_disparos_service_audiencefilter",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/novo/page.tsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_novo_page",
+      "target": "src_features_disparos_services_disparos_service_disparosservice",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/novo/page.tsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_novo_page",
+      "target": "src_features_disparos_services_disparos_service_fmtbrl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/novo/page.tsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_novo_page",
+      "target": "src_features_disparos_services_disparos_service_messagecategory",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/novo/page.tsx",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_novo_page",
+      "target": "src_features_pipelines_services_pipelines_service",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/novo/page.tsx",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_novo_page",
+      "target": "src_features_pipelines_services_pipelines_service_pipelinesservice",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/app/(dashboard)/disparos/novo/page.tsx",
+      "source_location": "L288",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_novo_page_novodisparopage",
+      "target": "src_features_disparos_services_disparos_service_fmtbrl"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/page.tsx",
+      "source_location": "L119",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_page",
+      "target": "src_app_dashboard_disparos_page_broadcastrow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/page.tsx",
+      "source_location": "L28",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_page",
+      "target": "src_app_dashboard_disparos_page_disparospage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/page.tsx",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_page",
+      "target": "src_app_dashboard_disparos_page_status_label",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/page.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_page",
+      "target": "src_features_disparos_services_disparos_service",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/page.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_page",
+      "target": "src_features_disparos_services_disparos_service_broadcast",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/page.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_page",
+      "target": "src_features_disparos_services_disparos_service_disparosservice",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/page.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_page",
+      "target": "src_features_disparos_services_disparos_service_fmtbrl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/page.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_page",
+      "target": "src_features_disparos_services_disparos_service_microstobrl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/app/(dashboard)/disparos/page.tsx",
+      "source_location": "L84",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_page_disparospage",
+      "target": "src_features_disparos_services_disparos_service_fmtbrl"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/app/(dashboard)/disparos/page.tsx",
+      "source_location": "L47",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_page_disparospage",
+      "target": "src_features_disparos_services_disparos_service_microstobrl"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/disparos/page.tsx",
+      "source_location": "L144",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_disparos_page_broadcastrow",
+      "target": "src_features_disparos_services_disparos_service_fmtbrl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/layout/app-sidebar.tsx",
+      "source_location": "L57",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_layout_app_sidebar",
+      "target": "src_components_layout_app_sidebar_appsidebar",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/layout/app-sidebar.tsx",
+      "source_location": "L46",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_layout_app_sidebar",
+      "target": "src_components_layout_app_sidebar_navitems",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/layout/app-sidebar.tsx",
+      "source_location": "L25",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_layout_app_sidebar",
+      "target": "src_features_notifications_components_notifications_bell",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/layout/app-sidebar.tsx",
+      "source_location": "L25",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_components_layout_app_sidebar",
+      "target": "src_features_notifications_components_notifications_bell_notificationsbell",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/disparos/services/disparos.service.ts",
+      "source_location": "L41",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_disparos_services_disparos_service",
+      "target": "src_features_disparos_services_disparos_service_approvedtemplate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/disparos/services/disparos.service.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_disparos_services_disparos_service",
+      "target": "src_features_disparos_services_disparos_service_audiencefilter",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/disparos/services/disparos.service.ts",
+      "source_location": "L50",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_disparos_services_disparos_service",
+      "target": "src_features_disparos_services_disparos_service_broadcast",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/disparos/services/disparos.service.ts",
+      "source_location": "L70",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_disparos_services_disparos_service",
+      "target": "src_features_disparos_services_disparos_service_broadcastrecipient",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/disparos/services/disparos.service.ts",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_disparos_services_disparos_service",
+      "target": "src_features_disparos_services_disparos_service_budgetusage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/disparos/services/disparos.service.ts",
+      "source_location": "L94",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_disparos_services_disparos_service",
+      "target": "src_features_disparos_services_disparos_service_disparosservice",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/disparos/services/disparos.service.ts",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_disparos_services_disparos_service",
+      "target": "src_features_disparos_services_disparos_service_estimateresult",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/disparos/services/disparos.service.ts",
+      "source_location": "L87",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_disparos_services_disparos_service",
+      "target": "src_features_disparos_services_disparos_service_fmtbrl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/disparos/services/disparos.service.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_disparos_services_disparos_service",
+      "target": "src_features_disparos_services_disparos_service_messagecategory",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/disparos/services/disparos.service.ts",
+      "source_location": "L83",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_disparos_services_disparos_service",
+      "target": "src_features_disparos_services_disparos_service_microstobrl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/disparos/services/disparos.service.ts",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_disparos_services_disparos_service",
+      "target": "src_features_disparos_services_disparos_service_ratecardrow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/disparos/services/disparos.service.ts",
+      "source_location": "L80",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_disparos_services_disparos_service",
+      "target": "src_features_disparos_services_disparos_service_unwrap",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/disparos/services/disparos.service.ts",
+      "source_location": "L88",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_disparos_services_disparos_service_fmtbrl",
+      "target": "src_features_disparos_services_disparos_service_microstobrl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "src/app/(dashboard)/settings/rotina/page.tsx",
       "source_location": "L27",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_settings_rotina_page",
-      "target": "src_app_dashboard_settings_rotina_page_settingsrotinapage",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_settings_rotina_page_settingsrotinapage"
     },
     {
       "relation": "contains",
@@ -2311,9 +3361,9 @@
       "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_settings_rotina_page",
-      "target": "src_app_dashboard_settings_rotina_page_stepstate",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_settings_rotina_page_stepstate"
     },
     {
       "relation": "imports_from",
@@ -2323,9 +3373,9 @@
       "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_settings_rotina_page",
-      "target": "src_features_commercial_routine_services_routine_service",
-      "confidence_score": 1.0
+      "target": "src_features_commercial_routine_services_routine_service"
     },
     {
       "relation": "imports",
@@ -2335,9 +3385,9 @@
       "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_settings_rotina_page",
-      "target": "src_features_commercial_routine_services_routine_service_routineservice",
-      "confidence_score": 1.0
+      "target": "src_features_commercial_routine_services_routine_service_routineservice"
     },
     {
       "relation": "imports",
@@ -2347,9 +3397,9 @@
       "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_settings_rotina_page",
-      "target": "src_features_commercial_routine_services_routine_service_routinestepconfig",
-      "confidence_score": 1.0
+      "target": "src_features_commercial_routine_services_routine_service_routinestepconfig"
     },
     {
       "relation": "imports_from",
@@ -2370,9 +3420,9 @@
       "source_location": "L49",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_commercial_routine_services_routine_service",
-      "target": "src_features_commercial_routine_services_routine_service_routineconfig",
-      "confidence_score": 1.0
+      "target": "src_features_commercial_routine_services_routine_service_routineconfig"
     },
     {
       "relation": "contains",
@@ -2381,9 +3431,9 @@
       "source_location": "L57",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_commercial_routine_services_routine_service",
-      "target": "src_features_commercial_routine_services_routine_service_routineoptions",
-      "confidence_score": 1.0
+      "target": "src_features_commercial_routine_services_routine_service_routineoptions"
     },
     {
       "relation": "contains",
@@ -2392,9 +3442,9 @@
       "source_location": "L69",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_commercial_routine_services_routine_service",
-      "target": "src_features_commercial_routine_services_routine_service_routineservice",
-      "confidence_score": 1.0
+      "target": "src_features_commercial_routine_services_routine_service_routineservice"
     },
     {
       "relation": "contains",
@@ -2403,9 +3453,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_commercial_routine_services_routine_service",
-      "target": "src_features_commercial_routine_services_routine_service_routinestageref",
-      "confidence_score": 1.0
+      "target": "src_features_commercial_routine_services_routine_service_routinestageref"
     },
     {
       "relation": "contains",
@@ -2414,9 +3464,9 @@
       "source_location": "L40",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_commercial_routine_services_routine_service",
-      "target": "src_features_commercial_routine_services_routine_service_routinestepconfig",
-      "confidence_score": 1.0
+      "target": "src_features_commercial_routine_services_routine_service_routinestepconfig"
     },
     {
       "relation": "contains",
@@ -2425,9 +3475,9 @@
       "source_location": "L9",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_commercial_routine_services_routine_service",
-      "target": "src_features_commercial_routine_services_routine_service_routinesteptoday",
-      "confidence_score": 1.0
+      "target": "src_features_commercial_routine_services_routine_service_routinesteptoday"
     },
     {
       "relation": "contains",
@@ -2436,9 +3486,9 @@
       "source_location": "L26",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_commercial_routine_services_routine_service",
-      "target": "src_features_commercial_routine_services_routine_service_routinetoday",
-      "confidence_score": 1.0
+      "target": "src_features_commercial_routine_services_routine_service_routinetoday"
     },
     {
       "relation": "contains",
@@ -2447,9 +3497,9 @@
       "source_location": "L65",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_commercial_routine_services_routine_service",
-      "target": "src_features_commercial_routine_services_routine_service_unwrap",
-      "confidence_score": 1.0
+      "target": "src_features_commercial_routine_services_routine_service_unwrap"
     },
     {
       "relation": "imports",
@@ -2494,9 +3544,9 @@
       "source_location": "L77",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_inbox_components_conversation_list",
-      "target": "src_features_inbox_components_conversation_list_channelicons",
-      "confidence_score": 1.0
+      "target": "src_features_inbox_components_conversation_list_channelicons"
     },
     {
       "relation": "contains",
@@ -2505,9 +3555,9 @@
       "source_location": "L132",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_inbox_components_conversation_list",
-      "target": "src_features_inbox_components_conversation_list_conversationlist",
-      "confidence_score": 1.0
+      "target": "src_features_inbox_components_conversation_list_conversationlist"
     },
     {
       "relation": "contains",
@@ -2516,9 +3566,9 @@
       "source_location": "L114",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_inbox_components_conversation_list",
-      "target": "src_features_inbox_components_conversation_list_conversationlistprops",
-      "confidence_score": 1.0
+      "target": "src_features_inbox_components_conversation_list_conversationlistprops"
     },
     {
       "relation": "contains",
@@ -2527,9 +3577,9 @@
       "source_location": "L93",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_inbox_components_conversation_list",
-      "target": "src_features_inbox_components_conversation_list_filteroptions",
-      "confidence_score": 1.0
+      "target": "src_features_inbox_components_conversation_list_filteroptions"
     },
     {
       "relation": "contains",
@@ -2538,9 +3588,9 @@
       "source_location": "L50",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_inbox_components_conversation_list",
-      "target": "src_features_inbox_components_conversation_list_listavatar",
-      "confidence_score": 1.0
+      "target": "src_features_inbox_components_conversation_list_listavatar"
     },
     {
       "relation": "contains",
@@ -2549,9 +3599,9 @@
       "source_location": "L91",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_inbox_components_conversation_list",
-      "target": "src_features_inbox_components_conversation_list_listfilter",
-      "confidence_score": 1.0
+      "target": "src_features_inbox_components_conversation_list_listfilter"
     },
     {
       "relation": "contains",
@@ -2560,9 +3610,9 @@
       "source_location": "L70",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_inbox_components_conversation_list",
-      "target": "src_features_inbox_components_conversation_list_scopefilter",
-      "confidence_score": 1.0
+      "target": "src_features_inbox_components_conversation_list_scopefilter"
     },
     {
       "relation": "contains",
@@ -2571,9 +3621,9 @@
       "source_location": "L72",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_inbox_components_conversation_list",
-      "target": "src_features_inbox_components_conversation_list_scopeoptions",
-      "confidence_score": 1.0
+      "target": "src_features_inbox_components_conversation_list_scopeoptions"
     },
     {
       "relation": "contains",
@@ -2582,9 +3632,9 @@
       "source_location": "L83",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_inbox_components_conversation_list",
-      "target": "src_features_inbox_components_conversation_list_statuscolors",
-      "confidence_score": 1.0
+      "target": "src_features_inbox_components_conversation_list_statuscolors"
     },
     {
       "relation": "imports_from",
@@ -2594,9 +3644,9 @@
       "source_location": "L48",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_inbox_components_conversation_list",
-      "target": "src_features_pipelines_services_pipelines_service",
-      "confidence_score": 1.0
+      "target": "src_features_pipelines_services_pipelines_service"
     },
     {
       "relation": "imports",
@@ -2606,9 +3656,9 @@
       "source_location": "L48",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_inbox_components_conversation_list",
-      "target": "src_features_pipelines_services_pipelines_service_pipelinesservice",
-      "confidence_score": 1.0
+      "target": "src_features_pipelines_services_pipelines_service_pipelinesservice"
     },
     {
       "relation": "imports_from",
@@ -2618,9 +3668,9 @@
       "source_location": "L39",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_inbox_components_conversation_list",
-      "target": "src_features_settings_services_lead_distribution_service",
-      "confidence_score": 1.0
+      "target": "src_features_settings_services_lead_distribution_service"
     },
     {
       "relation": "imports",
@@ -2630,9 +3680,9 @@
       "source_location": "L39",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_inbox_components_conversation_list",
-      "target": "src_features_settings_services_lead_distribution_service_leaddistributionservice",
-      "confidence_score": 1.0
+      "target": "src_features_settings_services_lead_distribution_service_leaddistributionservice"
     },
     {
       "relation": "contains",
@@ -2641,9 +3691,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_inbox_services_preferences_service",
-      "target": "src_features_inbox_services_preferences_service_inboxpreferences",
-      "confidence_score": 1.0
+      "target": "src_features_inbox_services_preferences_service_inboxpreferences"
     },
     {
       "relation": "contains",
@@ -2652,9 +3702,9 @@
       "source_location": "L26",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_inbox_services_preferences_service",
-      "target": "src_features_inbox_services_preferences_service_preferencesservice",
-      "confidence_score": 1.0
+      "target": "src_features_inbox_services_preferences_service_preferencesservice"
     },
     {
       "relation": "contains",
@@ -2663,9 +3713,9 @@
       "source_location": "L21",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_inbox_services_preferences_service",
-      "target": "src_features_inbox_services_preferences_service_userpreferences",
-      "confidence_score": 1.0
+      "target": "src_features_inbox_services_preferences_service_userpreferences"
     },
     {
       "relation": "contains",
@@ -2674,9 +3724,9 @@
       "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_settings_services_lead_distribution_service",
-      "target": "src_features_settings_services_lead_distribution_service_leaddistributionconfig",
-      "confidence_score": 1.0
+      "target": "src_features_settings_services_lead_distribution_service_leaddistributionconfig"
     },
     {
       "relation": "contains",
@@ -2685,9 +3735,9 @@
       "source_location": "L25",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_settings_services_lead_distribution_service",
-      "target": "src_features_settings_services_lead_distribution_service_leaddistributionservice",
-      "confidence_score": 1.0
+      "target": "src_features_settings_services_lead_distribution_service_leaddistributionservice"
     },
     {
       "relation": "contains",
@@ -2696,9 +3746,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_settings_services_lead_distribution_service",
-      "target": "src_features_settings_services_lead_distribution_service_leadweight",
-      "confidence_score": 1.0
+      "target": "src_features_settings_services_lead_distribution_service_leadweight"
     },
     {
       "relation": "contains",
@@ -2707,9 +3757,9 @@
       "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_settings_services_lead_distribution_service",
-      "target": "src_features_settings_services_lead_distribution_service_pipelinerule",
-      "confidence_score": 1.0
+      "target": "src_features_settings_services_lead_distribution_service_pipelinerule"
     },
     {
       "relation": "contains",
@@ -2718,9 +3768,9 @@
       "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_settings_services_lead_distribution_service",
-      "target": "src_features_settings_services_lead_distribution_service_seller",
-      "confidence_score": 1.0
+      "target": "src_features_settings_services_lead_distribution_service_seller"
     },
     {
       "relation": "contains",
@@ -5027,5 +6077,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "4e78f504ced6c87112390c3b726f272ac9911c53"
+  "built_at_commit": "84a81b7b103cbecaa11fdd90fe41401bad94eab7"
 }

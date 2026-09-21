@@ -6,7 +6,7 @@
  */
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Loader2, Megaphone, Send, Search } from 'lucide-react';
 import { pipelinesService } from '@/features/pipelines/services/pipelines.service';
@@ -30,6 +30,7 @@ const CONTACT_FIELDS = [
 
 export default function NovoDisparoPage() {
   const router = useRouter();
+  const qc = useQueryClient();
 
   const { data: channels } = useQuery({
     queryKey: ['disparos', 'wa-channels'],
@@ -86,6 +87,7 @@ export default function NovoDisparoPage() {
   const [showTagList, setShowTagList] = useState(false);
   const [hasPedido, setHasPedido] = useState(false);
   const [hasOrcamento, setHasOrcamento] = useState(false);
+  const [excludePedido, setExcludePedido] = useState(false);
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
   const [showPreview, setShowPreview] = useState(false);
@@ -113,11 +115,12 @@ export default function NovoDisparoPage() {
       tagMatch,
       hasPedido: hasPedido || undefined,
       hasOrcamento: hasOrcamento || undefined,
+      excludePedido: excludePedido || undefined,
       from: from || undefined,
       to: to || undefined,
       excludeOptedOut: true,
     }),
-    [pipelineId, stageId, tagIds, tagMatch, hasPedido, hasOrcamento, from, to],
+    [pipelineId, stageId, tagIds, tagMatch, hasPedido, hasOrcamento, excludePedido, from, to],
   );
   const hasSelector = !!(
     pipelineId ||
@@ -210,6 +213,23 @@ export default function NovoDisparoPage() {
       </Field>
 
       <Field label="Template aprovado">
+        <div className="-mt-1 mb-1.5 flex items-center gap-3 text-[11px]">
+          <a
+            href="/templates"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-primary hover:underline"
+          >
+            + Criar/gerenciar template ↗
+          </a>
+          <button
+            type="button"
+            onClick={() => qc.invalidateQueries({ queryKey: ['disparos', 'templates'] })}
+            className="text-zinc-400 hover:text-zinc-600"
+          >
+            atualizar lista
+          </button>
+        </div>
         <select value={templateName} onChange={(e) => setTemplateName(e.target.value)} className={inputCls}>
           <option value="">Selecione…</option>
           {(templates ?? []).map((t) => (
@@ -283,15 +303,28 @@ export default function NovoDisparoPage() {
         </div>
 
         {/* Pedidos / Orçamentos (do CRM) */}
-        <div className="mt-2 flex flex-wrap gap-4 text-sm">
-          <label className="flex items-center gap-1.5">
-            <input type="checkbox" checked={hasPedido} onChange={(e) => setHasPedido(e.target.checked)} className="h-4 w-4 rounded border-zinc-300" />
-            Só quem tem pedido
-          </label>
-          <label className="flex items-center gap-1.5">
-            <input type="checkbox" checked={hasOrcamento} onChange={(e) => setHasOrcamento(e.target.checked)} className="h-4 w-4 rounded border-zinc-300" />
-            Só quem tem orçamento
-          </label>
+        <div className="mt-2 space-y-1.5 text-sm">
+          <div className="flex flex-wrap gap-4">
+            <label className="flex items-center gap-1.5">
+              <input type="checkbox" checked={hasOrcamento} onChange={(e) => setHasOrcamento(e.target.checked)} className="h-4 w-4 rounded border-zinc-300" />
+              Só quem tem orçamento
+            </label>
+            <label className="flex items-center gap-1.5">
+              <input type="checkbox" checked={hasPedido} onChange={(e) => { setHasPedido(e.target.checked); if (e.target.checked) setExcludePedido(false); }} className="h-4 w-4 rounded border-zinc-300" />
+              Só quem tem pedido
+            </label>
+            <label className="flex items-center gap-1.5">
+              <input type="checkbox" checked={excludePedido} onChange={(e) => { setExcludePedido(e.target.checked); if (e.target.checked) setHasPedido(false); }} className="h-4 w-4 rounded border-zinc-300" />
+              Excluir quem já tem pedido
+            </label>
+          </div>
+          <button
+            type="button"
+            onClick={() => { setHasOrcamento(true); setExcludePedido(true); setHasPedido(false); }}
+            className="rounded-full border border-primary/40 bg-primary/5 px-2.5 py-1 text-[11px] font-medium text-primary"
+          >
+            🛒 Recuperação de carrinho (orçou e não comprou)
+          </button>
         </div>
 
         {/* Período */}
