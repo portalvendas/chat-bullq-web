@@ -14,6 +14,8 @@ export interface AudienceFilter {
   hasPedido?: boolean;
   hasOrcamento?: boolean;
   excludePedido?: boolean;
+  noReplyDays?: number;
+  repliedWithinDays?: number;
   from?: string;
   to?: string;
   excludeOptedOut?: boolean;

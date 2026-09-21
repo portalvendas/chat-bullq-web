@@ -4,7 +4,14 @@
  * Construtor de disparo: canal + template aprovado + variáveis + audiência
  * (funil/etapa/tags ANY/ALL) + estimativa ao vivo + checagem de teto → dispara.
  */
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+  type Dispatch,
+  type SetStateAction,
+} from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -20,6 +27,18 @@ import {
 
 const inputCls =
   'w-full rounded-lg border border-zinc-300 bg-transparent px-2.5 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-800';
+
+type VarMap = Record<string, { type: string; value: string }>;
+
+/** Extrai tokens {{...}} (numerados ou nomeados), sem repetir, preservando ordem. */
+function extractTokens(text?: string | null): string[] {
+  if (!text) return [];
+  const out: string[] = [];
+  const re = /\{\{\s*([\w.]+?)\s*\}\}/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text))) if (!out.includes(m[1])) out.push(m[1]);
+  return out;
+}
 
 const CONTACT_FIELDS = [
   { value: 'firstName', label: 'Primeiro nome' },
@@ -70,13 +89,18 @@ export default function NovoDisparoPage() {
     [templates, templateName],
   );
 
-  // Detecta variáveis {{n}} no corpo do template.
-  const varCount = useMemo(() => {
-    if (!template?.bodyText) return 0;
-    const m = template.bodyText.match(/\{\{\s*\d+\s*\}\}/g);
-    return m ? new Set(m).size : 0;
+  // Detecta variáveis {{...}} (numeradas OU nomeadas) no cabeçalho e no corpo.
+  const headerText = useMemo(() => {
+    const comps = (template?.components as any[]) ?? [];
+    const h = comps.find(
+      (c) => c?.type === 'HEADER' && (c?.format ?? 'TEXT') === 'TEXT',
+    );
+    return (h?.text as string) ?? '';
   }, [template]);
-  const [mapping, setMapping] = useState<Record<string, { type: string; value: string }>>({});
+  const headerTokens = useMemo(() => extractTokens(headerText), [headerText]);
+  const bodyTokens = useMemo(() => extractTokens(template?.bodyText), [template]);
+  const [mapHeader, setMapHeader] = useState<VarMap>({});
+  const [mapBody, setMapBody] = useState<VarMap>({});
 
   // Audiência
   const [pipelineId, setPipelineId] = useState('');
@@ -88,6 +112,7 @@ export default function NovoDisparoPage() {
   const [hasPedido, setHasPedido] = useState(false);
   const [hasOrcamento, setHasOrcamento] = useState(false);
   const [excludePedido, setExcludePedido] = useState(false);
+  const [noReplyDays, setNoReplyDays] = useState('');
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
   const [showPreview, setShowPreview] = useState(false);
@@ -116,11 +141,12 @@ export default function NovoDisparoPage() {
       hasPedido: hasPedido || undefined,
       hasOrcamento: hasOrcamento || undefined,
       excludePedido: excludePedido || undefined,
+      noReplyDays: noReplyDays ? Number(noReplyDays) : undefined,
       from: from || undefined,
       to: to || undefined,
       excludeOptedOut: true,
     }),
-    [pipelineId, stageId, tagIds, tagMatch, hasPedido, hasOrcamento, excludePedido, from, to],
+    [pipelineId, stageId, tagIds, tagMatch, hasPedido, hasOrcamento, excludePedido, noReplyDays, from, to],
   );
   const hasSelector = !!(
     pipelineId ||
@@ -154,10 +180,13 @@ export default function NovoDisparoPage() {
       if (!channelId) throw new Error('Escolha o canal.');
       if (!template) throw new Error('Escolha um template aprovado.');
       if (!hasSelector) throw new Error('Defina a audiência.');
+      const buildMap = (tokens: string[], map: VarMap) =>
+        Object.fromEntries(
+          tokens.map((t) => [t, map[t] ?? { type: 'contactField', value: 'firstName' }]),
+        );
       const variablesMapping: Record<string, any> = {};
-      for (let i = 1; i <= varCount; i++) {
-        variablesMapping[i] = mapping[i] ?? { type: 'contactField', value: 'firstName' };
-      }
+      if (headerTokens.length) variablesMapping.header = buildMap(headerTokens, mapHeader);
+      if (bodyTokens.length) variablesMapping.body = buildMap(bodyTokens, mapBody);
       const b = await disparosService.create({
         channelId,
         name: name.trim(),
@@ -245,44 +274,22 @@ export default function NovoDisparoPage() {
         )}
       </Field>
 
-      {varCount > 0 && (
+      {(headerTokens.length > 0 || bodyTokens.length > 0) && (
         <Field label="Variáveis do template">
-          <div className="space-y-2">
-            {Array.from({ length: varCount }, (_, i) => i + 1).map((n) => {
-              const cur = mapping[n] ?? { type: 'contactField', value: 'firstName' };
-              return (
-                <div key={n} className="flex items-center gap-2">
-                  <span className="w-8 text-xs font-bold text-zinc-400">{`{{${n}}}`}</span>
-                  <select
-                    value={cur.type === 'static' ? '__static' : cur.value}
-                    onChange={(e) => {
-                      const v = e.target.value;
-                      setMapping((m) => ({
-                        ...m,
-                        [n]: v === '__static' ? { type: 'static', value: '' } : { type: 'contactField', value: v },
-                      }));
-                    }}
-                    className={`${inputCls} flex-1`}
-                  >
-                    {CONTACT_FIELDS.map((f) => (
-                      <option key={f.value} value={f.value}>{f.label}</option>
-                    ))}
-                    <option value="__static">Texto fixo…</option>
-                  </select>
-                  {cur.type === 'static' && (
-                    <input
-                      value={cur.value}
-                      onChange={(e) =>
-                        setMapping((m) => ({ ...m, [n]: { type: 'static', value: e.target.value } }))
-                      }
-                      placeholder="texto"
-                      className={`${inputCls} flex-1`}
-                    />
-                  )}
-                </div>
-              );
-            })}
-          </div>
+          {headerTokens.length > 0 && (
+            <div className="mb-2">
+              <div className="mb-1 text-[11px] uppercase tracking-wide text-zinc-400">Cabeçalho</div>
+              <VarRows tokens={headerTokens} map={mapHeader} setMap={setMapHeader} />
+            </div>
+          )}
+          {bodyTokens.length > 0 && (
+            <div>
+              {headerTokens.length > 0 && (
+                <div className="mb-1 text-[11px] uppercase tracking-wide text-zinc-400">Corpo</div>
+              )}
+              <VarRows tokens={bodyTokens} map={mapBody} setMap={setMapBody} />
+            </div>
+          )}
         </Field>
       )}
 
@@ -355,6 +362,31 @@ export default function NovoDisparoPage() {
               <button type="button" onClick={() => { setFrom(''); setTo(''); }} className="text-[11px] text-zinc-400 underline">
                 limpar
               </button>
+            )}
+          </div>
+        </div>
+
+        {/* Tempo desde a última resposta do cliente */}
+        <div className="mt-2">
+          <div className="mb-1 text-[11px] text-zinc-400">Última resposta do cliente</div>
+          <div className="flex flex-wrap items-center gap-2 text-sm">
+            <span className="text-zinc-500">Sem resposta há pelo menos</span>
+            <input
+              type="number"
+              min={0}
+              value={noReplyDays}
+              onChange={(e) => setNoReplyDays(e.target.value)}
+              placeholder="0"
+              className={`${inputCls} w-20`}
+            />
+            <span className="text-zinc-500">dias</span>
+            {[3, 7, 15, 30].map((d) => (
+              <button key={d} type="button" onClick={() => setNoReplyDays(String(d))} className="rounded border border-zinc-300 px-2 py-1 text-[11px] dark:border-zinc-700">
+                {d}d
+              </button>
+            ))}
+            {noReplyDays && (
+              <button type="button" onClick={() => setNoReplyDays('')} className="text-[11px] text-zinc-400 underline">limpar</button>
             )}
           </div>
         </div>
@@ -488,6 +520,57 @@ export default function NovoDisparoPage() {
         </button>
       </div>
 
+    </div>
+  );
+}
+
+function VarRows({
+  tokens,
+  map,
+  setMap,
+}: {
+  tokens: string[];
+  map: VarMap;
+  setMap: Dispatch<SetStateAction<VarMap>>;
+}) {
+  return (
+    <div className="space-y-2">
+      {tokens.map((tk) => {
+        const cur = map[tk] ?? { type: 'contactField', value: 'firstName' };
+        return (
+          <div key={tk} className="flex items-center gap-2">
+            <span className="min-w-16 shrink-0 text-xs font-bold text-zinc-400">{`{{${tk}}}`}</span>
+            <select
+              value={cur.type === 'static' ? '__static' : cur.value}
+              onChange={(e) => {
+                const v = e.target.value;
+                setMap((m) => ({
+                  ...m,
+                  [tk]: v === '__static'
+                    ? { type: 'static', value: '' }
+                    : { type: 'contactField', value: v },
+                }));
+              }}
+              className={`${inputCls} flex-1`}
+            >
+              {CONTACT_FIELDS.map((f) => (
+                <option key={f.value} value={f.value}>{f.label}</option>
+              ))}
+              <option value="__static">Texto fixo…</option>
+            </select>
+            {cur.type === 'static' && (
+              <input
+                value={cur.value}
+                onChange={(e) =>
+                  setMap((m) => ({ ...m, [tk]: { type: 'static', value: e.target.value } }))
+                }
+                placeholder="texto"
+                className={`${inputCls} flex-1`}
+              />
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
