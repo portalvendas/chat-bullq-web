@@ -11,7 +11,20 @@ export interface AudienceFilter {
   stageId?: string;
   tagIds?: string[];
   tagMatch?: 'ANY' | 'ALL';
+  hasPedido?: boolean;
+  hasOrcamento?: boolean;
+  from?: string;
+  to?: string;
   excludeOptedOut?: boolean;
+}
+
+export interface PreviewLead {
+  id: string;
+  name: string | null;
+  phone: string | null;
+  pedidos: number;
+  orcamentos: number;
+  valorPedidos: number;
 }
 
 export interface RateCardRow {
@@ -116,6 +129,16 @@ export const disparosService = {
   }): Promise<EstimateResult> {
     const { data } = await api.post('/broadcast/estimate', payload);
     return unwrap<EstimateResult>(data);
+  },
+  async previewAudience(
+    audienceFilter: AudienceFilter,
+    cursor?: string,
+  ): Promise<{ items: PreviewLead[]; nextCursor: string | null }> {
+    const { data } = await api.post('/broadcast/audience/preview', {
+      audienceFilter,
+      cursor,
+    });
+    return unwrap(data);
   },
   async list(cursor?: string): Promise<{ items: Broadcast[]; nextCursor: string | null }> {
     const { data } = await api.get('/broadcasts', { params: { cursor } });

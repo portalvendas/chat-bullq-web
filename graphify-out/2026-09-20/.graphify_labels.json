@@ -1,12 +1,11 @@
 {
   "0": "devDependencies",
-  "1": "disparos.service.ts",
+  "1": "package.json",
   "2": "page.tsx",
   "3": "dependencies",
   "4": "conversation-list.tsx",
   "5": "preferences.service.ts",
   "6": "pipelines.service.ts",
-  "7": "importar/page.tsx",
   "10": "notifications-bell.tsx",
   "18": "cadences.service.ts",
   "28": "chat-panel.tsx",

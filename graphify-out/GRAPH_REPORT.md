@@ -1,66 +1,69 @@
-# Graph Report - chat-bullq-web  (2026-08-14)
+# Graph Report - chat-bullq-web  (2026-09-20)
 
 ## Corpus Check
-- 183 files · ~116,582 words
+- 218 files · ~147,004 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 208 nodes · 241 edges · 11 communities
+- 244 nodes · 298 edges · 12 communities
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `4e78f504`
+- Built from commit: `84a81b7b`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - devDependencies
-- package.json
+- disparos.service.ts
 - page.tsx
 - dependencies
 - conversation-list.tsx
 - preferences.service.ts
 - pipelines.service.ts
+- importar/page.tsx
 - notifications-bell.tsx
 - cadences.service.ts
 - chat-panel.tsx
 - routine.service.ts
 
 ## God Nodes (most connected - your core abstractions)
-1. `ImportPage()` - 8 edges
-2. `CanvasInner()` - 5 edges
-3. `scripts` - 5 edges
-4. `pipelinesService` - 4 edges
-5. `NotificationsBell()` - 4 edges
-6. `routineService` - 3 edges
-7. `MessageText()` - 3 edges
-8. `dagreLayout()` - 3 edges
-9. `GraphNodeType` - 3 edges
-10. `WorkflowGraph` - 3 edges
+1. `fmtBRL()` - 9 edges
+2. `ImportPage()` - 8 edges
+3. `disparosService` - 5 edges
+4. `CanvasInner()` - 5 edges
+5. `pipelinesService` - 5 edges
+6. `NotificationsBell()` - 5 edges
+7. `scripts` - 5 edges
+8. `microsToBRL()` - 4 edges
+9. `ImportarContatosPage()` - 3 edges
+10. `DisparosPage()` - 3 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `SalesData` --references--> `GraphNodeType`  [EXTRACTED]
-  src/features/cadences/components/salesbot-canvas.tsx → src/features/cadences/services/cadences.service.ts
-- `dagreLayout()` --references--> `WorkflowGraph`  [EXTRACTED]
-  src/features/cadences/components/salesbot-canvas.tsx → src/features/cadences/services/cadences.service.ts
-- `DraftStage` --references--> `StageType`  [EXTRACTED]
-  src/features/pipelines/components/stages-dialog.tsx → src/features/pipelines/services/pipelines.service.ts
-- `Props` --references--> `PipelineStage`  [EXTRACTED]
-  src/features/pipelines/components/stages-dialog.tsx → src/features/pipelines/services/pipelines.service.ts
+- `DisparoDetailPage()` --calls--> `fmtBRL()`  [EXTRACTED]
+  src/app/(dashboard)/disparos/[id]/page.tsx → src/features/disparos/services/disparos.service.ts
+- `NovoDisparoPage()` --calls--> `fmtBRL()`  [EXTRACTED]
+  src/app/(dashboard)/disparos/novo/page.tsx → src/features/disparos/services/disparos.service.ts
+- `BroadcastRow()` --calls--> `fmtBRL()`  [EXTRACTED]
+  src/app/(dashboard)/disparos/page.tsx → src/features/disparos/services/disparos.service.ts
+- `DisparosPage()` --calls--> `fmtBRL()`  [EXTRACTED]
+  src/app/(dashboard)/disparos/page.tsx → src/features/disparos/services/disparos.service.ts
+- `DisparosPage()` --calls--> `microsToBRL()`  [EXTRACTED]
+  src/app/(dashboard)/disparos/page.tsx → src/features/disparos/services/disparos.service.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (11 total, 0 thin omitted)
+## Communities (12 total, 0 thin omitted)
 
 ### Community 0 - "devDependencies"
-Cohesion: 0.12
-Nodes (17): eslint, eslint-config-next, devDependencies, eslint, eslint-config-next, tailwindcss, @tailwindcss/postcss, @types/node (+9 more)
+Cohesion: 0.08
+Nodes (25): eslint, eslint-config-next, devDependencies, eslint, eslint-config-next, tailwindcss, @tailwindcss/postcss, @types/node (+17 more)
 
-### Community 1 - "package.json"
-Cohesion: 0.22
-Nodes (8): name, private, scripts, build, dev, lint, start, version
+### Community 1 - "disparos.service.ts"
+Cohesion: 0.12
+Nodes (18): DisparoDetailPage(), REC_STATUS, CONTACT_FIELDS, NovoDisparoPage(), BroadcastRow(), DisparosPage(), STATUS_LABEL, ApprovedTemplate (+10 more)
 
 ### Community 2 - "page.tsx"
 Cohesion: 0.31
@@ -82,9 +85,13 @@ Nodes (3): InboxPreferences, preferencesService, UserPreferences
 Cohesion: 0.09
 Nodes (25): COLORS, DraftStage, makeKey(), Props, StagesDialog(), TYPE_OPTIONS, BoardResponse, CardDetail (+17 more)
 
+### Community 7 - "importar/page.tsx"
+Cohesion: 0.47
+Nodes (4): ImportarContatosPage(), loadXlsx(), pick(), Row
+
 ### Community 10 - "notifications-bell.tsx"
-Cohesion: 0.43
-Nodes (4): hrefFor(), IncomingNotification, NotificationsBell(), playBeep()
+Cohesion: 0.29
+Nodes (5): navItems, hrefFor(), IncomingNotification, NotificationsBell(), playBeep()
 
 ### Community 18 - "cadences.service.ts"
 Cohesion: 0.09
@@ -99,23 +106,23 @@ Cohesion: 0.15
 Nodes (8): StepState, RoutineConfig, RoutineOptions, routineService, RoutineStageRef, RoutineStepConfig, RoutineStepToday, RoutineToday
 
 ## Knowledge Gaps
-- **96 isolated node(s):** `StepState`, `RoutineStageRef`, `RoutineConfig`, `RoutineOptions`, `ScopeFilter` (+91 more)
+- **106 isolated node(s):** `REC_STATUS`, `Row`, `CONTACT_FIELDS`, `STATUS_LABEL`, `navItems` (+101 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `dependencies` connect `dependencies` to `package.json`?**
-  _High betweenness centrality (0.110) - this node is a cross-community bridge._
-- **Why does `devDependencies` connect `devDependencies` to `package.json`?**
-  _High betweenness centrality (0.049) - this node is a cross-community bridge._
-- **What connects `StepState`, `RoutineStageRef`, `RoutineConfig` to the rest of the system?**
-  _96 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Why does `dependencies` connect `dependencies` to `devDependencies`?**
+  _High betweenness centrality (0.080) - this node is a cross-community bridge._
+- **Why does `pipelinesService` connect `pipelines.service.ts` to `disparos.service.ts`, `conversation-list.tsx`?**
+  _High betweenness centrality (0.017) - this node is a cross-community bridge._
+- **What connects `REC_STATUS`, `Row`, `CONTACT_FIELDS` to the rest of the system?**
+  _106 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `devDependencies` be split into smaller, more focused modules?**
-  _Cohesion score 0.11764705882352941 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.07692307692307693 - nodes in this community are weakly interconnected._
+- **Should `disparos.service.ts` be split into smaller, more focused modules?**
+  _Cohesion score 0.11965811965811966 - nodes in this community are weakly interconnected._
 - **Should `dependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.04081632653061224 - nodes in this community are weakly interconnected._
 - **Should `conversation-list.tsx` be split into smaller, more focused modules?**
   _Cohesion score 0.13333333333333333 - nodes in this community are weakly interconnected._
-- **Should `pipelines.service.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.0896551724137931 - nodes in this community are weakly interconnected._

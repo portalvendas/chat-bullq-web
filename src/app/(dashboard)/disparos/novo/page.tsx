@@ -8,7 +8,7 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { Loader2, Megaphone, Send } from 'lucide-react';
+import { Loader2, Megaphone, Send, Search } from 'lucide-react';
 import { pipelinesService } from '@/features/pipelines/services/pipelines.service';
 import { tagsService } from '@/features/settings/services/tags.service';
 import {
@@ -82,21 +82,58 @@ export default function NovoDisparoPage() {
   const [stageId, setStageId] = useState('');
   const [tagIds, setTagIds] = useState<string[]>([]);
   const [tagMatch, setTagMatch] = useState<'ANY' | 'ALL'>('ANY');
+  const [tagQuery, setTagQuery] = useState('');
+  const [showTagList, setShowTagList] = useState(false);
+  const [hasPedido, setHasPedido] = useState(false);
+  const [hasOrcamento, setHasOrcamento] = useState(false);
+  const [from, setFrom] = useState('');
+  const [to, setTo] = useState('');
+  const [showPreview, setShowPreview] = useState(false);
+
   const stages = useMemo(
     () => pipelines?.find((p) => p.id === pipelineId)?.stages ?? [],
     [pipelines, pipelineId],
   );
+  const tagById = useMemo(
+    () => new Map((tags ?? []).map((t) => [t.id, t])),
+    [tags],
+  );
+  const tagMatches = useMemo(() => {
+    const q = tagQuery.trim().toLowerCase();
+    let list = (tags ?? []).filter((t) => !tagIds.includes(t.id));
+    if (q) list = list.filter((t) => t.name.toLowerCase().includes(q));
+    return list.slice(0, 40);
+  }, [tags, tagQuery, tagIds]);
+
   const filter: AudienceFilter = useMemo(
     () => ({
       pipelineId: pipelineId || undefined,
       stageId: stageId || undefined,
       tagIds: tagIds.length ? tagIds : undefined,
       tagMatch,
+      hasPedido: hasPedido || undefined,
+      hasOrcamento: hasOrcamento || undefined,
+      from: from || undefined,
+      to: to || undefined,
       excludeOptedOut: true,
     }),
-    [pipelineId, stageId, tagIds, tagMatch],
+    [pipelineId, stageId, tagIds, tagMatch, hasPedido, hasOrcamento, from, to],
   );
-  const hasSelector = !!(pipelineId || stageId || tagIds.length);
+  const hasSelector = !!(
+    pipelineId ||
+    stageId ||
+    tagIds.length ||
+    hasPedido ||
+    hasOrcamento
+  );
+
+  // Prévia de leads (nome, telefone, nº de pedidos/orçamentos).
+  const { data: preview, isFetching: previewing } = useQuery({
+    queryKey: ['disparos', 'preview', filter],
+    queryFn: () => disparosService.previewAudience(filter),
+    enabled: showPreview && hasSelector,
+    staleTime: 10_000,
+  });
 
   // Estimativa ao vivo (debounce simples via query key)
   const category: MessageCategory = template?.category ?? 'MARKETING';
@@ -244,34 +281,136 @@ export default function NovoDisparoPage() {
             ))}
           </select>
         </div>
+
+        {/* Pedidos / Orçamentos (do CRM) */}
+        <div className="mt-2 flex flex-wrap gap-4 text-sm">
+          <label className="flex items-center gap-1.5">
+            <input type="checkbox" checked={hasPedido} onChange={(e) => setHasPedido(e.target.checked)} className="h-4 w-4 rounded border-zinc-300" />
+            Só quem tem pedido
+          </label>
+          <label className="flex items-center gap-1.5">
+            <input type="checkbox" checked={hasOrcamento} onChange={(e) => setHasOrcamento(e.target.checked)} className="h-4 w-4 rounded border-zinc-300" />
+            Só quem tem orçamento
+          </label>
+        </div>
+
+        {/* Período */}
         <div className="mt-2">
+          <div className="mb-1 text-[11px] text-zinc-400">
+            Período {hasPedido || hasOrcamento ? '(dos pedidos/orçamentos)' : '(de entrada do lead)'}
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className={`${inputCls} w-auto`} />
+            <span className="text-xs text-zinc-400">até</span>
+            <input type="date" value={to} onChange={(e) => setTo(e.target.value)} className={`${inputCls} w-auto`} />
+            {[{ l: '7d', d: 7 }, { l: '30d', d: 30 }, { l: '90d', d: 90 }].map((p) => (
+              <button
+                key={p.l}
+                type="button"
+                onClick={() => {
+                  const t = new Date();
+                  const f = new Date(Date.now() - p.d * 864e5);
+                  setTo(t.toISOString().slice(0, 10));
+                  setFrom(f.toISOString().slice(0, 10));
+                }}
+                className="rounded border border-zinc-300 px-2 py-1 text-[11px] dark:border-zinc-700"
+              >
+                {p.l}
+              </button>
+            ))}
+            {(from || to) && (
+              <button type="button" onClick={() => { setFrom(''); setTo(''); }} className="text-[11px] text-zinc-400 underline">
+                limpar
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Tags: busca + consultar (lista oculta por padrão) */}
+        <div className="mt-3">
           <div className="mb-1 flex items-center gap-2 text-[11px] text-zinc-400">
             <span>Tags</span>
             <button type="button" onClick={() => setTagMatch(tagMatch === 'ANY' ? 'ALL' : 'ANY')} className="rounded border border-zinc-300 px-1.5 py-0.5 dark:border-zinc-700">
               {tagMatch === 'ANY' ? 'qualquer (ANY)' : 'todas (ALL)'}
             </button>
           </div>
-          <div className="flex flex-wrap gap-1.5">
-            {(tags ?? []).map((t) => {
-              const on = tagIds.includes(t.id);
-              return (
-                <button
-                  key={t.id}
-                  type="button"
-                  onClick={() => setTagIds((prev) => on ? prev.filter((x) => x !== t.id) : [...prev, t.id])}
-                  className={`rounded-full border px-2 py-0.5 text-[11px] ${on ? 'border-primary bg-primary/10 text-primary' : 'border-zinc-300 text-zinc-500 dark:border-zinc-700'}`}
-                >
-                  {t.name}
-                </button>
-              );
-            })}
+          {tagIds.length > 0 && (
+            <div className="mb-1.5 flex flex-wrap gap-1.5">
+              {tagIds.map((id) => (
+                <span key={id} className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] text-primary">
+                  {tagById.get(id)?.name ?? id}
+                  <button type="button" onClick={() => setTagIds((prev) => prev.filter((x) => x !== id))} className="hover:opacity-70">×</button>
+                </span>
+              ))}
+            </div>
+          )}
+          <div className="relative flex gap-2">
+            <input
+              value={tagQuery}
+              onChange={(e) => { setTagQuery(e.target.value); setShowTagList(true); }}
+              onFocus={() => setShowTagList(true)}
+              placeholder="Digite para buscar tags…"
+              className={`${inputCls} flex-1`}
+            />
+            <button type="button" onClick={() => setShowTagList((v) => !v)} className="inline-flex items-center gap-1 rounded-lg border border-zinc-300 px-3 text-sm text-zinc-600 dark:border-zinc-700 dark:text-zinc-300">
+              <Search className="h-4 w-4" /> Consultar
+            </button>
+            {showTagList && (
+              <div className="absolute left-0 right-0 top-full z-10 mt-1 max-h-56 overflow-auto rounded-lg border border-zinc-200 bg-white p-1 shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
+                {tagMatches.length === 0 ? (
+                  <div className="px-2 py-2 text-xs text-zinc-400">Nenhuma tag encontrada.</div>
+                ) : (
+                  tagMatches.map((t) => (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => { setTagIds((prev) => [...prev, t.id]); setTagQuery(''); }}
+                      className="block w-full rounded px-2 py-1 text-left text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                    >
+                      {t.name}
+                    </button>
+                  ))
+                )}
+              </div>
+            )}
           </div>
         </div>
+
         {!hasSelector && (
-          <p className="mt-1 text-[11px] text-amber-600">
-            Selecione ao menos um funil, etapa ou tag.
+          <p className="mt-2 text-[11px] text-amber-600">
+            Selecione ao menos um funil, etapa, tag, pedido ou orçamento.
           </p>
         )}
+
+        {/* Prévia de leads (com pedidos/orçamentos do CRM) */}
+        <div className="mt-3">
+          <button
+            type="button"
+            onClick={() => setShowPreview((v) => !v)}
+            disabled={!hasSelector}
+            className="text-[11px] font-medium text-primary hover:underline disabled:text-zinc-400 disabled:no-underline"
+          >
+            {showPreview ? 'Ocultar leads' : 'Ver leads da audiência'}{previewing ? '…' : ''}
+          </button>
+          {showPreview && hasSelector && (
+            <div className="mt-2 max-h-64 overflow-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
+              {(preview?.items ?? []).map((l) => (
+                <div key={l.id} className="flex items-center justify-between gap-2 border-b border-zinc-100 px-3 py-1.5 text-sm last:border-0 dark:border-zinc-800">
+                  <span className="truncate text-zinc-700 dark:text-zinc-200">{l.name || l.phone}</span>
+                  <span className="flex shrink-0 gap-2 text-[11px]">
+                    {l.pedidos > 0 && <span className="text-emerald-600">{l.pedidos} ped.</span>}
+                    {l.orcamentos > 0 && <span className="text-blue-600">{l.orcamentos} orç.</span>}
+                  </span>
+                </div>
+              ))}
+              {!preview?.items.length && (
+                <div className="px-3 py-4 text-center text-xs text-zinc-400">
+                  {previewing ? 'carregando…' : 'Nenhum lead nesta audiência.'}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </Field>
 
       {/* Estimativa ao vivo */}
