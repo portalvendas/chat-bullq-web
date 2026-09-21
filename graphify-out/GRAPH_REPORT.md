@@ -1,16 +1,16 @@
 # Graph Report - chat-bullq-web  (2026-09-20)
 
 ## Corpus Check
-- 218 files · ~147,621 words
+- 218 files · ~147,997 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 245 nodes · 299 edges · 12 communities
+- 248 nodes · 303 edges · 12 communities
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `7d25e951`
+- Built from commit: `25755487`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -37,16 +37,16 @@
 6. `NotificationsBell()` - 5 edges
 7. `scripts` - 5 edges
 8. `microsToBRL()` - 4 edges
-9. `ImportarContatosPage()` - 3 edges
-10. `DisparosPage()` - 3 edges
+9. `NovoDisparoPage()` - 3 edges
+10. `ImportarContatosPage()` - 3 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `NovoDisparoPage()` --calls--> `fmtBRL()`  [EXTRACTED]
-  src/app/(dashboard)/disparos/novo/page.tsx → src/features/disparos/services/disparos.service.ts
 - `DisparoDetailPage()` --calls--> `fmtBRL()`  [EXTRACTED]
   src/app/(dashboard)/disparos/[id]/page.tsx → src/features/disparos/services/disparos.service.ts
 - `BroadcastRow()` --calls--> `fmtBRL()`  [EXTRACTED]
   src/app/(dashboard)/disparos/page.tsx → src/features/disparos/services/disparos.service.ts
+- `NovoDisparoPage()` --calls--> `fmtBRL()`  [EXTRACTED]
+  src/app/(dashboard)/disparos/novo/page.tsx → src/features/disparos/services/disparos.service.ts
 - `DisparosPage()` --calls--> `microsToBRL()`  [EXTRACTED]
   src/app/(dashboard)/disparos/page.tsx → src/features/disparos/services/disparos.service.ts
 - `DisparosPage()` --calls--> `fmtBRL()`  [EXTRACTED]
@@ -62,8 +62,8 @@ Cohesion: 0.08
 Nodes (25): eslint, eslint-config-next, devDependencies, eslint, eslint-config-next, tailwindcss, @tailwindcss/postcss, @types/node (+17 more)
 
 ### Community 1 - "disparos.service.ts"
-Cohesion: 0.11
-Nodes (19): DisparoDetailPage(), REC_STATUS, CONTACT_FIELDS, NovoDisparoPage(), BroadcastRow(), DisparosPage(), STATUS_LABEL, ApprovedTemplate (+11 more)
+Cohesion: 0.10
+Nodes (21): DisparoDetailPage(), REC_STATUS, CONTACT_FIELDS, extractTokens(), NovoDisparoPage(), VarMap, BroadcastRow(), DisparosPage() (+13 more)
 
 ### Community 2 - "page.tsx"
 Cohesion: 0.31
@@ -106,22 +106,22 @@ Cohesion: 0.15
 Nodes (8): StepState, RoutineConfig, RoutineOptions, routineService, RoutineStageRef, RoutineStepConfig, RoutineStepToday, RoutineToday
 
 ## Knowledge Gaps
-- **107 isolated node(s):** `CONTACT_FIELDS`, `PreviewLead`, `RateCardRow`, `BudgetUsage`, `EstimateResult` (+102 more)
+- **108 isolated node(s):** `VarMap`, `CONTACT_FIELDS`, `PreviewLead`, `RateCardRow`, `BudgetUsage` (+103 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `dependencies` connect `dependencies` to `devDependencies`?**
-  _High betweenness centrality (0.079) - this node is a cross-community bridge._
+  _High betweenness centrality (0.077) - this node is a cross-community bridge._
 - **Why does `pipelinesService` connect `pipelines.service.ts` to `disparos.service.ts`, `conversation-list.tsx`?**
-  _High betweenness centrality (0.017) - this node is a cross-community bridge._
-- **What connects `CONTACT_FIELDS`, `PreviewLead`, `RateCardRow` to the rest of the system?**
-  _107 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _High betweenness centrality (0.018) - this node is a cross-community bridge._
+- **What connects `VarMap`, `CONTACT_FIELDS`, `PreviewLead` to the rest of the system?**
+  _108 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `devDependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.07692307692307693 - nodes in this community are weakly interconnected._
 - **Should `disparos.service.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.11375661375661375 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.1010752688172043 - nodes in this community are weakly interconnected._
 - **Should `dependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.04081632653061224 - nodes in this community are weakly interconnected._
 - **Should `conversation-list.tsx` be split into smaller, more focused modules?**
