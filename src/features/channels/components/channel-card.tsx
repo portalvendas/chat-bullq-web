@@ -204,15 +204,6 @@ export function ChannelCard({ channel, onUpdate }: ChannelCardProps) {
           >
             {channel.isActive ? 'Ativo' : 'Inativo'}
           </span>
-          {disconnected && (
-            <span
-              title="A conexão externa deste canal está fora do ar. Reconecte/pareie ou desative o canal."
-              className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-0.5 text-[11px] font-medium text-red-700 dark:bg-red-900/30 dark:text-red-400"
-            >
-              <XCircle className="h-3 w-3" />
-              Desconectado
-            </span>
-          )}
           {channel.visibility === 'PRIVATE' && (
             <span
               title="Canal privado — só membros com permissão explícita enxergam, mesmo OWNER/ADMIN"
@@ -340,6 +331,15 @@ export function ChannelCard({ channel, onUpdate }: ChannelCardProps) {
             )}
             {channel.isActive ? 'Desativar' : 'Ativar'}
           </button>
+          {disconnected && (
+            <span
+              title="A conexão externa deste canal está fora do ar. Reconecte/pareie ou desative o canal."
+              className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2.5 py-1.5 text-xs font-medium text-red-700 dark:bg-red-900/30 dark:text-red-400"
+            >
+              <XCircle className="h-3 w-3" />
+              Desconectado
+            </span>
+          )}
         </div>
       </div>
       <div className="relative">
