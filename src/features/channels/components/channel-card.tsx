@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   MessageSquare,
   MoreVertical,
@@ -33,6 +34,26 @@ const channelTypeMap: Record<string, { label: string; icon: React.ElementType; c
   INSTAGRAM: { label: 'Instagram', icon: InstagramIcon, color: 'bg-zinc-50 dark:bg-zinc-800' },
 };
 
+/** Tipos que dependem de uma conexão externa (têm "conectado/desconectado"). */
+const CONNECTABLE = new Set([
+  'WHATSAPP_ZAPI',
+  'WHATSAPP_ZAPPFY',
+  'WHATSAPP_BAILEYS',
+  'WHATSAPP_OFFICIAL',
+  'MERCADO_LIVRE',
+  'INSTAGRAM',
+]);
+
+/** Interpreta o resultado do teste de conexão em "desconectado?". */
+function isDisconnected(health: any): boolean {
+  if (!health) return false; // ainda carregando / sem info → não marca
+  if (health.success === false) return true;
+  const st = String(health.status ?? '').toLowerCase();
+  if (!st) return false; // sucesso sem status detalhado → considera conectado
+  const OK = ['connected', 'open', 'online', 'active', 'ok', 'true'];
+  return !OK.includes(st); // "disconnected", "error", "closed", "qrcode"…
+}
+
 interface ChannelCardProps {
   channel: Channel;
   onUpdate: () => void;
@@ -46,11 +67,26 @@ export function ChannelCard({ channel, onUpdate }: ChannelCardProps) {
   const meta = channelTypeMap[channel.type] || { label: channel.type, icon: MessageSquare, color: 'bg-gray-500' };
   const Icon = meta.icon;
   const sync = useChannelSync({ channelId: channel.id, channelType: channel.type });
+  const qc = useQueryClient();
+
+  // Health check: testa a conexão real (sem desligar o canal). Só para canais
+  // ativos e que dependem de conexão externa; cacheado 2min pra não martelar.
+  const { data: health } = useQuery({
+    queryKey: ['channel-health', channel.id],
+    queryFn: () => channelsService.testConnection(channel.id),
+    enabled: channel.isActive && CONNECTABLE.has(channel.type),
+    staleTime: 120_000,
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+  const disconnected = channel.isActive && isDisconnected(health);
 
   const handleTest = async () => {
     setIsTesting(true);
     try {
       const result = await channelsService.testConnection(channel.id);
+      // Atualiza o selo "Desconectado" na hora com o resultado do teste manual.
+      qc.setQueryData(['channel-health', channel.id], result);
       if (result.success) {
         toast.success(`Conexão OK: ${typeof result.status === 'string' ? result.status : JSON.stringify(result.status)}`);
       } else {
@@ -160,6 +196,15 @@ export function ChannelCard({ channel, onUpdate }: ChannelCardProps) {
           >
             {channel.isActive ? 'Ativo' : 'Inativo'}
           </span>
+          {disconnected && (
+            <span
+              title="A conexão externa deste canal está fora do ar. Reconecte/pareie ou desative o canal."
+              className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-0.5 text-[11px] font-medium text-red-700 dark:bg-red-900/30 dark:text-red-400"
+            >
+              <XCircle className="h-3 w-3" />
+              Desconectado
+            </span>
+          )}
           {channel.visibility === 'PRIVATE' && (
             <span
               title="Canal privado — só membros com permissão explícita enxergam, mesmo OWNER/ADMIN"
