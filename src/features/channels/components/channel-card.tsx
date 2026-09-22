@@ -87,10 +87,18 @@ export function ChannelCard({ channel, onUpdate }: ChannelCardProps) {
       const result = await channelsService.testConnection(channel.id);
       // Atualiza o selo "Desconectado" na hora com o resultado do teste manual.
       qc.setQueryData(['channel-health', channel.id], result);
-      if (result.success) {
-        toast.success(`Conexão OK: ${typeof result.status === 'string' ? result.status : JSON.stringify(result.status)}`);
+      // Interpreta a conexão REAL (o Z-API responde success:true mesmo
+      // desconectado — a verdade está no status).
+      if (result.success === false) {
+        toast.error(`Falha ao testar: ${result.error}`);
+      } else if (isDisconnected(result)) {
+        const det =
+          typeof result.status === 'string' && result.status
+            ? ` (${result.status})`
+            : '';
+        toast.error(`Canal desconectado${det} — pareie novamente em "Parear (QR)".`);
       } else {
-        toast.error(`Falha: ${result.error}`);
+        toast.success('Conexão OK — canal conectado.');
       }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Erro ao testar conexão');
