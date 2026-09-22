@@ -27,7 +27,7 @@ import { ChannelQrDialog } from './channel-qr-dialog';
 const channelTypeMap: Record<string, { label: string; icon: React.ElementType; color: string }> = {
   WHATSAPP_ZAPPFY: { label: 'WhatsApp (Zappfy)', icon: ZappfyIcon, color: 'bg-zinc-50 dark:bg-zinc-800' },
   WHATSAPP_ZAPI: { label: 'WhatsApp (Z-API)', icon: ZappfyIcon, color: 'bg-zinc-50 dark:bg-zinc-800' },
-  WHATSAPP_BAILEYS: { label: 'WhatsApp (Nativo/QR)', icon: ZappfyIcon, color: 'bg-zinc-50 dark:bg-zinc-800' },
+  WHATSAPP_BAILEYS: { label: 'WhatsApp (Nativo/QR)', icon: QrCode, color: 'bg-emerald-50 dark:bg-emerald-900/20' },
   MERCADO_LIVRE: { label: 'Mercado Livre', icon: ShoppingBag, color: 'bg-zinc-50 dark:bg-zinc-800' },
   WHATSAPP_OFFICIAL: { label: 'WhatsApp Official', icon: MetaIcon, color: 'bg-zinc-50 dark:bg-zinc-800' },
   INSTAGRAM: { label: 'Instagram', icon: InstagramIcon, color: 'bg-zinc-50 dark:bg-zinc-800' },
