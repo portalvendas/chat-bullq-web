@@ -266,6 +266,8 @@ export function CommercialSection() {
         <Kpi label="Ticket médio" value={brl(o.ticketMedio)} sub="por pedido" icon={DollarSign} accent="#06b6d4" />
       </div>
 
+      <CohortSection cohort={o.cohort} totalPedidos={o.pedidos} />
+
       <MetaAdsPanel overview={d.overview} />
 
       <EvolutionCharts series={d.series} />
@@ -454,6 +456,58 @@ function Cell({ label, value }: { label: string; value: string | number }) {
 
 function Empty() {
   return <p className="py-4 text-center text-sm text-zinc-400">Sem leads no período.</p>;
+}
+
+/** Fechamentos (pedidos) do período separados pela safra do lead. A soma das
+ *  três colunas é o total de pedidos do período (mesma base do Pedidos & Propostas). */
+function CohortSection({
+  cohort,
+  totalPedidos,
+}: {
+  cohort: CommercialData['overview']['cohort'];
+  totalPedidos: number;
+}) {
+  const tiles: Array<{
+    label: string;
+    sub: string;
+    data: { count: number; valor: number };
+    color: string;
+  }> = [
+    { label: 'Leads do mês', sub: 'entraram no período', data: cohort.mes, color: '#10b981' },
+    { label: 'Períodos anteriores', sub: 'entraram antes', data: cohort.anterior, color: '#8b5cf6' },
+    { label: 'Sem lead vinculado', sub: 'pedido sem lead no CRM', data: cohort.semVinculo, color: '#a1a1aa' },
+  ];
+  return (
+    <SectionCard
+      title="Fechamentos por safra do lead"
+      icon={CalendarDays}
+      subtitle={`Pedidos do período por quando o lead entrou · soma = ${totalPedidos} pedidos`}
+    >
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        {tiles.map((t) => {
+          const share = totalPedidos > 0 ? Math.round((t.data.count / totalPedidos) * 100) : 0;
+          return (
+            <div key={t.label} className="rounded-lg border border-zinc-100 p-3 dark:border-zinc-800">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-medium text-zinc-500">{t.label}</span>
+                <span
+                  className="rounded-full px-1.5 py-0.5 text-[10px] font-semibold"
+                  style={{ backgroundColor: `${t.color}1a`, color: t.color }}
+                >
+                  {share}%
+                </span>
+              </div>
+              <div className="mt-1 text-2xl font-bold tabular-nums text-zinc-900 dark:text-zinc-100">
+                {t.data.count}
+              </div>
+              <div className="text-[11px] tabular-nums text-zinc-500">{brl(t.data.valor)}</div>
+              <div className="mt-1 text-[10px] text-zinc-400">{t.sub}</div>
+            </div>
+          );
+        })}
+      </div>
+    </SectionCard>
+  );
 }
 
 function PeriodFilter({

@@ -122,6 +122,13 @@ export interface CommercialData {
     gasto: number | null;
     cac: number | null;
     roas: number | null;
+    /** Fechamentos (pedidos) do período por safra do lead: entrou no mês,
+     *  em período anterior, ou sem lead vinculado. Soma = total de pedidos. */
+    cohort: {
+      mes: { count: number; valor: number };
+      anterior: { count: number; valor: number };
+      semVinculo: { count: number; valor: number };
+    };
   };
   funnel: {
     leads: number;
