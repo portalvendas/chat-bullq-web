@@ -890,24 +890,52 @@ export default function TinyOrdersPage() {
                     <th className="pb-2 pr-3 text-right font-medium">Pedidos</th>
                     <th className="pb-2 pr-3 text-right font-medium">R$ pedidos</th>
                     <th className="pb-2 pr-3 text-right font-medium">Propostas</th>
-                    <th className="pb-2 text-right font-medium">R$ propostas</th>
+                    <th className="pb-2 pr-3 text-right font-medium">R$ propostas</th>
+                    <th className="pb-2 pr-3 text-right font-medium" title="Propostas que viraram pedido (quantidade)">Conv.</th>
+                    <th className="pb-2 pr-3 text-right font-medium" title="Conversão em valor: R$ pedidos ÷ R$ propostas">Conv. R$</th>
+                    <th className="pb-2 text-right font-medium" title="Ticket médio por pedido">Ticket médio</th>
                   </tr>
                 </thead>
                 <tbody className="text-zinc-700 dark:text-zinc-300">
-                  {vendors.map((v) => (
-                    <tr key={v.vendedor} className="border-t border-zinc-100 dark:border-zinc-800">
-                      <td className="py-1.5 pr-3 font-medium text-zinc-800 dark:text-zinc-200">
-                        {v.vendedor}
-                      </td>
-                      <td className="py-1.5 pr-3 text-right tabular-nums">{v.pedidosCount}</td>
-                      <td className="py-1.5 pr-3 text-right tabular-nums">{brl(v.pedidosTotal)}</td>
-                      <td className="py-1.5 pr-3 text-right tabular-nums">{v.propostasCount}</td>
-                      <td className="py-1.5 text-right tabular-nums">{brl(v.propostasTotal)}</td>
-                    </tr>
-                  ))}
+                  {vendors.map((v) => {
+                    const convQtd =
+                      v.propostasCount > 0 ? (v.pedidosCount / v.propostasCount) * 100 : null;
+                    const convVal =
+                      v.propostasTotal > 0 ? (v.pedidosTotal / v.propostasTotal) * 100 : null;
+                    const ticket = v.pedidosCount > 0 ? v.pedidosTotal / v.pedidosCount : 0;
+                    const fmtPct = (n: number | null) =>
+                      n == null ? '—' : `${n.toLocaleString('pt-BR', { maximumFractionDigits: 1 })}%`;
+                    const convColor =
+                      convQtd == null
+                        ? 'text-zinc-400'
+                        : convQtd >= 40
+                          ? 'text-emerald-600 dark:text-emerald-400'
+                          : convQtd >= 20
+                            ? 'text-amber-600 dark:text-amber-400'
+                            : 'text-red-600 dark:text-red-400';
+                    return (
+                      <tr key={v.vendedor} className="border-t border-zinc-100 dark:border-zinc-800">
+                        <td className="py-1.5 pr-3 font-medium text-zinc-800 dark:text-zinc-200">
+                          {v.vendedor}
+                        </td>
+                        <td className="py-1.5 pr-3 text-right tabular-nums">{v.pedidosCount}</td>
+                        <td className="py-1.5 pr-3 text-right tabular-nums">{brl(v.pedidosTotal)}</td>
+                        <td className="py-1.5 pr-3 text-right tabular-nums">{v.propostasCount}</td>
+                        <td className="py-1.5 pr-3 text-right tabular-nums">{brl(v.propostasTotal)}</td>
+                        <td className={`py-1.5 pr-3 text-right font-semibold tabular-nums ${convColor}`}>
+                          {fmtPct(convQtd)}
+                        </td>
+                        <td className="py-1.5 pr-3 text-right tabular-nums">{fmtPct(convVal)}</td>
+                        <td className="py-1.5 text-right tabular-nums">{brl(ticket)}</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
+            <p className="mt-3 text-[11px] text-zinc-400">
+              Conv. = propostas que viraram pedido (qtd) · Conv. R$ = R$ pedidos ÷ R$ propostas · Ticket médio = R$ pedidos ÷ nº de pedidos.
+            </p>
           </div>
         )}
 
