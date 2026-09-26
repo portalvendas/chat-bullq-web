@@ -210,7 +210,8 @@ export default function NovoDisparoPage() {
   const overBudget = estimate && estimate.budget.hasCap && !estimate.budget.withinBudget;
 
   return (
-    <div className="mx-auto max-w-2xl space-y-5 p-4 sm:p-6">
+    <div className="h-full overflow-y-auto">
+      <div className="mx-auto max-w-2xl space-y-5 p-4 sm:p-6">
       <div className="flex items-center gap-2">
         <Megaphone className="h-6 w-6 text-primary" />
         <h1 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
@@ -520,6 +521,7 @@ export default function NovoDisparoPage() {
         </button>
       </div>
 
+      </div>
     </div>
   );
 }

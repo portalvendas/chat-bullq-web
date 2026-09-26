@@ -661,7 +661,7 @@ function ConversionRow({
   );
 }
 
-export default function TinyOrdersPage() {
+export default function TinyOrdersPage({ embedded = false }: { embedded?: boolean }) {
   const [tab, setTab] = useState<'PEDIDO' | 'ORCAMENTO'>('PEDIDO');
   const [page, setPage] = useState(1);
   const [period, setPeriod] = useState<PeriodKey>('tudo');
@@ -726,17 +726,19 @@ export default function TinyOrdersPage() {
   const vendors = summary?.porVendedor ?? [];
 
   return (
-    <div className="h-full overflow-y-auto">
-      <div className="mx-auto w-full max-w-6xl p-6">
+    <div className={embedded ? '' : 'h-full overflow-y-auto'}>
+      <div className={embedded ? '' : 'mx-auto w-full max-w-6xl p-6'}>
         <div className="flex flex-wrap items-start justify-between gap-3">
-          <div>
-            <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
-              Pedidos &amp; Propostas
-            </h1>
-            <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-              Vendas efetivas do Tiny ERP (sem marketplace/cancelados) vinculadas aos leads.
-            </p>
-          </div>
+          {!embedded && (
+            <div>
+              <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+                Pedidos &amp; Propostas
+              </h1>
+              <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+                Vendas efetivas do Tiny ERP (sem marketplace/cancelados) vinculadas aos leads.
+              </p>
+            </div>
+          )}
           {/* Filtro de período */}
           <div className="flex flex-wrap gap-1 rounded-lg border border-zinc-200 p-1 dark:border-zinc-800">
             {(Object.keys(PERIOD_LABELS) as PeriodKey[]).map((k) => (

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   LineChart, Line, BarChart, Bar, Cell,
@@ -17,6 +17,8 @@ import { useOrgId } from '@/hooks/use-org-query-key';
 import { Heatmap } from '@/features/dashboard/components/Heatmap';
 import { AgentList } from '@/features/dashboard/components/AgentList';
 import { CommercialSection } from '@/features/dashboard/components/CommercialSection';
+import TinyOrdersPage from '@/app/(dashboard)/tiny/page';
+import { useSearchParams } from 'next/navigation';
 
 const CHANNEL_COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4'];
 
@@ -167,24 +169,22 @@ const tooltipStyle = {
   fontSize: 11, padding: '6px 10px', color: '#fff',
 };
 
-function TabBar({ tab, setTab }: { tab: 'atendimento' | 'comercial'; setTab: (t: 'atendimento' | 'comercial') => void }) {
-  const base =
-    'rounded-lg px-4 py-1.5 text-sm font-medium transition-colors';
+type DashTab = 'atendimento' | 'comercial' | 'pedidos';
+
+function TabBar({ tab, setTab }: { tab: DashTab; setTab: (t: DashTab) => void }) {
+  const base = 'rounded-lg px-4 py-1.5 text-sm font-medium transition-colors';
+  const cls = (t: DashTab) =>
+    `${base} ${tab === t ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900' : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200'}`;
   return (
     <div className="mt-4 inline-flex gap-1 rounded-xl border border-zinc-200 bg-white p-1 dark:border-zinc-800 dark:bg-zinc-900">
-      <button
-        type="button"
-        onClick={() => setTab('atendimento')}
-        className={`${base} ${tab === 'atendimento' ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900' : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200'}`}
-      >
+      <button type="button" onClick={() => setTab('atendimento')} className={cls('atendimento')}>
         Atendimento
       </button>
-      <button
-        type="button"
-        onClick={() => setTab('comercial')}
-        className={`${base} ${tab === 'comercial' ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900' : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200'}`}
-      >
+      <button type="button" onClick={() => setTab('comercial')} className={cls('comercial')}>
         Comercial
+      </button>
+      <button type="button" onClick={() => setTab('pedidos')} className={cls('pedidos')}>
+        Pedidos &amp; Orçamentos
       </button>
     </div>
   );
@@ -192,7 +192,16 @@ function TabBar({ tab, setTab }: { tab: 'atendimento' | 'comercial'; setTab: (t:
 
 export default function DashboardPage() {
   const orgId = useOrgId();
-  const [tab, setTab] = useState<'atendimento' | 'comercial'>('atendimento');
+  const searchParams = useSearchParams();
+  const urlTab = searchParams.get('tab');
+  const [tab, setTab] = useState<DashTab>(
+    urlTab === 'comercial' || urlTab === 'pedidos' ? urlTab : 'atendimento',
+  );
+  // Mantém a aba em sincronia com o ?tab= da URL (ex.: link do menu lateral
+  // clicado quando o Dashboard já está montado).
+  useEffect(() => {
+    setTab(urlTab === 'comercial' || urlTab === 'pedidos' ? urlTab : 'atendimento');
+  }, [urlTab]);
   const { data: overview, isLoading: loadingOverview } = useQuery({
     queryKey: ['dashboard-overview', orgId],
     queryFn: () => dashboardService.getOverview(),
@@ -250,6 +259,20 @@ export default function DashboardPage() {
           <TabBar tab={tab} setTab={setTab} />
           <div className="mt-6">
             <CommercialSection />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (tab === 'pedidos') {
+    return (
+      <div className="h-full min-h-0 overflow-y-auto">
+        <div className="mx-auto w-full max-w-6xl p-6">
+          <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Dashboard</h1>
+          <TabBar tab={tab} setTab={setTab} />
+          <div className="mt-6">
+            <TinyOrdersPage embedded />
           </div>
         </div>
       </div>

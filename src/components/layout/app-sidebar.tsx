@@ -48,7 +48,7 @@ const navItems = [
   { href: '/rotina', label: 'Rotina', icon: ClipboardCheck, mod: 'inbox' },
   { href: '/disparos', label: 'Disparos', icon: Megaphone, mod: 'disparos' },
   { href: '/funnel-audit', label: 'Auditoria de Funil', icon: ScanSearch, mod: 'pipelines' },
-  { href: '/tiny', label: 'Pedidos ERP', icon: ShoppingCart, mod: 'dashboard' },
+  { href: '/dashboard?tab=pedidos', label: 'Pedidos & Orçamentos', icon: ShoppingCart, mod: 'dashboard' },
   { href: '/automations', label: 'Automações', icon: Zap, mod: 'automations' },
   { href: '/comentarios', label: 'Comentários', icon: MessageCircle, mod: 'inbox' },
   { href: '/templates', label: 'Modelos', icon: MessageSquareText, mod: 'templates' },
