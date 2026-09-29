@@ -211,6 +211,35 @@ export interface MetaAdsStatus {
   encryptedAtRest: boolean;
 }
 
+export interface WaCostCat {
+  count: number;
+  costMicros: string;
+}
+export type WaCatKey = 'MARKETING' | 'UTILITY' | 'AUTHENTICATION' | 'SERVICE';
+export interface WaCostsData {
+  from: string;
+  to: string;
+  serviceFreeAllowance: number;
+  channels: Array<{
+    channelId: string;
+    name: string;
+    phoneNumberId: string | null;
+    byCategory: Record<WaCatKey, WaCostCat>;
+    serviceUsed: number;
+    serviceFree: number;
+    servicePctUsed: number;
+    serviceOver: number;
+    totalCostMicros: string;
+    totalCount: number;
+  }>;
+  totals: {
+    byCategory: Record<WaCatKey, WaCostCat>;
+    totalCostMicros: string;
+    totalCount: number;
+    serviceUsed: number;
+  };
+}
+
 export const dashboardService = {
   async getOverview(from?: string, to?: string): Promise<DashboardOverview> {
     const params: Record<string, string> = {};
@@ -337,6 +366,13 @@ export const dashboardService = {
   },
   async getIntakeHealth(): Promise<IntakeHealth> {
     const { data } = await api.get('/dashboard/lead-intake-health');
+    return data.data;
+  },
+  async getWaCosts(from?: string, to?: string): Promise<WaCostsData> {
+    const params: Record<string, string> = {};
+    if (from) params.from = from;
+    if (to) params.to = to;
+    const { data } = await api.get('/dashboard/wa-costs', { params });
     return data.data;
   },
   async getMetaAds(): Promise<MetaAdsStatus> {

@@ -1,0 +1,174 @@
+'use client';
+
+import { useQuery } from '@tanstack/react-query';
+import {
+  DollarSign, MessageSquare, Megaphone, Bell, ShieldCheck, Headphones, AlertTriangle,
+} from 'lucide-react';
+import {
+  dashboardService,
+  type WaCostsData,
+  type WaCatKey,
+} from '@/features/dashboard/services/dashboard.service';
+import { useOrgId } from '@/hooks/use-org-query-key';
+
+const brl = (micros: string) =>
+  (Number(micros || '0') / 1_000_000).toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  });
+
+const CAT_META: Record<WaCatKey, { label: string; icon: React.ElementType; color: string }> = {
+  MARKETING: { label: 'Marketing', icon: Megaphone, color: '#8b5cf6' },
+  UTILITY: { label: 'Utility', icon: Bell, color: '#3b82f6' },
+  AUTHENTICATION: { label: 'Autenticação', icon: ShieldCheck, color: '#f59e0b' },
+  SERVICE: { label: 'Serviço', icon: Headphones, color: '#10b981' },
+};
+const CATS: WaCatKey[] = ['MARKETING', 'UTILITY', 'AUTHENTICATION', 'SERVICE'];
+
+function Kpi({ label, value, sub, icon: Icon, accent }: {
+  label: string; value: string; sub?: string; icon: React.ElementType; accent: string;
+}) {
+  return (
+    <div className="flex flex-col rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-medium uppercase tracking-wider text-zinc-500">{label}</span>
+        <div className="flex h-7 w-7 items-center justify-center rounded-lg" style={{ backgroundColor: `${accent}1a`, color: accent }}>
+          <Icon className="h-4 w-4" />
+        </div>
+      </div>
+      <span className="mt-2 text-2xl font-bold tabular-nums text-zinc-900 dark:text-zinc-100">{value}</span>
+      {sub && <span className="mt-0.5 text-[11px] text-zinc-500">{sub}</span>}
+    </div>
+  );
+}
+
+function ServiceBar({ used, free, pct, over }: { used: number; free: number; pct: number; over: number }) {
+  const color = over > 0 ? '#ef4444' : pct >= 80 ? '#f59e0b' : '#10b981';
+  return (
+    <div>
+      <div className="flex items-center justify-between text-xs">
+        <span className="text-zinc-600 dark:text-zinc-300">Mensagens de serviço no mês</span>
+        <span className="tabular-nums font-medium text-zinc-800 dark:text-zinc-200">
+          {used.toLocaleString('pt-BR')} / {free.toLocaleString('pt-BR')} grátis
+        </span>
+      </div>
+      <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
+        <div className="h-full rounded-full transition-all" style={{ width: `${Math.min(pct, 100)}%`, backgroundColor: color }} />
+      </div>
+      {over > 0 ? (
+        <p className="mt-1 inline-flex items-center gap-1 text-[11px] font-medium text-red-600 dark:text-red-400">
+          <AlertTriangle className="h-3 w-3" /> {over.toLocaleString('pt-BR')} acima da franquia — já cobrando o excedente
+        </p>
+      ) : pct >= 80 ? (
+        <p className="mt-1 inline-flex items-center gap-1 text-[11px] font-medium text-amber-600 dark:text-amber-400">
+          <AlertTriangle className="h-3 w-3" /> {pct}% da franquia usada — perto de começar a pagar
+        </p>
+      ) : (
+        <p className="mt-1 text-[11px] text-zinc-400">{pct}% da franquia grátis usada</p>
+      )}
+    </div>
+  );
+}
+
+export function WaCostsSection() {
+  const orgId = useOrgId();
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['dashboard-wa-costs', orgId],
+    queryFn: () => dashboardService.getWaCosts(),
+    staleTime: 60_000,
+  });
+
+  if (isLoading) {
+    return (
+      <div className="grid gap-4 sm:grid-cols-3">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className="h-28 animate-pulse rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900" />
+        ))}
+      </div>
+    );
+  }
+  if (error || !data) {
+    return (
+      <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300">
+        Não foi possível carregar os custos do WhatsApp.
+      </div>
+    );
+  }
+
+  const d: WaCostsData = data;
+  const mesLabel = new Date(d.from).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+  const semDados = d.totals.totalCount === 0;
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Custos WhatsApp</h2>
+        <p className="text-sm text-zinc-500">
+          Custo real por mensagem (categoria da Meta), {mesLabel}. Desde 1º/out/2026 a Meta cobra
+          mensagens de serviço acima de 1.000/número/mês e templates de utility dentro da janela de 24h.
+        </p>
+      </div>
+
+      {semDados ? (
+        <div className="rounded-xl border border-zinc-200 bg-zinc-50/60 p-6 text-center text-sm text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950/40">
+          Ainda sem dados de custo neste mês. O custo real é coletado dos webhooks da Meta a partir de agora —
+          o histórico anterior não é reconstruído. Volte após algumas mensagens fluírem.
+        </div>
+      ) : (
+        <>
+          <div className="grid gap-4 sm:grid-cols-3">
+            <Kpi label="Custo real do mês" value={brl(d.totals.totalCostMicros)} sub={`${d.totals.totalCount.toLocaleString('pt-BR')} mensagens cobradas/registradas`} icon={DollarSign} accent="#10b981" />
+            <Kpi label="Mensagens de serviço" value={d.totals.serviceUsed.toLocaleString('pt-BR')} sub={`franquia de ${d.serviceFreeAllowance.toLocaleString('pt-BR')} grátis por número`} icon={Headphones} accent="#3b82f6" />
+            <Kpi label="Marketing (mês)" value={brl(d.totals.byCategory.MARKETING.costMicros)} sub={`${d.totals.byCategory.MARKETING.count.toLocaleString('pt-BR')} mensagens`} icon={Megaphone} accent="#8b5cf6" />
+          </div>
+
+          <div className="space-y-4">
+            {d.channels.map((ch) => (
+              <div key={ch.channelId} className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <MessageSquare className="h-4 w-4 text-emerald-500" />
+                    <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">{ch.name}</h3>
+                    {ch.phoneNumberId && <span className="text-[11px] text-zinc-400">#{ch.phoneNumberId}</span>}
+                  </div>
+                  <span className="text-sm font-bold tabular-nums text-zinc-900 dark:text-zinc-100">{brl(ch.totalCostMicros)}</span>
+                </div>
+
+                <div className="mt-4">
+                  <ServiceBar used={ch.serviceUsed} free={ch.serviceFree} pct={ch.servicePctUsed} over={ch.serviceOver} />
+                </div>
+
+                <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                  {CATS.map((c) => {
+                    const meta = CAT_META[c];
+                    const cell = ch.byCategory[c];
+                    const Icon = meta.icon;
+                    return (
+                      <div key={c} className="rounded-lg border border-zinc-100 p-3 dark:border-zinc-800">
+                        <div className="flex items-center gap-1.5 text-[11px] font-medium text-zinc-500">
+                          <Icon className="h-3.5 w-3.5" style={{ color: meta.color }} /> {meta.label}
+                        </div>
+                        <div className="mt-1 text-lg font-bold tabular-nums text-zinc-900 dark:text-zinc-100">{brl(cell.costMicros)}</div>
+                        <div className="text-[10px] text-zinc-400">{cell.count.toLocaleString('pt-BR')} msgs</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+            {d.channels.length === 0 && (
+              <div className="rounded-xl border border-zinc-200 bg-zinc-50/60 p-6 text-center text-sm text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950/40">
+                Nenhum canal WhatsApp Oficial com custos no período.
+              </div>
+            )}
+          </div>
+
+          <p className="text-[11px] text-zinc-400">
+            Cada número tem franquia própria de {d.serviceFreeAllowance.toLocaleString('pt-BR')} mensagens de serviço grátis/mês —
+            distribuir o atendimento entre os números aumenta a franquia total. Valores estimados pela categoria real da Meta × rate card em BRL.
+          </p>
+        </>
+      )}
+    </div>
+  );
+}

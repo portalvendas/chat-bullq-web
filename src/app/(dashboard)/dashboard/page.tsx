@@ -17,6 +17,7 @@ import { useOrgId } from '@/hooks/use-org-query-key';
 import { Heatmap } from '@/features/dashboard/components/Heatmap';
 import { AgentList } from '@/features/dashboard/components/AgentList';
 import { CommercialSection } from '@/features/dashboard/components/CommercialSection';
+import { WaCostsSection } from '@/features/dashboard/components/WaCostsSection';
 import TinyOrdersPage from '@/app/(dashboard)/tiny/page';
 import { useSearchParams } from 'next/navigation';
 
@@ -169,7 +170,7 @@ const tooltipStyle = {
   fontSize: 11, padding: '6px 10px', color: '#fff',
 };
 
-type DashTab = 'atendimento' | 'comercial' | 'pedidos';
+type DashTab = 'atendimento' | 'comercial' | 'pedidos' | 'custos';
 
 function TabBar({ tab, setTab }: { tab: DashTab; setTab: (t: DashTab) => void }) {
   const base = 'rounded-lg px-4 py-1.5 text-sm font-medium transition-colors';
@@ -186,6 +187,9 @@ function TabBar({ tab, setTab }: { tab: DashTab; setTab: (t: DashTab) => void })
       <button type="button" onClick={() => setTab('pedidos')} className={cls('pedidos')}>
         Pedidos &amp; Orçamentos
       </button>
+      <button type="button" onClick={() => setTab('custos')} className={cls('custos')}>
+        Custos WhatsApp
+      </button>
     </div>
   );
 }
@@ -194,13 +198,14 @@ export default function DashboardPage() {
   const orgId = useOrgId();
   const searchParams = useSearchParams();
   const urlTab = searchParams.get('tab');
-  const [tab, setTab] = useState<DashTab>(
-    urlTab === 'comercial' || urlTab === 'pedidos' ? urlTab : 'atendimento',
-  );
+  const asTab = (t: string | null): DashTab =>
+    t === 'comercial' || t === 'pedidos' || t === 'custos' ? t : 'atendimento';
+  const [tab, setTab] = useState<DashTab>(asTab(urlTab));
   // Mantém a aba em sincronia com o ?tab= da URL (ex.: link do menu lateral
   // clicado quando o Dashboard já está montado).
   useEffect(() => {
-    setTab(urlTab === 'comercial' || urlTab === 'pedidos' ? urlTab : 'atendimento');
+    setTab(asTab(urlTab));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urlTab]);
   const { data: overview, isLoading: loadingOverview } = useQuery({
     queryKey: ['dashboard-overview', orgId],
@@ -273,6 +278,20 @@ export default function DashboardPage() {
           <TabBar tab={tab} setTab={setTab} />
           <div className="mt-6">
             <TinyOrdersPage embedded />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (tab === 'custos') {
+    return (
+      <div className="h-full min-h-0 overflow-y-auto">
+        <div className="mx-auto w-full max-w-6xl p-6">
+          <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Dashboard</h1>
+          <TabBar tab={tab} setTab={setTab} />
+          <div className="mt-6">
+            <WaCostsSection />
           </div>
         </div>
       </div>
