@@ -14,6 +14,7 @@ import {
   LeadEnrichment,
 } from '@/features/pipelines/components/lead-enrichment';
 import { TinyLeadPanel } from '@/features/tiny/components/tiny-lead-panel';
+import { LeadCadastroPanel } from './lead-cadastro-panel';
 
 export function LeadInfoPopover({ conversationId }: { conversationId: string }) {
   const [open, setOpen] = useState(false);
@@ -55,6 +56,9 @@ export function LeadInfoPopover({ conversationId }: { conversationId: string }) 
             <p className="mb-2 text-xs font-semibold text-zinc-700 dark:text-zinc-200">
               Lead
             </p>
+            <div className="mb-3">
+              <LeadCadastroPanel conversationId={conversationId} />
+            </div>
             {isLoading && (
               <p className="text-xs text-zinc-400">Carregando…</p>
             )}
