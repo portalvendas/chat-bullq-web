@@ -44,9 +44,10 @@ export function JarvisTree() {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
+  // Começa FECHADA por padrão; abre só se o usuário tiver expandido antes.
   const [expanded, setExpanded] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return true;
-    return window.localStorage.getItem(STORAGE_KEY) !== '0';
+    if (typeof window === 'undefined') return false;
+    return window.localStorage.getItem(STORAGE_KEY) === '1';
   });
 
   const isAiAgents = pathname?.startsWith('/ai-agents');

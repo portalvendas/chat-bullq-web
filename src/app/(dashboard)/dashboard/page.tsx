@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   LineChart, Line, BarChart, Bar, Cell,
@@ -20,6 +20,11 @@ import { CommercialSection } from '@/features/dashboard/components/CommercialSec
 import { WaCostsSection } from '@/features/dashboard/components/WaCostsSection';
 import TinyOrdersPage from '@/app/(dashboard)/tiny/page';
 import { useSearchParams } from 'next/navigation';
+import {
+  DashboardPeriodFilter,
+  periodRange,
+  type DashPeriod,
+} from '@/features/dashboard/components/period-filter';
 
 const CHANNEL_COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4'];
 
@@ -207,49 +212,78 @@ export default function DashboardPage() {
     setTab(asTab(urlTab));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urlTab]);
+
+  // Filtro de período ÚNICO, compartilhado por TODAS as abas (persiste na sessão).
+  const [period, setPeriod] = useState<DashPeriod>(() => {
+    if (typeof window === 'undefined') return '30d';
+    return (window.localStorage.getItem('dashboard.period') as DashPeriod) || '30d';
+  });
+  const [customFrom, setCustomFrom] = useState('');
+  const [customTo, setCustomTo] = useState('');
+  useEffect(() => {
+    try {
+      window.localStorage.setItem('dashboard.period', period);
+    } catch {
+      /* ignore */
+    }
+  }, [period]);
+  const { from, to } = useMemo(
+    () => periodRange(period, customFrom, customTo),
+    [period, customFrom, customTo],
+  );
+  const periodFilter = (
+    <DashboardPeriodFilter
+      period={period}
+      setPeriod={setPeriod}
+      customFrom={customFrom}
+      setCustomFrom={setCustomFrom}
+      customTo={customTo}
+      setCustomTo={setCustomTo}
+    />
+  );
   const { data: overview, isLoading: loadingOverview } = useQuery({
-    queryKey: ['dashboard-overview', orgId],
-    queryFn: () => dashboardService.getOverview(),
+    queryKey: ['dashboard-overview', orgId, from, to],
+    queryFn: () => dashboardService.getOverview(from, to),
   });
   const { data: sparklines } = useQuery({
-    queryKey: ['dashboard-sparklines', orgId],
-    queryFn: () => dashboardService.getKpiSparklines(),
+    queryKey: ['dashboard-sparklines', orgId, from, to],
+    queryFn: () => dashboardService.getKpiSparklines(from, to),
   });
   const { data: volumeFlow } = useQuery({
-    queryKey: ['dashboard-volume-flow', orgId],
-    queryFn: () => dashboardService.getVolumeFlow(),
+    queryKey: ['dashboard-volume-flow', orgId, from, to],
+    queryFn: () => dashboardService.getVolumeFlow(from, to),
   });
   const { data: messagesFlow } = useQuery({
-    queryKey: ['dashboard-messages-flow', orgId],
-    queryFn: () => dashboardService.getMessagesFlow(),
+    queryKey: ['dashboard-messages-flow', orgId, from, to],
+    queryFn: () => dashboardService.getMessagesFlow(from, to),
   });
   const { data: peakHours } = useQuery({
-    queryKey: ['dashboard-peak-hours', orgId],
-    queryFn: () => dashboardService.getPeakHours(),
+    queryKey: ['dashboard-peak-hours', orgId, from, to],
+    queryFn: () => dashboardService.getPeakHours(from, to),
   });
   const { data: volumeByChannel } = useQuery({
-    queryKey: ['dashboard-volume-channel', orgId],
-    queryFn: () => dashboardService.getVolumeByChannel(),
+    queryKey: ['dashboard-volume-channel', orgId, from, to],
+    queryFn: () => dashboardService.getVolumeByChannel(from, to),
   });
   const { data: botPerf } = useQuery({
-    queryKey: ['dashboard-bot-performance', orgId],
-    queryFn: () => dashboardService.getBotPerformance(),
+    queryKey: ['dashboard-bot-performance', orgId, from, to],
+    queryFn: () => dashboardService.getBotPerformance(from, to),
   });
   const { data: topTags } = useQuery({
-    queryKey: ['dashboard-top-tags', orgId],
-    queryFn: () => dashboardService.getTopTags(),
+    queryKey: ['dashboard-top-tags', orgId, from, to],
+    queryFn: () => dashboardService.getTopTags(from, to),
   });
   const { data: agents } = useQuery({
-    queryKey: ['dashboard-agents', orgId],
-    queryFn: () => dashboardService.getAgentPerformance(),
+    queryKey: ['dashboard-agents', orgId, from, to],
+    queryFn: () => dashboardService.getAgentPerformance(from, to),
   });
   const { data: csat } = useQuery({
-    queryKey: ['dashboard-csat', orgId],
-    queryFn: () => dashboardService.getCsat(),
+    queryKey: ['dashboard-csat', orgId, from, to],
+    queryFn: () => dashboardService.getCsat(from, to),
   });
   const { data: reopens } = useQuery({
-    queryKey: ['dashboard-reopens', orgId],
-    queryFn: () => dashboardService.getReopens(),
+    queryKey: ['dashboard-reopens', orgId, from, to],
+    queryFn: () => dashboardService.getReopens(from, to),
   });
   const { data: marketplace } = useQuery({
     queryKey: ['dashboard-marketplace', orgId],
@@ -262,8 +296,9 @@ export default function DashboardPage() {
         <div className="mx-auto w-full max-w-6xl p-6">
           <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Dashboard</h1>
           <TabBar tab={tab} setTab={setTab} />
+          <div className="mt-4">{periodFilter}</div>
           <div className="mt-6">
-            <CommercialSection />
+            <CommercialSection from={from} to={to} />
           </div>
         </div>
       </div>
@@ -276,8 +311,9 @@ export default function DashboardPage() {
         <div className="mx-auto w-full max-w-6xl p-6">
           <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Dashboard</h1>
           <TabBar tab={tab} setTab={setTab} />
+          <div className="mt-4">{periodFilter}</div>
           <div className="mt-6">
-            <TinyOrdersPage embedded />
+            <TinyOrdersPage embedded from={from} to={to} />
           </div>
         </div>
       </div>
@@ -290,8 +326,9 @@ export default function DashboardPage() {
         <div className="mx-auto w-full max-w-6xl p-6">
           <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Dashboard</h1>
           <TabBar tab={tab} setTab={setTab} />
+          <div className="mt-4">{periodFilter}</div>
           <div className="mt-6">
-            <WaCostsSection />
+            <WaCostsSection from={from} to={to} />
           </div>
         </div>
       </div>
@@ -303,7 +340,7 @@ export default function DashboardPage() {
       <div className="mx-auto w-full max-w-6xl p-6">
       <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Dashboard</h1>
       <TabBar tab={tab} setTab={setTab} />
-      <p className="mt-1 text-sm text-zinc-500">Últimos 30 dias</p>
+      <div className="mt-4">{periodFilter}</div>
 
       {/* HERO KPIs */}
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

@@ -70,11 +70,11 @@ function ServiceBar({ used, free, pct, over }: { used: number; free: number; pct
   );
 }
 
-export function WaCostsSection() {
+export function WaCostsSection({ from, to }: { from?: string; to?: string } = {}) {
   const orgId = useOrgId();
   const { data, isLoading, error } = useQuery({
-    queryKey: ['dashboard-wa-costs', orgId],
-    queryFn: () => dashboardService.getWaCosts(),
+    queryKey: ['dashboard-wa-costs', orgId, from, to],
+    queryFn: () => dashboardService.getWaCosts(from, to),
     staleTime: 60_000,
   });
 

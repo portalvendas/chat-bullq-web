@@ -661,14 +661,26 @@ function ConversionRow({
   );
 }
 
-export default function TinyOrdersPage({ embedded = false }: { embedded?: boolean }) {
+export default function TinyOrdersPage({
+  embedded = false,
+  from,
+  to,
+}: {
+  embedded?: boolean;
+  from?: string;
+  to?: string;
+}) {
+  // Quando embutido no Dashboard, o período vem de fora (filtro único).
+  const controlled = embedded && !!from && !!to;
   const [tab, setTab] = useState<'PEDIDO' | 'ORCAMENTO'>('PEDIDO');
   const [page, setPage] = useState(1);
   const [period, setPeriod] = useState<PeriodKey>('tudo');
   const [customFrom, setCustomFrom] = useState('');
   const [customTo, setCustomTo] = useState('');
   const [vendedor, setVendedor] = useState(''); // '' = todos; '__sem__' = sem vendedor
-  const range = periodRange(period, customFrom, customTo);
+  const range = controlled
+    ? { from: from!, to: to! }
+    : periodRange(period, customFrom, customTo);
 
   const { data: summary } = useQuery({
     queryKey: ['tiny-summary', period, customFrom, customTo, vendedor],
@@ -739,22 +751,24 @@ export default function TinyOrdersPage({ embedded = false }: { embedded?: boolea
               </p>
             </div>
           )}
-          {/* Filtro de período */}
-          <div className="flex flex-wrap gap-1 rounded-lg border border-zinc-200 p-1 dark:border-zinc-800">
-            {(Object.keys(PERIOD_LABELS) as PeriodKey[]).map((k) => (
-              <button
-                key={k}
-                onClick={() => switchPeriod(k)}
-                className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
-                  period === k
-                    ? 'bg-primary text-white'
-                    : 'text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800'
-                }`}
-              >
-                {PERIOD_LABELS[k]}
-              </button>
-            ))}
-          </div>
+          {/* Filtro de período (oculto quando o Dashboard controla o período) */}
+          {!controlled && (
+            <div className="flex flex-wrap gap-1 rounded-lg border border-zinc-200 p-1 dark:border-zinc-800">
+              {(Object.keys(PERIOD_LABELS) as PeriodKey[]).map((k) => (
+                <button
+                  key={k}
+                  onClick={() => switchPeriod(k)}
+                  className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
+                    period === k
+                      ? 'bg-primary text-white'
+                      : 'text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+                  }`}
+                >
+                  {PERIOD_LABELS[k]}
+                </button>
+              ))}
+            </div>
+          )}
           {/* Filtro por vendedor */}
           <select
             value={vendedor}

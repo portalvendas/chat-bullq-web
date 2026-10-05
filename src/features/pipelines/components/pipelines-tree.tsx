@@ -34,9 +34,10 @@ const COLOR_CLS: Record<string, string> = {
 export function PipelinesTree() {
   const pathname = usePathname();
   const router = useRouter();
+  // Começa FECHADA por padrão; abre só se o usuário tiver expandido antes.
   const [expanded, setExpanded] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return true;
-    return window.localStorage.getItem(STORAGE_KEY) !== '0';
+    if (typeof window === 'undefined') return false;
+    return window.localStorage.getItem(STORAGE_KEY) === '1';
   });
 
   const { data: pipelines = [] } = useQuery({
