@@ -500,8 +500,8 @@
     "semantic_hash": ""
   },
   "src/features/dashboard/services/dashboard.service.ts": {
-    "mtime": 1791225348.0781963,
-    "ast_hash": "4c9a50a8fbf8f4ab3c7f15cd806a46c5",
+    "mtime": 1791226018.753714,
+    "ast_hash": "4f5dc83d6b47cab6156ec23a05a992fe",
     "semantic_hash": ""
   },
   "src/features/imports/services.ts": {
@@ -560,8 +560,8 @@
     "semantic_hash": ""
   },
   "src/features/inbox/components/chat-panel.tsx": {
-    "mtime": 1789485593.915607,
-    "ast_hash": "57055e0497432ed2ea7f714a9a71537a",
+    "mtime": 1791226008.363429,
+    "ast_hash": "c8c16eaf474456fc69c18216d4e1db69",
     "semantic_hash": ""
   },
   "src/features/inbox/components/conversation-ai-toggle.tsx": {
@@ -665,8 +665,8 @@
     "semantic_hash": ""
   },
   "src/features/inbox/services/inbox.service.ts": {
-    "mtime": 1786365548.789381,
-    "ast_hash": "557e802ba6a1d7a138cc2b65d0a435d4",
+    "mtime": 1791225983.9888408,
+    "ast_hash": "992c948db0943a2fe33aa9f392c98b1f",
     "semantic_hash": ""
   },
   "src/features/inbox/services/preferences.service.ts": {
@@ -1160,8 +1160,8 @@
     "semantic_hash": ""
   },
   "src/features/dashboard/components/wa-payment-banner.tsx": {
-    "mtime": 1791225366.2737634,
-    "ast_hash": "b6fe0f7bebf13e34810eb201d1dc71a9",
+    "mtime": 1791226044.7286973,
+    "ast_hash": "f5573d61952d6c3b0d097dd126630397",
     "semantic_hash": ""
   }
 }

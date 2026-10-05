@@ -1,16 +1,16 @@
 # Graph Report - chat-bullq-web  (2026-10-05)
 
 ## Corpus Check
-- 223 files · ~151,531 words
+- 223 files · ~151,996 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 370 nodes · 470 edges · 18 communities (17 shown, 1 thin omitted)
+- 389 nodes · 493 edges · 18 communities (17 shown, 1 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `b1c68ed0`
+- Built from commit: `cc1333ba`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -25,7 +25,7 @@
 - channel-card.tsx
 - CommercialSection.tsx
 - tiny/page.tsx
-- notifications-bell.tsx
+- layout.tsx
 - dashboard.service.ts
 - lead-cadastro-panel.tsx
 - dashboard/page.tsx
@@ -51,11 +51,11 @@
   src/app/(dashboard)/disparos/[id]/page.tsx → src/features/disparos/services/disparos.service.ts
 - `BroadcastRow()` --calls--> `fmtBRL()`  [EXTRACTED]
   src/app/(dashboard)/disparos/page.tsx → src/features/disparos/services/disparos.service.ts
+- `ChatPanelProps` --references--> `Conversation`  [EXTRACTED]
+  src/features/inbox/components/chat-panel.tsx → src/features/inbox/services/inbox.service.ts
 - `DashboardPage()` --calls--> `periodRange()`  [EXTRACTED]
   src/app/(dashboard)/dashboard/page.tsx → src/features/dashboard/components/period-filter.tsx
 - `DisparosPage()` --calls--> `microsToBRL()`  [EXTRACTED]
-  src/app/(dashboard)/disparos/page.tsx → src/features/disparos/services/disparos.service.ts
-- `DisparosPage()` --calls--> `fmtBRL()`  [EXTRACTED]
   src/app/(dashboard)/disparos/page.tsx → src/features/disparos/services/disparos.service.ts
 
 ## Import Cycles
@@ -96,20 +96,20 @@ Cohesion: 0.47
 Nodes (5): ChannelCard(), ChannelCardProps, channelTypeMap, CONNECTABLE, isDisconnected()
 
 ### Community 8 - "CommercialSection.tsx"
-Cohesion: 0.10
-Nodes (8): brl(), CohortSection(), CommercialSection(), EVO_COLORS, evoTooltip, MetaAdsPanel(), pct(), IntakeHealth
+Cohesion: 0.09
+Nodes (9): brl(), CohortSection(), CommercialSection(), EVO_COLORS, evoTooltip, MetaAdsPanel(), pct(), CommercialData (+1 more)
 
 ### Community 9 - "tiny/page.tsx"
 Cohesion: 0.18
 Nodes (12): brl(), ConversionRow(), convPct(), convPctLabel(), fmtDate(), ItemsSubTable(), OrderRow(), PERIOD_LABELS (+4 more)
 
-### Community 10 - "notifications-bell.tsx"
-Cohesion: 0.33
-Nodes (6): AppSidebar(), navItems, hrefFor(), IncomingNotification, NotificationsBell(), playBeep()
+### Community 10 - "layout.tsx"
+Cohesion: 0.24
+Nodes (8): AppSidebar(), navItems, WaPaymentBanner(), dashboardService, hrefFor(), IncomingNotification, NotificationsBell(), playBeep()
 
 ### Community 11 - "dashboard.service.ts"
-Cohesion: 0.07
-Nodes (28): WaPaymentBanner(), brl(), CAT_META, CATS, WaCostDrill(), WaCostsSection(), AgentPerformance, BotPerformance (+20 more)
+Cohesion: 0.08
+Nodes (26): brl(), CAT_META, CATS, WaCostDrill(), WaCostsSection(), AgentPerformance, BotPerformance, CsatBreakdown (+18 more)
 
 ### Community 12 - "lead-cadastro-panel.tsx"
 Cohesion: 0.26
@@ -124,15 +124,15 @@ Cohesion: 0.09
 Nodes (27): CanvasInner(), dagreLayout(), HANDLE_COLOR, nodeTypes, SalesData, SalesNode, TemplatesCtx, toGraph() (+19 more)
 
 ### Community 28 - "chat-panel.tsx"
-Cohesion: 0.15
-Nodes (11): ChatPanel(), ChatPanelProps, LinkPreviewCard(), matchSingleUrl(), MessageText(), renderInlineTextWithLinks(), safeHostname(), statusIcons (+3 more)
+Cohesion: 0.07
+Nodes (27): ChatPanel(), ChatPanelProps, LinkPreviewCard(), matchSingleUrl(), MessageText(), renderInlineTextWithLinks(), safeHostname(), statusIcons (+19 more)
 
 ### Community 29 - "routine.service.ts"
 Cohesion: 0.15
 Nodes (8): StepState, RoutineConfig, RoutineOptions, routineService, RoutineStageRef, RoutineStepConfig, RoutineStepToday, RoutineToday
 
 ## Knowledge Gaps
-- **141 isolated node(s):** `DashboardOverview`, `CsatBreakdown`, `ReopenStats`, `KpiSparklines`, `VolumeByDay` (+136 more)
+- **153 isolated node(s):** `DashboardOverview`, `CsatBreakdown`, `ReopenStats`, `KpiSparklines`, `VolumeByDay` (+148 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **1 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -140,11 +140,11 @@ Nodes (8): StepState, RoutineConfig, RoutineOptions, routineService, RoutineStag
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `dependencies` connect `dependencies` to `devDependencies`?**
-  _High betweenness centrality (0.035) - this node is a cross-community bridge._
+  _High betweenness centrality (0.031) - this node is a cross-community bridge._
 - **Why does `pipelinesService` connect `pipelines.service.ts` to `disparos.service.ts`, `conversation-list.tsx`, `lead-cadastro-panel.tsx`?**
-  _High betweenness centrality (0.015) - this node is a cross-community bridge._
+  _High betweenness centrality (0.014) - this node is a cross-community bridge._
 - **What connects `DashboardOverview`, `CsatBreakdown`, `ReopenStats` to the rest of the system?**
-  _141 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _153 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `devDependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.07692307692307693 - nodes in this community are weakly interconnected._
 - **Should `disparos.service.ts` be split into smaller, more focused modules?**

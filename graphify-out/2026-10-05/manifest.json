@@ -70,8 +70,8 @@
     "semantic_hash": ""
   },
   "src/app/(dashboard)/layout.tsx": {
-    "mtime": 1787063965.8364806,
-    "ast_hash": "8810992f57767a798c4249a5193b0281",
+    "mtime": 1791225375.1425598,
+    "ast_hash": "82395c5c0e4d35b8ad2c1ad807956767",
     "semantic_hash": ""
   },
   "src/app/(dashboard)/pipelines/[id]/page.tsx": {
@@ -500,8 +500,8 @@
     "semantic_hash": ""
   },
   "src/features/dashboard/services/dashboard.service.ts": {
-    "mtime": 1791217460.38609,
-    "ast_hash": "5869e4a2e2143c9cb36ac1889de98f75",
+    "mtime": 1791225348.0781963,
+    "ast_hash": "4c9a50a8fbf8f4ab3c7f15cd806a46c5",
     "semantic_hash": ""
   },
   "src/features/imports/services.ts": {
@@ -1157,6 +1157,11 @@
   "src/features/dashboard/components/period-filter.tsx": {
     "mtime": 1791204893.4914818,
     "ast_hash": "076cc5856fcbfb9b4f4e5238bb061041",
+    "semantic_hash": ""
+  },
+  "src/features/dashboard/components/wa-payment-banner.tsx": {
+    "mtime": 1791225366.2737634,
+    "ast_hash": "b6fe0f7bebf13e34810eb201d1dc71a9",
     "semantic_hash": ""
   }
 }
