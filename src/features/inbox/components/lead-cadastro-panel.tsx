@@ -9,17 +9,20 @@ import {
 } from '../services/lead-enrichment.service';
 
 const LABELS: Array<[keyof Cadastro, string]> = [
+  ['name', 'Nome'],
+  ['email', 'E-mail'],
   ['cpfCnpj', 'CPF/CNPJ'],
   ['birthDate', 'Nascimento'],
   ['cep', 'CEP'],
   ['estado', 'UF'],
   ['cidade', 'Cidade'],
   ['bairro', 'Bairro'],
-  ['endereco', 'Endereço'],
   ['numero', 'Número'],
   ['complemento', 'Compl.'],
-  ['addressText', 'Endereço'],
 ];
+
+/** Endereço só com dígitos (ex.: um CEP) não é endereço — não exibe. */
+const isJustCep = (v?: string) => !!v && /^\d{5}-?\d{3}$/.test(v.trim());
 
 const fmtDoc = (v?: string) => {
   if (!v) return v;
@@ -60,6 +63,11 @@ export function LeadCadastroPanel({ conversationId }: { conversationId: string }
   const rows = LABELS.filter(([k]) => cad?.[k]);
   const val = (k: keyof Cadastro) =>
     k === 'cpfCnpj' ? fmtDoc(cad?.[k]) : k === 'cep' ? fmtCep(cad?.[k]) : cad?.[k];
+  // Endereço: estruturado (endereco) ou o texto cru; ignora quando é só um CEP.
+  const endereco = [cad?.endereco, cad?.addressText].find(
+    (v) => v && !isJustCep(v),
+  );
+  const hasAny = rows.length > 0 || !!endereco;
 
   return (
     <div className="rounded-lg border border-zinc-200 p-2.5 dark:border-zinc-800">
@@ -82,7 +90,7 @@ export function LeadCadastroPanel({ conversationId }: { conversationId: string }
           Extrair
         </button>
       </div>
-      {rows.length === 0 ? (
+      {!hasAny ? (
         <p className="text-[11px] text-zinc-400">
           Sem dados ainda. Clique em “Extrair” para ler a conversa.
         </p>
@@ -96,6 +104,14 @@ export function LeadCadastroPanel({ conversationId }: { conversationId: string }
               </dd>
             </div>
           ))}
+          {endereco && (
+            <div className="flex gap-2">
+              <dt className="w-16 shrink-0 text-zinc-400">Endereço</dt>
+              <dd className="flex-1 break-words text-zinc-700 dark:text-zinc-200">
+                {endereco}
+              </dd>
+            </div>
+          )}
         </dl>
       )}
     </div>
