@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import {
   DollarSign, MessageSquare, Megaphone, Bell, ShieldCheck, Headphones, AlertTriangle, X, Loader2,
@@ -277,7 +278,17 @@ function WaCostDrill({
                   <tr key={m.wamid} className="border-t border-zinc-50 dark:border-zinc-800/50">
                     <td className="whitespace-nowrap px-4 py-2 text-zinc-500">{dt(m.occurredAt)}</td>
                     <td className="px-4 py-2 text-zinc-800 dark:text-zinc-200">
-                      {m.contactName || m.contactPhone || '—'}
+                      {m.conversationId ? (
+                        <Link
+                          href={`/inbox?conversationId=${m.conversationId}`}
+                          className="text-primary hover:underline"
+                          title="Abrir a conversa nesta mensagem"
+                        >
+                          {m.contactName || m.contactPhone || '—'}
+                        </Link>
+                      ) : (
+                        m.contactName || m.contactPhone || '—'
+                      )}
                     </td>
                     <td className="px-4 py-2">
                       {m.origem === 'disparo' ? (
