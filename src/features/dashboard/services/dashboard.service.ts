@@ -252,7 +252,30 @@ export interface WaCostMessage {
   conversationId: string | null;
 }
 
+export interface WaPaymentHealth {
+  paymentBlock: {
+    active: boolean;
+    failedTotal: number;
+    recentTotal: number;
+    lastAt: string | null;
+    activeWindowMin: number;
+    channels: Array<{
+      channelId: string;
+      name: string;
+      failedCount: number;
+      recentCount: number;
+      firstAt: string | null;
+      lastAt: string | null;
+      sampleReason: string | null;
+    }>;
+  };
+}
+
 export const dashboardService = {
+  async getWaHealth(): Promise<WaPaymentHealth> {
+    const { data } = await api.get('/dashboard/wa-health');
+    return (data?.data ?? data) as WaPaymentHealth;
+  },
   async getOverview(from?: string, to?: string): Promise<DashboardOverview> {
     const params: Record<string, string> = {};
     if (from) params.from = from;

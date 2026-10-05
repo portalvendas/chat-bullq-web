@@ -9,6 +9,7 @@ import { useAuthStore } from '@/stores/auth-store';
 import { authService } from '@/features/auth/services/auth.service';
 import { usePermissionsSync } from '@/features/settings/hooks/use-permissions-sync';
 import { ToolFailureBanner } from '@/features/ai-agents/components/tool-failure-banner';
+import { WaPaymentBanner } from '@/features/dashboard/components/wa-payment-banner';
 import { NotificationsBell } from '@/features/notifications/components/notifications-bell';
 import { RoutineNudge } from '@/features/commercial-routine/components/routine-nudge';
 import { ImpersonationBanner } from '@/features/platform-admin/components/impersonation-banner';
@@ -79,6 +80,7 @@ export default function DashboardLayout({
     >
       <div className="flex h-full flex-col">
         <ImpersonationBanner />
+        <WaPaymentBanner />
         <ToolFailureBanner />
         <RoutineNudge />
         <div className="flex-1 min-h-0">{children}</div>

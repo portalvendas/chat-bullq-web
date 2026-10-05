@@ -1,16 +1,16 @@
-# Graph Report - chat-bullq-web  (2026-10-05)
+# Graph Report - chat-bullq-web  (2026-09-29)
 
 ## Corpus Check
-- 222 files · ~151,147 words
+- 219 files · ~149,752 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 367 nodes · 462 edges · 18 communities (17 shown, 1 thin omitted)
+- 343 nodes · 424 edges · 15 communities
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `ea53438a`
+- Built from commit: `560486b6`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -27,9 +27,6 @@
 - tiny/page.tsx
 - notifications-bell.tsx
 - dashboard.service.ts
-- lead-cadastro-panel.tsx
-- dashboard/page.tsx
-- jarvis-tree.tsx
 - cadences.service.ts
 - chat-panel.tsx
 - routine.service.ts
@@ -37,31 +34,31 @@
 ## God Nodes (most connected - your core abstractions)
 1. `fmtBRL()` - 8 edges
 2. `ImportPage()` - 8 edges
-3. `pipelinesService` - 7 edges
-4. `brl()` - 5 edges
-5. `LeadCadastroPanel()` - 5 edges
-6. `disparosService` - 5 edges
-7. `CanvasInner()` - 5 edges
-8. `NotificationsBell()` - 5 edges
-9. `scripts` - 5 edges
-10. `dashboardService` - 4 edges
+3. `brl()` - 5 edges
+4. `disparosService` - 5 edges
+5. `CanvasInner()` - 5 edges
+6. `pipelinesService` - 5 edges
+7. `NotificationsBell()` - 5 edges
+8. `scripts` - 5 edges
+9. `dashboardService` - 4 edges
+10. `OrderRow()` - 4 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `DisparoDetailPage()` --calls--> `fmtBRL()`  [EXTRACTED]
   src/app/(dashboard)/disparos/[id]/page.tsx → src/features/disparos/services/disparos.service.ts
 - `BroadcastRow()` --calls--> `fmtBRL()`  [EXTRACTED]
   src/app/(dashboard)/disparos/page.tsx → src/features/disparos/services/disparos.service.ts
-- `DashboardPage()` --calls--> `periodRange()`  [EXTRACTED]
-  src/app/(dashboard)/dashboard/page.tsx → src/features/dashboard/components/period-filter.tsx
 - `DisparosPage()` --calls--> `microsToBRL()`  [EXTRACTED]
   src/app/(dashboard)/disparos/page.tsx → src/features/disparos/services/disparos.service.ts
 - `DisparosPage()` --calls--> `fmtBRL()`  [EXTRACTED]
   src/app/(dashboard)/disparos/page.tsx → src/features/disparos/services/disparos.service.ts
+- `SalesData` --references--> `GraphNodeType`  [EXTRACTED]
+  src/features/cadences/components/salesbot-canvas.tsx → src/features/cadences/services/cadences.service.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (18 total, 1 thin omitted)
+## Communities (15 total, 0 thin omitted)
 
 ### Community 0 - "devDependencies"
 Cohesion: 0.08
@@ -88,16 +85,16 @@ Cohesion: 0.50
 Nodes (3): InboxPreferences, preferencesService, UserPreferences
 
 ### Community 6 - "pipelines.service.ts"
-Cohesion: 0.08
-Nodes (26): COLOR_CLS, COLORS, DraftStage, makeKey(), Props, StagesDialog(), TYPE_OPTIONS, BoardResponse (+18 more)
+Cohesion: 0.09
+Nodes (25): COLORS, DraftStage, makeKey(), Props, StagesDialog(), TYPE_OPTIONS, BoardResponse, CardDetail (+17 more)
 
 ### Community 7 - "channel-card.tsx"
 Cohesion: 0.47
 Nodes (5): ChannelCard(), ChannelCardProps, channelTypeMap, CONNECTABLE, isDisconnected()
 
 ### Community 8 - "CommercialSection.tsx"
-Cohesion: 0.10
-Nodes (8): brl(), CohortSection(), CommercialSection(), EVO_COLORS, evoTooltip, MetaAdsPanel(), pct(), CommercialData
+Cohesion: 0.09
+Nodes (8): brl(), CohortSection(), CommercialSection(), EVO_COLORS, evoTooltip, MetaAdsPanel(), pct(), Period
 
 ### Community 9 - "tiny/page.tsx"
 Cohesion: 0.18
@@ -108,16 +105,8 @@ Cohesion: 0.29
 Nodes (5): navItems, hrefFor(), IncomingNotification, NotificationsBell(), playBeep()
 
 ### Community 11 - "dashboard.service.ts"
-Cohesion: 0.08
-Nodes (26): brl(), CAT_META, CATS, WaCostDrill(), WaCostsSection(), AgentPerformance, BotPerformance, CsatBreakdown (+18 more)
-
-### Community 12 - "lead-cadastro-panel.tsx"
-Cohesion: 0.26
-Nodes (7): fmtCep(), fmtDoc(), isJustCep(), LABELS, LeadCadastroPanel(), Cadastro, leadEnrichmentService
-
-### Community 13 - "dashboard/page.tsx"
-Cohesion: 0.10
-Nodes (10): CHANNEL_COLORS, DashboardPage(), DashTab, tooltipStyle, TrendDirection, DashboardPeriodFilter(), DashPeriod, PERIOD_PRESETS (+2 more)
+Cohesion: 0.05
+Nodes (30): CHANNEL_COLORS, DashTab, tooltipStyle, TrendDirection, brl(), CAT_META, CATS, WaCostsSection() (+22 more)
 
 ### Community 18 - "cadences.service.ts"
 Cohesion: 0.09
@@ -132,19 +121,18 @@ Cohesion: 0.15
 Nodes (8): StepState, RoutineConfig, RoutineOptions, routineService, RoutineStageRef, RoutineStepConfig, RoutineStepToday, RoutineToday
 
 ## Knowledge Gaps
-- **140 isolated node(s):** `CAT_META`, `CATS`, `DashboardOverview`, `CsatBreakdown`, `ReopenStats` (+135 more)
+- **136 isolated node(s):** `CHANNEL_COLORS`, `TrendDirection`, `tooltipStyle`, `DashTab`, `CAT_META` (+131 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **1 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `dependencies` connect `dependencies` to `devDependencies`?**
-  _High betweenness centrality (0.035) - this node is a cross-community bridge._
-- **Why does `pipelinesService` connect `pipelines.service.ts` to `disparos.service.ts`, `conversation-list.tsx`, `lead-cadastro-panel.tsx`?**
-  _High betweenness centrality (0.015) - this node is a cross-community bridge._
-- **What connects `CAT_META`, `CATS`, `DashboardOverview` to the rest of the system?**
-  _140 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _High betweenness centrality (0.040) - this node is a cross-community bridge._
+- **Why does `pipelinesService` connect `pipelines.service.ts` to `disparos.service.ts`, `conversation-list.tsx`?**
+  _High betweenness centrality (0.009) - this node is a cross-community bridge._
+- **What connects `CHANNEL_COLORS`, `TrendDirection`, `tooltipStyle` to the rest of the system?**
+  _136 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `devDependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.07692307692307693 - nodes in this community are weakly interconnected._
 - **Should `disparos.service.ts` be split into smaller, more focused modules?**

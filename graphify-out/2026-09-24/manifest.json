@@ -60,8 +60,8 @@
     "semantic_hash": ""
   },
   "src/app/(dashboard)/dashboard/page.tsx": {
-    "mtime": 1791204981.6209018,
-    "ast_hash": "3465be56a1096bba31f7cfcc58639279",
+    "mtime": 1787883835.979607,
+    "ast_hash": "a7673165b91c2878a80e283101c6c5cf",
     "semantic_hash": ""
   },
   "src/app/(dashboard)/inbox/page.tsx": {
@@ -185,8 +185,8 @@
     "semantic_hash": ""
   },
   "src/components/layout/app-sidebar.tsx": {
-    "mtime": 1790430133.0432167,
-    "ast_hash": "6982f2073d1439ad4baca2740e5f2a56",
+    "mtime": 1789955315.1470704,
+    "ast_hash": "5b4f87fd35322cb385e4c8721e70c466",
     "semantic_hash": ""
   },
   "src/components/providers.tsx": {
@@ -245,8 +245,8 @@
     "semantic_hash": ""
   },
   "src/features/ai-agents/components/jarvis-tree.tsx": {
-    "mtime": 1791204827.2623093,
-    "ast_hash": "6f7785db0783a68f8f87eaf8142ab377",
+    "mtime": 1785039140.1005683,
+    "ast_hash": "82736dd73ec13dd9fcb2666faebb5e2b",
     "semantic_hash": ""
   },
   "src/features/ai-agents/components/jarvis/agent-tab.tsx": {
@@ -500,8 +500,8 @@
     "semantic_hash": ""
   },
   "src/features/dashboard/services/dashboard.service.ts": {
-    "mtime": 1791217460.38609,
-    "ast_hash": "5869e4a2e2143c9cb36ac1889de98f75",
+    "mtime": 1790120677.4725888,
+    "ast_hash": "65ef8867a67da29b6a6d59d688bfd20b",
     "semantic_hash": ""
   },
   "src/features/imports/services.ts": {
@@ -590,8 +590,8 @@
     "semantic_hash": ""
   },
   "src/features/inbox/components/lead-info-popover.tsx": {
-    "mtime": 1790896928.7994409,
-    "ast_hash": "b5afbd6f0c7c3a63d73194e6af0224e9",
+    "mtime": 1786475790.034913,
+    "ast_hash": "d89f016cd02ae3e0441b4165acce1f62",
     "semantic_hash": ""
   },
   "src/features/inbox/components/media-bubbles.tsx": {
@@ -710,8 +710,8 @@
     "semantic_hash": ""
   },
   "src/features/pipelines/components/pipelines-tree.tsx": {
-    "mtime": 1791204832.0646393,
-    "ast_hash": "ff9b26918b79b3df73f4772a2f20633a",
+    "mtime": 1781632678.0,
+    "ast_hash": "acd548d0e1633aaa727d3e937dda1744",
     "semantic_hash": ""
   },
   "src/features/pipelines/components/stages-dialog.tsx": {
@@ -895,8 +895,8 @@
     "semantic_hash": ""
   },
   "src/app/(dashboard)/tiny/page.tsx": {
-    "mtime": 1791205113.325104,
-    "ast_hash": "81d9ed4380d4d85701dcfecfe167bddb",
+    "mtime": 1789083438.630662,
+    "ast_hash": "a14e5b4494125d8b1ff405235b81911a",
     "semantic_hash": ""
   },
   "src/features/commercial-routine/components/routine-nudge.tsx": {
@@ -940,8 +940,8 @@
     "semantic_hash": ""
   },
   "src/app/(dashboard)/disparos/novo/page.tsx": {
-    "mtime": 1790429402.6808295,
-    "ast_hash": "57cdf22677c897c3e44f67d6080ba47c",
+    "mtime": 1789959072.730836,
+    "ast_hash": "12459811c6cd719ea5fa72fc80631a1e",
     "semantic_hash": ""
   },
   "src/app/(dashboard)/disparos/page.tsx": {
@@ -1015,8 +1015,8 @@
     "semantic_hash": ""
   },
   "src/features/dashboard/components/CommercialSection.tsx": {
-    "mtime": 1791205061.9117334,
-    "ast_hash": "7f0bb923ef729034ddedacf5b181a439",
+    "mtime": 1790120705.069564,
+    "ast_hash": "a56ba015b7f963f72e2c5fbce9c2d56a",
     "semantic_hash": ""
   },
   "src/features/disparos/services/disparos.service.ts": {
@@ -1137,26 +1137,6 @@
   "src/app/icon.svg": {
     "mtime": 1787139947.3833933,
     "ast_hash": "9d7c57cabf9bbcdd7177986634cceda8",
-    "semantic_hash": ""
-  },
-  "src/features/dashboard/components/WaCostsSection.tsx": {
-    "mtime": 1791220698.5521011,
-    "ast_hash": "dc00b6e2c787b546f4de589603bb3999",
-    "semantic_hash": ""
-  },
-  "src/features/inbox/components/lead-cadastro-panel.tsx": {
-    "mtime": 1791203045.9351122,
-    "ast_hash": "82e86caf97682e68088f870219786e01",
-    "semantic_hash": ""
-  },
-  "src/features/inbox/services/lead-enrichment.service.ts": {
-    "mtime": 1790896898.9220648,
-    "ast_hash": "355c0ef3e1e66a39b739e9b50c735beb",
-    "semantic_hash": ""
-  },
-  "src/features/dashboard/components/period-filter.tsx": {
-    "mtime": 1791204893.4914818,
-    "ast_hash": "076cc5856fcbfb9b4f4e5238bb061041",
     "semantic_hash": ""
   }
 }

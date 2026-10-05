@@ -1,7 +1,7 @@
 # Graph Report - chat-bullq-web  (2026-10-05)
 
 ## Corpus Check
-- 222 files · ~151,147 words
+- 222 files · ~151,120 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `ea53438a`
+- Built from commit: `a8783a0a`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
