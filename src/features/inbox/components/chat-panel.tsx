@@ -2,7 +2,7 @@
 
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Check, CheckCheck, Clock, AlertCircle, ExternalLink, Reply, Trash2, X, Ban, Search, Paperclip, MessageSquareText, Tag, Send } from 'lucide-react';
+import { Check, CheckCheck, Clock, AlertCircle, ExternalLink, Reply, Trash2, X, Ban, Search, Paperclip, MessageSquareText, Tag, Send, RotateCw } from 'lucide-react';
 import { toast } from 'sonner';
 import { inboxService, type Conversation, type Message } from '../services/inbox.service';
 import { ChatInput, type ChatInputHandle } from './chat-input';
@@ -667,6 +667,54 @@ export function ChatPanel({
     [conversation.id, queryClient],
   );
 
+  const handleResend = useCallback(
+    async (msg: Message) => {
+      // Otimista: volta a bolha pra "enviando…" (QUEUED) na hora. O realtime
+      // (message:status) confirma SENT/FAILED depois do worker.
+      queryClient.setQueryData<{ messages: Message[] } | undefined>(
+        ['messages', conversation.id],
+        (prev) =>
+          prev
+            ? {
+                ...prev,
+                messages: prev.messages.map((m) =>
+                  m.id === msg.id
+                    ? { ...m, status: 'QUEUED', failedReason: null }
+                    : m,
+                ),
+              }
+            : prev,
+      );
+      try {
+        await inboxService.resendMessage(msg.id);
+        toast.success('Mensagem recolocada na fila de envio');
+      } catch (err: any) {
+        // Reverte o otimismo se o backend recusou (ex.: fora da janela 24h a
+        // mensagem volta a falhar — mas aqui é erro de aceite do reenvio).
+        queryClient.setQueryData<{ messages: Message[] } | undefined>(
+          ['messages', conversation.id],
+          (prev) =>
+            prev
+              ? {
+                  ...prev,
+                  messages: prev.messages.map((m) =>
+                    m.id === msg.id
+                      ? { ...m, status: 'FAILED', failedReason: msg.failedReason }
+                      : m,
+                  ),
+                }
+              : prev,
+        );
+        toast.error(
+          err?.response?.data?.message ||
+            err?.message ||
+            'Erro ao reenviar mensagem',
+        );
+      }
+    },
+    [conversation.id, queryClient],
+  );
+
   // Auto-scroll pro fim SÓ quando chega mensagem nova no rodapé (ou no load
   // inicial) — detectado pela mudança do id da ÚLTIMA mensagem. Ao carregar
   // histórico antigo (prepend no topo) o último id não muda, então a tela
@@ -984,6 +1032,17 @@ export function ChatPanel({
                         Mensagens já revogadas não mostram ações. */}
                     {isOutbound && !isRevoked && (
                       <div className="flex items-center gap-1 self-center opacity-0 transition-opacity group-hover:opacity-100">
+                        {msg.status === 'FAILED' && (
+                          <button
+                            type="button"
+                            onClick={() => handleResend(msg)}
+                            className="rounded-full bg-white p-1.5 text-red-500 shadow-sm ring-1 ring-red-200 hover:bg-red-50 hover:text-red-700 dark:bg-zinc-800 dark:ring-red-900/50 dark:hover:bg-red-900/20"
+                            title="Reenviar mensagem (voltou a falha — recoloca na fila)"
+                            aria-label="Reenviar esta mensagem"
+                          >
+                            <RotateCw className="h-3.5 w-3.5" />
+                          </button>
+                        )}
                         <button
                           type="button"
                           onClick={() => startReply(msg)}

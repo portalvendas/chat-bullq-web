@@ -4,92 +4,48 @@
   "graph": {},
   "nodes": [
     {
-      "label": "WaCostsSection.tsx",
+      "label": "layout.tsx",
       "file_type": "code",
-      "source_file": "src/features/dashboard/components/WaCostsSection.tsx",
+      "source_file": "src/app/(dashboard)/layout.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_features_dashboard_components_wacostssection",
-      "community": 11,
-      "community_name": "dashboard.service.ts",
-      "norm_label": "wacostssection.tsx"
+      "id": "src_app_dashboard_layout",
+      "community": 10,
+      "community_name": "notifications-bell.tsx",
+      "norm_label": "layout.tsx"
     },
     {
-      "label": "brl()",
+      "label": "DashboardLayout()",
       "file_type": "code",
-      "source_file": "src/features/dashboard/components/WaCostsSection.tsx",
+      "source_file": "src/app/(dashboard)/layout.tsx",
       "source_location": "L17",
       "_origin": "ast",
-      "id": "src_features_dashboard_components_wacostssection_brl",
-      "community": 11,
-      "community_name": "dashboard.service.ts",
-      "norm_label": "brl()"
+      "id": "src_app_dashboard_layout_dashboardlayout",
+      "community": 10,
+      "community_name": "notifications-bell.tsx",
+      "norm_label": "dashboardlayout()"
     },
     {
-      "label": "CAT_META",
+      "label": "wa-payment-banner.tsx",
       "file_type": "code",
-      "source_file": "src/features/dashboard/components/WaCostsSection.tsx",
-      "source_location": "L23",
+      "source_file": "src/features/dashboard/components/wa-payment-banner.tsx",
+      "source_location": "L1",
       "_origin": "ast",
-      "id": "src_features_dashboard_components_wacostssection_cat_meta",
+      "id": "src_features_dashboard_components_wa_payment_banner",
       "community": 11,
       "community_name": "dashboard.service.ts",
-      "norm_label": "cat_meta"
+      "norm_label": "wa-payment-banner.tsx"
     },
     {
-      "label": "CATS",
+      "label": "WaPaymentBanner()",
       "file_type": "code",
-      "source_file": "src/features/dashboard/components/WaCostsSection.tsx",
-      "source_location": "L29",
+      "source_file": "src/features/dashboard/components/wa-payment-banner.tsx",
+      "source_location": "L20",
       "_origin": "ast",
-      "id": "src_features_dashboard_components_wacostssection_cats",
+      "id": "src_features_dashboard_components_wa_payment_banner_wapaymentbanner",
       "community": 11,
       "community_name": "dashboard.service.ts",
-      "norm_label": "cats"
-    },
-    {
-      "label": "Kpi()",
-      "file_type": "code",
-      "source_file": "src/features/dashboard/components/WaCostsSection.tsx",
-      "source_location": "L31",
-      "_origin": "ast",
-      "id": "src_features_dashboard_components_wacostssection_kpi",
-      "community": 11,
-      "community_name": "dashboard.service.ts",
-      "norm_label": "kpi()"
-    },
-    {
-      "label": "ServiceBar()",
-      "file_type": "code",
-      "source_file": "src/features/dashboard/components/WaCostsSection.tsx",
-      "source_location": "L48",
-      "_origin": "ast",
-      "id": "src_features_dashboard_components_wacostssection_servicebar",
-      "community": 11,
-      "community_name": "dashboard.service.ts",
-      "norm_label": "servicebar()"
-    },
-    {
-      "label": "WaCostsSection()",
-      "file_type": "code",
-      "source_file": "src/features/dashboard/components/WaCostsSection.tsx",
-      "source_location": "L76",
-      "_origin": "ast",
-      "id": "src_features_dashboard_components_wacostssection_wacostssection",
-      "community": 11,
-      "community_name": "dashboard.service.ts",
-      "norm_label": "wacostssection()"
-    },
-    {
-      "label": "WaCostDrill()",
-      "file_type": "code",
-      "source_file": "src/features/dashboard/components/WaCostsSection.tsx",
-      "source_location": "L215",
-      "_origin": "ast",
-      "id": "src_features_dashboard_components_wacostssection_wacostdrill",
-      "community": 11,
-      "community_name": "dashboard.service.ts",
-      "norm_label": "wacostdrill()"
+      "norm_label": "wapaymentbanner()"
     },
     {
       "label": "dashboard.service.ts",
@@ -97,10 +53,10 @@
       "source_file": "src/features/dashboard/services/dashboard.service.ts",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "src_features_dashboard_services_dashboard_service",
       "community": 11,
       "community_name": "dashboard.service.ts",
-      "norm_label": "dashboard.service.ts",
-      "id": "src_features_dashboard_services_dashboard_service"
+      "norm_label": "dashboard.service.ts"
     },
     {
       "label": "DashboardOverview",
@@ -108,10 +64,10 @@
       "source_file": "src/features/dashboard/services/dashboard.service.ts",
       "source_location": "L3",
       "_origin": "ast",
+      "id": "src_features_dashboard_services_dashboard_service_dashboardoverview",
       "community": 11,
       "community_name": "dashboard.service.ts",
-      "norm_label": "dashboardoverview",
-      "id": "src_features_dashboard_services_dashboard_service_dashboardoverview"
+      "norm_label": "dashboardoverview"
     },
     {
       "label": "CsatBreakdown",
@@ -119,10 +75,10 @@
       "source_file": "src/features/dashboard/services/dashboard.service.ts",
       "source_location": "L32",
       "_origin": "ast",
+      "id": "src_features_dashboard_services_dashboard_service_csatbreakdown",
       "community": 11,
       "community_name": "dashboard.service.ts",
-      "norm_label": "csatbreakdown",
-      "id": "src_features_dashboard_services_dashboard_service_csatbreakdown"
+      "norm_label": "csatbreakdown"
     },
     {
       "label": "ReopenStats",
@@ -130,10 +86,10 @@
       "source_file": "src/features/dashboard/services/dashboard.service.ts",
       "source_location": "L47",
       "_origin": "ast",
+      "id": "src_features_dashboard_services_dashboard_service_reopenstats",
       "community": 11,
       "community_name": "dashboard.service.ts",
-      "norm_label": "reopenstats",
-      "id": "src_features_dashboard_services_dashboard_service_reopenstats"
+      "norm_label": "reopenstats"
     },
     {
       "label": "SparklinePoint",
@@ -141,10 +97,10 @@
       "source_file": "src/features/dashboard/services/dashboard.service.ts",
       "source_location": "L60",
       "_origin": "ast",
+      "id": "src_features_dashboard_services_dashboard_service_sparklinepoint",
       "community": 13,
       "community_name": "dashboard/page.tsx",
-      "norm_label": "sparklinepoint",
-      "id": "src_features_dashboard_services_dashboard_service_sparklinepoint"
+      "norm_label": "sparklinepoint"
     },
     {
       "label": "KpiSparklines",
@@ -152,10 +108,10 @@
       "source_file": "src/features/dashboard/services/dashboard.service.ts",
       "source_location": "L61",
       "_origin": "ast",
+      "id": "src_features_dashboard_services_dashboard_service_kpisparklines",
       "community": 11,
       "community_name": "dashboard.service.ts",
-      "norm_label": "kpisparklines",
-      "id": "src_features_dashboard_services_dashboard_service_kpisparklines"
+      "norm_label": "kpisparklines"
     },
     {
       "label": "VolumeByDay",
@@ -163,10 +119,10 @@
       "source_file": "src/features/dashboard/services/dashboard.service.ts",
       "source_location": "L68",
       "_origin": "ast",
+      "id": "src_features_dashboard_services_dashboard_service_volumebyday",
       "community": 11,
       "community_name": "dashboard.service.ts",
-      "norm_label": "volumebyday",
-      "id": "src_features_dashboard_services_dashboard_service_volumebyday"
+      "norm_label": "volumebyday"
     },
     {
       "label": "VolumeByChannel",
@@ -174,10 +130,10 @@
       "source_file": "src/features/dashboard/services/dashboard.service.ts",
       "source_location": "L69",
       "_origin": "ast",
+      "id": "src_features_dashboard_services_dashboard_service_volumebychannel",
       "community": 11,
       "community_name": "dashboard.service.ts",
-      "norm_label": "volumebychannel",
-      "id": "src_features_dashboard_services_dashboard_service_volumebychannel"
+      "norm_label": "volumebychannel"
     },
     {
       "label": "VolumeByStatus",
@@ -185,10 +141,10 @@
       "source_file": "src/features/dashboard/services/dashboard.service.ts",
       "source_location": "L70",
       "_origin": "ast",
+      "id": "src_features_dashboard_services_dashboard_service_volumebystatus",
       "community": 11,
       "community_name": "dashboard.service.ts",
-      "norm_label": "volumebystatus",
-      "id": "src_features_dashboard_services_dashboard_service_volumebystatus"
+      "norm_label": "volumebystatus"
     },
     {
       "label": "MarketplaceStats",
@@ -196,10 +152,10 @@
       "source_file": "src/features/dashboard/services/dashboard.service.ts",
       "source_location": "L71",
       "_origin": "ast",
+      "id": "src_features_dashboard_services_dashboard_service_marketplacestats",
       "community": 11,
       "community_name": "dashboard.service.ts",
-      "norm_label": "marketplacestats",
-      "id": "src_features_dashboard_services_dashboard_service_marketplacestats"
+      "norm_label": "marketplacestats"
     },
     {
       "label": "VolumeFlow",
@@ -207,10 +163,10 @@
       "source_file": "src/features/dashboard/services/dashboard.service.ts",
       "source_location": "L79",
       "_origin": "ast",
+      "id": "src_features_dashboard_services_dashboard_service_volumeflow",
       "community": 11,
       "community_name": "dashboard.service.ts",
-      "norm_label": "volumeflow",
-      "id": "src_features_dashboard_services_dashboard_service_volumeflow"
+      "norm_label": "volumeflow"
     },
     {
       "label": "MessagesFlow",
@@ -218,10 +174,10 @@
       "source_file": "src/features/dashboard/services/dashboard.service.ts",
       "source_location": "L80",
       "_origin": "ast",
+      "id": "src_features_dashboard_services_dashboard_service_messagesflow",
       "community": 11,
       "community_name": "dashboard.service.ts",
-      "norm_label": "messagesflow",
-      "id": "src_features_dashboard_services_dashboard_service_messagesflow"
+      "norm_label": "messagesflow"
     },
     {
       "label": "PeakHours",
@@ -229,10 +185,10 @@
       "source_file": "src/features/dashboard/services/dashboard.service.ts",
       "source_location": "L81",
       "_origin": "ast",
+      "id": "src_features_dashboard_services_dashboard_service_peakhours",
       "community": 11,
       "community_name": "dashboard.service.ts",
-      "norm_label": "peakhours",
-      "id": "src_features_dashboard_services_dashboard_service_peakhours"
+      "norm_label": "peakhours"
     },
     {
       "label": "BotPerformance",
@@ -240,10 +196,10 @@
       "source_file": "src/features/dashboard/services/dashboard.service.ts",
       "source_location": "L82",
       "_origin": "ast",
+      "id": "src_features_dashboard_services_dashboard_service_botperformance",
       "community": 11,
       "community_name": "dashboard.service.ts",
-      "norm_label": "botperformance",
-      "id": "src_features_dashboard_services_dashboard_service_botperformance"
+      "norm_label": "botperformance"
     },
     {
       "label": "TopTag",
@@ -251,10 +207,10 @@
       "source_file": "src/features/dashboard/services/dashboard.service.ts",
       "source_location": "L90",
       "_origin": "ast",
+      "id": "src_features_dashboard_services_dashboard_service_toptag",
       "community": 11,
       "community_name": "dashboard.service.ts",
-      "norm_label": "toptag",
-      "id": "src_features_dashboard_services_dashboard_service_toptag"
+      "norm_label": "toptag"
     },
     {
       "label": "AgentPerformance",
@@ -262,10 +218,10 @@
       "source_file": "src/features/dashboard/services/dashboard.service.ts",
       "source_location": "L91",
       "_origin": "ast",
+      "id": "src_features_dashboard_services_dashboard_service_agentperformance",
       "community": 11,
       "community_name": "dashboard.service.ts",
-      "norm_label": "agentperformance",
-      "id": "src_features_dashboard_services_dashboard_service_agentperformance"
+      "norm_label": "agentperformance"
     },
     {
       "label": "CommercialData",
@@ -273,10 +229,10 @@
       "source_file": "src/features/dashboard/services/dashboard.service.ts",
       "source_location": "L101",
       "_origin": "ast",
-      "community": 8,
-      "community_name": "CommercialSection.tsx",
-      "norm_label": "commercialdata",
-      "id": "src_features_dashboard_services_dashboard_service_commercialdata"
+      "id": "src_features_dashboard_services_dashboard_service_commercialdata",
+      "community": 11,
+      "community_name": "dashboard.service.ts",
+      "norm_label": "commercialdata"
     },
     {
       "label": "IntakeHealth",
@@ -284,10 +240,10 @@
       "source_file": "src/features/dashboard/services/dashboard.service.ts",
       "source_location": "L185",
       "_origin": "ast",
-      "community": 11,
-      "community_name": "dashboard.service.ts",
-      "norm_label": "intakehealth",
-      "id": "src_features_dashboard_services_dashboard_service_intakehealth"
+      "id": "src_features_dashboard_services_dashboard_service_intakehealth",
+      "community": 8,
+      "community_name": "CommercialSection.tsx",
+      "norm_label": "intakehealth"
     },
     {
       "label": "MetaAdsStatus",
@@ -295,10 +251,10 @@
       "source_file": "src/features/dashboard/services/dashboard.service.ts",
       "source_location": "L204",
       "_origin": "ast",
+      "id": "src_features_dashboard_services_dashboard_service_metaadsstatus",
       "community": 11,
       "community_name": "dashboard.service.ts",
-      "norm_label": "metaadsstatus",
-      "id": "src_features_dashboard_services_dashboard_service_metaadsstatus"
+      "norm_label": "metaadsstatus"
     },
     {
       "label": "WaCostCat",
@@ -306,10 +262,10 @@
       "source_file": "src/features/dashboard/services/dashboard.service.ts",
       "source_location": "L214",
       "_origin": "ast",
+      "id": "src_features_dashboard_services_dashboard_service_wacostcat",
       "community": 11,
       "community_name": "dashboard.service.ts",
-      "norm_label": "wacostcat",
-      "id": "src_features_dashboard_services_dashboard_service_wacostcat"
+      "norm_label": "wacostcat"
     },
     {
       "label": "WaCatKey",
@@ -317,10 +273,10 @@
       "source_file": "src/features/dashboard/services/dashboard.service.ts",
       "source_location": "L218",
       "_origin": "ast",
+      "id": "src_features_dashboard_services_dashboard_service_wacatkey",
       "community": 11,
       "community_name": "dashboard.service.ts",
-      "norm_label": "wacatkey",
-      "id": "src_features_dashboard_services_dashboard_service_wacatkey"
+      "norm_label": "wacatkey"
     },
     {
       "label": "WaCostsData",
@@ -328,10 +284,10 @@
       "source_file": "src/features/dashboard/services/dashboard.service.ts",
       "source_location": "L219",
       "_origin": "ast",
+      "id": "src_features_dashboard_services_dashboard_service_wacostsdata",
       "community": 11,
       "community_name": "dashboard.service.ts",
-      "norm_label": "wacostsdata",
-      "id": "src_features_dashboard_services_dashboard_service_wacostsdata"
+      "norm_label": "wacostsdata"
     },
     {
       "label": "WaCostMessage",
@@ -339,21 +295,120 @@
       "source_file": "src/features/dashboard/services/dashboard.service.ts",
       "source_location": "L243",
       "_origin": "ast",
+      "id": "src_features_dashboard_services_dashboard_service_wacostmessage",
       "community": 11,
       "community_name": "dashboard.service.ts",
-      "norm_label": "wacostmessage",
-      "id": "src_features_dashboard_services_dashboard_service_wacostmessage"
+      "norm_label": "wacostmessage"
+    },
+    {
+      "label": "WaPaymentHealth",
+      "file_type": "code",
+      "source_file": "src/features/dashboard/services/dashboard.service.ts",
+      "source_location": "L255",
+      "_origin": "ast",
+      "id": "src_features_dashboard_services_dashboard_service_wapaymenthealth",
+      "community": 11,
+      "community_name": "dashboard.service.ts",
+      "norm_label": "wapaymenthealth"
     },
     {
       "label": "dashboardService",
       "file_type": "code",
       "source_file": "src/features/dashboard/services/dashboard.service.ts",
-      "source_location": "L255",
+      "source_location": "L274",
+      "_origin": "ast",
+      "id": "src_features_dashboard_services_dashboard_service_dashboardservice",
+      "community": 11,
+      "community_name": "dashboard.service.ts",
+      "norm_label": "dashboardservice"
+    },
+    {
+      "label": "WaCostsSection.tsx",
+      "file_type": "code",
+      "source_file": "src/features/dashboard/components/WaCostsSection.tsx",
+      "source_location": "L1",
       "_origin": "ast",
       "community": 11,
       "community_name": "dashboard.service.ts",
-      "norm_label": "dashboardservice",
-      "id": "src_features_dashboard_services_dashboard_service_dashboardservice"
+      "norm_label": "wacostssection.tsx",
+      "id": "src_features_dashboard_components_wacostssection"
+    },
+    {
+      "label": "brl()",
+      "file_type": "code",
+      "source_file": "src/features/dashboard/components/WaCostsSection.tsx",
+      "source_location": "L17",
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "dashboard.service.ts",
+      "norm_label": "brl()",
+      "id": "src_features_dashboard_components_wacostssection_brl"
+    },
+    {
+      "label": "CAT_META",
+      "file_type": "code",
+      "source_file": "src/features/dashboard/components/WaCostsSection.tsx",
+      "source_location": "L23",
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "dashboard.service.ts",
+      "norm_label": "cat_meta",
+      "id": "src_features_dashboard_components_wacostssection_cat_meta"
+    },
+    {
+      "label": "CATS",
+      "file_type": "code",
+      "source_file": "src/features/dashboard/components/WaCostsSection.tsx",
+      "source_location": "L29",
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "dashboard.service.ts",
+      "norm_label": "cats",
+      "id": "src_features_dashboard_components_wacostssection_cats"
+    },
+    {
+      "label": "Kpi()",
+      "file_type": "code",
+      "source_file": "src/features/dashboard/components/WaCostsSection.tsx",
+      "source_location": "L31",
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "dashboard.service.ts",
+      "norm_label": "kpi()",
+      "id": "src_features_dashboard_components_wacostssection_kpi"
+    },
+    {
+      "label": "ServiceBar()",
+      "file_type": "code",
+      "source_file": "src/features/dashboard/components/WaCostsSection.tsx",
+      "source_location": "L48",
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "dashboard.service.ts",
+      "norm_label": "servicebar()",
+      "id": "src_features_dashboard_components_wacostssection_servicebar"
+    },
+    {
+      "label": "WaCostsSection()",
+      "file_type": "code",
+      "source_file": "src/features/dashboard/components/WaCostsSection.tsx",
+      "source_location": "L76",
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "dashboard.service.ts",
+      "norm_label": "wacostssection()",
+      "id": "src_features_dashboard_components_wacostssection_wacostssection"
+    },
+    {
+      "label": "WaCostDrill()",
+      "file_type": "code",
+      "source_file": "src/features/dashboard/components/WaCostsSection.tsx",
+      "source_location": "L215",
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "dashboard.service.ts",
+      "norm_label": "wacostdrill()",
+      "id": "src_features_dashboard_components_wacostssection_wacostdrill"
     },
     {
       "label": "dashboard/page.tsx",
@@ -3018,28 +3073,6 @@
       "id": "src_features_pipelines_services_pipelines_service_pipelinesservice"
     },
     {
-      "label": "layout.tsx",
-      "file_type": "code",
-      "source_file": "src/app/(dashboard)/layout.tsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 10,
-      "community_name": "notifications-bell.tsx",
-      "norm_label": "layout.tsx",
-      "id": "src_app_dashboard_layout"
-    },
-    {
-      "label": "DashboardLayout()",
-      "file_type": "code",
-      "source_file": "src/app/(dashboard)/layout.tsx",
-      "source_location": "L14",
-      "_origin": "ast",
-      "community": 10,
-      "community_name": "notifications-bell.tsx",
-      "norm_label": "dashboardlayout()",
-      "id": "src_app_dashboard_layout_dashboardlayout"
-    },
-    {
       "label": "notifications-bell.tsx",
       "file_type": "code",
       "source_file": "src/features/notifications/components/notifications-bell.tsx",
@@ -4043,6 +4076,544 @@
   ],
   "links": [
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/layout.tsx",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_layout",
+      "target": "src_app_dashboard_layout_dashboardlayout",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/layout.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_layout",
+      "target": "src_components_layout_app_sidebar",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/layout.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_layout",
+      "target": "src_components_layout_app_sidebar_appsidebar",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/layout.tsx",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_layout",
+      "target": "src_features_dashboard_components_wa_payment_banner",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/layout.tsx",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_layout",
+      "target": "src_features_dashboard_components_wa_payment_banner_wapaymentbanner",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/layout.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_layout",
+      "target": "src_features_notifications_components_notifications_bell",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/layout.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app_dashboard_layout",
+      "target": "src_features_notifications_components_notifications_bell_notificationsbell",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/components/wa-payment-banner.tsx",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_dashboard_components_wa_payment_banner",
+      "target": "src_features_dashboard_components_wa_payment_banner_wapaymentbanner",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/components/wa-payment-banner.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_dashboard_components_wa_payment_banner",
+      "target": "src_features_dashboard_services_dashboard_service",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/components/wa-payment-banner.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_dashboard_components_wa_payment_banner",
+      "target": "src_features_dashboard_services_dashboard_service_dashboardservice",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/dashboard/page.tsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "src_app_dashboard_dashboard_page",
+      "target": "src_features_dashboard_services_dashboard_service"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/components/CommercialSection.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "src_features_dashboard_components_commercialsection",
+      "target": "src_features_dashboard_services_dashboard_service"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/components/WaCostsSection.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "src_features_dashboard_components_wacostssection",
+      "target": "src_features_dashboard_services_dashboard_service"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/services/dashboard.service.ts",
+      "source_location": "L91",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_dashboard_services_dashboard_service",
+      "target": "src_features_dashboard_services_dashboard_service_agentperformance",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/services/dashboard.service.ts",
+      "source_location": "L82",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_dashboard_services_dashboard_service",
+      "target": "src_features_dashboard_services_dashboard_service_botperformance",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/services/dashboard.service.ts",
+      "source_location": "L101",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_dashboard_services_dashboard_service",
+      "target": "src_features_dashboard_services_dashboard_service_commercialdata",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/services/dashboard.service.ts",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_dashboard_services_dashboard_service",
+      "target": "src_features_dashboard_services_dashboard_service_csatbreakdown",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/services/dashboard.service.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_dashboard_services_dashboard_service",
+      "target": "src_features_dashboard_services_dashboard_service_dashboardoverview",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/services/dashboard.service.ts",
+      "source_location": "L274",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_dashboard_services_dashboard_service",
+      "target": "src_features_dashboard_services_dashboard_service_dashboardservice",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/services/dashboard.service.ts",
+      "source_location": "L185",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_dashboard_services_dashboard_service",
+      "target": "src_features_dashboard_services_dashboard_service_intakehealth",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/services/dashboard.service.ts",
+      "source_location": "L61",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_dashboard_services_dashboard_service",
+      "target": "src_features_dashboard_services_dashboard_service_kpisparklines",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/services/dashboard.service.ts",
+      "source_location": "L71",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_dashboard_services_dashboard_service",
+      "target": "src_features_dashboard_services_dashboard_service_marketplacestats",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/services/dashboard.service.ts",
+      "source_location": "L80",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_dashboard_services_dashboard_service",
+      "target": "src_features_dashboard_services_dashboard_service_messagesflow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/services/dashboard.service.ts",
+      "source_location": "L204",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_dashboard_services_dashboard_service",
+      "target": "src_features_dashboard_services_dashboard_service_metaadsstatus",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/services/dashboard.service.ts",
+      "source_location": "L81",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_dashboard_services_dashboard_service",
+      "target": "src_features_dashboard_services_dashboard_service_peakhours",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/services/dashboard.service.ts",
+      "source_location": "L47",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_dashboard_services_dashboard_service",
+      "target": "src_features_dashboard_services_dashboard_service_reopenstats",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/services/dashboard.service.ts",
+      "source_location": "L60",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_dashboard_services_dashboard_service",
+      "target": "src_features_dashboard_services_dashboard_service_sparklinepoint",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/services/dashboard.service.ts",
+      "source_location": "L90",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_dashboard_services_dashboard_service",
+      "target": "src_features_dashboard_services_dashboard_service_toptag",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/services/dashboard.service.ts",
+      "source_location": "L69",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_dashboard_services_dashboard_service",
+      "target": "src_features_dashboard_services_dashboard_service_volumebychannel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/services/dashboard.service.ts",
+      "source_location": "L68",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_dashboard_services_dashboard_service",
+      "target": "src_features_dashboard_services_dashboard_service_volumebyday",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/services/dashboard.service.ts",
+      "source_location": "L70",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_dashboard_services_dashboard_service",
+      "target": "src_features_dashboard_services_dashboard_service_volumebystatus",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/services/dashboard.service.ts",
+      "source_location": "L79",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_dashboard_services_dashboard_service",
+      "target": "src_features_dashboard_services_dashboard_service_volumeflow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/services/dashboard.service.ts",
+      "source_location": "L218",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_dashboard_services_dashboard_service",
+      "target": "src_features_dashboard_services_dashboard_service_wacatkey",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/services/dashboard.service.ts",
+      "source_location": "L214",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_dashboard_services_dashboard_service",
+      "target": "src_features_dashboard_services_dashboard_service_wacostcat",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/services/dashboard.service.ts",
+      "source_location": "L243",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_dashboard_services_dashboard_service",
+      "target": "src_features_dashboard_services_dashboard_service_wacostmessage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/services/dashboard.service.ts",
+      "source_location": "L219",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_dashboard_services_dashboard_service",
+      "target": "src_features_dashboard_services_dashboard_service_wacostsdata",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/services/dashboard.service.ts",
+      "source_location": "L255",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_dashboard_services_dashboard_service",
+      "target": "src_features_dashboard_services_dashboard_service_wapaymenthealth",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/dashboard/page.tsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "src_app_dashboard_dashboard_page",
+      "target": "src_features_dashboard_services_dashboard_service_sparklinepoint"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/components/CommercialSection.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "src_features_dashboard_components_commercialsection",
+      "target": "src_features_dashboard_services_dashboard_service_commercialdata"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/components/CommercialSection.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "src_features_dashboard_components_commercialsection",
+      "target": "src_features_dashboard_services_dashboard_service_intakehealth"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/components/CommercialSection.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "src_features_dashboard_components_commercialsection",
+      "target": "src_features_dashboard_services_dashboard_service_metaadsstatus"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/components/WaCostsSection.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "src_features_dashboard_components_wacostssection",
+      "target": "src_features_dashboard_services_dashboard_service_wacatkey"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/components/WaCostsSection.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "src_features_dashboard_components_wacostssection",
+      "target": "src_features_dashboard_services_dashboard_service_wacostsdata"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/components/WaCostsSection.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "src_features_dashboard_components_wacostssection",
+      "target": "src_features_dashboard_services_dashboard_service_wacostmessage"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/app/(dashboard)/dashboard/page.tsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "src_app_dashboard_dashboard_page",
+      "target": "src_features_dashboard_services_dashboard_service_dashboardservice"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/components/CommercialSection.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "src_features_dashboard_components_commercialsection",
+      "target": "src_features_dashboard_services_dashboard_service_dashboardservice"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/dashboard/components/WaCostsSection.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "src_features_dashboard_components_wacostssection",
+      "target": "src_features_dashboard_services_dashboard_service_dashboardservice"
+    },
+    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -4061,9 +4632,9 @@
       "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_dashboard_components_wacostssection",
-      "target": "src_features_dashboard_components_wacostssection_brl",
-      "confidence_score": 1.0
+      "target": "src_features_dashboard_components_wacostssection_brl"
     },
     {
       "relation": "contains",
@@ -4072,9 +4643,9 @@
       "source_location": "L23",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_dashboard_components_wacostssection",
-      "target": "src_features_dashboard_components_wacostssection_cat_meta",
-      "confidence_score": 1.0
+      "target": "src_features_dashboard_components_wacostssection_cat_meta"
     },
     {
       "relation": "contains",
@@ -4083,9 +4654,9 @@
       "source_location": "L29",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_dashboard_components_wacostssection",
-      "target": "src_features_dashboard_components_wacostssection_cats",
-      "confidence_score": 1.0
+      "target": "src_features_dashboard_components_wacostssection_cats"
     },
     {
       "relation": "contains",
@@ -4094,9 +4665,9 @@
       "source_location": "L31",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_dashboard_components_wacostssection",
-      "target": "src_features_dashboard_components_wacostssection_kpi",
-      "confidence_score": 1.0
+      "target": "src_features_dashboard_components_wacostssection_kpi"
     },
     {
       "relation": "contains",
@@ -4105,9 +4676,9 @@
       "source_location": "L48",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_dashboard_components_wacostssection",
-      "target": "src_features_dashboard_components_wacostssection_servicebar",
-      "confidence_score": 1.0
+      "target": "src_features_dashboard_components_wacostssection_servicebar"
     },
     {
       "relation": "contains",
@@ -4116,9 +4687,9 @@
       "source_location": "L215",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_dashboard_components_wacostssection",
-      "target": "src_features_dashboard_components_wacostssection_wacostdrill",
-      "confidence_score": 1.0
+      "target": "src_features_dashboard_components_wacostssection_wacostdrill"
     },
     {
       "relation": "contains",
@@ -4127,69 +4698,9 @@
       "source_location": "L76",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_dashboard_components_wacostssection",
-      "target": "src_features_dashboard_components_wacostssection_wacostssection",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/components/WaCostsSection.tsx",
-      "source_location": "L9",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_dashboard_components_wacostssection",
-      "target": "src_features_dashboard_services_dashboard_service",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/components/WaCostsSection.tsx",
-      "source_location": "L9",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_dashboard_components_wacostssection",
-      "target": "src_features_dashboard_services_dashboard_service_dashboardservice",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/components/WaCostsSection.tsx",
-      "source_location": "L9",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_dashboard_components_wacostssection",
-      "target": "src_features_dashboard_services_dashboard_service_wacatkey",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/components/WaCostsSection.tsx",
-      "source_location": "L9",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_dashboard_components_wacostssection",
-      "target": "src_features_dashboard_services_dashboard_service_wacostmessage",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/components/WaCostsSection.tsx",
-      "source_location": "L9",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_features_dashboard_components_wacostssection",
-      "target": "src_features_dashboard_services_dashboard_service_wacostsdata",
-      "confidence_score": 1.0
+      "target": "src_features_dashboard_components_wacostssection_wacostssection"
     },
     {
       "relation": "calls",
@@ -4199,9 +4710,9 @@
       "source_location": "L305",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_dashboard_components_wacostssection_wacostdrill",
-      "target": "src_features_dashboard_components_wacostssection_brl",
-      "confidence_score": 1.0
+      "target": "src_features_dashboard_components_wacostssection_brl"
     },
     {
       "relation": "calls",
@@ -4211,9 +4722,9 @@
       "source_location": "L129",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_features_dashboard_components_wacostssection_wacostssection",
-      "target": "src_features_dashboard_components_wacostssection_brl",
-      "confidence_score": 1.0
+      "target": "src_features_dashboard_components_wacostssection_brl"
     },
     {
       "relation": "imports",
@@ -4226,355 +4737,6 @@
       "confidence_score": 1.0,
       "source": "src_app_dashboard_dashboard_page",
       "target": "src_features_dashboard_components_wacostssection_wacostssection"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/(dashboard)/dashboard/page.tsx",
-      "source_location": "L15",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_app_dashboard_dashboard_page",
-      "target": "src_features_dashboard_services_dashboard_service"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/components/CommercialSection.tsx",
-      "source_location": "L13",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_features_dashboard_components_commercialsection",
-      "target": "src_features_dashboard_services_dashboard_service"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/services/dashboard.service.ts",
-      "source_location": "L91",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_features_dashboard_services_dashboard_service",
-      "target": "src_features_dashboard_services_dashboard_service_agentperformance"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/services/dashboard.service.ts",
-      "source_location": "L82",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_features_dashboard_services_dashboard_service",
-      "target": "src_features_dashboard_services_dashboard_service_botperformance"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/services/dashboard.service.ts",
-      "source_location": "L101",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_features_dashboard_services_dashboard_service",
-      "target": "src_features_dashboard_services_dashboard_service_commercialdata"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/services/dashboard.service.ts",
-      "source_location": "L32",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_features_dashboard_services_dashboard_service",
-      "target": "src_features_dashboard_services_dashboard_service_csatbreakdown"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/services/dashboard.service.ts",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_features_dashboard_services_dashboard_service",
-      "target": "src_features_dashboard_services_dashboard_service_dashboardoverview"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/services/dashboard.service.ts",
-      "source_location": "L255",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_features_dashboard_services_dashboard_service",
-      "target": "src_features_dashboard_services_dashboard_service_dashboardservice"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/services/dashboard.service.ts",
-      "source_location": "L185",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_features_dashboard_services_dashboard_service",
-      "target": "src_features_dashboard_services_dashboard_service_intakehealth"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/services/dashboard.service.ts",
-      "source_location": "L61",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_features_dashboard_services_dashboard_service",
-      "target": "src_features_dashboard_services_dashboard_service_kpisparklines"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/services/dashboard.service.ts",
-      "source_location": "L71",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_features_dashboard_services_dashboard_service",
-      "target": "src_features_dashboard_services_dashboard_service_marketplacestats"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/services/dashboard.service.ts",
-      "source_location": "L80",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_features_dashboard_services_dashboard_service",
-      "target": "src_features_dashboard_services_dashboard_service_messagesflow"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/services/dashboard.service.ts",
-      "source_location": "L204",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_features_dashboard_services_dashboard_service",
-      "target": "src_features_dashboard_services_dashboard_service_metaadsstatus"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/services/dashboard.service.ts",
-      "source_location": "L81",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_features_dashboard_services_dashboard_service",
-      "target": "src_features_dashboard_services_dashboard_service_peakhours"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/services/dashboard.service.ts",
-      "source_location": "L47",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_features_dashboard_services_dashboard_service",
-      "target": "src_features_dashboard_services_dashboard_service_reopenstats"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/services/dashboard.service.ts",
-      "source_location": "L60",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_features_dashboard_services_dashboard_service",
-      "target": "src_features_dashboard_services_dashboard_service_sparklinepoint"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/services/dashboard.service.ts",
-      "source_location": "L90",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_features_dashboard_services_dashboard_service",
-      "target": "src_features_dashboard_services_dashboard_service_toptag"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/services/dashboard.service.ts",
-      "source_location": "L69",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_features_dashboard_services_dashboard_service",
-      "target": "src_features_dashboard_services_dashboard_service_volumebychannel"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/services/dashboard.service.ts",
-      "source_location": "L68",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_features_dashboard_services_dashboard_service",
-      "target": "src_features_dashboard_services_dashboard_service_volumebyday"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/services/dashboard.service.ts",
-      "source_location": "L70",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_features_dashboard_services_dashboard_service",
-      "target": "src_features_dashboard_services_dashboard_service_volumebystatus"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/services/dashboard.service.ts",
-      "source_location": "L79",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_features_dashboard_services_dashboard_service",
-      "target": "src_features_dashboard_services_dashboard_service_volumeflow"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/services/dashboard.service.ts",
-      "source_location": "L218",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_features_dashboard_services_dashboard_service",
-      "target": "src_features_dashboard_services_dashboard_service_wacatkey"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/services/dashboard.service.ts",
-      "source_location": "L214",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_features_dashboard_services_dashboard_service",
-      "target": "src_features_dashboard_services_dashboard_service_wacostcat"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/services/dashboard.service.ts",
-      "source_location": "L243",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_features_dashboard_services_dashboard_service",
-      "target": "src_features_dashboard_services_dashboard_service_wacostmessage"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/services/dashboard.service.ts",
-      "source_location": "L219",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_features_dashboard_services_dashboard_service",
-      "target": "src_features_dashboard_services_dashboard_service_wacostsdata"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/(dashboard)/dashboard/page.tsx",
-      "source_location": "L15",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_app_dashboard_dashboard_page",
-      "target": "src_features_dashboard_services_dashboard_service_sparklinepoint"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/components/CommercialSection.tsx",
-      "source_location": "L13",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_features_dashboard_components_commercialsection",
-      "target": "src_features_dashboard_services_dashboard_service_commercialdata"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/components/CommercialSection.tsx",
-      "source_location": "L13",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_features_dashboard_components_commercialsection",
-      "target": "src_features_dashboard_services_dashboard_service_intakehealth"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/components/CommercialSection.tsx",
-      "source_location": "L13",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_features_dashboard_components_commercialsection",
-      "target": "src_features_dashboard_services_dashboard_service_metaadsstatus"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/(dashboard)/dashboard/page.tsx",
-      "source_location": "L15",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_app_dashboard_dashboard_page",
-      "target": "src_features_dashboard_services_dashboard_service_dashboardservice"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/dashboard/components/CommercialSection.tsx",
-      "source_location": "L13",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_features_dashboard_components_commercialsection",
-      "target": "src_features_dashboard_services_dashboard_service_dashboardservice"
     },
     {
       "relation": "contains",
@@ -8145,41 +8307,6 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "src/app/(dashboard)/layout.tsx",
-      "source_location": "L14",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_app_dashboard_layout",
-      "target": "src_app_dashboard_layout_dashboardlayout"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/(dashboard)/layout.tsx",
-      "source_location": "L12",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_app_dashboard_layout",
-      "target": "src_features_notifications_components_notifications_bell"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/app/(dashboard)/layout.tsx",
-      "source_location": "L12",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_app_dashboard_layout",
-      "target": "src_features_notifications_components_notifications_bell_notificationsbell"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "src/features/notifications/components/notifications-bell.tsx",
       "source_location": "L57",
       "weight": 1.0,
@@ -9287,5 +9414,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "ea53438a2cc6e9cfe82d2e70d028ed1a38df9b00"
+  "built_at_commit": "b1c68ed009f4432f8c90f613a17070c359fc2780"
 }

@@ -189,6 +189,17 @@ export const inboxService = {
     return data.data ?? data;
   },
 
+  /** Reenvia uma mensagem OUTBOUND que ficou FAILED. Recoloca na fila de
+   *  envio (volta pra QUEUED/relógio) e o worker tenta de novo no provider. */
+  async resendMessage(messageId: string): Promise<{
+    messageId: string;
+    status: string;
+    requeued: boolean;
+  }> {
+    const { data } = await api.post(`/messages/${messageId}/resend`);
+    return data.data ?? data;
+  },
+
   async assignToMe(conversationId: string): Promise<Conversation> {
     const { data } = await api.post(`/conversations/${conversationId}/assign-me`);
     return data.data;

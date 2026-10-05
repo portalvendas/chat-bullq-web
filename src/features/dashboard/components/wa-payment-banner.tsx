@@ -1,9 +1,10 @@
 'use client';
 
 import { useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import { CreditCard } from 'lucide-react';
+import { CreditCard, RotateCw } from 'lucide-react';
+import { toast } from 'sonner';
 import { dashboardService } from '@/features/dashboard/services/dashboard.service';
 
 /**
@@ -25,7 +26,35 @@ export function WaPaymentBanner() {
     staleTime: 55_000,
   });
 
+  const queryClient = useQueryClient();
   const block = data?.paymentBlock;
+
+  const resend = useMutation({
+    mutationFn: () => dashboardService.resendFailed('payment'),
+    onSuccess: (res) => {
+      if (res.requeued === 0) {
+        toast.info(
+          'Nenhuma mensagem travada por pagamento encontrada na janela de ' +
+            `${res.windowHours}h.`,
+        );
+      } else {
+        toast.success(
+          `${res.requeued} mensagem(ns) recolocada(s) na fila de envio.`,
+        );
+      }
+      // Atualiza o próprio health (os reenviados saem do "recentCount" ao
+      // passarem) e qualquer inbox aberto.
+      queryClient.invalidateQueries({ queryKey: ['dashboard', 'wa-health'] });
+      queryClient.invalidateQueries({ queryKey: ['messages'] });
+    },
+    onError: (err: any) => {
+      toast.error(
+        err?.response?.data?.message ||
+          err?.message ||
+          'Erro ao reenviar as mensagens travadas',
+      );
+    },
+  });
 
   const headline = useMemo(() => {
     if (!block?.active) return null;
@@ -63,6 +92,18 @@ export function WaPaymentBanner() {
         >
           Abrir faturamento da Meta
         </a>
+        <button
+          type="button"
+          onClick={() => resend.mutate()}
+          disabled={resend.isPending}
+          title="Ajustou o pagamento? Recoloca na fila as mensagens que a Meta recusou nas últimas 24h."
+          className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-md border border-red-200 px-2.5 py-1 text-xs font-medium text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          <RotateCw
+            className={`h-3.5 w-3.5 ${resend.isPending ? 'animate-spin' : ''}`}
+          />
+          {resend.isPending ? 'Reenviando…' : 'Reenviar mensagens travadas'}
+        </button>
         <Link
           href="/dashboard?tab=custos"
           className="whitespace-nowrap rounded-md border border-red-200 px-2.5 py-1 text-xs font-medium text-white hover:bg-red-700"

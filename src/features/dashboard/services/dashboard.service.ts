@@ -271,10 +271,24 @@ export interface WaPaymentHealth {
   };
 }
 
+export interface ResendFailedResult {
+  requeued: number;
+  scanned: number;
+  windowHours: number;
+}
+
 export const dashboardService = {
   async getWaHealth(): Promise<WaPaymentHealth> {
     const { data } = await api.get('/dashboard/wa-health');
     return (data?.data ?? data) as WaPaymentHealth;
+  },
+  /** Reenvia em lote as mensagens travadas por bloqueio de pagamento (131042)
+   *  da janela recente. Padrão backend: scope=payment, 24h. */
+  async resendFailed(
+    scope: 'payment' | 'all' = 'payment',
+  ): Promise<ResendFailedResult> {
+    const { data } = await api.post('/messages/resend-failed', { scope });
+    return (data?.data ?? data) as ResendFailedResult;
   },
   async getOverview(from?: string, to?: string): Promise<DashboardOverview> {
     const params: Record<string, string> = {};
