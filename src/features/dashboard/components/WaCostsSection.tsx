@@ -1,13 +1,15 @@
 'use client';
 
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
-  DollarSign, MessageSquare, Megaphone, Bell, ShieldCheck, Headphones, AlertTriangle,
+  DollarSign, MessageSquare, Megaphone, Bell, ShieldCheck, Headphones, AlertTriangle, X, Loader2,
 } from 'lucide-react';
 import {
   dashboardService,
   type WaCostsData,
   type WaCatKey,
+  type WaCostMessage,
 } from '@/features/dashboard/services/dashboard.service';
 import { useOrgId } from '@/hooks/use-org-query-key';
 
@@ -72,6 +74,12 @@ function ServiceBar({ used, free, pct, over }: { used: number; free: number; pct
 
 export function WaCostsSection({ from, to }: { from?: string; to?: string } = {}) {
   const orgId = useOrgId();
+  const [drill, setDrill] = useState<{
+    channelId: string;
+    channelName: string;
+    category: WaCatKey;
+    label: string;
+  } | null>(null);
   const { data, isLoading, error } = useQuery({
     queryKey: ['dashboard-wa-costs', orgId, from, to],
     queryFn: () => dashboardService.getWaCosts(from, to),
@@ -143,14 +151,31 @@ export function WaCostsSection({ from, to }: { from?: string; to?: string } = {}
                     const meta = CAT_META[c];
                     const cell = ch.byCategory[c];
                     const Icon = meta.icon;
+                    const clickable = cell.count > 0;
                     return (
-                      <div key={c} className="rounded-lg border border-zinc-100 p-3 dark:border-zinc-800">
+                      <button
+                        key={c}
+                        type="button"
+                        disabled={!clickable}
+                        onClick={() =>
+                          setDrill({
+                            channelId: ch.channelId,
+                            channelName: ch.name,
+                            category: c,
+                            label: meta.label,
+                          })
+                        }
+                        title={clickable ? 'Ver as mensagens desta categoria' : undefined}
+                        className={`rounded-lg border border-zinc-100 p-3 text-left dark:border-zinc-800 ${
+                          clickable ? 'cursor-pointer hover:border-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800/40' : 'cursor-default'
+                        }`}
+                      >
                         <div className="flex items-center gap-1.5 text-[11px] font-medium text-zinc-500">
                           <Icon className="h-3.5 w-3.5" style={{ color: meta.color }} /> {meta.label}
                         </div>
                         <div className="mt-1 text-lg font-bold tabular-nums text-zinc-900 dark:text-zinc-100">{brl(cell.costMicros)}</div>
                         <div className="text-[10px] text-zinc-400">{cell.count.toLocaleString('pt-BR')} msgs</div>
-                      </div>
+                      </button>
                     );
                   })}
                 </div>
@@ -169,6 +194,112 @@ export function WaCostsSection({ from, to }: { from?: string; to?: string } = {}
           </p>
         </>
       )}
+
+      {drill && (
+        <WaCostDrill
+          channelId={drill.channelId}
+          channelName={drill.channelName}
+          category={drill.category}
+          label={drill.label}
+          from={from}
+          to={to}
+          onClose={() => setDrill(null)}
+        />
+      )}
+    </div>
+  );
+}
+
+/** Modal com a lista das mensagens que geraram o custo de uma categoria/número. */
+function WaCostDrill({
+  channelId,
+  channelName,
+  category,
+  label,
+  from,
+  to,
+  onClose,
+}: {
+  channelId: string;
+  channelName: string;
+  category: WaCatKey;
+  label: string;
+  from?: string;
+  to?: string;
+  onClose: () => void;
+}) {
+  const { data: msgs, isLoading } = useQuery({
+    queryKey: ['wa-cost-messages', channelId, category, from, to],
+    queryFn: () => dashboardService.getWaCostMessages(channelId, category, from, to),
+  });
+  const list: WaCostMessage[] = msgs ?? [];
+  const dt = (s: string) =>
+    new Date(s).toLocaleString('pt-BR', {
+      day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit',
+    });
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
+      <div
+        className="flex max-h-[80vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-zinc-900"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between border-b border-zinc-100 px-5 py-4 dark:border-zinc-800">
+          <div>
+            <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+              Mensagens · {label}
+            </h3>
+            <p className="text-[11px] text-zinc-500">{channelName} · {list.length} mensagem(ns)</p>
+          </div>
+          <button type="button" onClick={onClose} className="rounded-md p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+        <div className="overflow-y-auto">
+          {isLoading ? (
+            <div className="flex items-center justify-center py-10 text-zinc-400">
+              <Loader2 className="h-5 w-5 animate-spin" />
+            </div>
+          ) : list.length === 0 ? (
+            <p className="py-10 text-center text-sm text-zinc-400">Sem mensagens no período.</p>
+          ) : (
+            <table className="w-full text-xs">
+              <thead className="sticky top-0 bg-zinc-50 text-left uppercase tracking-wide text-zinc-400 dark:bg-zinc-950/60">
+                <tr>
+                  <th className="px-4 py-2 font-medium">Quando</th>
+                  <th className="px-4 py-2 font-medium">Contato</th>
+                  <th className="px-4 py-2 font-medium">Origem</th>
+                  <th className="px-4 py-2 text-right font-medium">Custo</th>
+                </tr>
+              </thead>
+              <tbody>
+                {list.map((m) => (
+                  <tr key={m.wamid} className="border-t border-zinc-50 dark:border-zinc-800/50">
+                    <td className="whitespace-nowrap px-4 py-2 text-zinc-500">{dt(m.occurredAt)}</td>
+                    <td className="px-4 py-2 text-zinc-800 dark:text-zinc-200">
+                      {m.contactName || m.contactPhone || '—'}
+                    </td>
+                    <td className="px-4 py-2">
+                      {m.origem === 'disparo' ? (
+                        <span className="rounded-full bg-violet-50 px-1.5 py-0.5 text-[10px] font-medium text-violet-700 dark:bg-violet-900/30 dark:text-violet-300">
+                          Disparo{m.broadcastName ? `: ${m.broadcastName}` : ''}
+                        </span>
+                      ) : (
+                        <span className="rounded-full bg-emerald-50 px-1.5 py-0.5 text-[10px] font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
+                          Atendimento
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-4 py-2 text-right tabular-nums text-zinc-700 dark:text-zinc-200">
+                      {m.billable ? brl(m.costMicros) : 'grátis'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

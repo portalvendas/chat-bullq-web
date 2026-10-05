@@ -240,6 +240,18 @@ export interface WaCostsData {
   };
 }
 
+export interface WaCostMessage {
+  wamid: string;
+  costMicros: string;
+  occurredAt: string;
+  billable: boolean;
+  contactName: string | null;
+  contactPhone: string | null;
+  origem: string;
+  broadcastName: string | null;
+  conversationId: string | null;
+}
+
 export const dashboardService = {
   async getOverview(from?: string, to?: string): Promise<DashboardOverview> {
     const params: Record<string, string> = {};
@@ -374,6 +386,18 @@ export const dashboardService = {
     if (to) params.to = to;
     const { data } = await api.get('/dashboard/wa-costs', { params });
     return data.data;
+  },
+  async getWaCostMessages(
+    channelId: string,
+    category: string,
+    from?: string,
+    to?: string,
+  ): Promise<WaCostMessage[]> {
+    const params: Record<string, string> = { channelId, category };
+    if (from) params.from = from;
+    if (to) params.to = to;
+    const { data } = await api.get('/dashboard/wa-costs/messages', { params });
+    return (data?.data ?? data ?? []) as WaCostMessage[];
   },
   async getMetaAds(): Promise<MetaAdsStatus> {
     const { data } = await api.get('/integrations/meta-ads');
