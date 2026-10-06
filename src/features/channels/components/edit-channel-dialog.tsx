@@ -30,6 +30,7 @@ export function EditChannelDialog({
   const [config, setConfig] = useState<Record<string, string>>({});
   const [webhookSecret, setWebhookSecret] = useState('');
   const [debounceSeconds, setDebounceSeconds] = useState('');
+  const [followUpBlocked, setFollowUpBlocked] = useState(false);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -46,11 +47,13 @@ export function EditChannelDialog({
     }
     setConfig(flat);
     setWebhookSecret(channel.webhookSecret ?? '');
+    setFollowUpBlocked(channel.followUpBlocked ?? false);
   }, [channel]);
 
   if (!channel) return null;
 
   const fields = fieldsFor(channel.type);
+  const isWhatsApp = channel.type.startsWith('WHATSAPP');
 
   const setField = (k: string, v: string) =>
     setConfig((prev) => ({ ...prev, [k]: v }));
@@ -85,6 +88,7 @@ export function EditChannelDialog({
         config: merged,
         webhookSecret: webhookSecret.trim() || undefined,
         aiDebounceSeconds: parsedDebounce,
+        ...(isWhatsApp ? { followUpBlocked } : {}),
       });
       toast.success('Credenciais atualizadas');
       onSaved();
@@ -178,6 +182,30 @@ export function EditChannelDialog({
               nova mensagem reinicia a contagem. Mercado Livre já vem com 120s.
             </p>
           </div>
+
+          {isWhatsApp && (
+            <div className="rounded-lg border border-zinc-200 p-3 dark:border-zinc-700">
+              <label className="flex cursor-pointer items-start gap-3">
+                <input
+                  type="checkbox"
+                  checked={followUpBlocked}
+                  onChange={(e) => setFollowUpBlocked(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 rounded border-zinc-300 text-primary focus:ring-primary"
+                />
+                <span className="flex-1">
+                  <span className={labelCls}>
+                    Não disparar follow-up por este número
+                  </span>
+                  <p className="mt-0.5 text-[11px] text-zinc-500">
+                    Bloqueia o envio automático de follow-up (cadências /
+                    Salesbots) por este canal. Use em números de WhatsApp
+                    Business (QR / Z-API) com restrição de disparo automático.
+                    O atendimento manual e a IA continuam funcionando normalmente.
+                  </p>
+                </span>
+              </label>
+            </div>
+          )}
         </div>
 
         <div className="mt-6 flex items-center justify-end gap-3">

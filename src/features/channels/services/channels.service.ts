@@ -25,6 +25,8 @@ export interface Channel {
    * PRIVATE = só membros com grant explícito enxergam, mesmo OWNER/ADMIN.
    */
   visibility: ChannelVisibility;
+  /** true = este canal NÃO dispara follow-up (cadências/Salesbots). Default false. */
+  followUpBlocked?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -45,6 +47,7 @@ export interface UpdateChannelPayload {
   aiEnabled?: boolean | null;
   aiDebounceSeconds?: number | null;
   visibility?: ChannelVisibility;
+  followUpBlocked?: boolean;
 }
 
 export interface TestConnectionResult {
