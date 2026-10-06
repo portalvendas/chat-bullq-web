@@ -682,23 +682,33 @@ export default function TinyOrdersPage({
     ? { from: from!, to: to! }
     : periodRange(period, customFrom, customTo);
 
+  // IMPORTANTE: a queryKey precisa refletir o RANGE efetivamente buscado
+  // (range.from/range.to), não o estado interno `period/customFrom/customTo`.
+  // Quando a tela é embutida no Dashboard (`controlled`), o período vem por
+  // prop (from/to) e o estado interno fica congelado — se a key dependesse
+  // dele, o React Query serviria o cache e nunca refazia a busca ao trocar o
+  // período. Keyar por range.from/range.to deixa esta aba consistente com
+  // Atendimento/Comercial/Custos. `placeholderData` evita flicker na troca.
   const { data: summary } = useQuery({
-    queryKey: ['tiny-summary', period, customFrom, customTo, vendedor],
+    queryKey: ['tiny-summary', range.from, range.to, vendedor],
     queryFn: () => tinyService.summary(range, vendedor || undefined),
     staleTime: 60_000,
+    placeholderData: (prev) => prev,
   });
 
   // Opcoes do dropdown de vendedor -- independem do vendedor selecionado.
   const { data: vendorOptions } = useQuery({
-    queryKey: ['tiny-vendors', period, customFrom, customTo],
+    queryKey: ['tiny-vendors', range.from, range.to],
     queryFn: () => tinyService.vendors(range),
     staleTime: 60_000,
+    placeholderData: (prev) => prev,
   });
 
   const { data: orders, isLoading } = useQuery({
-    queryKey: ['tiny-orders', tab, page, period, customFrom, customTo, vendedor],
+    queryKey: ['tiny-orders', tab, page, range.from, range.to, vendedor],
     queryFn: () => tinyService.orders(tab, page, 30, range, vendedor || undefined),
     staleTime: 30_000,
+    placeholderData: (prev) => prev,
   });
 
   const qc = useQueryClient();
