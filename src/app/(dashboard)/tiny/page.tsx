@@ -1066,6 +1066,7 @@ export default function TinyOrdersPage({
   const [customFrom, setCustomFrom] = useState('');
   const [customTo, setCustomTo] = useState('');
   const [vendedor, setVendedor] = useState(''); // '' = todos; '__sem__' = sem vendedor
+  const [comprovante, setComprovante] = useState(''); // '' = todos; sem|parcial|confere|excedente
   const [leadsOpen, setLeadsOpen] = useState(false); // modal "leads sem resposta"
   const range = controlled
     ? { from: from!, to: to! }
@@ -1093,9 +1094,27 @@ export default function TinyOrdersPage({
     placeholderData: (prev) => prev,
   });
 
+  // Filtro de comprovante só se aplica a Pedidos.
+  const comprovanteFiltro = tab === 'PEDIDO' ? comprovante : '';
   const { data: orders, isLoading } = useQuery({
-    queryKey: ['tiny-orders', tab, page, range.from, range.to, vendedor],
-    queryFn: () => tinyService.orders(tab, page, 30, range, vendedor || undefined),
+    queryKey: [
+      'tiny-orders',
+      tab,
+      page,
+      range.from,
+      range.to,
+      vendedor,
+      comprovanteFiltro,
+    ],
+    queryFn: () =>
+      tinyService.orders(
+        tab,
+        page,
+        30,
+        range,
+        vendedor || undefined,
+        comprovanteFiltro || undefined,
+      ),
     staleTime: 30_000,
     placeholderData: (prev) => prev,
   });
@@ -1435,7 +1454,7 @@ export default function TinyOrdersPage({
         )}
 
         {/* Abas */}
-        <nav className="mt-8 flex gap-1 border-b border-zinc-200 dark:border-zinc-800">
+        <nav className="mt-8 flex items-end gap-1 border-b border-zinc-200 dark:border-zinc-800">
           {(
             [
               { k: 'PEDIDO', label: 'Pedidos', Icon: ShoppingCart },
@@ -1455,6 +1474,25 @@ export default function TinyOrdersPage({
               {label}
             </button>
           ))}
+          {tab === 'PEDIDO' && (
+            <div className="ml-auto flex items-center gap-2 pb-2 pr-1">
+              <span className="text-[11px] text-zinc-400">Comprovante:</span>
+              <select
+                value={comprovante}
+                onChange={(e) => {
+                  setComprovante(e.target.value);
+                  setPage(1);
+                }}
+                className="rounded-md border border-zinc-200 px-2 py-1 text-xs dark:border-zinc-700 dark:bg-zinc-800"
+              >
+                <option value="">Todos</option>
+                <option value="sem">Sem comprovante</option>
+                <option value="parcial">Parcial (falta)</option>
+                <option value="excedente">Excede o total</option>
+                <option value="confere">Confere</option>
+              </select>
+            </div>
+          )}
         </nav>
 
         {/* Tabela */}

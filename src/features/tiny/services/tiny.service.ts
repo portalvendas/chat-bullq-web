@@ -274,9 +274,17 @@ export const tinyService = {
     limit = 30,
     period: TinyPeriod = {},
     vendedor?: string,
+    comprovante?: string,
   ): Promise<TinyOrdersPage> {
     const { data } = await api.get('/tiny/orders', {
-      params: { kind, page, limit, ...period, ...(vendedor ? { vendedor } : {}) },
+      params: {
+        kind,
+        page,
+        limit,
+        ...period,
+        ...(vendedor ? { vendedor } : {}),
+        ...(comprovante ? { comprovante } : {}),
+      },
     });
     return unwrap<TinyOrdersPage>(data);
   },
