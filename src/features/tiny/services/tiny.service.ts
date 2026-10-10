@@ -71,6 +71,9 @@ export interface TinyLeadNoResponse {
   /** 'whatsapp' = veio de mensagem do lead; 'funil' = criado como card. */
   origem: 'whatsapp' | 'funil';
   createdAt: string;
+  /** Última mensagem do cliente; se nunca houve, a criação do lead. Base do
+   *  "tempo sem contato". */
+  lastContactAt: string;
 }
 
 export interface TinyLeadsNoResponsePage {

@@ -34,6 +34,7 @@ import {
   Minus,
   UserX,
   CalendarDays,
+  Clock,
   Sparkles,
 } from 'lucide-react';
 import {
@@ -42,6 +43,7 @@ import {
   type TinyPeriod,
   type TinyVendors,
 } from '@/features/tiny/services/tiny.service';
+import { pipelinesService } from '@/features/pipelines/services/pipelines.service';
 import { toast } from 'sonner';
 
 function brl(v: number | null | undefined): string {
@@ -1188,16 +1190,57 @@ function LeadsNoResponseModal({
   range: { from?: string; to?: string };
   onClose: () => void;
 }) {
+  const router = useRouter();
   const [page, setPage] = useState(1);
+  const [startingId, setStartingId] = useState<string | null>(null);
+  const [pickerFor, setPickerFor] = useState<string | null>(null);
   const { data, isLoading, isFetching } = useQuery({
     queryKey: ['tiny-leads-no-response', range.from, range.to, page],
     queryFn: () => tinyService.leadsNoResponse(range, page, 50),
     placeholderData: (prev) => prev,
   });
+  // Canais de WhatsApp pra "Iniciar conversa" (precisa escolher o número).
+  const { data: waChannels } = useQuery({
+    queryKey: ['wa-channels'],
+    queryFn: () => pipelinesService.listWhatsappChannels(),
+    staleTime: 60_000,
+  });
 
   const items = data?.items ?? [];
   const total = data?.pagination.total ?? 0;
   const totalPages = data?.pagination.totalPages ?? 1;
+
+  async function doStart(cardId: string, channelId: string) {
+    setPickerFor(null);
+    setStartingId(cardId);
+    try {
+      const { conversationId } = await pipelinesService.startWhatsapp(
+        cardId,
+        channelId,
+      );
+      onClose();
+      router.push(`/inbox?conversationId=${conversationId}`);
+    } catch (err: any) {
+      toast.error(
+        err?.response?.data?.message || 'Não foi possível iniciar a conversa.',
+      );
+      setStartingId(null);
+    }
+  }
+
+  function handleStart(cardId: string) {
+    const chs = waChannels ?? [];
+    if (chs.length === 0) {
+      toast.error('Nenhum canal de WhatsApp configurado para iniciar a conversa.');
+      return;
+    }
+    if (chs.length === 1) {
+      void doStart(cardId, chs[0].id);
+      return;
+    }
+    // Vários números: abre o seletor inline pra escolher por qual enviar.
+    setPickerFor((cur) => (cur === cardId ? null : cardId));
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -1236,45 +1279,81 @@ function LeadsNoResponseModal({
           ) : (
             <ul className="divide-y divide-zinc-100 dark:divide-zinc-800">
               {items.map((lead) => {
-                const inner = (
-                  <div className="flex items-center justify-between gap-3 px-2 py-2.5">
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <User className="h-3.5 w-3.5 shrink-0 text-zinc-400" />
-                        <span className="truncate text-sm font-medium text-zinc-800 dark:text-zinc-200">
-                          {lead.name || 'Lead'}
-                        </span>
-                        <OrigemBadge origem={lead.origem} />
-                      </div>
+                const info = (
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <User className="h-3.5 w-3.5 shrink-0 text-zinc-400" />
+                      <span className="truncate text-sm font-medium text-zinc-800 dark:text-zinc-200">
+                        {lead.name || 'Lead'}
+                      </span>
+                      <OrigemBadge origem={lead.origem} />
+                    </div>
+                    <div className="mt-0.5 ml-5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px] text-zinc-400">
                       {lead.phone && (
-                        <span className="mt-0.5 ml-5 inline-flex items-center gap-1 text-[11px] text-zinc-400">
+                        <span className="inline-flex items-center gap-1">
                           <Phone className="h-3 w-3" /> {lead.phone}
                         </span>
                       )}
+                      <span className="inline-flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        {fmtTempoSemContato(lead.lastContactAt)} sem contato
+                      </span>
                     </div>
-                    {lead.conversationId ? (
-                      <span className="inline-flex shrink-0 items-center gap-1 text-[11px] font-medium text-primary">
-                        <MessageSquare className="h-3 w-3" /> Abrir inbox
-                      </span>
-                    ) : (
-                      <span className="shrink-0 text-[11px] text-zinc-400">
-                        sem conversa
-                      </span>
-                    )}
                   </div>
                 );
+                const chs = waChannels ?? [];
                 return (
-                  <li key={lead.cardId}>
-                    {lead.conversationId ? (
-                      <Link
-                        href={`/inbox?conversationId=${lead.conversationId}`}
-                        onClick={onClose}
-                        className="block rounded-md hover:bg-zinc-50 dark:hover:bg-zinc-800/40"
-                      >
-                        {inner}
-                      </Link>
-                    ) : (
-                      <div className="rounded-md opacity-80">{inner}</div>
+                  <li key={lead.cardId} className="rounded-md">
+                    <div className="flex items-center justify-between gap-3 px-2 py-2.5">
+                      {lead.conversationId ? (
+                        <Link
+                          href={`/inbox?conversationId=${lead.conversationId}`}
+                          onClick={onClose}
+                          className="min-w-0 flex-1"
+                        >
+                          {info}
+                        </Link>
+                      ) : (
+                        info
+                      )}
+                      {lead.conversationId ? (
+                        <Link
+                          href={`/inbox?conversationId=${lead.conversationId}`}
+                          onClick={onClose}
+                          className="inline-flex shrink-0 items-center gap-1 rounded-md border border-zinc-200 px-2.5 py-1 text-[11px] font-medium text-primary hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800/40"
+                        >
+                          <MessageSquare className="h-3 w-3" /> Abrir inbox
+                        </Link>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => handleStart(lead.cardId)}
+                          disabled={startingId === lead.cardId}
+                          className="inline-flex shrink-0 items-center gap-1 rounded-md border border-emerald-200 px-2.5 py-1 text-[11px] font-medium text-emerald-600 hover:bg-emerald-50 disabled:opacity-60 dark:border-emerald-900/50 dark:text-emerald-400 dark:hover:bg-emerald-900/20"
+                        >
+                          {startingId === lead.cardId ? (
+                            <Loader2 className="h-3 w-3 animate-spin" />
+                          ) : (
+                            <PhoneCall className="h-3 w-3" />
+                          )}
+                          Iniciar conversa
+                        </button>
+                      )}
+                    </div>
+                    {/* Seletor de número quando há mais de um canal de WhatsApp */}
+                    {pickerFor === lead.cardId && chs.length > 1 && (
+                      <div className="mb-2 ml-7 mr-2 flex flex-wrap gap-1.5">
+                        {chs.map((ch) => (
+                          <button
+                            key={ch.id}
+                            type="button"
+                            onClick={() => doStart(lead.cardId, ch.id)}
+                            className="rounded-md border border-zinc-200 px-2 py-1 text-[11px] font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800/40"
+                          >
+                            Enviar por {ch.name}
+                          </button>
+                        ))}
+                      </div>
                     )}
                   </li>
                 );
@@ -1310,6 +1389,19 @@ function LeadsNoResponseModal({
       </div>
     </div>
   );
+}
+
+/** "tempo sem contato" relativo (há X min/h/dias/meses). */
+function fmtTempoSemContato(iso: string): string {
+  const ms = Date.now() - new Date(iso).getTime();
+  const min = Math.max(0, Math.floor(ms / 60000));
+  if (min < 60) return `há ${min} min`;
+  const h = Math.floor(min / 60);
+  if (h < 24) return `há ${h}h`;
+  const d = Math.floor(h / 24);
+  if (d < 30) return `há ${d} dia${d > 1 ? 's' : ''}`;
+  const mo = Math.floor(d / 30);
+  return `há ${mo} ${mo > 1 ? 'meses' : 'mês'}`;
 }
 
 /** Badge de origem do lead: WhatsApp (mensagem do lead) x Card (funil). */
