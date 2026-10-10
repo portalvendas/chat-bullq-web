@@ -9,7 +9,7 @@
  * Dados Incompletos, exclui origem marketplace (ML/Shopee/Magalu/Amazon) e só
  * natureza de operação "Venda". Aplicado no backend.
  */
-import { useState, useEffect, type MouseEvent } from 'react';
+import { useState, useEffect, type MouseEvent, type ChangeEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -35,6 +35,9 @@ import {
   UserX,
   CalendarDays,
   Clock,
+  Paperclip,
+  AlertCircle,
+  Check,
   Sparkles,
 } from 'lucide-react';
 import {
@@ -42,6 +45,7 @@ import {
   type TinyOrderRow,
   type TinyPeriod,
   type TinyVendors,
+  type TinyReceipt,
 } from '@/features/tiny/services/tiny.service';
 import { pipelinesService } from '@/features/pipelines/services/pipelines.service';
 import { toast } from 'sonner';
@@ -471,11 +475,16 @@ function OrderRow({
           #{row.numero ?? row.tinyId}
         </td>
         <td className="py-2 pr-3">
-          {row.situacao && (
-            <span className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${situacaoCls(row.situacao)}`}>
-              {row.situacao}
-            </span>
-          )}
+          <div className="flex flex-col items-start gap-1">
+            {row.situacao && (
+              <span className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${situacaoCls(row.situacao)}`}>
+                {row.situacao}
+              </span>
+            )}
+            {row.kind === 'PEDIDO' && (
+              <ComprovanteBadge status={row.comprovanteStatus} />
+            )}
+          </div>
         </td>
         <td className="py-2 pr-3 text-xs text-zinc-500">{fmtDate(row.data)}</td>
         <td className="relative py-2 pr-3">
@@ -632,10 +641,333 @@ function OrderRow({
         <tr className="bg-zinc-50/60 dark:bg-zinc-900/40">
           <td colSpan={8}>
             <ItemsSubTable docId={row.id} />
+            {row.kind === 'PEDIDO' && (
+              <ComprovantesSection docId={row.id} total={row.valor} />
+            )}
           </td>
         </tr>
       )}
     </>
+  );
+}
+
+/** Pílula de status do comprovante na linha do pedido. */
+function ComprovanteBadge({
+  status,
+}: {
+  status?: 'sem' | 'parcial' | 'confere' | 'excedente' | 'na';
+}) {
+  if (!status || status === 'na') return null;
+  const map: Record<string, { label: string; cls: string }> = {
+    sem: {
+      label: 'Sem comprovante',
+      cls: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+    },
+    parcial: {
+      label: 'Comprov. parcial',
+      cls: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
+    },
+    excedente: {
+      label: 'Comprov. acima do total',
+      cls: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
+    },
+    confere: {
+      label: 'Comprovante OK',
+      cls: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
+    },
+  };
+  const m = map[status];
+  return (
+    <span
+      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold ${m.cls}`}
+    >
+      {status === 'confere' ? (
+        <Check className="h-3 w-3" />
+      ) : (
+        <AlertCircle className="h-3 w-3" />
+      )}
+      {m.label}
+    </span>
+  );
+}
+
+const METODO_LABEL: Record<string, string> = {
+  pix: 'Pix',
+  cartao: 'Cartão',
+  parcelamento: 'Parcelamento',
+  boleto: 'Boleto',
+  transferencia: 'Transferência',
+  dinheiro: 'Dinheiro',
+  outro: 'Outro',
+  desconhecido: 'Não identificado',
+};
+
+/** Seção de comprovantes do pedido (upload, lista, soma vs total, editar). */
+function ComprovantesSection({
+  docId,
+  total,
+}: {
+  docId: string;
+  total: number | null;
+}) {
+  const qc = useQueryClient();
+  const [uploading, setUploading] = useState(false);
+  const { data: receipts = [], isLoading } = useQuery({
+    queryKey: ['tiny-receipts', docId],
+    queryFn: () => tinyService.listReceipts(docId),
+  });
+
+  const soma = receipts.reduce((s, r) => s + (r.valor ?? 0), 0);
+  const diff = total != null ? soma - total : null;
+  const confere = diff != null && Math.abs(diff) <= 0.01;
+
+  const refresh = () => {
+    qc.invalidateQueries({ queryKey: ['tiny-receipts', docId] });
+    qc.invalidateQueries({ queryKey: ['tiny-orders'] });
+  };
+
+  async function handleFile(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    setUploading(true);
+    try {
+      const r = await tinyService.uploadReceipt(docId, file);
+      if (r.ehComprovante === false) {
+        toast.warning(
+          'O arquivo não parece ser um comprovante de pagamento — confira.',
+        );
+      } else {
+        toast.success('Comprovante anexado e lido.');
+      }
+      refresh();
+    } catch (err: any) {
+      toast.error(
+        err?.response?.data?.message || 'Não foi possível anexar o comprovante.',
+      );
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  return (
+    <div className="border-t border-zinc-200 px-4 py-3 dark:border-zinc-800">
+      <div className="mb-2 flex items-center justify-between">
+        <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
+          <Paperclip className="h-4 w-4" /> Comprovantes de pagamento
+        </div>
+        <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-zinc-200 px-2.5 py-1 text-[11px] font-medium text-primary hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800/40">
+          {uploading ? (
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          ) : (
+            <Paperclip className="h-3.5 w-3.5" />
+          )}
+          {uploading ? 'Enviando…' : 'Anexar comprovante'}
+          <input
+            type="file"
+            accept="image/*,application/pdf"
+            className="hidden"
+            disabled={uploading}
+            onChange={handleFile}
+          />
+        </label>
+      </div>
+
+      {isLoading ? (
+        <div className="py-4 text-center text-zinc-400">
+          <Loader2 className="mx-auto h-4 w-4 animate-spin" />
+        </div>
+      ) : receipts.length === 0 ? (
+        <p className="py-2 text-xs text-zinc-400">
+          Nenhum comprovante anexado. Pedido sem comprovante informado.
+        </p>
+      ) : (
+        <ul className="divide-y divide-zinc-100 dark:divide-zinc-800">
+          {receipts.map((r) => (
+            <ReceiptRow key={r.id} docId={docId} receipt={r} onChange={refresh} />
+          ))}
+        </ul>
+      )}
+
+      {receipts.length > 0 && (
+        <div className="mt-2 flex items-center justify-end gap-3 text-xs">
+          <span className="text-zinc-500">
+            Soma dos comprovantes:{' '}
+            <strong className="tabular-nums text-zinc-800 dark:text-zinc-200">
+              {brl(soma)}
+            </strong>{' '}
+            · Total do pedido:{' '}
+            <strong className="tabular-nums text-zinc-800 dark:text-zinc-200">
+              {brl(total)}
+            </strong>
+          </span>
+          {diff != null && (
+            <span
+              className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-semibold ${
+                confere
+                  ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+                  : 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400'
+              }`}
+            >
+              {confere ? (
+                <>
+                  <Check className="h-3 w-3" /> Confere
+                </>
+              ) : (
+                <>
+                  <AlertCircle className="h-3 w-3" />
+                  {diff < 0 ? `Falta ${brl(Math.abs(diff))}` : `Excede ${brl(diff)}`}
+                </>
+              )}
+            </span>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** Uma linha de comprovante: arquivo, método/valor/data editáveis, remover. */
+function ReceiptRow({
+  docId,
+  receipt,
+  onChange,
+}: {
+  docId: string;
+  receipt: TinyReceipt;
+  onChange: () => void;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [metodo, setMetodo] = useState(receipt.metodo ?? '');
+  const [valor, setValor] = useState(
+    receipt.valor != null ? String(receipt.valor) : '',
+  );
+  const [data, setData] = useState(
+    receipt.dataPagamento ? receipt.dataPagamento.slice(0, 10) : '',
+  );
+  const [saving, setSaving] = useState(false);
+
+  async function save() {
+    setSaving(true);
+    try {
+      await tinyService.updateReceipt(docId, receipt.id, {
+        metodo: metodo || null,
+        valor: valor.trim() === '' ? null : Number(valor.replace(',', '.')),
+        dataPagamento: data || null,
+      });
+      toast.success('Comprovante atualizado.');
+      setEditing(false);
+      onChange();
+    } catch {
+      toast.error('Não foi possível atualizar.');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function remove() {
+    if (!window.confirm('Remover este comprovante?')) return;
+    try {
+      await tinyService.deleteReceipt(docId, receipt.id);
+      onChange();
+    } catch {
+      toast.error('Não foi possível remover.');
+    }
+  }
+
+  const metodoLabel = receipt.metodo
+    ? METODO_LABEL[receipt.metodo] ?? receipt.metodo
+    : '—';
+
+  return (
+    <li className="flex flex-wrap items-center justify-between gap-2 py-2 text-xs">
+      <a
+        href={receipt.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-1 font-medium text-primary hover:underline"
+      >
+        <FileText className="h-3.5 w-3.5" />
+        {receipt.fileName || 'Comprovante'}
+      </a>
+
+      {editing ? (
+        <div className="flex flex-wrap items-center gap-1.5">
+          <select
+            value={metodo}
+            onChange={(e) => setMetodo(e.target.value)}
+            className="rounded-md border border-zinc-300 px-1.5 py-1 text-[11px] dark:border-zinc-700 dark:bg-zinc-800"
+          >
+            <option value="">Forma…</option>
+            {Object.entries(METODO_LABEL).map(([k, v]) => (
+              <option key={k} value={k}>
+                {v}
+              </option>
+            ))}
+          </select>
+          <input
+            value={valor}
+            onChange={(e) => setValor(e.target.value)}
+            placeholder="Valor"
+            className="w-24 rounded-md border border-zinc-300 px-1.5 py-1 text-[11px] dark:border-zinc-700 dark:bg-zinc-800"
+          />
+          <input
+            type="date"
+            value={data}
+            onChange={(e) => setData(e.target.value)}
+            className="rounded-md border border-zinc-300 px-1.5 py-1 text-[11px] dark:border-zinc-700 dark:bg-zinc-800"
+          />
+          <button
+            type="button"
+            onClick={save}
+            disabled={saving}
+            className="rounded-md bg-primary px-2 py-1 text-[11px] font-medium text-primary-foreground disabled:opacity-60"
+          >
+            {saving ? '…' : 'Salvar'}
+          </button>
+          <button
+            type="button"
+            onClick={() => setEditing(false)}
+            className="rounded-md px-2 py-1 text-[11px] text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+          >
+            Cancelar
+          </button>
+        </div>
+      ) : (
+        <div className="flex flex-wrap items-center gap-3 text-zinc-600 dark:text-zinc-300">
+          <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-medium dark:bg-zinc-800">
+            {metodoLabel}
+          </span>
+          <span className="tabular-nums">{brl(receipt.valor)}</span>
+          {receipt.dataPagamento && (
+            <span className="text-zinc-400">
+              {fmtDate(receipt.dataPagamento)}
+            </span>
+          )}
+          {receipt.statusExtracao === 'falhou' && (
+            <span className="text-[10px] text-amber-600">
+              não li automaticamente — preencha à mão
+            </span>
+          )}
+          <button
+            type="button"
+            onClick={() => setEditing(true)}
+            className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-100"
+            title="Editar"
+          >
+            <Pencil className="h-3.5 w-3.5" />
+          </button>
+          <button
+            type="button"
+            onClick={remove}
+            className="text-zinc-400 hover:text-red-500"
+            title="Remover"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      )}
+    </li>
   );
 }
 

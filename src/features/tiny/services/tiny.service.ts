@@ -99,12 +99,31 @@ export interface TinyOrderRow {
   vendedor: string | null;
   matchedBy: string | null;
   diasOrcamentoUltimaMsg: number | null;
+  /** Comprovantes de pagamento: quantos, soma e status vs total do pedido. */
+  comprovanteCount?: number;
+  comprovanteSoma?: number;
+  comprovanteStatus?: 'sem' | 'parcial' | 'confere' | 'excedente' | 'na';
   lead: {
     id: string;
     name: string | null;
     phone: string | null;
     conversationId: string | null;
   } | null;
+}
+
+export interface TinyReceipt {
+  id: string;
+  url: string;
+  mimeType: string | null;
+  fileName: string | null;
+  valor: number | null;
+  metodo: string | null;
+  parcelas: number | null;
+  dataPagamento: string | null;
+  ehComprovante: boolean | null;
+  statusExtracao: string | null;
+  observacao: string | null;
+  createdAt: string;
 }
 
 export interface TinyLeadCandidate {
@@ -215,6 +234,39 @@ export const tinyService = {
   },
   async setVendedor(docId: string, vendedor: string | null): Promise<void> {
     await api.patch(`/tiny/documents/${docId}/vendedor`, { vendedor });
+  },
+  async listReceipts(docId: string): Promise<TinyReceipt[]> {
+    const { data } = await api.get(`/tiny/documents/${docId}/comprovantes`);
+    return unwrap<TinyReceipt[]>(data) ?? [];
+  },
+  async uploadReceipt(docId: string, file: File): Promise<TinyReceipt> {
+    const form = new FormData();
+    form.append('file', file, file.name);
+    const { data } = await api.post(
+      `/tiny/documents/${docId}/comprovante`,
+      form,
+      { headers: { 'Content-Type': 'multipart/form-data' } },
+    );
+    return unwrap<TinyReceipt>(data);
+  },
+  async updateReceipt(
+    docId: string,
+    receiptId: string,
+    dto: {
+      valor?: number | null;
+      metodo?: string | null;
+      parcelas?: number | null;
+      dataPagamento?: string | null;
+    },
+  ): Promise<TinyReceipt> {
+    const { data } = await api.patch(
+      `/tiny/documents/${docId}/comprovante/${receiptId}`,
+      dto,
+    );
+    return unwrap<TinyReceipt>(data);
+  },
+  async deleteReceipt(docId: string, receiptId: string): Promise<void> {
+    await api.delete(`/tiny/documents/${docId}/comprovante/${receiptId}`);
   },
   async orders(
     kind: 'PEDIDO' | 'ORCAMENTO',

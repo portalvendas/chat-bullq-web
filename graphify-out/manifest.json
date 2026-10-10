@@ -430,8 +430,8 @@
     "semantic_hash": ""
   },
   "src/features/channels/components/edit-channel-dialog.tsx": {
-    "mtime": 1791308481.5373664,
-    "ast_hash": "0b371b48ba572a5d08c125ceaf8dbe35",
+    "mtime": 1791652505.916096,
+    "ast_hash": "a6af57066ed1c84b77c16dda226d484f",
     "semantic_hash": ""
   },
   "src/features/channels/components/whatsapp-coexistence-button.tsx": {
@@ -445,8 +445,8 @@
     "semantic_hash": ""
   },
   "src/features/channels/services/channels.service.ts": {
-    "mtime": 1791308461.1243322,
-    "ast_hash": "9c4fbf30d253233a57f4142b1e4a1d1d",
+    "mtime": 1791652418.819115,
+    "ast_hash": "8687361203a01128640bf63b818992e8",
     "semantic_hash": ""
   },
   "src/features/chatbot/components/chat-simulator.tsx": {
