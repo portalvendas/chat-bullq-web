@@ -1,16 +1,16 @@
 # Graph Report - chat-bullq-web  (2026-10-10)
 
 ## Corpus Check
-- 223 files · ~153,871 words
+- 223 files · ~155,000 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 432 nodes · 547 edges · 19 communities (18 shown, 1 thin omitted)
+- 437 nodes · 556 edges · 19 communities (18 shown, 1 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `847905e6`
+- Built from commit: `0be56f38`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -39,7 +39,7 @@
 1. `fmtBRL()` - 8 edges
 2. `pipelinesService` - 8 edges
 3. `ImportPage()` - 8 edges
-4. `brl()` - 5 edges
+4. `brl()` - 7 edges
 5. `TinyOrdersPage()` - 5 edges
 6. `dashboardService` - 5 edges
 7. `LeadCadastroPanel()` - 5 edges
@@ -102,15 +102,15 @@ Nodes (9): brl(), CohortSection(), CommercialSection(), EVO_COLORS, evoTooltip, 
 
 ### Community 9 - "tiny/page.tsx"
 Cohesion: 0.06
-Nodes (34): brl(), calcTrend(), ConversionRow(), convPct(), convPctLabel(), fmtDate(), fmtTempoSemContato(), ItemsSubTable() (+26 more)
+Nodes (38): brl(), calcTrend(), ComprovantesSection(), ConversionRow(), convPct(), convPctLabel(), fmtDate(), fmtTempoSemContato() (+30 more)
 
 ### Community 10 - "layout.tsx"
-Cohesion: 0.33
-Nodes (6): AppSidebar(), navItems, hrefFor(), IncomingNotification, NotificationsBell(), playBeep()
+Cohesion: 0.24
+Nodes (8): AppSidebar(), navItems, WaPaymentBanner(), dashboardService, hrefFor(), IncomingNotification, NotificationsBell(), playBeep()
 
 ### Community 11 - "dashboard.service.ts"
-Cohesion: 0.07
-Nodes (28): WaPaymentBanner(), brl(), CAT_META, CATS, WaCostDrill(), WaCostsSection(), AgentPerformance, BotPerformance (+20 more)
+Cohesion: 0.08
+Nodes (26): brl(), CAT_META, CATS, WaCostDrill(), WaCostsSection(), AgentPerformance, BotPerformance, CommercialData (+18 more)
 
 ### Community 12 - "lead-cadastro-panel.tsx"
 Cohesion: 0.26
@@ -137,7 +137,7 @@ Cohesion: 0.15
 Nodes (8): StepState, RoutineConfig, RoutineOptions, routineService, RoutineStageRef, RoutineStepConfig, RoutineStepToday, RoutineToday
 
 ## Knowledge Gaps
-- **178 isolated node(s):** `FieldDef`, `ChannelType`, `ChannelVisibility`, `CreateChannelPayload`, `UpdateChannelPayload` (+173 more)
+- **179 isolated node(s):** `PeriodKey`, `PERIOD_LABELS`, `METODO_LABEL`, `TinyStatus`, `TinyDocument` (+174 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **1 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -145,13 +145,13 @@ Nodes (8): StepState, RoutineConfig, RoutineOptions, routineService, RoutineStag
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `pipelinesService` connect `pipelines.service.ts` to `disparos.service.ts`, `conversation-list.tsx`, `lead-cadastro-panel.tsx`, `tiny/page.tsx`?**
-  _High betweenness centrality (0.067) - this node is a cross-community bridge._
+  _High betweenness centrality (0.068) - this node is a cross-community bridge._
 - **Why does `dependencies` connect `dependencies` to `devDependencies`?**
   _High betweenness centrality (0.025) - this node is a cross-community bridge._
-- **Why does `dashboardService` connect `dashboard.service.ts` to `CommercialSection.tsx`, `dashboard/page.tsx`?**
+- **Why does `dashboardService` connect `layout.tsx` to `CommercialSection.tsx`, `dashboard.service.ts`, `dashboard/page.tsx`?**
   _High betweenness centrality (0.013) - this node is a cross-community bridge._
-- **What connects `FieldDef`, `ChannelType`, `ChannelVisibility` to the rest of the system?**
-  _178 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `PeriodKey`, `PERIOD_LABELS`, `METODO_LABEL` to the rest of the system?**
+  _179 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `devDependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.07692307692307693 - nodes in this community are weakly interconnected._
 - **Should `disparos.service.ts` be split into smaller, more focused modules?**
