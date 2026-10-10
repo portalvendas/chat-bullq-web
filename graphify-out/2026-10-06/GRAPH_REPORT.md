@@ -1,7 +1,7 @@
-# Graph Report - chat-bullq-web  (2026-10-05)
+# Graph Report - chat-bullq-web  (2026-10-06)
 
 ## Corpus Check
-- 223 files · ~151,996 words
+- 223 files · ~152,082 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `cc1333ba`
+- Built from commit: `fff4b4bc`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -38,8 +38,8 @@
 1. `fmtBRL()` - 8 edges
 2. `ImportPage()` - 8 edges
 3. `pipelinesService` - 7 edges
-4. `dashboardService` - 5 edges
-5. `brl()` - 5 edges
+4. `brl()` - 5 edges
+5. `dashboardService` - 5 edges
 6. `LeadCadastroPanel()` - 5 edges
 7. `disparosService` - 5 edges
 8. `CanvasInner()` - 5 edges
@@ -132,7 +132,7 @@ Cohesion: 0.15
 Nodes (8): StepState, RoutineConfig, RoutineOptions, routineService, RoutineStageRef, RoutineStepConfig, RoutineStepToday, RoutineToday
 
 ## Knowledge Gaps
-- **153 isolated node(s):** `DashboardOverview`, `CsatBreakdown`, `ReopenStats`, `KpiSparklines`, `VolumeByDay` (+148 more)
+- **153 isolated node(s):** `PeriodKey`, `PERIOD_LABELS`, `DashboardOverview`, `CsatBreakdown`, `ReopenStats` (+148 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **1 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -143,7 +143,7 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.031) - this node is a cross-community bridge._
 - **Why does `pipelinesService` connect `pipelines.service.ts` to `disparos.service.ts`, `conversation-list.tsx`, `lead-cadastro-panel.tsx`?**
   _High betweenness centrality (0.014) - this node is a cross-community bridge._
-- **What connects `DashboardOverview`, `CsatBreakdown`, `ReopenStats` to the rest of the system?**
+- **What connects `PeriodKey`, `PERIOD_LABELS`, `DashboardOverview` to the rest of the system?**
   _153 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `devDependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.07692307692307693 - nodes in this community are weakly interconnected._

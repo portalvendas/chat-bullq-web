@@ -4,15 +4,202 @@
   "graph": {},
   "nodes": [
     {
+      "label": "edit-channel-dialog.tsx",
+      "file_type": "code",
+      "source_file": "src/features/channels/components/edit-channel-dialog.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_features_channels_components_edit_channel_dialog",
+      "community": 14,
+      "community_name": "channels.service.ts",
+      "norm_label": "edit-channel-dialog.tsx"
+    },
+    {
+      "label": "EditChannelDialogProps",
+      "file_type": "code",
+      "source_file": "src/features/channels/components/edit-channel-dialog.tsx",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "src_features_channels_components_edit_channel_dialog_editchanneldialogprops",
+      "community": 14,
+      "community_name": "channels.service.ts",
+      "norm_label": "editchanneldialogprops"
+    },
+    {
+      "label": "EditChannelDialog()",
+      "file_type": "code",
+      "source_file": "src/features/channels/components/edit-channel-dialog.tsx",
+      "source_location": "L24",
+      "_origin": "ast",
+      "id": "src_features_channels_components_edit_channel_dialog_editchanneldialog",
+      "community": 14,
+      "community_name": "channels.service.ts",
+      "norm_label": "editchanneldialog()"
+    },
+    {
+      "label": "FieldDef",
+      "file_type": "code",
+      "source_file": "src/features/channels/components/edit-channel-dialog.tsx",
+      "source_location": "L234",
+      "_origin": "ast",
+      "id": "src_features_channels_components_edit_channel_dialog_fielddef",
+      "community": 14,
+      "community_name": "channels.service.ts",
+      "norm_label": "fielddef"
+    },
+    {
+      "label": "fieldsFor()",
+      "file_type": "code",
+      "source_file": "src/features/channels/components/edit-channel-dialog.tsx",
+      "source_location": "L243",
+      "_origin": "ast",
+      "id": "src_features_channels_components_edit_channel_dialog_fieldsfor",
+      "community": 14,
+      "community_name": "channels.service.ts",
+      "norm_label": "fieldsfor()"
+    },
+    {
+      "label": "channels.service.ts",
+      "file_type": "code",
+      "source_file": "src/features/channels/services/channels.service.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_features_channels_services_channels_service",
+      "community": 14,
+      "community_name": "channels.service.ts",
+      "norm_label": "channels.service.ts"
+    },
+    {
+      "label": "ChannelType",
+      "file_type": "code",
+      "source_file": "src/features/channels/services/channels.service.ts",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "src_features_channels_services_channels_service_channeltype",
+      "community": 14,
+      "community_name": "channels.service.ts",
+      "norm_label": "channeltype"
+    },
+    {
+      "label": "ChannelVisibility",
+      "file_type": "code",
+      "source_file": "src/features/channels/services/channels.service.ts",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "src_features_channels_services_channels_service_channelvisibility",
+      "community": 14,
+      "community_name": "channels.service.ts",
+      "norm_label": "channelvisibility"
+    },
+    {
+      "label": "Channel",
+      "file_type": "code",
+      "source_file": "src/features/channels/services/channels.service.ts",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "src_features_channels_services_channels_service_channel",
+      "community": 14,
+      "community_name": "channels.service.ts",
+      "norm_label": "channel"
+    },
+    {
+      "label": "CreateChannelPayload",
+      "file_type": "code",
+      "source_file": "src/features/channels/services/channels.service.ts",
+      "source_location": "L34",
+      "_origin": "ast",
+      "id": "src_features_channels_services_channels_service_createchannelpayload",
+      "community": 14,
+      "community_name": "channels.service.ts",
+      "norm_label": "createchannelpayload"
+    },
+    {
+      "label": "UpdateChannelPayload",
+      "file_type": "code",
+      "source_file": "src/features/channels/services/channels.service.ts",
+      "source_location": "L42",
+      "_origin": "ast",
+      "id": "src_features_channels_services_channels_service_updatechannelpayload",
+      "community": 14,
+      "community_name": "channels.service.ts",
+      "norm_label": "updatechannelpayload"
+    },
+    {
+      "label": "TestConnectionResult",
+      "file_type": "code",
+      "source_file": "src/features/channels/services/channels.service.ts",
+      "source_location": "L53",
+      "_origin": "ast",
+      "id": "src_features_channels_services_channels_service_testconnectionresult",
+      "community": 14,
+      "community_name": "channels.service.ts",
+      "norm_label": "testconnectionresult"
+    },
+    {
+      "label": "SyncStatus",
+      "file_type": "code",
+      "source_file": "src/features/channels/services/channels.service.ts",
+      "source_location": "L60",
+      "_origin": "ast",
+      "id": "src_features_channels_services_channels_service_syncstatus",
+      "community": 14,
+      "community_name": "channels.service.ts",
+      "norm_label": "syncstatus"
+    },
+    {
+      "label": "SyncMode",
+      "file_type": "code",
+      "source_file": "src/features/channels/services/channels.service.ts",
+      "source_location": "L61",
+      "_origin": "ast",
+      "id": "src_features_channels_services_channels_service_syncmode",
+      "community": 14,
+      "community_name": "channels.service.ts",
+      "norm_label": "syncmode"
+    },
+    {
+      "label": "ChannelSyncJob",
+      "file_type": "code",
+      "source_file": "src/features/channels/services/channels.service.ts",
+      "source_location": "L63",
+      "_origin": "ast",
+      "id": "src_features_channels_services_channels_service_channelsyncjob",
+      "community": 14,
+      "community_name": "channels.service.ts",
+      "norm_label": "channelsyncjob"
+    },
+    {
+      "label": "ChannelQrResult",
+      "file_type": "code",
+      "source_file": "src/features/channels/services/channels.service.ts",
+      "source_location": "L80",
+      "_origin": "ast",
+      "id": "src_features_channels_services_channels_service_channelqrresult",
+      "community": 14,
+      "community_name": "channels.service.ts",
+      "norm_label": "channelqrresult"
+    },
+    {
+      "label": "channelsService",
+      "file_type": "code",
+      "source_file": "src/features/channels/services/channels.service.ts",
+      "source_location": "L89",
+      "_origin": "ast",
+      "id": "src_features_channels_services_channels_service_channelsservice",
+      "community": 14,
+      "community_name": "channels.service.ts",
+      "norm_label": "channelsservice"
+    },
+    {
       "label": "tiny/page.tsx",
       "file_type": "code",
       "source_file": "src/app/(dashboard)/tiny/page.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_app_dashboard_tiny_page",
       "community": 9,
       "community_name": "tiny/page.tsx",
-      "norm_label": "tiny/page.tsx"
+      "norm_label": "tiny/page.tsx",
+      "id": "src_app_dashboard_tiny_page"
     },
     {
       "label": "brl()",
@@ -20,10 +207,10 @@
       "source_file": "src/app/(dashboard)/tiny/page.tsx",
       "source_location": "L43",
       "_origin": "ast",
-      "id": "src_app_dashboard_tiny_page_brl",
       "community": 9,
       "community_name": "tiny/page.tsx",
-      "norm_label": "brl()"
+      "norm_label": "brl()",
+      "id": "src_app_dashboard_tiny_page_brl"
     },
     {
       "label": "fmtDate()",
@@ -31,10 +218,10 @@
       "source_file": "src/app/(dashboard)/tiny/page.tsx",
       "source_location": "L47",
       "_origin": "ast",
-      "id": "src_app_dashboard_tiny_page_fmtdate",
       "community": 9,
       "community_name": "tiny/page.tsx",
-      "norm_label": "fmtdate()"
+      "norm_label": "fmtdate()",
+      "id": "src_app_dashboard_tiny_page_fmtdate"
     },
     {
       "label": "situacaoCls()",
@@ -42,10 +229,10 @@
       "source_file": "src/app/(dashboard)/tiny/page.tsx",
       "source_location": "L52",
       "_origin": "ast",
-      "id": "src_app_dashboard_tiny_page_situacaocls",
       "community": 9,
       "community_name": "tiny/page.tsx",
-      "norm_label": "situacaocls()"
+      "norm_label": "situacaocls()",
+      "id": "src_app_dashboard_tiny_page_situacaocls"
     },
     {
       "label": "PeriodKey",
@@ -53,10 +240,10 @@
       "source_file": "src/app/(dashboard)/tiny/page.tsx",
       "source_location": "L62",
       "_origin": "ast",
-      "id": "src_app_dashboard_tiny_page_periodkey",
       "community": 9,
       "community_name": "tiny/page.tsx",
-      "norm_label": "periodkey"
+      "norm_label": "periodkey",
+      "id": "src_app_dashboard_tiny_page_periodkey"
     },
     {
       "label": "PERIOD_LABELS",
@@ -64,10 +251,10 @@
       "source_file": "src/app/(dashboard)/tiny/page.tsx",
       "source_location": "L63",
       "_origin": "ast",
-      "id": "src_app_dashboard_tiny_page_period_labels",
       "community": 9,
       "community_name": "tiny/page.tsx",
-      "norm_label": "period_labels"
+      "norm_label": "period_labels",
+      "id": "src_app_dashboard_tiny_page_period_labels"
     },
     {
       "label": "periodRange()",
@@ -75,10 +262,10 @@
       "source_file": "src/app/(dashboard)/tiny/page.tsx",
       "source_location": "L72",
       "_origin": "ast",
-      "id": "src_app_dashboard_tiny_page_periodrange",
       "community": 9,
       "community_name": "tiny/page.tsx",
-      "norm_label": "periodrange()"
+      "norm_label": "periodrange()",
+      "id": "src_app_dashboard_tiny_page_periodrange"
     },
     {
       "label": "StatCard()",
@@ -86,10 +273,10 @@
       "source_file": "src/app/(dashboard)/tiny/page.tsx",
       "source_location": "L111",
       "_origin": "ast",
-      "id": "src_app_dashboard_tiny_page_statcard",
       "community": 9,
       "community_name": "tiny/page.tsx",
-      "norm_label": "statcard()"
+      "norm_label": "statcard()",
+      "id": "src_app_dashboard_tiny_page_statcard"
     },
     {
       "label": "ResumoLinha()",
@@ -97,10 +284,10 @@
       "source_file": "src/app/(dashboard)/tiny/page.tsx",
       "source_location": "L135",
       "_origin": "ast",
-      "id": "src_app_dashboard_tiny_page_resumolinha",
       "community": 9,
       "community_name": "tiny/page.tsx",
-      "norm_label": "resumolinha()"
+      "norm_label": "resumolinha()",
+      "id": "src_app_dashboard_tiny_page_resumolinha"
     },
     {
       "label": "ResumoInfo()",
@@ -108,10 +295,10 @@
       "source_file": "src/app/(dashboard)/tiny/page.tsx",
       "source_location": "L163",
       "_origin": "ast",
-      "id": "src_app_dashboard_tiny_page_resumoinfo",
       "community": 9,
       "community_name": "tiny/page.tsx",
-      "norm_label": "resumoinfo()"
+      "norm_label": "resumoinfo()",
+      "id": "src_app_dashboard_tiny_page_resumoinfo"
     },
     {
       "label": "ItemsSubTable()",
@@ -119,10 +306,10 @@
       "source_file": "src/app/(dashboard)/tiny/page.tsx",
       "source_location": "L175",
       "_origin": "ast",
-      "id": "src_app_dashboard_tiny_page_itemssubtable",
       "community": 9,
       "community_name": "tiny/page.tsx",
-      "norm_label": "itemssubtable()"
+      "norm_label": "itemssubtable()",
+      "id": "src_app_dashboard_tiny_page_itemssubtable"
     },
     {
       "label": "LeadLinker()",
@@ -130,10 +317,10 @@
       "source_file": "src/app/(dashboard)/tiny/page.tsx",
       "source_location": "L285",
       "_origin": "ast",
-      "id": "src_app_dashboard_tiny_page_leadlinker",
       "community": 9,
       "community_name": "tiny/page.tsx",
-      "norm_label": "leadlinker()"
+      "norm_label": "leadlinker()",
+      "id": "src_app_dashboard_tiny_page_leadlinker"
     },
     {
       "label": "OrderRow()",
@@ -141,10 +328,10 @@
       "source_file": "src/app/(dashboard)/tiny/page.tsx",
       "source_location": "L368",
       "_origin": "ast",
-      "id": "src_app_dashboard_tiny_page_orderrow",
       "community": 9,
       "community_name": "tiny/page.tsx",
-      "norm_label": "orderrow()"
+      "norm_label": "orderrow()",
+      "id": "src_app_dashboard_tiny_page_orderrow"
     },
     {
       "label": "convPct()",
@@ -152,10 +339,10 @@
       "source_file": "src/app/(dashboard)/tiny/page.tsx",
       "source_location": "L602",
       "_origin": "ast",
-      "id": "src_app_dashboard_tiny_page_convpct",
       "community": 9,
       "community_name": "tiny/page.tsx",
-      "norm_label": "convpct()"
+      "norm_label": "convpct()",
+      "id": "src_app_dashboard_tiny_page_convpct"
     },
     {
       "label": "convPctLabel()",
@@ -163,10 +350,10 @@
       "source_file": "src/app/(dashboard)/tiny/page.tsx",
       "source_location": "L605",
       "_origin": "ast",
-      "id": "src_app_dashboard_tiny_page_convpctlabel",
       "community": 9,
       "community_name": "tiny/page.tsx",
-      "norm_label": "convpctlabel()"
+      "norm_label": "convpctlabel()",
+      "id": "src_app_dashboard_tiny_page_convpctlabel"
     },
     {
       "label": "ConversionRow()",
@@ -174,10 +361,10 @@
       "source_file": "src/app/(dashboard)/tiny/page.tsx",
       "source_location": "L612",
       "_origin": "ast",
-      "id": "src_app_dashboard_tiny_page_conversionrow",
       "community": 9,
       "community_name": "tiny/page.tsx",
-      "norm_label": "conversionrow()"
+      "norm_label": "conversionrow()",
+      "id": "src_app_dashboard_tiny_page_conversionrow"
     },
     {
       "label": "TinyOrdersPage()",
@@ -185,10 +372,10 @@
       "source_file": "src/app/(dashboard)/tiny/page.tsx",
       "source_location": "L664",
       "_origin": "ast",
-      "id": "src_app_dashboard_tiny_page_tinyorderspage",
       "community": 9,
       "community_name": "tiny/page.tsx",
-      "norm_label": "tinyorderspage()"
+      "norm_label": "tinyorderspage()",
+      "id": "src_app_dashboard_tiny_page_tinyorderspage"
     },
     {
       "label": "wa-payment-banner.tsx",
@@ -405,8 +592,8 @@
       "source_file": "src/features/dashboard/services/dashboard.service.ts",
       "source_location": "L185",
       "_origin": "ast",
-      "community": 8,
-      "community_name": "CommercialSection.tsx",
+      "community": 11,
+      "community_name": "dashboard.service.ts",
       "norm_label": "intakehealth",
       "id": "src_features_dashboard_services_dashboard_service_intakehealth"
     },
@@ -416,8 +603,8 @@
       "source_file": "src/features/dashboard/services/dashboard.service.ts",
       "source_location": "L204",
       "_origin": "ast",
-      "community": 11,
-      "community_name": "dashboard.service.ts",
+      "community": 8,
+      "community_name": "CommercialSection.tsx",
       "norm_label": "metaadsstatus",
       "id": "src_features_dashboard_services_dashboard_service_metaadsstatus"
     },
@@ -4285,6 +4472,231 @@
   ],
   "links": [
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/channels/components/edit-channel-dialog.tsx",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_channels_components_edit_channel_dialog",
+      "target": "src_features_channels_components_edit_channel_dialog_editchanneldialog",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/channels/components/edit-channel-dialog.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_channels_components_edit_channel_dialog",
+      "target": "src_features_channels_components_edit_channel_dialog_editchanneldialogprops",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/channels/components/edit-channel-dialog.tsx",
+      "source_location": "L234",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_channels_components_edit_channel_dialog",
+      "target": "src_features_channels_components_edit_channel_dialog_fielddef",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/channels/components/edit-channel-dialog.tsx",
+      "source_location": "L243",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_channels_components_edit_channel_dialog",
+      "target": "src_features_channels_components_edit_channel_dialog_fieldsfor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/channels/components/edit-channel-dialog.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_channels_components_edit_channel_dialog",
+      "target": "src_features_channels_services_channels_service",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/channels/components/edit-channel-dialog.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_channels_components_edit_channel_dialog",
+      "target": "src_features_channels_services_channels_service_channel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/channels/components/edit-channel-dialog.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_channels_components_edit_channel_dialog",
+      "target": "src_features_channels_services_channels_service_channelsservice",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "field",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/channels/components/edit-channel-dialog.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_channels_components_edit_channel_dialog_editchanneldialogprops",
+      "target": "src_features_channels_services_channels_service_channel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/channels/components/edit-channel-dialog.tsx",
+      "source_location": "L55",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_channels_components_edit_channel_dialog_editchanneldialog",
+      "target": "src_features_channels_components_edit_channel_dialog_fieldsfor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/channels/services/channels.service.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_channels_services_channels_service",
+      "target": "src_features_channels_services_channels_service_channel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/channels/services/channels.service.ts",
+      "source_location": "L80",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_channels_services_channels_service",
+      "target": "src_features_channels_services_channels_service_channelqrresult",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/channels/services/channels.service.ts",
+      "source_location": "L89",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_channels_services_channels_service",
+      "target": "src_features_channels_services_channels_service_channelsservice",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/channels/services/channels.service.ts",
+      "source_location": "L63",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_channels_services_channels_service",
+      "target": "src_features_channels_services_channels_service_channelsyncjob",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/channels/services/channels.service.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_channels_services_channels_service",
+      "target": "src_features_channels_services_channels_service_channeltype",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/channels/services/channels.service.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_channels_services_channels_service",
+      "target": "src_features_channels_services_channels_service_channelvisibility",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/channels/services/channels.service.ts",
+      "source_location": "L34",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_channels_services_channels_service",
+      "target": "src_features_channels_services_channels_service_createchannelpayload",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/channels/services/channels.service.ts",
+      "source_location": "L61",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_channels_services_channels_service",
+      "target": "src_features_channels_services_channels_service_syncmode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/channels/services/channels.service.ts",
+      "source_location": "L60",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_channels_services_channels_service",
+      "target": "src_features_channels_services_channels_service_syncstatus",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/channels/services/channels.service.ts",
+      "source_location": "L53",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_channels_services_channels_service",
+      "target": "src_features_channels_services_channels_service_testconnectionresult",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/channels/services/channels.service.ts",
+      "source_location": "L42",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_features_channels_services_channels_service",
+      "target": "src_features_channels_services_channels_service_updatechannelpayload",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -4303,9 +4715,9 @@
       "source_location": "L43",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_tiny_page",
-      "target": "src_app_dashboard_tiny_page_brl",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_tiny_page_brl"
     },
     {
       "relation": "contains",
@@ -4314,9 +4726,9 @@
       "source_location": "L612",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_tiny_page",
-      "target": "src_app_dashboard_tiny_page_conversionrow",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_tiny_page_conversionrow"
     },
     {
       "relation": "contains",
@@ -4325,9 +4737,9 @@
       "source_location": "L602",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_tiny_page",
-      "target": "src_app_dashboard_tiny_page_convpct",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_tiny_page_convpct"
     },
     {
       "relation": "contains",
@@ -4336,9 +4748,9 @@
       "source_location": "L605",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_tiny_page",
-      "target": "src_app_dashboard_tiny_page_convpctlabel",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_tiny_page_convpctlabel"
     },
     {
       "relation": "contains",
@@ -4347,9 +4759,9 @@
       "source_location": "L47",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_tiny_page",
-      "target": "src_app_dashboard_tiny_page_fmtdate",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_tiny_page_fmtdate"
     },
     {
       "relation": "contains",
@@ -4358,9 +4770,9 @@
       "source_location": "L175",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_tiny_page",
-      "target": "src_app_dashboard_tiny_page_itemssubtable",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_tiny_page_itemssubtable"
     },
     {
       "relation": "contains",
@@ -4369,9 +4781,9 @@
       "source_location": "L285",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_tiny_page",
-      "target": "src_app_dashboard_tiny_page_leadlinker",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_tiny_page_leadlinker"
     },
     {
       "relation": "contains",
@@ -4380,9 +4792,9 @@
       "source_location": "L368",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_tiny_page",
-      "target": "src_app_dashboard_tiny_page_orderrow",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_tiny_page_orderrow"
     },
     {
       "relation": "contains",
@@ -4391,9 +4803,9 @@
       "source_location": "L63",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_tiny_page",
-      "target": "src_app_dashboard_tiny_page_period_labels",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_tiny_page_period_labels"
     },
     {
       "relation": "contains",
@@ -4402,9 +4814,9 @@
       "source_location": "L62",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_tiny_page",
-      "target": "src_app_dashboard_tiny_page_periodkey",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_tiny_page_periodkey"
     },
     {
       "relation": "contains",
@@ -4413,9 +4825,9 @@
       "source_location": "L72",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_tiny_page",
-      "target": "src_app_dashboard_tiny_page_periodrange",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_tiny_page_periodrange"
     },
     {
       "relation": "contains",
@@ -4424,9 +4836,9 @@
       "source_location": "L163",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_tiny_page",
-      "target": "src_app_dashboard_tiny_page_resumoinfo",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_tiny_page_resumoinfo"
     },
     {
       "relation": "contains",
@@ -4435,9 +4847,9 @@
       "source_location": "L135",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_tiny_page",
-      "target": "src_app_dashboard_tiny_page_resumolinha",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_tiny_page_resumolinha"
     },
     {
       "relation": "contains",
@@ -4446,9 +4858,9 @@
       "source_location": "L52",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_tiny_page",
-      "target": "src_app_dashboard_tiny_page_situacaocls",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_tiny_page_situacaocls"
     },
     {
       "relation": "contains",
@@ -4457,9 +4869,9 @@
       "source_location": "L111",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_tiny_page",
-      "target": "src_app_dashboard_tiny_page_statcard",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_tiny_page_statcard"
     },
     {
       "relation": "contains",
@@ -4468,9 +4880,9 @@
       "source_location": "L664",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_tiny_page",
-      "target": "src_app_dashboard_tiny_page_tinyorderspage",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_tiny_page_tinyorderspage"
     },
     {
       "relation": "calls",
@@ -4480,9 +4892,9 @@
       "source_location": "L656",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_tiny_page_conversionrow",
-      "target": "src_app_dashboard_tiny_page_brl",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_tiny_page_brl"
     },
     {
       "relation": "calls",
@@ -4492,9 +4904,9 @@
       "source_location": "L214",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_tiny_page_itemssubtable",
-      "target": "src_app_dashboard_tiny_page_brl",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_tiny_page_brl"
     },
     {
       "relation": "calls",
@@ -4504,9 +4916,9 @@
       "source_location": "L588",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_tiny_page_orderrow",
-      "target": "src_app_dashboard_tiny_page_brl",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_tiny_page_brl"
     },
     {
       "relation": "calls",
@@ -4516,9 +4928,9 @@
       "source_location": "L850",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_tiny_page_tinyorderspage",
-      "target": "src_app_dashboard_tiny_page_brl",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_tiny_page_brl"
     },
     {
       "relation": "calls",
@@ -4528,9 +4940,9 @@
       "source_location": "L440",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_tiny_page_orderrow",
-      "target": "src_app_dashboard_tiny_page_fmtdate",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_tiny_page_fmtdate"
     },
     {
       "relation": "calls",
@@ -4540,9 +4952,9 @@
       "source_location": "L435",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_tiny_page_orderrow",
-      "target": "src_app_dashboard_tiny_page_situacaocls",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_tiny_page_situacaocls"
     },
     {
       "relation": "calls",
@@ -4552,9 +4964,9 @@
       "source_location": "L683",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_tiny_page_tinyorderspage",
-      "target": "src_app_dashboard_tiny_page_periodrange",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_tiny_page_periodrange"
     },
     {
       "relation": "calls",
@@ -4564,9 +4976,9 @@
       "source_location": "L626",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_tiny_page_conversionrow",
-      "target": "src_app_dashboard_tiny_page_convpct",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_tiny_page_convpct"
     },
     {
       "relation": "calls",
@@ -4576,9 +4988,9 @@
       "source_location": "L633",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_app_dashboard_tiny_page_conversionrow",
-      "target": "src_app_dashboard_tiny_page_convpctlabel",
-      "confidence_score": 1.0
+      "target": "src_app_dashboard_tiny_page_convpctlabel"
     },
     {
       "relation": "imports",
@@ -9881,5 +10293,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "fff4b4bccd84f4dd82fc78640d5cd73c31d27190"
+  "built_at_commit": "f196a45fbbf81651812dcb84dcc5b387b0e56e6e"
 }

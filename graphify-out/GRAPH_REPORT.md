@@ -1,16 +1,16 @@
 # Graph Report - chat-bullq-web  (2026-10-06)
 
 ## Corpus Check
-- 223 files · ~152,082 words
+- 223 files · ~152,200 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 389 nodes · 493 edges · 18 communities (17 shown, 1 thin omitted)
+- 406 nodes · 513 edges · 19 communities (18 shown, 1 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `fff4b4bc`
+- Built from commit: `f196a45f`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -29,6 +29,7 @@
 - dashboard.service.ts
 - lead-cadastro-panel.tsx
 - dashboard/page.tsx
+- channels.service.ts
 - jarvis-tree.tsx
 - cadences.service.ts
 - chat-panel.tsx
@@ -51,17 +52,17 @@
   src/app/(dashboard)/disparos/[id]/page.tsx → src/features/disparos/services/disparos.service.ts
 - `BroadcastRow()` --calls--> `fmtBRL()`  [EXTRACTED]
   src/app/(dashboard)/disparos/page.tsx → src/features/disparos/services/disparos.service.ts
+- `EditChannelDialogProps` --references--> `Channel`  [EXTRACTED]
+  src/features/channels/components/edit-channel-dialog.tsx → src/features/channels/services/channels.service.ts
 - `ChatPanelProps` --references--> `Conversation`  [EXTRACTED]
   src/features/inbox/components/chat-panel.tsx → src/features/inbox/services/inbox.service.ts
 - `DashboardPage()` --calls--> `periodRange()`  [EXTRACTED]
   src/app/(dashboard)/dashboard/page.tsx → src/features/dashboard/components/period-filter.tsx
-- `DisparosPage()` --calls--> `microsToBRL()`  [EXTRACTED]
-  src/app/(dashboard)/disparos/page.tsx → src/features/disparos/services/disparos.service.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (18 total, 1 thin omitted)
+## Communities (19 total, 1 thin omitted)
 
 ### Community 0 - "devDependencies"
 Cohesion: 0.08
@@ -119,6 +120,10 @@ Nodes (7): fmtCep(), fmtDoc(), isJustCep(), LABELS, LeadCadastroPanel(), Cadastr
 Cohesion: 0.10
 Nodes (10): CHANNEL_COLORS, DashboardPage(), DashTab, tooltipStyle, TrendDirection, DashboardPeriodFilter(), DashPeriod, PERIOD_PRESETS (+2 more)
 
+### Community 14 - "channels.service.ts"
+Cohesion: 0.15
+Nodes (15): EditChannelDialog(), EditChannelDialogProps, FieldDef, fieldsFor(), Channel, ChannelQrResult, channelsService, ChannelSyncJob (+7 more)
+
 ### Community 18 - "cadences.service.ts"
 Cohesion: 0.09
 Nodes (27): CanvasInner(), dagreLayout(), HANDLE_COLOR, nodeTypes, SalesData, SalesNode, TemplatesCtx, toGraph() (+19 more)
@@ -132,7 +137,7 @@ Cohesion: 0.15
 Nodes (8): StepState, RoutineConfig, RoutineOptions, routineService, RoutineStageRef, RoutineStepConfig, RoutineStepToday, RoutineToday
 
 ## Knowledge Gaps
-- **153 isolated node(s):** `PeriodKey`, `PERIOD_LABELS`, `DashboardOverview`, `CsatBreakdown`, `ReopenStats` (+148 more)
+- **163 isolated node(s):** `FieldDef`, `ChannelType`, `ChannelVisibility`, `CreateChannelPayload`, `UpdateChannelPayload` (+158 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **1 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -140,11 +145,11 @@ Nodes (8): StepState, RoutineConfig, RoutineOptions, routineService, RoutineStag
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `dependencies` connect `dependencies` to `devDependencies`?**
-  _High betweenness centrality (0.031) - this node is a cross-community bridge._
+  _High betweenness centrality (0.029) - this node is a cross-community bridge._
 - **Why does `pipelinesService` connect `pipelines.service.ts` to `disparos.service.ts`, `conversation-list.tsx`, `lead-cadastro-panel.tsx`?**
-  _High betweenness centrality (0.014) - this node is a cross-community bridge._
-- **What connects `PeriodKey`, `PERIOD_LABELS`, `DashboardOverview` to the rest of the system?**
-  _153 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _High betweenness centrality (0.013) - this node is a cross-community bridge._
+- **What connects `FieldDef`, `ChannelType`, `ChannelVisibility` to the rest of the system?**
+  _163 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `devDependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.07692307692307693 - nodes in this community are weakly interconnected._
 - **Should `disparos.service.ts` be split into smaller, more focused modules?**

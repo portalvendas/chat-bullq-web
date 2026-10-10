@@ -40,7 +40,19 @@ export interface TinyVendorRow {
 export interface TinySummary {
   pedidos: { count: number; total: number };
   orcamentos: { count: number; total: number };
-  leads: { count: number };
+  leads: {
+    count: number;
+    /** média de leads/dia no período; null quando a janela é aberta ("Tudo"). */
+    perDay: number | null;
+    /** leads que o time nunca respondeu (sem OUTBOUND) no período. */
+    noResponse: number;
+  };
+  /** Mesmos indicadores no período anterior de mesmo tamanho; null em "Tudo". */
+  previous: {
+    pedidos: { count: number; total: number };
+    orcamentos: { count: number; total: number };
+    leads: { count: number; perDay: number };
+  } | null;
   porVendedor: TinyVendorRow[];
 }
 

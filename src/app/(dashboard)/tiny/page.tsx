@@ -30,6 +30,10 @@ import {
   PhoneCall,
   Pencil,
   TrendingUp,
+  TrendingDown,
+  Minus,
+  UserX,
+  CalendarDays,
   Sparkles,
 } from 'lucide-react';
 import {
@@ -108,16 +112,47 @@ function periodRange(k: PeriodKey, customFrom?: string, customTo?: string): Tiny
   }
 }
 
+/** % de variação entre atual e anterior. previous=0 → 100% se cresceu, senão 0. */
+function calcTrend(current: number, previous: number): number {
+  if (previous === 0) return current > 0 ? 100 : 0;
+  return Math.round(((current - previous) / previous) * 100);
+}
+
+/** Chip de variação vs período anterior (seta + % + verde/vermelho). */
+function TrendBadge({ value }: { value: number }) {
+  if (value === 0) {
+    return (
+      <span className="inline-flex items-center gap-0.5 text-xs font-medium text-zinc-400">
+        <Minus className="h-3 w-3" /> 0%
+      </span>
+    );
+  }
+  const Icon = value > 0 ? TrendingUp : TrendingDown;
+  return (
+    <span
+      className={`inline-flex items-center gap-0.5 text-xs font-medium ${
+        value > 0 ? 'text-green-600' : 'text-red-500'
+      }`}
+    >
+      <Icon className="h-3 w-3" />
+      {Math.abs(value)}%
+    </span>
+  );
+}
+
 function StatCard({
   icon: Icon,
   label,
   value,
   sub,
+  trend,
 }: {
   icon: typeof ShoppingCart;
   label: string;
   value: string;
   sub?: string;
+  /** Variação % vs período anterior. undefined = esconde o chip (ex.: "Tudo"). */
+  trend?: number;
 }) {
   return (
     <div className="rounded-xl border border-zinc-200 p-4 dark:border-zinc-800">
@@ -125,7 +160,10 @@ function StatCard({
         <Icon className="h-4 w-4" />
         {label}
       </div>
-      <div className="mt-2 text-2xl font-bold text-zinc-900 dark:text-zinc-100">{value}</div>
+      <div className="mt-2 flex items-center gap-2">
+        <span className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">{value}</span>
+        {trend !== undefined && <TrendBadge value={trend} />}
+      </div>
       {sub && <div className="mt-0.5 text-xs text-zinc-400">{sub}</div>}
     </div>
   );
@@ -849,24 +887,92 @@ export default function TinyOrdersPage({
             label="Total em pedidos"
             value={brl(summary?.pedidos.total ?? 0)}
             sub={`${summary?.pedidos.count ?? 0} pedidos`}
+            trend={
+              summary?.previous
+                ? calcTrend(summary.pedidos.total, summary.previous.pedidos.total)
+                : undefined
+            }
           />
           <StatCard
             icon={FileText}
             label="Total em propostas"
             value={brl(summary?.orcamentos.total ?? 0)}
             sub={`${summary?.orcamentos.count ?? 0} propostas`}
+            trend={
+              summary?.previous
+                ? calcTrend(summary.orcamentos.total, summary.previous.orcamentos.total)
+                : undefined
+            }
           />
           <StatCard
             icon={ShoppingCart}
             label="Qtd. de pedidos"
             value={String(summary?.pedidos.count ?? 0)}
+            trend={
+              summary?.previous
+                ? calcTrend(summary.pedidos.count, summary.previous.pedidos.count)
+                : undefined
+            }
           />
           <StatCard
             icon={FileText}
             label="Qtd. de propostas"
             value={String(summary?.orcamentos.count ?? 0)}
+            trend={
+              summary?.previous
+                ? calcTrend(summary.orcamentos.count, summary.previous.orcamentos.count)
+                : undefined
+            }
           />
         </div>
+
+        {/* Card de LEADS: leads/dia (vs período anterior) + sem resposta */}
+        {summary && (
+          <div className="mt-4 rounded-xl border border-zinc-200 p-4 dark:border-zinc-800">
+            <div className="mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
+              <Users className="h-4 w-4" /> Leads
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <div className="flex items-center gap-2 text-xs text-zinc-500">
+                  <CalendarDays className="h-4 w-4" /> Leads/dia
+                </div>
+                <div className="mt-1 flex items-center gap-2">
+                  <span className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+                    {summary.leads.perDay != null
+                      ? summary.leads.perDay.toLocaleString('pt-BR', {
+                          maximumFractionDigits: 1,
+                        })
+                      : '—'}
+                  </span>
+                  {summary.previous && summary.leads.perDay != null && (
+                    <TrendBadge
+                      value={calcTrend(
+                        summary.leads.perDay,
+                        summary.previous.leads.perDay,
+                      )}
+                    />
+                  )}
+                </div>
+                <div className="mt-0.5 text-[11px] text-zinc-400">
+                  média no período · {summary.leads.count} leads
+                  {summary.previous ? ' · vs período anterior' : ''}
+                </div>
+              </div>
+              <div>
+                <div className="flex items-center gap-2 text-xs text-zinc-500">
+                  <UserX className="h-4 w-4" /> Sem resposta
+                </div>
+                <div className="mt-1 text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+                  {summary.leads.noResponse.toLocaleString('pt-BR')}
+                </div>
+                <div className="mt-0.5 text-[11px] text-zinc-400">
+                  leads sem resposta do time no período
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Card de conversão (funil) */}
         {summary && (
