@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Loader2, X } from 'lucide-react';
 import { channelsService, type Channel } from '../services/channels.service';
+import { membersService, type Member } from '@/features/settings/services/members.service';
 
 interface EditChannelDialogProps {
   channel: Channel | null;
@@ -31,6 +32,8 @@ export function EditChannelDialog({
   const [webhookSecret, setWebhookSecret] = useState('');
   const [debounceSeconds, setDebounceSeconds] = useState('');
   const [followUpBlocked, setFollowUpBlocked] = useState(false);
+  const [ownerUserId, setOwnerUserId] = useState<string>('');
+  const [members, setMembers] = useState<Member[]>([]);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -48,6 +51,22 @@ export function EditChannelDialog({
     setConfig(flat);
     setWebhookSecret(channel.webhookSecret ?? '');
     setFollowUpBlocked(channel.followUpBlocked ?? false);
+    setOwnerUserId(channel.ownerUserId ?? '');
+  }, [channel]);
+
+  // Carrega os membros da org pro seletor de "vendedor dono" (só p/ WhatsApp).
+  useEffect(() => {
+    if (!channel?.type?.startsWith('WHATSAPP')) return;
+    let alive = true;
+    membersService
+      .list()
+      .then((m) => {
+        if (alive) setMembers(m.filter((x) => x.user?.isActive));
+      })
+      .catch(() => undefined);
+    return () => {
+      alive = false;
+    };
   }, [channel]);
 
   if (!channel) return null;
@@ -88,7 +107,9 @@ export function EditChannelDialog({
         config: merged,
         webhookSecret: webhookSecret.trim() || undefined,
         aiDebounceSeconds: parsedDebounce,
-        ...(isWhatsApp ? { followUpBlocked } : {}),
+        ...(isWhatsApp
+          ? { followUpBlocked, ownerUserId: ownerUserId || null }
+          : {}),
       });
       toast.success('Credenciais atualizadas');
       onSaved();
@@ -182,6 +203,33 @@ export function EditChannelDialog({
               nova mensagem reinicia a contagem. Mercado Livre já vem com 120s.
             </p>
           </div>
+
+          {isWhatsApp && (
+            <div className="space-y-1.5">
+              <label className={labelCls}>
+                Vendedor dono deste número{' '}
+                <span className="text-zinc-400">(opcional)</span>
+              </label>
+              <select
+                value={ownerUserId}
+                onChange={(e) => setOwnerUserId(e.target.value)}
+                className={inputCls.replace(' font-mono', '')}
+              >
+                <option value="">Sem dono (usa o sorteio de distribuição)</option>
+                {members.map((m) => (
+                  <option key={m.user.id} value={m.user.id}>
+                    {m.user.name}
+                  </option>
+                ))}
+              </select>
+              <p className="text-[11px] text-zinc-500">
+                Leads que entram por este número — tanto quem manda mensagem pra
+                ele quanto os da landing page com este número — são atribuídos a
+                este vendedor na distribuição, antes do sorteio. Vazio = cai no
+                sorteio ponderado normal.
+              </p>
+            </div>
+          )}
 
           {isWhatsApp && (
             <div className="rounded-lg border border-zinc-200 p-3 dark:border-zinc-700">

@@ -27,6 +27,8 @@ export interface Channel {
   visibility: ChannelVisibility;
   /** true = este canal NÃO dispara follow-up (cadências/Salesbots). Default false. */
   followUpBlocked?: boolean;
+  /** Vendedor dono deste número; leads que entram por ele vão pra esse vendedor. */
+  ownerUserId?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -48,6 +50,7 @@ export interface UpdateChannelPayload {
   aiDebounceSeconds?: number | null;
   visibility?: ChannelVisibility;
   followUpBlocked?: boolean;
+  ownerUserId?: string | null;
 }
 
 export interface TestConnectionResult {
