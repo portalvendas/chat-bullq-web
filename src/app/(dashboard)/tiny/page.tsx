@@ -845,6 +845,9 @@ function ReceiptRow({
   const [data, setData] = useState(
     receipt.dataPagamento ? receipt.dataPagamento.slice(0, 10) : '',
   );
+  const [parcelas, setParcelas] = useState(
+    receipt.parcelas != null ? String(receipt.parcelas) : '',
+  );
   const [saving, setSaving] = useState(false);
 
   async function save() {
@@ -854,6 +857,7 @@ function ReceiptRow({
         metodo: metodo || null,
         valor: valor.trim() === '' ? null : Number(valor.replace(',', '.')),
         dataPagamento: data || null,
+        parcelas: parcelas.trim() === '' ? null : Math.trunc(Number(parcelas)),
       });
       toast.success('Comprovante atualizado.');
       setEditing(false);
@@ -912,6 +916,15 @@ function ReceiptRow({
             className="w-24 rounded-md border border-zinc-300 px-1.5 py-1 text-[11px] dark:border-zinc-700 dark:bg-zinc-800"
           />
           <input
+            type="number"
+            min={1}
+            value={parcelas}
+            onChange={(e) => setParcelas(e.target.value)}
+            placeholder="Parc."
+            title="Nº de parcelas"
+            className="w-16 rounded-md border border-zinc-300 px-1.5 py-1 text-[11px] dark:border-zinc-700 dark:bg-zinc-800"
+          />
+          <input
             type="date"
             value={data}
             onChange={(e) => setData(e.target.value)}
@@ -937,6 +950,9 @@ function ReceiptRow({
         <div className="flex flex-wrap items-center gap-3 text-zinc-600 dark:text-zinc-300">
           <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-medium dark:bg-zinc-800">
             {metodoLabel}
+            {receipt.parcelas && receipt.parcelas > 1
+              ? ` · ${receipt.parcelas}x`
+              : ''}
           </span>
           <span className="tabular-nums">{brl(receipt.valor)}</span>
           {receipt.dataPagamento && (
