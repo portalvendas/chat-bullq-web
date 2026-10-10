@@ -61,6 +61,23 @@ export interface TinyVendors {
   hasSemVendedor: boolean;
 }
 
+export interface TinyLeadNoResponse {
+  cardId: string;
+  title: string;
+  name: string | null;
+  phone: string | null;
+  /** Conversa pra abrir no inbox; null quando o lead não tem conversa. */
+  conversationId: string | null;
+  /** 'whatsapp' = veio de mensagem do lead; 'funil' = criado como card. */
+  origem: 'whatsapp' | 'funil';
+  createdAt: string;
+}
+
+export interface TinyLeadsNoResponsePage {
+  items: TinyLeadNoResponse[];
+  pagination: { page: number; limit: number; total: number; totalPages: number };
+}
+
 export interface TinyPeriod {
   from?: string;
   to?: string;
@@ -178,6 +195,16 @@ export const tinyService = {
       params: { ...period, ...(vendedor ? { vendedor } : {}) },
     });
     return unwrap<TinySummary>(data);
+  },
+  async leadsNoResponse(
+    period: TinyPeriod = {},
+    page = 1,
+    limit = 50,
+  ): Promise<TinyLeadsNoResponsePage> {
+    const { data } = await api.get('/tiny/leads-no-response', {
+      params: { page, limit, ...period },
+    });
+    return unwrap<TinyLeadsNoResponsePage>(data);
   },
   async vendors(period: TinyPeriod = {}): Promise<TinyVendors> {
     const { data } = await api.get('/tiny/vendors', { params: period });

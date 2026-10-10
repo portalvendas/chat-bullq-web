@@ -716,6 +716,7 @@ export default function TinyOrdersPage({
   const [customFrom, setCustomFrom] = useState('');
   const [customTo, setCustomTo] = useState('');
   const [vendedor, setVendedor] = useState(''); // '' = todos; '__sem__' = sem vendedor
+  const [leadsOpen, setLeadsOpen] = useState(false); // modal "leads sem resposta"
   const range = controlled
     ? { from: from!, to: to! }
     : periodRange(period, customFrom, customTo);
@@ -963,11 +964,23 @@ export default function TinyOrdersPage({
                 <div className="flex items-center gap-2 text-xs text-zinc-500">
                   <UserX className="h-4 w-4" /> Sem resposta
                 </div>
-                <div className="mt-1 text-2xl font-bold text-zinc-900 dark:text-zinc-100">
-                  {summary.leads.noResponse.toLocaleString('pt-BR')}
-                </div>
+                {summary.leads.noResponse > 0 ? (
+                  <button
+                    type="button"
+                    onClick={() => setLeadsOpen(true)}
+                    className="mt-1 text-2xl font-bold text-primary hover:underline"
+                    title="Ver a lista de leads sem resposta"
+                  >
+                    {summary.leads.noResponse.toLocaleString('pt-BR')}
+                  </button>
+                ) : (
+                  <div className="mt-1 text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+                    0
+                  </div>
+                )}
                 <div className="mt-0.5 text-[11px] text-zinc-400">
                   leads sem resposta do time no período
+                  {summary.leads.noResponse > 0 && ' · clique para ver a lista'}
                 </div>
               </div>
             </div>
@@ -1152,6 +1165,165 @@ export default function TinyOrdersPage({
           </div>
         )}
       </div>
+
+      {leadsOpen && (
+        <LeadsNoResponseModal
+          range={range}
+          onClose={() => setLeadsOpen(false)}
+        />
+      )}
     </div>
+  );
+}
+
+/**
+ * Modal com a lista dos LEADS SEM RESPOSTA do período (drill-down do card).
+ * Mostra origem (WhatsApp x Card no funil) e, quando há conversa, link pro
+ * inbox. Paginado (Anterior/Próxima).
+ */
+function LeadsNoResponseModal({
+  range,
+  onClose,
+}: {
+  range: { from?: string; to?: string };
+  onClose: () => void;
+}) {
+  const [page, setPage] = useState(1);
+  const { data, isLoading, isFetching } = useQuery({
+    queryKey: ['tiny-leads-no-response', range.from, range.to, page],
+    queryFn: () => tinyService.leadsNoResponse(range, page, 50),
+    placeholderData: (prev) => prev,
+  });
+
+  const items = data?.items ?? [];
+  const total = data?.pagination.total ?? 0;
+  const totalPages = data?.pagination.totalPages ?? 1;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 bg-black/50" onClick={onClose} />
+      <div className="relative z-50 flex max-h-[85vh] w-full max-w-2xl flex-col rounded-2xl bg-white shadow-2xl dark:bg-zinc-900">
+        <div className="flex items-center justify-between border-b border-zinc-200 p-4 dark:border-zinc-800">
+          <div className="flex items-center gap-2">
+            <UserX className="h-5 w-5 text-zinc-500" />
+            <div>
+              <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
+                Leads sem resposta
+              </h2>
+              <p className="text-xs text-zinc-500">
+                {total} lead{total === 1 ? '' : 's'} que o time não respondeu no período
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="rounded-md p-1 text-zinc-400 hover:text-zinc-600"
+            aria-label="Fechar"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-2">
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12 text-zinc-400">
+              <Loader2 className="h-5 w-5 animate-spin" />
+            </div>
+          ) : items.length === 0 ? (
+            <div className="py-12 text-center text-sm text-zinc-400">
+              Nenhum lead sem resposta no período.
+            </div>
+          ) : (
+            <ul className="divide-y divide-zinc-100 dark:divide-zinc-800">
+              {items.map((lead) => {
+                const inner = (
+                  <div className="flex items-center justify-between gap-3 px-2 py-2.5">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <User className="h-3.5 w-3.5 shrink-0 text-zinc-400" />
+                        <span className="truncate text-sm font-medium text-zinc-800 dark:text-zinc-200">
+                          {lead.name || 'Lead'}
+                        </span>
+                        <OrigemBadge origem={lead.origem} />
+                      </div>
+                      {lead.phone && (
+                        <span className="mt-0.5 ml-5 inline-flex items-center gap-1 text-[11px] text-zinc-400">
+                          <Phone className="h-3 w-3" /> {lead.phone}
+                        </span>
+                      )}
+                    </div>
+                    {lead.conversationId ? (
+                      <span className="inline-flex shrink-0 items-center gap-1 text-[11px] font-medium text-primary">
+                        <MessageSquare className="h-3 w-3" /> Abrir inbox
+                      </span>
+                    ) : (
+                      <span className="shrink-0 text-[11px] text-zinc-400">
+                        sem conversa
+                      </span>
+                    )}
+                  </div>
+                );
+                return (
+                  <li key={lead.cardId}>
+                    {lead.conversationId ? (
+                      <Link
+                        href={`/inbox?conversationId=${lead.conversationId}`}
+                        onClick={onClose}
+                        className="block rounded-md hover:bg-zinc-50 dark:hover:bg-zinc-800/40"
+                      >
+                        {inner}
+                      </Link>
+                    ) : (
+                      <div className="rounded-md opacity-80">{inner}</div>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
+
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between border-t border-zinc-200 p-3 text-sm dark:border-zinc-800">
+            <span className="text-zinc-400">
+              Página {page} de {totalPages}
+              {isFetching && !isLoading ? ' · atualizando…' : ''}
+            </span>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page <= 1}
+                className="rounded-md border border-zinc-200 px-3 py-1.5 disabled:opacity-40 dark:border-zinc-700"
+              >
+                Anterior
+              </button>
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page >= totalPages}
+                className="rounded-md border border-zinc-200 px-3 py-1.5 disabled:opacity-40 dark:border-zinc-700"
+              >
+                Próxima
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/** Badge de origem do lead: WhatsApp (mensagem do lead) x Card (funil). */
+function OrigemBadge({ origem }: { origem: 'whatsapp' | 'funil' }) {
+  if (origem === 'whatsapp') {
+    return (
+      <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+        <MessageSquare className="h-3 w-3" /> WhatsApp
+      </span>
+    );
+  }
+  return (
+    <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
+      <FileText className="h-3 w-3" /> Card
+    </span>
   );
 }
