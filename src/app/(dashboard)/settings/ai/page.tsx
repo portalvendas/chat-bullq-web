@@ -15,6 +15,7 @@ import {
 } from '@/features/ai-agents/services/ai-settings.service';
 import { channelsService, type Channel } from '@/features/channels/services/channels.service';
 import { AiKeyCard } from '@/features/ai-agents/components/ai-key-card';
+import { OpenAiKeyCard } from '@/features/ai-agents/components/openai-key-card';
 
 const TIMEZONES = [
   'America/Sao_Paulo',
@@ -225,6 +226,10 @@ export default function SettingsAiPage() {
       {/* Kill switch */}
       <div className="mt-6">
         <AiKeyCard />
+      </div>
+
+      <div className="mt-6">
+        <OpenAiKeyCard />
       </div>
 
       <section className="mt-6 rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">

@@ -127,3 +127,21 @@ export const aiKeyService = {
     return unwrapKey<AiKeyStatus>(data);
   },
 };
+
+// ─── Chave da API da OpenAI (BYOK) — transcrição de áudio ──────────
+export const openAiKeyService = {
+  async getStatus(): Promise<AiKeyStatus> {
+    const { data } = await api.get('/organizations/current/openai-key');
+    return unwrapKey<AiKeyStatus>(data);
+  },
+  async setKey(apiKey: string): Promise<AiKeyStatus> {
+    const { data } = await api.put('/organizations/current/openai-key', {
+      apiKey,
+    });
+    return unwrapKey<AiKeyStatus>(data);
+  },
+  async removeKey(): Promise<AiKeyStatus> {
+    const { data } = await api.delete('/organizations/current/openai-key');
+    return unwrapKey<AiKeyStatus>(data);
+  },
+};
