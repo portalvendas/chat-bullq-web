@@ -11,6 +11,12 @@ WORKDIR /app
 ENV NODE_ENV=production
 ARG NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+# Meta Embedded Signup (WhatsApp) — gravadas no build; vêm dos build-args do
+# docker-compose. Trocar qualquer uma exige REBUILD do web (reiniciar não basta).
+ARG NEXT_PUBLIC_META_APP_ID
+ENV NEXT_PUBLIC_META_APP_ID=${NEXT_PUBLIC_META_APP_ID}
+ARG NEXT_PUBLIC_META_ES_CONFIG_ID
+ENV NEXT_PUBLIC_META_ES_CONFIG_ID=${NEXT_PUBLIC_META_ES_CONFIG_ID}
 ENV NEXT_TELEMETRY_DISABLED=1
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -28,6 +34,8 @@ RUN addgroup -g 1001 -S nodejs && adduser -S -u 1001 nextjs
 
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+# O output standalone NÃO copia /public — sem isto o logo e os assets dão 404.
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
 USER nextjs
 EXPOSE 3000

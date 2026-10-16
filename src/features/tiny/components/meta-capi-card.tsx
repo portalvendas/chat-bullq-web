@@ -41,6 +41,8 @@ export function MetaCapiCard() {
         purchaseSituacoes: form.purchaseSituacoes ?? [],
         addToCartEnabled: form.addToCartEnabled,
         addToCartSituacoes: form.addToCartSituacoes ?? [],
+        qualifiedLeadEnabled: form.qualifiedLeadEnabled,
+        qualifiedLeadEventName: form.qualifiedLeadEventName,
         ...(token.trim() ? { accessToken: token.trim() } : {}),
       }),
     onSuccess: (updated) => {
@@ -188,6 +190,48 @@ export function MetaCapiCard() {
             Disparar <b>AddToCart</b> para propostas/orçamentos
           </span>
         </label>
+
+        {/* Lead qualificado */}
+        <div className="rounded-md border border-zinc-200 p-3 dark:border-zinc-800">
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={!!form.qualifiedLeadEnabled}
+              onChange={(e) => setForm({ ...form, qualifiedLeadEnabled: e.target.checked })}
+              className="h-4 w-4 rounded border-zinc-300"
+            />
+            <span className="text-zinc-800 dark:text-zinc-200">
+              Enviar <b>lead qualificado</b> para a Meta
+            </span>
+          </label>
+          <p className="mt-1 text-[11px] text-zinc-400">
+            Mesmo critério do dashboard: card ganho, gerou orçamento/pedido, avançou da etapa
+            de entrada ou lead score ≥ 40. Um evento por lead (últimos 30 dias, sem
+            marketplace). Lead que veio de anúncio de WhatsApp vai com o id do clique.
+          </p>
+          <div className="mt-2 grid gap-3 sm:grid-cols-2">
+            <div>
+              <label className="text-xs font-medium text-zinc-500">Nome do evento</label>
+              <input
+                value={form.qualifiedLeadEventName ?? 'QualifiedLead'}
+                onChange={(e) => setForm({ ...form, qualifiedLeadEventName: e.target.value })}
+                placeholder="QualifiedLead"
+                className="mt-1 w-full rounded-md border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-800"
+              />
+            </div>
+            {cfg?.qualifiedLeadStats && (
+              <div className="text-xs text-zinc-500 sm:pt-6">
+                Últimos 30 dias: <b className="text-zinc-800 dark:text-zinc-200">{cfg.qualifiedLeadStats.sent}</b> enviados
+                {cfg.qualifiedLeadStats.failed > 0 && (
+                  <span className="text-red-500"> · {cfg.qualifiedLeadStats.failed} com falha</span>
+                )}
+                {cfg.qualifiedLeadStats.last && (
+                  <> · último {new Date(cfg.qualifiedLeadStats.last).toLocaleString('pt-BR')}</>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
 
         <div>
           <button

@@ -174,6 +174,10 @@ export interface MetaCapiConfig {
   purchaseSituacoes: string[];
   addToCartEnabled: boolean;
   addToCartSituacoes: string[];
+  qualifiedLeadEnabled: boolean;
+  qualifiedLeadEventName: string;
+  /** Envios de lead qualificado nos últimos 30 dias (null = nunca configurado). */
+  qualifiedLeadStats: { sent: number; failed: number; last: string | null } | null;
   hasToken: boolean;
   lastError: string | null;
 }
@@ -186,6 +190,8 @@ export interface MetaCapiConfigInput {
   purchaseSituacoes?: string[];
   addToCartEnabled?: boolean;
   addToCartSituacoes?: string[];
+  qualifiedLeadEnabled?: boolean;
+  qualifiedLeadEventName?: string;
 }
 
 function unwrap<T>(data: any): T {
