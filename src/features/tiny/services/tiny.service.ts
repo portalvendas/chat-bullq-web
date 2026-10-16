@@ -178,6 +178,8 @@ export interface MetaCapiConfig {
   qualifiedLeadEventName: string;
   /** Etapas do funil que contam como lead qualificado. */
   qualifiedLeadStageIds: string[];
+  /** Lead score mínimo (LP). 101 = critério de score desligado. */
+  qualifiedLeadMinScore: number;
   /** Envios de lead qualificado nos últimos 30 dias (null = nunca configurado). */
   qualifiedLeadStats: { sent: number; failed: number; last: string | null } | null;
   hasToken: boolean;
@@ -195,6 +197,7 @@ export interface MetaCapiConfigInput {
   qualifiedLeadEnabled?: boolean;
   qualifiedLeadEventName?: string;
   qualifiedLeadStageIds?: string[];
+  qualifiedLeadMinScore?: number;
 }
 
 function unwrap<T>(data: any): T {

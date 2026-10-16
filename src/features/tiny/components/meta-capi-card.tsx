@@ -52,6 +52,7 @@ export function MetaCapiCard() {
         qualifiedLeadEnabled: form.qualifiedLeadEnabled,
         qualifiedLeadEventName: form.qualifiedLeadEventName,
         qualifiedLeadStageIds: form.qualifiedLeadStageIds ?? [],
+        qualifiedLeadMinScore: form.qualifiedLeadMinScore,
         ...(token.trim() ? { accessToken: token.trim() } : {}),
       }),
     onSuccess: (updated) => {
@@ -222,8 +223,8 @@ export function MetaCapiCard() {
             </span>
           </label>
           <p className="mt-1 text-[11px] text-zinc-400">
-            Conta como qualificado: card ganho, gerou orçamento/pedido no Tiny, lead score ≥ 40
-            ou está numa das etapas marcadas abaixo. Um evento por lead (últimos 30 dias, sem
+            Conta como qualificado: card ganho, gerou orçamento/pedido no Tiny, lead score da LP
+            acima do corte ou está numa das etapas marcadas abaixo. Um evento por lead (últimos 30 dias, sem
             marketplace). Lead que veio de anúncio de WhatsApp vai com o id do clique.
           </p>
           <div className="mt-2">
@@ -264,6 +265,29 @@ export function MetaCapiCard() {
               ))}
           </div>
           <div className="mt-2 grid gap-3 sm:grid-cols-2">
+            <div>
+              <label className="text-xs font-medium text-zinc-500">
+                Lead score mínimo (LP)
+              </label>
+              <input
+                type="number"
+                min={0}
+                max={101}
+                value={form.qualifiedLeadMinScore ?? 60}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    qualifiedLeadMinScore:
+                      e.target.value === '' ? undefined : Number(e.target.value),
+                  })
+                }
+                className="mt-1 w-full rounded-md border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-800"
+              />
+              <p className="mt-1 text-[11px] text-zinc-400">
+                Score a partir do qual o lead conta como qualificado. 101 = ignorar o score.
+              </p>
+            </div>
+            <div />
             <div>
               <label className="text-xs font-medium text-zinc-500">Nome do evento</label>
               <input
