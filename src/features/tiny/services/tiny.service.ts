@@ -176,6 +176,8 @@ export interface MetaCapiConfig {
   addToCartSituacoes: string[];
   qualifiedLeadEnabled: boolean;
   qualifiedLeadEventName: string;
+  /** Etapas do funil que contam como lead qualificado. */
+  qualifiedLeadStageIds: string[];
   /** Envios de lead qualificado nos últimos 30 dias (null = nunca configurado). */
   qualifiedLeadStats: { sent: number; failed: number; last: string | null } | null;
   hasToken: boolean;
@@ -192,6 +194,7 @@ export interface MetaCapiConfigInput {
   addToCartSituacoes?: string[];
   qualifiedLeadEnabled?: boolean;
   qualifiedLeadEventName?: string;
+  qualifiedLeadStageIds?: string[];
 }
 
 function unwrap<T>(data: any): T {

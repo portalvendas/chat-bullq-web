@@ -15,6 +15,7 @@ import {
   TINY_PEDIDO_SITUACOES,
   type MetaCapiConfig,
 } from '../services/tiny.service';
+import { pipelinesService } from '@/features/pipelines/services/pipelines.service';
 
 export function MetaCapiCard() {
   const qc = useQueryClient();
@@ -22,6 +23,13 @@ export function MetaCapiCard() {
     queryKey: ['tiny-capi-config'],
     queryFn: () => tinyService.capiConfig(),
     staleTime: 30_000,
+  });
+
+  // Funis/etapas para escolher quais contam como "lead qualificado".
+  const { data: pipelines } = useQuery({
+    queryKey: ['pipelines', 'capi-stage-picker'],
+    queryFn: () => pipelinesService.list(),
+    staleTime: 60_000,
   });
 
   // Estado local do formulário (token só é enviado quando digitado).
@@ -43,6 +51,7 @@ export function MetaCapiCard() {
         addToCartSituacoes: form.addToCartSituacoes ?? [],
         qualifiedLeadEnabled: form.qualifiedLeadEnabled,
         qualifiedLeadEventName: form.qualifiedLeadEventName,
+        qualifiedLeadStageIds: form.qualifiedLeadStageIds ?? [],
         ...(token.trim() ? { accessToken: token.trim() } : {}),
       }),
     onSuccess: (updated) => {
@@ -73,6 +82,14 @@ export function MetaCapiCard() {
   }
 
   const purchaseSel = form.purchaseSituacoes ?? [];
+  const stageSel = form.qualifiedLeadStageIds ?? [];
+  const toggleStage = (id: string) =>
+    setForm({
+      ...form,
+      qualifiedLeadStageIds: stageSel.includes(id)
+        ? stageSel.filter((x) => x !== id)
+        : [...stageSel, id],
+    });
 
   return (
     <div className="mt-4 rounded-lg border border-zinc-200 p-5 dark:border-zinc-800">
@@ -205,10 +222,47 @@ export function MetaCapiCard() {
             </span>
           </label>
           <p className="mt-1 text-[11px] text-zinc-400">
-            Mesmo critério do dashboard: card ganho, gerou orçamento/pedido, avançou da etapa
-            de entrada ou lead score ≥ 40. Um evento por lead (últimos 30 dias, sem
+            Conta como qualificado: card ganho, gerou orçamento/pedido no Tiny, lead score ≥ 40
+            ou está numa das etapas marcadas abaixo. Um evento por lead (últimos 30 dias, sem
             marketplace). Lead que veio de anúncio de WhatsApp vai com o id do clique.
           </p>
+          <div className="mt-2">
+            <label className="text-xs font-medium text-zinc-500">
+              Etapas que contam como qualificado
+            </label>
+            <p className="text-[11px] text-zinc-400">
+              Marque só etapas que indicam interesse real. Evite follow-ups automáticos e
+              &quot;Perdido&quot; — sinal largo demais ensina a Meta a trazer lead ruim.
+            </p>
+            {(pipelines ?? [])
+              .filter((p) => !p.archived && (p.stages?.length ?? 0) > 0)
+              .map((p) => (
+                <div key={p.id} className="mt-1.5">
+                  <div className="text-[11px] font-medium text-zinc-500">{p.name}</div>
+                  <div className="mt-1 flex flex-wrap gap-1.5">
+                    {[...(p.stages ?? [])]
+                      .sort((a, b) => a.order - b.order)
+                      .map((s) => {
+                        const on = stageSel.includes(s.id);
+                        return (
+                          <button
+                            key={s.id}
+                            type="button"
+                            onClick={() => toggleStage(s.id)}
+                            className={`rounded-full border px-2.5 py-1 text-xs font-medium transition-colors ${
+                              on
+                                ? 'border-primary bg-primary/10 text-primary'
+                                : 'border-zinc-300 text-zinc-500 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800'
+                            }`}
+                          >
+                            {s.name}
+                          </button>
+                        );
+                      })}
+                  </div>
+                </div>
+              ))}
+          </div>
           <div className="mt-2 grid gap-3 sm:grid-cols-2">
             <div>
               <label className="text-xs font-medium text-zinc-500">Nome do evento</label>
