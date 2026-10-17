@@ -62,6 +62,15 @@ api.interceptors.response.use(
       }
     }
     const message = error.response?.data?.message || error.message;
-    return Promise.reject(new Error(Array.isArray(message) ? message[0] : message));
+    // Mantém `response`/`status` no erro rejeitado: as telas leem
+    // `err.response.data.message` para mostrar o motivo real (ex.: "telefone
+    // incompleto"). Sem isso, o toast caía sempre na mensagem genérica.
+    const wrapped = new Error(Array.isArray(message) ? message[0] : message) as Error & {
+      response?: unknown;
+      status?: number;
+    };
+    wrapped.response = error.response;
+    wrapped.status = error.response?.status;
+    return Promise.reject(wrapped);
   },
 );
