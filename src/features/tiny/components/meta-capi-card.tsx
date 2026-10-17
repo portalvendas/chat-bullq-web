@@ -53,6 +53,7 @@ export function MetaCapiCard() {
         qualifiedLeadEventName: form.qualifiedLeadEventName,
         qualifiedLeadStageIds: form.qualifiedLeadStageIds ?? [],
         qualifiedLeadMinScore: form.qualifiedLeadMinScore,
+        websiteUrl: form.websiteUrl ?? '',
         ...(token.trim() ? { accessToken: token.trim() } : {}),
       }),
     onSuccess: (updated) => {
@@ -155,6 +156,19 @@ export function MetaCapiCard() {
               placeholder={cfg?.hasToken ? '•••••••• (deixe em branco pra manter)' : 'cole o token aqui'}
               className="mt-1 w-full rounded-md border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-800"
             />
+          </div>
+          <div>
+            <label className="text-xs font-medium text-zinc-500">URL do site / LP (padrão)</label>
+            <input
+              value={form.websiteUrl ?? ''}
+              onChange={(e) => setForm({ ...form, websiteUrl: e.target.value })}
+              placeholder="https://lp.seusite.com.br/"
+              className="mt-1 w-full rounded-md border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-800"
+            />
+            <p className="mt-1 text-[11px] text-zinc-400">
+              Usada quando o lead da LP não traz a URL da página — permite enviar os eventos
+              como &quot;site&quot; (entram em conversão personalizada e na otimização).
+            </p>
           </div>
           <div>
             <label className="text-xs font-medium text-zinc-500">Test Event Code (opcional)</label>

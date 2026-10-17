@@ -180,6 +180,8 @@ export interface MetaCapiConfig {
   qualifiedLeadStageIds: string[];
   /** Lead score mínimo (LP). 101 = critério de score desligado. */
   qualifiedLeadMinScore: number;
+  /** URL padrão do site/LP para eventos "website". */
+  websiteUrl: string | null;
   /** Envios de lead qualificado nos últimos 30 dias (null = nunca configurado). */
   qualifiedLeadStats: { sent: number; failed: number; last: string | null } | null;
   hasToken: boolean;
@@ -198,6 +200,7 @@ export interface MetaCapiConfigInput {
   qualifiedLeadEventName?: string;
   qualifiedLeadStageIds?: string[];
   qualifiedLeadMinScore?: number;
+  websiteUrl?: string | null;
 }
 
 function unwrap<T>(data: any): T {
