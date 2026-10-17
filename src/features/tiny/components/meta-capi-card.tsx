@@ -118,6 +118,37 @@ export function MetaCapiCard() {
           {cfg?.lastError && (
             <p className="mt-1 text-xs text-red-500">Último erro: {cfg.lastError}</p>
           )}
+          {cfg?.docStats && (
+            <div className="mt-3 grid gap-2 sm:grid-cols-2">
+              {(
+                [
+                  ['Vendas (Purchase)', cfg.docStats.pedidos],
+                  ['Orçamentos (AddToCart)', cfg.docStats.orcamentos],
+                ] as const
+              ).map(([label, s]) => {
+                const pct = (n: number) => (s.total ? Math.round((n / s.total) * 100) : 0);
+                return (
+                  <div
+                    key={label}
+                    className="rounded-md border border-zinc-200 px-3 py-2 text-xs text-zinc-500 dark:border-zinc-800"
+                  >
+                    <div className="font-medium text-zinc-700 dark:text-zinc-300">
+                      {label} · últimos 30 dias: {s.total}
+                    </div>
+                    <div className="mt-1">
+                      Ligados a contato:{' '}
+                      <b className="text-zinc-800 dark:text-zinc-200">{pct(s.ligadosForte)}%</b> forte
+                      · {pct(s.ligadosNome)}% só por nome · {pct(s.semLigacao)}% sem vínculo
+                    </div>
+                    <div>
+                      Enviados à Meta: {pct(s.enviados)}% · como site:{' '}
+                      <b className="text-zinc-800 dark:text-zinc-200">{pct(s.enviadosSite)}%</b>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
 

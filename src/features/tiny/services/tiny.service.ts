@@ -165,6 +165,14 @@ export interface TinyItemsResponse {
   resumo: TinyResumo;
 }
 
+export interface CapiDocStats {
+  total: number;
+  ligadosForte: number;
+  ligadosNome: number;
+  semLigacao: number;
+  enviados: number;
+  enviadosSite: number;
+}
 export interface MetaCapiConfig {
   enabled: boolean;
   pixelId: string | null;
@@ -184,6 +192,8 @@ export interface MetaCapiConfig {
   websiteUrl: string | null;
   /** Envios de lead qualificado nos últimos 30 dias (null = nunca configurado). */
   qualifiedLeadStats: { sent: number; failed: number; last: string | null } | null;
+  /** Saúde dos últimos 30 dias: vínculo com contato e envio como site. */
+  docStats: { pedidos: CapiDocStats; orcamentos: CapiDocStats } | null;
   hasToken: boolean;
   lastError: string | null;
 }
