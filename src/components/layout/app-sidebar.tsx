@@ -14,6 +14,7 @@ import {
   ScanSearch,
   ShieldCheck,
   Megaphone,
+  Activity,
 } from 'lucide-react';
 import { usePermissions } from '@/hooks/use-permissions';
 import { InboxTree } from '@/features/inbox-views/components/inbox-tree';
@@ -56,6 +57,7 @@ export function AppSidebar() {
   const { user, organizations, activeOrgId, setActiveOrg, logout } =
     useAuthStore();
   const activeOrg = organizations.find((o) => o.id === activeOrgId);
+  const isOrgAdmin = activeOrg?.role === 'OWNER' || activeOrg?.role === 'ADMIN';
   const { canView } = usePermissions();
 
   const handleOrgSwitch = (orgId: string) => {
@@ -125,6 +127,12 @@ export function AppSidebar() {
                 <SidebarLabel>{item.label}</SidebarLabel>
               </SidebarItem>
             ))}
+          {isOrgAdmin && (
+            <SidebarItem href="/produtividade">
+              <Activity className="size-5" />
+              <SidebarLabel>Produtividade</SidebarLabel>
+            </SidebarItem>
+          )}
           {user?.isPlatformAdmin && (
             <SidebarItem href="/super-admin">
               <ShieldCheck className="size-5" />

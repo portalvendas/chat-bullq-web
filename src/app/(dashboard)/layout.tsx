@@ -13,6 +13,7 @@ import { WaPaymentBanner } from '@/features/dashboard/components/wa-payment-bann
 import { NotificationsBell } from '@/features/notifications/components/notifications-bell';
 import { RoutineNudge } from '@/features/commercial-routine/components/routine-nudge';
 import { ImpersonationBanner } from '@/features/platform-admin/components/impersonation-banner';
+import { ActivityTracker } from '@/features/productivity/components/activity-tracker';
 
 export default function DashboardLayout({
   children,
@@ -83,6 +84,7 @@ export default function DashboardLayout({
         <WaPaymentBanner />
         <ToolFailureBanner />
         <RoutineNudge />
+        <ActivityTracker />
         <div className="flex-1 min-h-0">{children}</div>
       </div>
     </SidebarLayout>

@@ -2,6 +2,10 @@
 
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  getFocusedConversation,
+  setFocusedConversation,
+} from '@/features/productivity/lib/focused-conversation';
 import { Check, CheckCheck, Clock, AlertCircle, ExternalLink, Reply, Trash2, X, Ban, Search, Paperclip, MessageSquareText, Tag, Send, RotateCw } from 'lucide-react';
 import { toast } from 'sonner';
 import { inboxService, type Conversation, type Message } from '../services/inbox.service';
@@ -384,6 +388,15 @@ export function ChatPanel({
 }: ChatPanelProps) {
   const queryClient = useQueryClient();
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  // Produtividade: marca esta conversa como "aberta na tela" enquanto o painel
+  // estiver montado (inbox ou modal do card).
+  useEffect(() => {
+    setFocusedConversation(conversation.id);
+    return () => {
+      if (getFocusedConversation() === conversation.id) setFocusedConversation(null);
+    };
+  }, [conversation.id]);
   // Scroll container do histórico. Precisamos da ref pra (a) preservar a
   // posição de scroll ao carregar mensagens antigas (prepend no topo) e
   // (b) usar como root do IntersectionObserver da paginação.
