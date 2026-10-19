@@ -20,6 +20,7 @@ import { CommercialSection } from '@/features/dashboard/components/CommercialSec
 import { WaCostsSection } from '@/features/dashboard/components/WaCostsSection';
 import TinyOrdersPage from '@/app/(dashboard)/tiny/page';
 import { useSearchParams } from 'next/navigation';
+import { MyDayCard } from '@/features/productivity/components/my-day-card';
 import {
   DashboardPeriodFilter,
   periodRange,
@@ -295,6 +296,7 @@ export default function DashboardPage() {
       <div className="h-full min-h-0 overflow-y-auto">
         <div className="mx-auto w-full max-w-6xl p-6">
           <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Dashboard</h1>
+          <MyDayCard />
           <TabBar tab={tab} setTab={setTab} />
           <div className="mt-4">{periodFilter}</div>
           <div className="mt-6">
@@ -310,6 +312,7 @@ export default function DashboardPage() {
       <div className="h-full min-h-0 overflow-y-auto">
         <div className="mx-auto w-full max-w-6xl p-6">
           <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Dashboard</h1>
+          <MyDayCard />
           <TabBar tab={tab} setTab={setTab} />
           <div className="mt-4">{periodFilter}</div>
           <div className="mt-6">
@@ -325,6 +328,7 @@ export default function DashboardPage() {
       <div className="h-full min-h-0 overflow-y-auto">
         <div className="mx-auto w-full max-w-6xl p-6">
           <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Dashboard</h1>
+          <MyDayCard />
           <TabBar tab={tab} setTab={setTab} />
           <div className="mt-4">{periodFilter}</div>
           <div className="mt-6">
@@ -339,6 +343,7 @@ export default function DashboardPage() {
     <div className="h-full min-h-0 overflow-y-auto">
       <div className="mx-auto w-full max-w-6xl p-6">
       <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Dashboard</h1>
+      <MyDayCard />
       <TabBar tab={tab} setTab={setTab} />
       <div className="mt-4">{periodFilter}</div>
 

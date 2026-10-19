@@ -24,49 +24,15 @@ import {
   productivityService,
   type SellerDailyRow,
 } from '@/features/productivity/services/productivity.service';
-
-const TZ = 'America/Sao_Paulo';
-
-function todayLocal(): string {
-  return new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(new Date());
-}
-
-/** 125 → "2h05"; 40 → "40min"; 0 → "—". */
-function dur(min: number | null | undefined): string {
-  if (!min) return '—';
-  if (min < 60) return `${min}min`;
-  const h = Math.floor(min / 60);
-  const m = min % 60;
-  return `${h}h${String(m).padStart(2, '0')}`;
-}
-
-function hhmm(iso: string | null | undefined): string {
-  if (!iso) return '—';
-  return new Date(iso).toLocaleTimeString('pt-BR', { timeZone: TZ, hour: '2-digit', minute: '2-digit' });
-}
-
-/** Minutos desde 00:00 local. */
-function localMinutes(iso: string): number {
-  const parts = new Intl.DateTimeFormat('en-US', {
-    timeZone: TZ,
-    hourCycle: 'h23',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).formatToParts(new Date(iso));
-  const h = Number(parts.find((p) => p.type === 'hour')?.value ?? 0);
-  const m = Number(parts.find((p) => p.type === 'minute')?.value ?? 0);
-  return h * 60 + m;
-}
-
-function secs(s: number | null | undefined): string {
-  if (s == null) return '—';
-  if (s < 60) return `${s}s`;
-  const m = Math.round(s / 60);
-  return m < 60 ? `${m}min` : dur(m);
-}
-
-const brl = (v: number) =>
-  v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+import {
+  STATE_CLS,
+  brl,
+  dur,
+  hhmm,
+  localMinutes,
+  secs,
+  todayLocal,
+} from '@/features/productivity/lib/format';
 
 const AREA_LABEL: Record<string, string> = {
   inbox: 'Conversas',
@@ -80,11 +46,6 @@ const AREA_LABEL: Record<string, string> = {
   outros: 'Outros',
 };
 
-const STATE_CLS: Record<string, string> = {
-  active: 'bg-emerald-500',
-  idle: 'bg-amber-300 dark:bg-amber-500/70',
-  background: 'bg-zinc-300 dark:bg-zinc-600',
-};
 
 export default function ProdutividadePage() {
   const { organizations, activeOrgId } = useAuthStore();

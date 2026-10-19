@@ -75,7 +75,22 @@ export interface ProductivityTimeline {
   }[];
 }
 
+export interface ProductivityMe {
+  day: string;
+  timezone: string;
+  isToday: boolean;
+  generatedAt: string;
+  me: SellerDailyRow;
+  timeline: Pick<ProductivityTimeline, 'segments' | 'hourly' | 'cardEvents'>;
+}
+
 export const productivityService = {
+  /** Indicador individual do usuário logado (dashboard dele). */
+  me: async (day?: string): Promise<ProductivityMe> => {
+    const { data } = await api.get('/productivity/me', { params: day ? { day } : {} });
+    return data?.data ?? data;
+  },
+
   heartbeat: (body: { state: ActivityState; area?: string; conversationId?: string }) =>
     api.post('/productivity/heartbeat', body),
 
