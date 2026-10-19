@@ -2,11 +2,30 @@ import { api } from '@/lib/api';
 
 export type ActivityState = 'background' | 'idle' | 'active';
 
+export interface SellerDayRow {
+  day: string;
+  startMin: number | null;
+  endMin: number | null;
+  activeMinutes: number;
+  idleMinutes: number;
+  talkMinutes: number;
+  messagesCrm: number;
+  messagesPhone: number;
+  conversations: number;
+}
+
 export interface SellerDailyRow {
   userId: string;
   name: string;
   avatarUrl: string | null;
   role: string;
+  /** Dias do período com atividade. */
+  days: number;
+  /** Início/fim médios por dia trabalhado (minutos desde 00:00 local). */
+  avgStartMin: number | null;
+  avgEndMin: number | null;
+  dayEnd: string | null;
+  perDay: SellerDayRow[];
   presence: {
     firstSeen: string | null;
     firstActive: string | null;
@@ -39,7 +58,13 @@ export interface SellerDailyRow {
 }
 
 export interface ProductivityDaily {
+  from: string;
+  to: string;
   day: string;
+  calendarDays: number;
+  singleDay: boolean;
+  includesToday: boolean;
+  clamped: boolean;
   timezone: string;
   isToday: boolean;
   generatedAt: string;
@@ -94,8 +119,8 @@ export const productivityService = {
   heartbeat: (body: { state: ActivityState; area?: string; conversationId?: string }) =>
     api.post('/productivity/heartbeat', body),
 
-  daily: async (day?: string): Promise<ProductivityDaily> => {
-    const { data } = await api.get('/productivity/daily', { params: day ? { day } : {} });
+  daily: async (range: { from: string; to: string }): Promise<ProductivityDaily> => {
+    const { data } = await api.get('/productivity/daily', { params: range });
     return data?.data ?? data;
   },
 

@@ -1,12 +1,13 @@
 'use client';
 
 /**
- * Produtividade dos vendedores (OWNER/ADMIN). Um dia por vez: início do dia,
- * tempo de tela no CRM, atendimento (CRM + celular), funil, vendas do Tiny e
- * rotina. Clique no vendedor para ver a linha do tempo.
+ * Produtividade dos vendedores (OWNER/ADMIN), com o mesmo filtro de período
+ * do Dashboard: início/fim do dia, tempo de tela no CRM, atendimento (CRM +
+ * celular), funil, vendas do Tiny e rotina. Em 1 dia, o clique no vendedor
+ * abre a linha do tempo; em períodos, abre o dia a dia.
  * Toda a agregação vem pronta do backend (/productivity/daily e /timeline).
  */
-import { Fragment, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   Activity,
@@ -25,6 +26,12 @@ import {
   type SellerDailyRow,
 } from '@/features/productivity/services/productivity.service';
 import {
+  DashboardPeriodFilter,
+  periodRange,
+  type DashPeriod,
+} from '@/features/dashboard/components/period-filter';
+import {
+  PRODUCTIVITY_TZ,
   STATE_CLS,
   brl,
   dur,
@@ -47,22 +54,58 @@ const AREA_LABEL: Record<string, string> = {
 };
 
 
+const PERIOD_KEY = 'produtividade.period';
+
+/** ISO → dia-calendário local (YYYY-MM-DD, fuso de SP). */
+function isoToLocalDay(iso: string): string {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: PRODUCTIVITY_TZ }).format(new Date(iso));
+}
+
+/** 'YYYY-MM-DD' → 'DD/MM'. */
+function br(day: string): string {
+  const [, m, d] = day.split('-');
+  return `${d}/${m}`;
+}
+
+/** Minutos desde 00:00 → "08:12". */
+function clock(min: number | null | undefined): string {
+  if (min == null) return '—';
+  return `${String(Math.floor(min / 60)).padStart(2, '0')}:${String(min % 60).padStart(2, '0')}`;
+}
+
 export default function ProdutividadePage() {
   const { organizations, activeOrgId } = useAuthStore();
   const role = organizations.find((o) => o.id === activeOrgId)?.role;
   const isAdmin = role === 'OWNER' || role === 'ADMIN';
 
-  const [day, setDay] = useState(todayLocal());
+  // Mesmo filtro do Dashboard; o período escolhido fica salvo neste painel.
+  const [period, setPeriod] = useState<DashPeriod>(() => {
+    if (typeof window === 'undefined') return 'hoje';
+    return (window.localStorage.getItem(PERIOD_KEY) as DashPeriod) || 'hoje';
+  });
+  const [customFrom, setCustomFrom] = useState('');
+  const [customTo, setCustomTo] = useState('');
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(PERIOD_KEY, period);
+    } catch {
+      /* ignore */
+    }
+  }, [period]);
+  const range = useMemo(() => {
+    const r = periodRange(period, customFrom, customTo);
+    return { from: isoToLocalDay(r.from), to: isoToLocalDay(r.to) };
+  }, [period, customFrom, customTo]);
+
   const [showInactive, setShowInactive] = useState(false);
   const [openUser, setOpenUser] = useState<string | null>(null);
-  const isToday = day === todayLocal();
 
   const { data, isLoading, isFetching, error } = useQuery({
-    queryKey: ['productivity', 'daily', day],
-    queryFn: () => productivityService.daily(day),
+    queryKey: ['productivity', 'daily', range.from, range.to],
+    queryFn: () => productivityService.daily(range),
     enabled: isAdmin,
     staleTime: 30_000,
-    refetchInterval: isToday ? 60_000 : false,
+    refetchInterval: range.to === todayLocal() ? 60_000 : false,
   });
 
   const rows = useMemo(
@@ -70,6 +113,8 @@ export default function ProdutividadePage() {
     [data, showInactive],
   );
   const hiddenCount = (data?.users.length ?? 0) - rows.length;
+  const single = data?.singleDay ?? true;
+  const cols = single ? 16 : 17;
 
   if (!isAdmin) {
     return (
@@ -86,31 +131,37 @@ export default function ProdutividadePage() {
   }
 
   return (
-    <div className="mx-auto h-full max-w-[1400px] space-y-5 overflow-y-auto p-4 sm:p-6">
+    <div className="mx-auto h-full max-w-[1500px] space-y-5 overflow-y-auto p-4 sm:p-6">
       <div className="flex flex-wrap items-center gap-2">
         <h1 className="inline-flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
           <Activity className="h-5 w-5 text-primary" /> Produtividade
         </h1>
         {isFetching && <Loader2 className="h-4 w-4 animate-spin text-zinc-400" />}
-        <div className="ml-auto flex items-center gap-2 text-sm">
-          <input
-            type="date"
-            value={day}
-            max={todayLocal()}
-            onChange={(e) => e.target.value && setDay(e.target.value)}
-            className="rounded-lg border border-zinc-200 bg-white px-2 py-1 text-xs text-zinc-700 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200"
-          />
-          {!isToday && (
-            <button
-              type="button"
-              onClick={() => setDay(todayLocal())}
-              className="rounded-lg border border-zinc-200 px-2 py-1 text-xs text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
-            >
-              Hoje
-            </button>
-          )}
-        </div>
       </div>
+
+      <div className="flex flex-wrap items-center gap-3">
+        <DashboardPeriodFilter
+          period={period}
+          setPeriod={setPeriod}
+          customFrom={customFrom}
+          setCustomFrom={setCustomFrom}
+          customTo={customTo}
+          setCustomTo={setCustomTo}
+        />
+        {data && (
+          <span className="text-xs text-zinc-400">
+            {data.singleDay
+              ? `Dia ${br(data.from)}`
+              : `${br(data.from)} a ${br(data.to)} · ${data.calendarDays} dias`}
+          </span>
+        )}
+      </div>
+
+      {data?.clamped && (
+        <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700 dark:border-amber-900/40 dark:bg-amber-900/20 dark:text-amber-400">
+          Período limitado aos últimos 366 dias. O tempo de tela começou a ser medido em 19/10/2026.
+        </div>
+      )}
 
       {error ? (
         <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-900/20 dark:text-red-400">
@@ -147,18 +198,23 @@ export default function ProdutividadePage() {
                 <thead>
                   <tr className="text-left text-[11px] uppercase tracking-wide text-zinc-400">
                     <th className="sticky left-0 bg-white px-4 py-2.5 font-medium dark:bg-zinc-900">Vendedor</th>
-                    <Th title="1º minuto em uso no CRM ou 1ª mensagem (inclui celular)">Início</Th>
-                    <Th title="Último minuto em uso no CRM">Último uso</Th>
-                    <Th title="Aba do CRM visível e com interação">Em uso</Th>
+                    {!single && <Th title="Dias do período com atividade (CRM em uso ou mensagem)">Dias</Th>}
+                    <Th title={single ? '1º minuto em uso no CRM ou 1ª mensagem (inclui celular)' : 'Média do início por dia trabalhado'}>
+                      {single ? 'Início' : 'Início méd.'}
+                    </Th>
+                    <Th title={single ? 'Último sinal do dia: CRM em uso ou mensagem (inclui celular)' : 'Média do fim por dia trabalhado'}>
+                      {single ? 'Fim' : 'Fim méd.'}
+                    </Th>
+                    <Th title="Aba do CRM visível e com interação (total do período)">Em uso</Th>
                     <Th title="Aba visível sem interação por mais de 3 min">Ocioso</Th>
-                    <Th title="Maior intervalo entre dois minutos em uso">Maior pausa</Th>
+                    <Th title="Maior intervalo entre dois minutos em uso num mesmo dia">Maior pausa</Th>
                     <Th title="Sessões de envio de mensagens (CRM + celular), mensagens a até 10 min uma da outra">Atendimento</Th>
                     <Th title="Mensagens enviadas pelo CRM / pelo celular do número do vendedor">Msgs</Th>
                     <Th title="Conversas com ao menos uma mensagem do vendedor">Conversas</Th>
                     <Th title="Mediana do tempo até a 1ª resposta quando o cliente escreve">Resposta</Th>
-                    <Th title="Conversas do vendedor com o cliente esperando há mais de 15 min (agora)">Esperando</Th>
+                    <Th title="Conversas do vendedor com o cliente esperando há mais de 15 min (agora). Só quando o período inclui hoje.">Esperando</Th>
                     <Th title="Cards movidos de etapa pelo vendedor">Cards</Th>
-                    <Th title="Ganhos / perdidos no dia (cards do vendedor)">G / P</Th>
+                    <Th title="Ganhos / perdidos (cards do vendedor)">G / P</Th>
                     <Th title="Orçamentos no Tiny">Orçam.</Th>
                     <Th title="Pedidos (venda efetiva) no Tiny">Pedidos</Th>
                     <Th title="Passos da Rotina Comercial marcados">Rotina</Th>
@@ -167,8 +223,8 @@ export default function ProdutividadePage() {
                 <tbody>
                   {rows.length === 0 && (
                     <tr>
-                      <td colSpan={16} className="px-4 py-8 text-center text-sm text-zinc-400">
-                        Nenhuma atividade registrada neste dia.
+                      <td colSpan={cols} className="px-4 py-8 text-center text-sm text-zinc-400">
+                        Nenhuma atividade registrada no período.
                       </td>
                     </tr>
                   )}
@@ -176,14 +232,15 @@ export default function ProdutividadePage() {
                     <Fragment key={u.userId}>
                       <SellerRow
                         u={u}
+                        single={single}
                         isToday={data.isToday}
                         open={openUser === u.userId}
                         onToggle={() => setOpenUser(openUser === u.userId ? null : u.userId)}
                       />
                       {openUser === u.userId && (
                         <tr className="border-t border-zinc-100 bg-zinc-50/60 dark:border-zinc-800 dark:bg-zinc-950/40">
-                          <td colSpan={16} className="px-4 py-4">
-                            <SellerDetail u={u} day={day} />
+                          <td colSpan={cols} className="px-4 py-4">
+                            {single ? <SellerDetail u={u} day={data.from} /> : <PerDayTable u={u} />}
                           </td>
                         </tr>
                       )}
@@ -208,6 +265,65 @@ export default function ProdutividadePage() {
   );
 }
 
+/** Período com vários dias: uma linha por dia; clique abre a linha do tempo daquele dia. */
+function PerDayTable({ u }: { u: SellerDailyRow }) {
+  const [openDay, setOpenDay] = useState<string | null>(null);
+  if (u.perDay.length === 0) {
+    return <p className="text-xs text-zinc-400">Sem dias com atividade no período.</p>;
+  }
+  const td = 'whitespace-nowrap px-3 py-1.5 text-right tabular-nums text-zinc-700 dark:text-zinc-300';
+  const days = [...u.perDay].reverse();
+  return (
+    <div className="space-y-2">
+      <div className="text-[11px] font-semibold uppercase tracking-wide text-zinc-400">
+        Dia a dia · clique num dia para ver a linha do tempo
+      </div>
+      <table className="w-full max-w-4xl border-collapse text-xs">
+        <thead>
+          <tr className="text-[10px] uppercase tracking-wide text-zinc-400">
+            <th className="px-3 py-1.5 text-left font-medium">Dia</th>
+            <th className="px-3 py-1.5 text-right font-medium">Início</th>
+            <th className="px-3 py-1.5 text-right font-medium">Fim</th>
+            <th className="px-3 py-1.5 text-right font-medium">Em uso</th>
+            <th className="px-3 py-1.5 text-right font-medium">Ocioso</th>
+            <th className="px-3 py-1.5 text-right font-medium">Atendimento</th>
+            <th className="px-3 py-1.5 text-right font-medium">Msgs CRM / cel.</th>
+            <th className="px-3 py-1.5 text-right font-medium">Conversas</th>
+          </tr>
+        </thead>
+        <tbody>
+          {days.map((d) => (
+            <Fragment key={d.day}>
+              <tr
+                className="cursor-pointer border-t border-zinc-100 hover:bg-white dark:border-zinc-800 dark:hover:bg-zinc-900"
+                onClick={() => setOpenDay(openDay === d.day ? null : d.day)}
+              >
+                <td className="px-3 py-1.5 font-medium text-zinc-700 dark:text-zinc-200">
+                  {new Date(`${d.day}T12:00:00Z`).toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit', timeZone: 'UTC' })}
+                </td>
+                <td className={td}>{clock(d.startMin)}</td>
+                <td className={td}>{clock(d.endMin)}</td>
+                <td className={`${td} font-semibold`}>{dur(d.activeMinutes)}</td>
+                <td className={td}>{dur(d.idleMinutes)}</td>
+                <td className={`${td} font-semibold`}>{dur(d.talkMinutes)}</td>
+                <td className={td}>{d.messagesCrm} / {d.messagesPhone}</td>
+                <td className={td}>{d.conversations || '—'}</td>
+              </tr>
+              {openDay === d.day && (
+                <tr>
+                  <td colSpan={8} className="px-3 py-3">
+                    <SellerDetail u={u} day={d.day} hideAreas />
+                  </td>
+                </tr>
+              )}
+            </Fragment>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 function Th({ children, title }: { children: React.ReactNode; title: string }) {
   return (
     <th className="whitespace-nowrap px-3 py-2.5 text-right font-medium" title={title}>
@@ -228,17 +344,20 @@ function Kpi({ label, value, sub }: { label: string; value: string; sub?: string
 
 function SellerRow({
   u,
+  single,
   isToday,
   open,
   onToggle,
 }: {
   u: SellerDailyRow;
+  single: boolean;
   isToday: boolean;
   open: boolean;
   onToggle: () => void;
 }) {
   const td = 'whitespace-nowrap px-3 py-2.5 text-right tabular-nums text-zinc-700 dark:text-zinc-300';
   const pending = u.service.pendingNow;
+  const perDay = (min: number) => (u.days > 1 ? `${dur(Math.round(min / u.days))}/dia` : '');
   return (
     <tr
       className="cursor-pointer border-t border-zinc-100 hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-800/40"
@@ -253,12 +372,20 @@ function SellerRow({
           )}
         </div>
       </td>
-      <td className={td}>{hhmm(u.dayStart)}</td>
-      <td className={td}>{hhmm(u.presence.lastActive)}</td>
-      <td className={`${td} font-semibold text-zinc-900 dark:text-zinc-100`}>{dur(u.presence.activeMinutes)}</td>
+      {!single && <td className={td}>{u.days || '—'}</td>}
+      <td className={td}>{single ? hhmm(u.dayStart) : clock(u.avgStartMin)}</td>
+      <td className={td}>{single ? hhmm(u.dayEnd) : clock(u.avgEndMin)}</td>
+      <td className={`${td} font-semibold text-zinc-900 dark:text-zinc-100`} title={perDay(u.presence.activeMinutes)}>
+        {dur(u.presence.activeMinutes)}
+      </td>
       <td className={td}>{dur(u.presence.idleMinutes)}</td>
       <td className={td}>{dur(u.presence.longestBreakMinutes)}</td>
-      <td className={`${td} font-semibold text-zinc-900 dark:text-zinc-100`}>{dur(u.service.talkMinutes)}</td>
+      <td className={`${td} font-semibold text-zinc-900 dark:text-zinc-100`} title={perDay(u.service.talkMinutes)}>
+        {dur(u.service.talkMinutes)}
+        {!single && u.days > 1 && u.service.talkMinutes > 0 && (
+          <div className="text-[10px] font-normal text-zinc-400">{perDay(u.service.talkMinutes)}</div>
+        )}
+      </td>
       <td className={td}>
         <span className="inline-flex items-center gap-2">
           <span className="inline-flex items-center gap-0.5" title="Pelo CRM">
@@ -277,7 +404,7 @@ function SellerRow({
       </td>
       <td className={td}>
         {pending == null ? (
-          <span className="text-zinc-300 dark:text-zinc-600" title="Só disponível para hoje">·</span>
+          <span className="text-zinc-300 dark:text-zinc-600" title="Só quando o período inclui hoje">·</span>
         ) : pending > 0 ? (
           <span className="rounded-full bg-red-50 px-1.5 py-0.5 text-xs font-semibold text-red-600 dark:bg-red-900/30 dark:text-red-400">{pending}</span>
         ) : (
@@ -301,7 +428,7 @@ function SellerRow({
   );
 }
 
-function SellerDetail({ u, day }: { u: SellerDailyRow; day: string }) {
+function SellerDetail({ u, day, hideAreas }: { u: SellerDailyRow; day: string; hideAreas?: boolean }) {
   const { data, isLoading } = useQuery({
     queryKey: ['productivity', 'timeline', u.userId, day],
     queryFn: () => productivityService.timeline(u.userId, day),
@@ -385,6 +512,7 @@ function SellerDetail({ u, day }: { u: SellerDailyRow; day: string }) {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
+        {!hideAreas && (
         <div>
           <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-zinc-400">Onde o tempo em uso foi gasto</div>
           {u.presence.areas.length === 0 ? (
@@ -404,6 +532,7 @@ function SellerDetail({ u, day }: { u: SellerDailyRow; day: string }) {
             </ul>
           )}
         </div>
+        )}
         <div>
           <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-zinc-400">Movimentos no funil</div>
           {data.cardEvents.length === 0 ? (
