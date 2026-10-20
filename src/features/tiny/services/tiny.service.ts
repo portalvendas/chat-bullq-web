@@ -31,6 +31,8 @@ export interface TinyLeadDocuments {
 
 export interface TinyVendorRow {
   vendedor: string;
+  /** Leads (cards) criados no período com este vendedor como responsável. */
+  leadsCount?: number;
   pedidosCount: number;
   pedidosTotal: number;
   propostasCount: number;

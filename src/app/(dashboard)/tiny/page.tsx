@@ -1401,6 +1401,8 @@ export default function TinyOrdersPage({
                 <thead className="text-left text-[11px] uppercase tracking-wide text-zinc-400">
                   <tr>
                     <th className="pb-2 pr-3 font-medium">Vendedor</th>
+                    <th className="pb-2 pr-3 text-right font-medium" title="Leads (cards) criados no período com o vendedor como responsável">Leads</th>
+                    <th className="pb-2 pr-3 text-right font-medium" title="Pedidos ÷ leads do período">Lead → Pedido</th>
                     <th className="pb-2 pr-3 text-right font-medium">Pedidos</th>
                     <th className="pb-2 pr-3 text-right font-medium">R$ pedidos</th>
                     <th className="pb-2 pr-3 text-right font-medium">Propostas</th>
@@ -1417,6 +1419,8 @@ export default function TinyOrdersPage({
                     const convVal =
                       v.propostasTotal > 0 ? (v.pedidosTotal / v.propostasTotal) * 100 : null;
                     const ticket = v.pedidosCount > 0 ? v.pedidosTotal / v.pedidosCount : 0;
+                    const leads = v.leadsCount ?? 0;
+                    const convLead = leads > 0 ? (v.pedidosCount / leads) * 100 : null;
                     const fmtPct = (n: number | null) =>
                       n == null ? '—' : `${n.toLocaleString('pt-BR', { maximumFractionDigits: 1 })}%`;
                     const convColor =
@@ -1432,6 +1436,8 @@ export default function TinyOrdersPage({
                         <td className="py-1.5 pr-3 font-medium text-zinc-800 dark:text-zinc-200">
                           {v.vendedor}
                         </td>
+                        <td className="py-1.5 pr-3 text-right tabular-nums">{leads}</td>
+                        <td className="py-1.5 pr-3 text-right tabular-nums">{fmtPct(convLead)}</td>
                         <td className="py-1.5 pr-3 text-right tabular-nums">{v.pedidosCount}</td>
                         <td className="py-1.5 pr-3 text-right tabular-nums">{brl(v.pedidosTotal)}</td>
                         <td className="py-1.5 pr-3 text-right tabular-nums">{v.propostasCount}</td>
@@ -1448,6 +1454,7 @@ export default function TinyOrdersPage({
               </table>
             </div>
             <p className="mt-3 text-[11px] text-zinc-400">
+              Leads = cards criados no período com o vendedor como responsável · Lead → Pedido = pedidos ÷ leads ·
               Conv. = propostas que viraram pedido (qtd) · Conv. R$ = R$ pedidos ÷ R$ propostas · Ticket médio = R$ pedidos ÷ nº de pedidos.
             </p>
           </div>
