@@ -75,11 +75,13 @@ const RESOLVE_TYPES = new Set([
   'SLA_BREACH',
   'SLA_WARNING',
   'CARD_INACTIVE',
+  'LEAD_WAITING',
   'AI_TOOL_FAILURE',
   'MENTION',
 ]);
 const TYPE_PRIORITY: Record<string, number> = {
   SLA_BREACH: 0,
+  LEAD_WAITING: 0,
   CARD_INACTIVE: 1,
   SLA_WARNING: 1,
   AI_TOOL_FAILURE: 2,

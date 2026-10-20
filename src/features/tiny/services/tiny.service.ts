@@ -76,6 +76,8 @@ export interface TinyLeadNoResponse {
   /** Última mensagem do cliente; se nunca houve, a criação do lead. Base do
    *  "tempo sem contato". */
   lastContactAt: string;
+  /** Por que está sem resposta (regra: robô na abertura conta como resposta). */
+  motivo?: 'sem_contato' | 'nunca_respondido' | 'apos_robo' | 'aguardando_vendedor';
 }
 
 export interface TinyLeadsNoResponsePage {

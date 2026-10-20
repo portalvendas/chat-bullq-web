@@ -1667,7 +1667,7 @@ function LeadsNoResponseModal({
                 Leads sem resposta
               </h2>
               <p className="text-xs text-zinc-500">
-                {total} lead{total === 1 ? '' : 's'} que o time não respondeu no período
+                {total} lead{total === 1 ? '' : 's'} sem resposta humana no período (robô na 1ª mensagem conta como resposta)
               </p>
             </div>
           </div>
@@ -1709,8 +1709,11 @@ function LeadsNoResponseModal({
                       )}
                       <span className="inline-flex items-center gap-1">
                         <Clock className="h-3 w-3" />
-                        {fmtTempoSemContato(lead.lastContactAt)} sem contato
+                        {fmtTempoSemContato(lead.lastContactAt)} esperando
                       </span>
+                      {lead.motivo && (
+                        <span className="text-amber-600 dark:text-amber-400">{MOTIVO_SEM_RESPOSTA[lead.motivo]}</span>
+                      )}
                     </div>
                   </div>
                 );
@@ -2023,6 +2026,13 @@ function LeadsUnassignedModal({
     </div>
   );
 }
+
+const MOTIVO_SEM_RESPOSTA: Record<string, string> = {
+  sem_contato: 'Ninguém fez contato',
+  nunca_respondido: 'Escreveu e não teve resposta',
+  apos_robo: 'Respondeu ao robô e ficou sem atendimento',
+  aguardando_vendedor: 'Voltou a falar e não teve resposta',
+};
 
 /** Badge de origem do lead: WhatsApp (mensagem do lead) x Card (funil). */
 function OrigemBadge({ origem }: { origem: 'whatsapp' | 'funil' }) {
