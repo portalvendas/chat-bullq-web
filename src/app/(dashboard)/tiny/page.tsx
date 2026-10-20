@@ -50,6 +50,7 @@ import {
 } from '@/features/tiny/services/tiny.service';
 import { pipelinesService } from '@/features/pipelines/services/pipelines.service';
 import { toast } from 'sonner';
+import { useAuthStore } from '@/stores/auth-store';
 
 function brl(v: number | null | undefined): string {
   if (v == null) return '—';
@@ -1840,6 +1841,24 @@ function LeadsUnassignedModal({
   onClose: () => void;
 }) {
   const [page, setPage] = useState(1);
+  const queryClient = useQueryClient();
+  const { organizations, activeOrgId } = useAuthStore();
+  const role = organizations.find((o) => o.id === activeOrgId)?.role;
+  const isAdmin = role === 'OWNER' || role === 'ADMIN';
+  const redistribute = useMutation({
+    mutationFn: () => tinyService.redistributeUnassigned(range),
+    onSuccess: (r) => {
+      toast.success(
+        r.assigned > 0
+          ? `${r.assigned} lead(s) distribuído(s)${r.stillUnassigned ? ` · ${r.stillUnassigned} continuam sem vendedor (veja o motivo)` : ''}`
+          : 'Nenhum lead pôde ser distribuído — veja o motivo de cada um.',
+      );
+      queryClient.invalidateQueries({ queryKey: ['tiny-leads-unassigned'] });
+      queryClient.invalidateQueries({ queryKey: ['tiny-summary'] });
+    },
+    onError: (err: any) =>
+      toast.error(err?.response?.data?.message || 'Não foi possível distribuir agora.'),
+  });
   const { data, isLoading, isFetching } = useQuery({
     queryKey: ['tiny-leads-unassigned', range.from, range.to, page],
     queryFn: () => tinyService.leadsUnassigned(range, page, 50),
@@ -1863,9 +1882,26 @@ function LeadsUnassignedModal({
               </p>
             </div>
           </div>
-          <button onClick={onClose} className="rounded-md p-1 text-zinc-400 hover:text-zinc-600" aria-label="Fechar">
-            <X className="h-5 w-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            {isAdmin && total > 0 && (
+              <button
+                type="button"
+                disabled={redistribute.isPending}
+                onClick={() => {
+                  if (window.confirm('Aplicar a distribuição agora nos leads ABERTOS sem vendedor deste período? (Marketplace fica de fora.)')) {
+                    redistribute.mutate();
+                  }
+                }}
+                className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:opacity-90 disabled:opacity-60"
+              >
+                {redistribute.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Users className="h-3.5 w-3.5" />}
+                Distribuir agora
+              </button>
+            )}
+            <button onClick={onClose} className="rounded-md p-1 text-zinc-400 hover:text-zinc-600" aria-label="Fechar">
+              <X className="h-5 w-5" />
+            </button>
+          </div>
         </div>
 
         {data && (

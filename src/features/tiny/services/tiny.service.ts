@@ -300,6 +300,13 @@ export const tinyService = {
     });
     return unwrap<TinyLeadsUnassignedPage>(data);
   },
+  /** Aplica a distribuição agora nos cards ABERTOS sem vendedor do período. */
+  async redistributeUnassigned(
+    period: TinyPeriod = {},
+  ): Promise<{ checked: number; assigned: number; stillUnassigned: number }> {
+    const { data } = await api.post('/lead-distribution/redistribute', period);
+    return unwrap<{ checked: number; assigned: number; stillUnassigned: number }>(data);
+  },
   async vendors(period: TinyPeriod = {}): Promise<TinyVendors> {
     const { data } = await api.get('/tiny/vendors', { params: period });
     return unwrap<TinyVendors>(data) ?? { vendedores: [], hasSemVendedor: false };
