@@ -83,6 +83,40 @@ export interface TinyLeadsNoResponsePage {
   pagination: { page: number; limit: number; total: number; totalPages: number };
 }
 
+export type LeadEntrada =
+  | 'marketplace'
+  | 'lead_ads'
+  | 'landing_page'
+  | 'whatsapp'
+  | 'automacao'
+  | 'importacao'
+  | 'manual';
+
+export interface TinyLeadUnassigned {
+  cardId: string;
+  name: string | null;
+  phone: string | null;
+  pipelineId: string;
+  pipeline: string | null;
+  stage: string | null;
+  status: string;
+  entrada: LeadEntrada;
+  motivo: string;
+  motivoLabel: string;
+  conversationId: string | null;
+  createdAt: string;
+}
+
+export interface TinyLeadsUnassignedPage {
+  items: TinyLeadUnassigned[];
+  breakdown: {
+    porMotivo: { motivo: string; label: string; count: number }[];
+    porFunil: { pipeline: string; count: number }[];
+  };
+  distribution: { enabled: boolean; funisSemRegra: string[] };
+  pagination: { page: number; limit: number; total: number; totalPages: number };
+}
+
 export interface TinyPeriod {
   from?: string;
   to?: string;
@@ -254,6 +288,17 @@ export const tinyService = {
       params: { page, limit, ...period },
     });
     return unwrap<TinyLeadsNoResponsePage>(data);
+  },
+  /** Leads (cards) do período SEM vendedor, com o motivo de cada um. */
+  async leadsUnassigned(
+    period: TinyPeriod = {},
+    page = 1,
+    limit = 50,
+  ): Promise<TinyLeadsUnassignedPage> {
+    const { data } = await api.get('/tiny/leads-unassigned', {
+      params: { page, limit, ...period },
+    });
+    return unwrap<TinyLeadsUnassignedPage>(data);
   },
   async vendors(period: TinyPeriod = {}): Promise<TinyVendors> {
     const { data } = await api.get('/tiny/vendors', { params: period });

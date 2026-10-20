@@ -46,6 +46,7 @@ import {
   type TinyPeriod,
   type TinyVendors,
   type TinyReceipt,
+  type LeadEntrada,
 } from '@/features/tiny/services/tiny.service';
 import { pipelinesService } from '@/features/pipelines/services/pipelines.service';
 import { toast } from 'sonner';
@@ -1068,6 +1069,7 @@ export default function TinyOrdersPage({
   const [vendedor, setVendedor] = useState(''); // '' = todos; '__sem__' = sem vendedor
   const [comprovante, setComprovante] = useState(''); // '' = todos; sem|parcial|confere|excedente
   const [leadsOpen, setLeadsOpen] = useState(false); // modal "leads sem resposta"
+  const [unassignedOpen, setUnassignedOpen] = useState(false); // modal "leads sem vendedor"
   const range = controlled
     ? { from: from!, to: to! }
     : periodRange(period, customFrom, customTo);
@@ -1436,7 +1438,20 @@ export default function TinyOrdersPage({
                         <td className="py-1.5 pr-3 font-medium text-zinc-800 dark:text-zinc-200">
                           {v.vendedor}
                         </td>
-                        <td className="py-1.5 pr-3 text-right tabular-nums">{leads}</td>
+                        <td className="py-1.5 pr-3 text-right tabular-nums">
+                          {v.vendedor === 'Sem vendedor' && leads > 0 ? (
+                            <button
+                              type="button"
+                              onClick={() => setUnassignedOpen(true)}
+                              className="font-semibold text-primary hover:underline"
+                              title="Ver os leads sem vendedor e o motivo"
+                            >
+                              {leads}
+                            </button>
+                          ) : (
+                            leads
+                          )}
+                        </td>
                         <td className="py-1.5 pr-3 text-right tabular-nums">{fmtPct(convLead)}</td>
                         <td className="py-1.5 pr-3 text-right tabular-nums">{v.pedidosCount}</td>
                         <td className="py-1.5 pr-3 text-right tabular-nums">{brl(v.pedidosTotal)}</td>
@@ -1560,6 +1575,10 @@ export default function TinyOrdersPage({
           </div>
         )}
       </div>
+
+      {unassignedOpen && (
+        <LeadsUnassignedModal range={range} onClose={() => setUnassignedOpen(false)} />
+      )}
 
       {leadsOpen && (
         <LeadsNoResponseModal
@@ -1795,6 +1814,178 @@ function fmtTempoSemContato(iso: string): string {
   if (d < 30) return `há ${d} dia${d > 1 ? 's' : ''}`;
   const mo = Math.floor(d / 30);
   return `há ${mo} ${mo > 1 ? 'meses' : 'mês'}`;
+}
+
+const ENTRADA_LABEL: Record<LeadEntrada, string> = {
+  marketplace: 'Marketplace',
+  lead_ads: 'Lead Ads',
+  landing_page: 'Landing Page',
+  whatsapp: 'WhatsApp',
+  automacao: 'Automação',
+  importacao: 'Importação',
+  manual: 'Manual',
+};
+
+/**
+ * Modal com os LEADS SEM VENDEDOR do período (drill-down do "Sem vendedor").
+ * Topo: por que ficaram sem dono (motivo × quantidade) e em quais funis. Lista:
+ * cada lead com funil/etapa, como entrou e o motivo, com atalho pro inbox ou
+ * pro funil. Paginado.
+ */
+function LeadsUnassignedModal({
+  range,
+  onClose,
+}: {
+  range: { from?: string; to?: string };
+  onClose: () => void;
+}) {
+  const [page, setPage] = useState(1);
+  const { data, isLoading, isFetching } = useQuery({
+    queryKey: ['tiny-leads-unassigned', range.from, range.to, page],
+    queryFn: () => tinyService.leadsUnassigned(range, page, 50),
+    placeholderData: (prev) => prev,
+  });
+  const items = data?.items ?? [];
+  const total = data?.pagination.total ?? 0;
+  const totalPages = data?.pagination.totalPages ?? 1;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 bg-black/50" onClick={onClose} />
+      <div className="relative z-50 flex max-h-[85vh] w-full max-w-3xl flex-col rounded-2xl bg-white shadow-2xl dark:bg-zinc-900">
+        <div className="flex items-center justify-between border-b border-zinc-200 p-4 dark:border-zinc-800">
+          <div className="flex items-center gap-2">
+            <UserX className="h-5 w-5 text-zinc-500" />
+            <div>
+              <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">Leads sem vendedor</h2>
+              <p className="text-xs text-zinc-500">
+                {total} lead{total === 1 ? '' : 's'} do período sem responsável no card
+              </p>
+            </div>
+          </div>
+          <button onClick={onClose} className="rounded-md p-1 text-zinc-400 hover:text-zinc-600" aria-label="Fechar">
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        {data && (
+          <div className="grid gap-4 border-b border-zinc-200 p-4 text-xs sm:grid-cols-2 dark:border-zinc-800">
+            <div>
+              <div className="mb-1.5 font-semibold uppercase tracking-wide text-zinc-400">Por que ficaram sem vendedor</div>
+              <ul className="space-y-1">
+                {data.breakdown.porMotivo.map((m) => (
+                  <li key={m.motivo} className="flex items-start justify-between gap-3">
+                    <span className="text-zinc-600 dark:text-zinc-300">{m.label}</span>
+                    <span className="font-semibold tabular-nums text-zinc-900 dark:text-zinc-100">{m.count}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <div className="mb-1.5 font-semibold uppercase tracking-wide text-zinc-400">Por funil</div>
+              <ul className="space-y-1">
+                {data.breakdown.porFunil.map((f) => (
+                  <li key={f.pipeline} className="flex justify-between gap-3">
+                    <span className="truncate text-zinc-600 dark:text-zinc-300">{f.pipeline}</span>
+                    <span className="font-semibold tabular-nums text-zinc-900 dark:text-zinc-100">{f.count}</span>
+                  </li>
+                ))}
+              </ul>
+              {!data.distribution.enabled ? (
+                <p className="mt-2 text-amber-600 dark:text-amber-400">
+                  A distribuição de leads está desligada.{' '}
+                  <Link href="/settings/distribuicao" className="underline" onClick={onClose}>Configurar</Link>
+                </p>
+              ) : data.distribution.funisSemRegra.length > 0 ? (
+                <p className="mt-2 text-amber-600 dark:text-amber-400">
+                  Funis sem regra de distribuição: {data.distribution.funisSemRegra.join(', ')}.{' '}
+                  <Link href="/settings/distribuicao" className="underline" onClick={onClose}>Configurar</Link>
+                </p>
+              ) : null}
+            </div>
+          </div>
+        )}
+
+        <div className="flex-1 overflow-y-auto p-2">
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12 text-zinc-400">
+              <Loader2 className="h-5 w-5 animate-spin" />
+            </div>
+          ) : items.length === 0 ? (
+            <div className="py-12 text-center text-sm text-zinc-400">Nenhum lead sem vendedor no período.</div>
+          ) : (
+            <ul className="divide-y divide-zinc-100 dark:divide-zinc-800">
+              {items.map((lead) => (
+                <li key={lead.cardId} className="flex items-center justify-between gap-3 px-2 py-2.5">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <User className="h-3.5 w-3.5 shrink-0 text-zinc-400" />
+                      <span className="truncate text-sm font-medium text-zinc-800 dark:text-zinc-200">{lead.name || 'Lead'}</span>
+                      <span className="shrink-0 rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
+                        {ENTRADA_LABEL[lead.entrada] ?? lead.entrada}
+                      </span>
+                    </div>
+                    <div className="mt-0.5 ml-5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px] text-zinc-400">
+                      <span>{lead.pipeline ?? 'Funil'} · {lead.stage ?? '—'}</span>
+                      {lead.phone && (
+                        <span className="inline-flex items-center gap-1"><Phone className="h-3 w-3" /> {lead.phone}</span>
+                      )}
+                      <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> criado {fmtTempoSemContato(lead.createdAt)}</span>
+                    </div>
+                    <div className="ml-5 mt-0.5 text-[11px] text-amber-600 dark:text-amber-400">{lead.motivoLabel}</div>
+                  </div>
+                  {lead.conversationId ? (
+                    <Link
+                      href={`/inbox?conversationId=${lead.conversationId}`}
+                      onClick={onClose}
+                      className="inline-flex shrink-0 items-center gap-1 rounded-md border border-zinc-200 px-2.5 py-1 text-[11px] font-medium text-primary hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800/40"
+                    >
+                      <MessageSquare className="h-3 w-3" /> Abrir inbox
+                    </Link>
+                  ) : (
+                    <Link
+                      href={`/pipelines/${lead.pipelineId}`}
+                      onClick={onClose}
+                      className="inline-flex shrink-0 items-center gap-1 rounded-md border border-zinc-200 px-2.5 py-1 text-[11px] font-medium text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800/40"
+                    >
+                      <FileText className="h-3 w-3" /> Abrir funil
+                    </Link>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between border-t border-zinc-200 px-4 py-3 text-xs text-zinc-500 dark:border-zinc-800">
+            <span>
+              Página {page} de {totalPages}
+              {isFetching && <Loader2 className="ml-2 inline h-3 w-3 animate-spin" />}
+            </span>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                disabled={page <= 1}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                className="rounded-md border border-zinc-200 px-3 py-1.5 disabled:opacity-40 dark:border-zinc-700"
+              >
+                Anterior
+              </button>
+              <button
+                type="button"
+                disabled={page >= totalPages}
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                className="rounded-md border border-zinc-200 px-3 py-1.5 disabled:opacity-40 dark:border-zinc-700"
+              >
+                Próxima
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
 
 /** Badge de origem do lead: WhatsApp (mensagem do lead) x Card (funil). */
