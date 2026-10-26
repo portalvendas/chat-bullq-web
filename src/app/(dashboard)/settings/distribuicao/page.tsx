@@ -2,7 +2,8 @@
 
 /**
  * Configurações → Distribuição de leads. Orquestrador que reparte cada lead
- * novo (conversa sem responsável) entre vendedores por SORTEIO PONDERADO.
+ * novo (conversa sem responsável) entre vendedores por RODÍZIO PONDERADO
+ * (sequência fixa, sem sorteio: 50/50 = 1 lead para cada, alternando).
  * Os pesos são POR FUNIL — cada funil tem a sua própria classificação (ex.:
  * Mercado Livre 100% p/ um vendedor; Funil de Vendas 70/30). O "% efetivo"
  * mostra a proporção real que cada um recebe naquele funil.
@@ -113,9 +114,11 @@ export default function DistribuicaoPage() {
         </h2>
         <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
           Cada funil tem a sua própria classificação de pesos. Ex.: Mercado Livre
-          100% para um vendedor; Funil de Vendas 70/30. O sorteio usa a regra do
-          funil em que o lead entra; funis sem regra própria caem em "Demais
-          funis (padrão)".
+          100% para um vendedor; Funil de Vendas 50/50. A distribuição é por
+          RODÍZIO (sem sorteio): com 50/50, cada lead novo vai para a próxima
+          vendedora da vez — 1 para cada, alternando; com 70/30, 7 e 3 a cada 10,
+          intercalados. Cliente que já é de uma vendedora continua com ela e não
+          conta na vez. Funis sem regra própria caem em "Demais funis (padrão)".
         </p>
       </div>
 
