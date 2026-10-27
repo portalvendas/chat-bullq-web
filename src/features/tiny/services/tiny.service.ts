@@ -78,6 +78,9 @@ export interface TinyLeadNoResponse {
   lastContactAt: string;
   /** Por que está sem resposta (regra: robô na abertura conta como resposta). */
   motivo?: 'sem_contato' | 'nunca_respondido' | 'apos_robo' | 'aguardando_vendedor';
+  /** Vendedora atribuída (do card; sem, a da conversa). */
+  vendedor?: string | null;
+  vendedorId?: string | null;
 }
 
 export interface TinyLeadsNoResponsePage {

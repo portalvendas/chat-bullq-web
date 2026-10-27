@@ -1707,9 +1707,22 @@ function LeadsNoResponseModal({
                           <Phone className="h-3 w-3" /> {lead.phone}
                         </span>
                       )}
-                      <span className="inline-flex items-center gap-1">
+                      <span className="inline-flex items-center gap-1" title="Quando o lead entrou no CRM">
+                        <CalendarDays className="h-3 w-3" />
+                        entrou {fmtDataHora(lead.createdAt)}
+                      </span>
+                      <span className="inline-flex items-center gap-1" title="Desde a última mensagem do cliente sem resposta (ou desde a entrada, se nunca houve contato)">
                         <Clock className="h-3 w-3" />
-                        {fmtTempoSemContato(lead.lastContactAt)} esperando
+                        esperando desde {fmtDataHora(lead.lastContactAt)} ({fmtTempoSemContato(lead.lastContactAt)})
+                      </span>
+                    </div>
+                    <div className="mt-0.5 ml-5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px]">
+                      <span
+                        className={`inline-flex items-center gap-1 font-medium ${lead.vendedor ? 'text-zinc-600 dark:text-zinc-300' : 'text-red-500'}`}
+                        title="Vendedora atribuída ao lead"
+                      >
+                        <User className="h-3 w-3" />
+                        {lead.vendedor ?? 'Sem vendedora'}
                       </span>
                       {lead.motivo && (
                         <span className="text-amber-600 dark:text-amber-400">{MOTIVO_SEM_RESPOSTA[lead.motivo]}</span>
@@ -1808,6 +1821,16 @@ function LeadsNoResponseModal({
 }
 
 /** "tempo sem contato" relativo (há X min/h/dias/meses). */
+/** ISO → "26/10 14:32" (hoje: só a hora "14:32"), no fuso de São Paulo. */
+function fmtDataHora(iso: string): string {
+  const d = new Date(iso);
+  const tz = 'America/Sao_Paulo';
+  const dia = (x: Date) => x.toLocaleDateString('pt-BR', { timeZone: tz });
+  const hora = d.toLocaleTimeString('pt-BR', { timeZone: tz, hour: '2-digit', minute: '2-digit' });
+  if (dia(d) === dia(new Date())) return `hoje ${hora}`;
+  return `${d.toLocaleDateString('pt-BR', { timeZone: tz, day: '2-digit', month: '2-digit' })} ${hora}`;
+}
+
 function fmtTempoSemContato(iso: string): string {
   const ms = Date.now() - new Date(iso).getTime();
   const min = Math.max(0, Math.floor(ms / 60000));
