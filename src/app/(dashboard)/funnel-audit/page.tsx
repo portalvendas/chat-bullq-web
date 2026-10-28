@@ -1,12 +1,14 @@
 'use client';
 
 /**
- * Auditoria de Funil — varre os cards OPEN ativos nos últimos 60 dias e sugere
- * mudança de etapa (híbrido: regras filtram, IA analisa). Revisão manual:
- * aplicar move o card; ignorar descarta; "Salesbot" inicia um fluxo no card.
- * Dá pra escolher quais funis analisar antes de rodar.
+ * Auditoria de Funil — roda sozinha seg–sáb às 08:30, 12:30 e 16:30 (e sob
+ * demanda). Duas visões:
+ *  - Alertas do processo: checagens SQL (cliente esperando, lead novo sem
+ *    contato, orçamento sem follow-up, card sem conversa/parado/sem vendedora,
+ *    conversa fora do funil, vendedora divergente, duplicado).
+ *  - Sugestões de etapa: regras + IA sugerem mover o card (aplicar/ignorar).
  */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -23,10 +25,14 @@ import {
   CheckCircle2,
   Bot,
   ChevronDown,
+  Clock,
+  Kanban,
+  Users,
 } from 'lucide-react';
 import {
   funnelAuditService,
   type AuditSuggestion,
+  type AuditFinding,
 } from '@/features/funnel-audit/services/funnel-audit.service';
 import { pipelinesService } from '@/features/pipelines/services/pipelines.service';
 import {
@@ -68,6 +74,11 @@ function confBadge(c: string): { label: string; cls: string } {
 export default function FunnelAuditPage() {
   const qc = useQueryClient();
   const [status, setStatus] = useState<string>('PENDING');
+  const [view, setView] = useState<'alertas' | 'sugestoes'>('alertas');
+  useEffect(() => {
+    // ?tab=sugestoes abre direto nas sugestões (link de notificação usa alertas).
+    if (new URLSearchParams(window.location.search).get('tab') === 'sugestoes') setView('sugestoes');
+  }, []);
   const [selectedPipes, setSelectedPipes] = useState<string[]>([]);
 
   const { data: pipelines } = useQuery({
@@ -150,8 +161,8 @@ export default function FunnelAuditPage() {
             Auditoria de Funil
           </h1>
           <p className="text-xs text-zinc-500">
-            Analisa os cards ativos nos últimos 60 dias e sugere a etapa certa.
-            Nada muda sem você aplicar.
+            Roda sozinha seg–sáb às 08:30, 12:30 e 16:30 e avisa cada vendedora
+            do que é dela. Sugestões de etapa só mudam o card se você aplicar.
           </p>
         </div>
         <button
@@ -241,6 +252,14 @@ export default function FunnelAuditPage() {
               <span>{run.cardsScanned} cards analisados</span>
               <span>{run.cardsFlagged} com sinal</span>
               <span className="font-semibold">{run.suggestions} sugestões</span>
+              {run.findings != null && (
+                <span className="font-semibold">{run.findings} alertas</span>
+              )}
+              {run.finishedAt && (
+                <span className="text-xs text-zinc-400">
+                  {new Date(run.finishedAt).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                </span>
+              )}
               {run.aiUsed && (
                 <span className="inline-flex items-center gap-1 text-violet-600">
                   <Sparkles className="h-3.5 w-3.5" /> com IA
@@ -258,8 +277,32 @@ export default function FunnelAuditPage() {
         </div>
       )}
 
+      {/* Visões */}
+      {run && (
+        <div className="flex gap-1 border-b border-zinc-200 dark:border-zinc-800">
+          {([
+            ['alertas', 'Alertas do processo'],
+            ['sugestoes', 'Sugestões de etapa'],
+          ] as const).map(([k, label]) => (
+            <button
+              key={k}
+              onClick={() => setView(k)}
+              className={`-mb-px border-b-2 px-3 py-2 text-sm font-medium ${
+                view === k
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {view === 'alertas' && run && <FindingsPanel runId={run.status === 'DONE' ? run.id : undefined} />}
+
       {/* Filtros de status */}
-      {run?.status === 'DONE' && (
+      {view === 'sugestoes' && run?.status === 'DONE' && (
         <div className="flex gap-1.5">
           {STATUS_TABS.map((t) => (
             <button
@@ -278,7 +321,7 @@ export default function FunnelAuditPage() {
       )}
 
       {/* Lista de sugestões */}
-      {run?.status === 'DONE' &&
+      {view === 'sugestoes' && run?.status === 'DONE' &&
         (isLoading ? (
           <div className="flex items-center gap-2 py-8 text-sm text-zinc-400">
             <Loader2 className="h-4 w-4 animate-spin" /> carregando…
@@ -459,5 +502,193 @@ function SuggestionRow({
         )}
       </div>
     </li>
+  );
+}
+
+// ── Alertas do processo ─────────────────────────────────────────────
+
+function fmtMin(m: number | null): string {
+  if (m == null) return '';
+  if (m < 60) return `${m} min`;
+  if (m < 1440) return `${Math.floor(m / 60)}h${m % 60 ? String(m % 60).padStart(2, '0') : ''}`;
+  const d = Math.floor(m / 1440);
+  return `${d} dia${d > 1 ? 's' : ''}`;
+}
+
+const SEV: Record<string, { label: string; cls: string }> = {
+  HIGH: { label: 'urgente', cls: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300' },
+  MEDIUM: { label: 'atenção', cls: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300' },
+  LOW: { label: 'baixa', cls: 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300' },
+};
+
+/** Texto curto explicando o porquê, a partir de `details`. */
+function findingHint(f: AuditFinding): string {
+  const d = f.details ?? {};
+  switch (f.type) {
+    case 'AGUARDANDO_RESPOSTA':
+      return d.kind === 'apos_robo'
+        ? 'Só o robô respondeu — falta a vendedora'
+        : d.kind === 'nunca_respondido'
+          ? 'Nunca respondido'
+          : 'Cliente mandou mensagem e aguarda';
+    case 'LEAD_NOVO_SEM_CONTATO':
+      return d.soRobo ? 'Só o robô falou com o lead' : 'Ninguém falou com o lead ainda';
+    case 'ORCAMENTO_SEM_FOLLOWUP':
+      return `Orçamento ${d.orcamento ?? ''}${d.valor ? ` · ${brl(Number(d.valor))}` : ''} sem retorno`;
+    case 'CARD_SEM_CONVERSA':
+      return `Origem: ${d.origem ?? '—'} · iniciar conversa no WhatsApp`;
+    case 'CARD_PARADO':
+      return `Sem movimento na etapa ${d.etapa ?? ''}`;
+    case 'CONVERSA_SEM_CARD':
+      return `Cliente falou no ${d.canal ?? 'canal'} e não há card aberto`;
+    case 'VENDEDOR_DIVERGENTE':
+      return `Card: ${d.vendedoraCard ?? '—'} · Conversa: ${d.vendedoraConversa ?? '—'}`;
+    case 'LEAD_DUPLICADO':
+      return `${d.cardsAbertos ?? 2} cards abertos para o mesmo cliente`;
+    case 'CARD_SEM_VENDEDOR':
+      return 'Distribua para uma vendedora';
+    default:
+      return '';
+  }
+}
+
+function FindingsPanel({ runId }: { runId?: string }) {
+  const [type, setType] = useState<string | undefined>();
+  const [owner, setOwner] = useState<string | undefined>();
+  const [pageN, setPageN] = useState(1);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['funnel-audit', 'findings', runId, type, owner, pageN],
+    queryFn: () =>
+      funnelAuditService.findings({ runId, type, ownerUserId: owner, page: pageN, limit: 50 }),
+    staleTime: 15_000,
+  });
+
+  if (isLoading)
+    return (
+      <div className="flex items-center gap-2 py-8 text-sm text-zinc-400">
+        <Loader2 className="h-4 w-4 animate-spin" /> carregando…
+      </div>
+    );
+  if (!data || !data.runId)
+    return (
+      <div className="rounded-xl border border-zinc-200 bg-white p-8 text-center text-sm text-zinc-500 dark:border-zinc-800 dark:bg-zinc-900">
+        Ainda não há alertas — aparecem após a próxima auditoria.
+      </div>
+    );
+
+  const total = data.summary.byType.reduce((a, t) => a + t.count, 0);
+  const chip = (on: boolean) =>
+    `rounded-lg border px-2.5 py-1.5 text-left text-xs ${
+      on
+        ? 'border-primary bg-primary/10 text-primary'
+        : 'border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300'
+    }`;
+
+  return (
+    <div className="space-y-3">
+      {/* Resumo por tipo */}
+      <div className="flex flex-wrap gap-1.5">
+        <button className={chip(!type)} onClick={() => { setType(undefined); setPageN(1); }}>
+          <span className="font-semibold">{total}</span> todos
+        </button>
+        {data.summary.byType.map((t) => (
+          <button
+            key={t.type}
+            className={chip(type === t.type)}
+            onClick={() => { setType(type === t.type ? undefined : t.type); setPageN(1); }}
+          >
+            <span className="font-semibold">{t.count}</span> {t.label}
+            {t.high > 0 && <span className="ml-1 font-semibold text-red-600">· {t.high} urgente</span>}
+          </button>
+        ))}
+      </div>
+
+      {/* Por vendedora */}
+      {data.summary.bySeller.length > 1 && (
+        <div className="flex flex-wrap items-center gap-1.5 text-xs">
+          <Users className="h-3.5 w-3.5 text-zinc-400" />
+          <button
+            onClick={() => { setOwner(undefined); setPageN(1); }}
+            className={`rounded-full px-2.5 py-1 ${!owner ? 'bg-primary text-white' : 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300'}`}
+          >
+            Todas
+          </button>
+          {data.summary.bySeller.filter((s) => s.userId).map((s) => (
+            <button
+              key={s.userId!}
+              onClick={() => { setOwner(owner === s.userId ? undefined : s.userId!); setPageN(1); }}
+              className={`rounded-full px-2.5 py-1 ${owner === s.userId ? 'bg-primary text-white' : 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300'}`}
+            >
+              {s.name} · {s.count}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {data.items.length === 0 ? (
+        <div className="rounded-xl border border-zinc-200 bg-white p-8 text-center text-sm text-zinc-500 dark:border-zinc-800 dark:bg-zinc-900">
+          Nenhum alerta. 🎉
+        </div>
+      ) : (
+        <ul className="space-y-2">
+          {data.items.map((f) => {
+            const sev = SEV[f.severity] ?? SEV.LOW;
+            return (
+              <li key={f.id} className="rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="truncate text-sm font-semibold text-zinc-800 dark:text-zinc-100">
+                        {f.lead.name || f.lead.phone || 'Lead'}
+                      </span>
+                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${sev.cls}`}>{sev.label}</span>
+                      <span className="text-[11px] font-medium text-zinc-600 dark:text-zinc-300">{f.label}</span>
+                      {f.minutes != null && (
+                        <span className="inline-flex items-center gap-1 text-[11px] text-zinc-500">
+                          <Clock className="h-3 w-3" /> {fmtMin(f.minutes)}
+                        </span>
+                      )}
+                    </div>
+                    <p className="mt-1 text-xs text-zinc-600 dark:text-zinc-300">{findingHint(f)}</p>
+                    <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px] text-zinc-500">
+                      <span>{f.owner?.name ?? 'Sem vendedora'}</span>
+                      {f.pipeline && <span className="text-zinc-400">{f.pipeline}{f.stage ? ` · ${f.stage}` : ''}</span>}
+                      {f.lead.phone && <span className="tabular-nums text-zinc-400">{f.lead.phone}</span>}
+                    </div>
+                  </div>
+                  <div className="flex shrink-0 flex-col items-end gap-1">
+                    {f.conversationId && (
+                      <Link
+                        href={`/inbox?conversationId=${f.conversationId}`}
+                        className="inline-flex items-center gap-1 text-[11px] font-medium text-primary hover:underline"
+                      >
+                        <MessageSquare className="h-3 w-3" /> Abrir conversa
+                      </Link>
+                    )}
+                    {f.pipelineId && (
+                      <Link
+                        href={`/pipelines/${f.pipelineId}`}
+                        className="inline-flex items-center gap-1 text-[11px] font-medium text-zinc-500 hover:underline"
+                      >
+                        <Kanban className="h-3 w-3" /> Abrir funil
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+
+      {data.pagination.totalPages > 1 && (
+        <div className="flex items-center justify-center gap-3 text-xs text-zinc-500">
+          <button disabled={pageN <= 1} onClick={() => setPageN((p) => p - 1)} className="disabled:opacity-40">‹ anterior</button>
+          <span>{pageN} / {data.pagination.totalPages}</span>
+          <button disabled={pageN >= data.pagination.totalPages} onClick={() => setPageN((p) => p + 1)} className="disabled:opacity-40">próxima ›</button>
+        </div>
+      )}
+    </div>
   );
 }

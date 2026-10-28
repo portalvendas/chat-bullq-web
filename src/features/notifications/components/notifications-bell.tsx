@@ -61,6 +61,7 @@ function hrefFor(data?: Record<string, any>): string {
   if (data.conversationId) {
     return `/inbox?conversationId=${data.conversationId}`;
   }
+  if (data.kind === 'funnel_audit') return '/funnel-audit?tab=alertas';
   if (data.kind === 'card_inactive') {
     return data.pipelineId ? `/pipelines/${data.pipelineId}` : '/pipelines';
   }

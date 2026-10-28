@@ -11,6 +11,7 @@ export interface AuditRun {
   cardsScanned: number;
   cardsFlagged: number;
   suggestions: number;
+  findings?: number;
   aiUsed: boolean;
   error: string | null;
   startedAt: string;
@@ -46,7 +47,46 @@ export interface AuditSuggestionsPage {
   pagination: { page: number; limit: number; total: number; totalPages: number };
 }
 
+/** Achado das checagens do processo comercial (SQL, sem IA). */
+export interface AuditFinding {
+  id: string;
+  type: string;
+  label: string;
+  severity: 'HIGH' | 'MEDIUM' | 'LOW' | string;
+  minutes: number | null;
+  details: Record<string, any> | null;
+  cardId: string | null;
+  pipelineId: string | null;
+  pipeline: string | null;
+  stage: string | null;
+  conversationId: string | null;
+  lead: { name: string | null; phone: string | null };
+  owner: { id: string; name: string | null } | null;
+}
+
+export interface AuditFindingsPage {
+  runId: string | null;
+  finishedAt: string | null;
+  scheduled?: boolean;
+  summary: {
+    byType: { type: string; label: string; count: number; high: number }[];
+    bySeller: { userId: string | null; name: string; count: number }[];
+  };
+  items: AuditFinding[];
+  pagination: { page: number; limit: number; total: number; totalPages: number };
+}
+
 export const funnelAuditService = {
+  async findings(params: {
+    runId?: string;
+    type?: string;
+    ownerUserId?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<AuditFindingsPage> {
+    const { data } = await api.get('/funnel-audit/findings', { params });
+    return unwrap<AuditFindingsPage>(data);
+  },
   async run(
     pipelineIds?: string[],
   ): Promise<{ runId: string; alreadyRunning: boolean }> {
