@@ -384,9 +384,19 @@ function SuggestionRow({
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="truncate text-sm font-semibold text-zinc-800 dark:text-zinc-100">
-              {s.lead.name || s.lead.title || 'Lead'}
-            </span>
+            {s.lead.conversationId ? (
+              <Link
+                href={`/inbox?conversationId=${s.lead.conversationId}`}
+                title="Abrir a conversa do cliente no inbox"
+                className="truncate text-sm font-semibold text-zinc-800 hover:text-primary hover:underline dark:text-zinc-100"
+              >
+                {s.lead.name || s.lead.title || 'Lead'}
+              </Link>
+            ) : (
+              <span className="truncate text-sm font-semibold text-zinc-800 dark:text-zinc-100">
+                {s.lead.name || s.lead.title || 'Lead'}
+              </span>
+            )}
             <span
               className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${act.cls}`}
             >
@@ -427,14 +437,27 @@ function SuggestionRow({
           </p>
 
           <div className="mt-1 flex items-center gap-3">
-            {s.lead.conversationId && (
+            {s.lead.conversationId ? (
               <Link
                 href={`/inbox?conversationId=${s.lead.conversationId}`}
                 className="inline-flex items-center gap-1 text-[11px] font-medium text-primary hover:underline"
               >
                 <MessageSquare className="h-3 w-3" /> Ver conversa
               </Link>
+            ) : (
+              <span
+                title="O cliente ainda não tem conversa no WhatsApp/Instagram"
+                className="inline-flex items-center gap-1 text-[11px] text-zinc-400"
+              >
+                <MessageSquare className="h-3 w-3" /> Sem conversa
+              </span>
             )}
+            <Link
+              href={`/pipelines/${s.pipelineId}`}
+              className="inline-flex items-center gap-1 text-[11px] font-medium text-zinc-500 hover:underline"
+            >
+              <Kanban className="h-3 w-3" /> Abrir funil
+            </Link>
 
             {/* Salesbot */}
             <div className="relative">
