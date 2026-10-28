@@ -549,11 +549,11 @@ function findingHint(f: AuditFinding): string {
   const d = f.details ?? {};
   switch (f.type) {
     case 'AGUARDANDO_RESPOSTA':
-      return d.kind === 'apos_robo'
+      return (d.posVenda ? 'Pós-venda (já comprou) · ' : '') + (d.kind === 'apos_robo'
         ? 'Só o robô respondeu — falta a vendedora'
         : d.kind === 'nunca_respondido'
           ? 'Nunca respondido'
-          : 'Cliente mandou mensagem e aguarda';
+          : 'Cliente mandou mensagem e aguarda');
     case 'LEAD_NOVO_SEM_CONTATO':
       return d.soRobo ? 'Só o robô falou com o lead' : 'Ninguém falou com o lead ainda';
     case 'ORCAMENTO_SEM_FOLLOWUP':
