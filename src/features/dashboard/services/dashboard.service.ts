@@ -415,7 +415,7 @@ export const dashboardService = {
   },
   /** Lista de público do Google Ads (Customer Match), CSV já hasheado. */
   async exportGoogleAudience(
-    lista: 'compradores' | 'qualificados' | 'frios',
+    lista: 'compradores' | 'qualificados' | 'frios' | 'base',
   ): Promise<{ blob: Blob; rows: number }> {
     const res = await api.get('/dashboard/google-audiences/export', {
       params: { lista },

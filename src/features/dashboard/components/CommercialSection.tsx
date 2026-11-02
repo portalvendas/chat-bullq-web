@@ -171,6 +171,7 @@ const AUDIENCES = [
   { key: 'compradores', label: 'Compradores', hint: 'Venda direta nos últimos 540 dias — use na meta "novos clientes" da PMax' },
   { key: 'qualificados', label: 'Leads qualificados', hint: 'Orçamento ou score ≥ 60 (180 dias), sem compra' },
   { key: 'frios', label: 'Leads frios/perdidos', hint: 'Perdidos (180 dias), sem compra — para excluir' },
+  { key: 'base', label: 'Base completa', hint: 'Todos os contatos do CRM (todos os canais) — passa do mínimo de 1.000 do Google' },
 ] as const;
 
 /** Listas de público (Customer Match) para o Google Ads — CSV hasheado. */
