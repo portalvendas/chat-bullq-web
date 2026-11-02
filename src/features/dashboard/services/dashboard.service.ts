@@ -413,6 +413,16 @@ export const dashboardService = {
     });
     return data as Blob;
   },
+  /** Lista de público do Google Ads (Customer Match), CSV já hasheado. */
+  async exportGoogleAudience(
+    lista: 'compradores' | 'qualificados' | 'frios',
+  ): Promise<{ blob: Blob; rows: number }> {
+    const res = await api.get('/dashboard/google-audiences/export', {
+      params: { lista },
+      responseType: 'blob',
+    });
+    return { blob: res.data as Blob, rows: Number(res.headers?.['x-rows'] ?? 0) };
+  },
   async getIntakeHealth(): Promise<IntakeHealth> {
     const { data } = await api.get('/dashboard/lead-intake-health');
     return data.data;

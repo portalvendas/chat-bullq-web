@@ -167,6 +167,69 @@ function GoogleExportButton({ from, to }: { from: string; to: string }) {
   );
 }
 
+const AUDIENCES = [
+  { key: 'compradores', label: 'Compradores', hint: 'Venda direta nos últimos 540 dias — use na meta "novos clientes" da PMax' },
+  { key: 'qualificados', label: 'Leads qualificados', hint: 'Orçamento ou score ≥ 60 (180 dias), sem compra' },
+  { key: 'frios', label: 'Leads frios/perdidos', hint: 'Perdidos (180 dias), sem compra — para excluir' },
+] as const;
+
+/** Listas de público (Customer Match) para o Google Ads — CSV hasheado. */
+function GoogleAudiencesButton() {
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState<string | null>(null);
+  const download = async (key: (typeof AUDIENCES)[number]['key']) => {
+    try {
+      setLoading(key);
+      const { blob, rows } = await dashboardService.exportGoogleAudience(key);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `google_publico_${key}_${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      toast.success(`Lista exportada (${rows} pessoas).`);
+      setOpen(false);
+    } catch {
+      toast.error('Falha ao exportar a lista.');
+    } finally {
+      setLoading(null);
+    }
+  };
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        title="Listas de clientes/leads para o Google Ads (Customer Match), já criptografadas"
+        className="inline-flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-700 shadow-sm hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
+      >
+        <Download className="h-4 w-4" />
+        Públicos Google
+      </button>
+      {open && (
+        <div className="absolute right-0 z-20 mt-1 w-72 rounded-lg border border-zinc-200 bg-white p-1 shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
+          {AUDIENCES.map((a) => (
+            <button
+              key={a.key}
+              type="button"
+              disabled={!!loading}
+              onClick={() => download(a.key)}
+              className="flex w-full flex-col rounded-md px-2.5 py-2 text-left hover:bg-zinc-100 disabled:opacity-50 dark:hover:bg-zinc-800"
+            >
+              <span className="text-sm font-medium text-zinc-800 dark:text-zinc-100">
+                {loading === a.key ? 'Gerando…' : a.label}
+              </span>
+              <span className="text-[11px] text-zinc-500">{a.hint}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function CommercialSection({ from, to }: { from: string; to: string }) {
   const orgId = useOrgId();
   const ORIGENS_LS_KEY = 'kortia:comercial:origens';
@@ -225,6 +288,7 @@ export function CommercialSection({ from, to }: { from: string; to: string }) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-end gap-2">
+        <GoogleAudiencesButton />
         <GoogleExportButton from={from} to={to} />
         <ExportButton from={from} to={to} />
       </div>
