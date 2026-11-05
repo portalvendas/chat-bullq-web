@@ -122,6 +122,22 @@ export interface TinyLeadsUnassignedPage {
   pagination: { page: number; limit: number; total: number; totalPages: number };
 }
 
+export interface TinyChannelRow {
+  canal: string;
+  leads: number;
+  respondidos: number;
+  semResposta: number;
+  medianaMin: number | null;
+  medianaExpedienteMin: number | null;
+  mediaExpedienteMin: number | null;
+  ate15minPct: number | null;
+}
+export interface TinyLeadsByChannel {
+  vendedor: string | null;
+  total: TinyChannelRow;
+  canais: TinyChannelRow[];
+}
+
 export interface TinyPeriod {
   from?: string;
   to?: string;
@@ -351,6 +367,13 @@ export const tinyService = {
   },
   async deleteReceipt(docId: string, receiptId: string): Promise<void> {
     await api.delete(`/tiny/documents/${docId}/comprovante/${receiptId}`);
+  },
+  /** Origem dos leads por canal + tempo de resposta (geral ou de um vendedor). */
+  async leadsByChannel(period: TinyPeriod = {}, vendedor?: string): Promise<TinyLeadsByChannel> {
+    const { data } = await api.get('/tiny/leads-by-channel', {
+      params: { ...period, ...(vendedor ? { vendedor } : {}) },
+    });
+    return unwrap<TinyLeadsByChannel>(data);
   },
   /** Relatório .xlsx com os mesmos filtros da tela (período, vendedor, comprovante). */
   async exportReport(period: TinyPeriod = {}, vendedor?: string, comprovante?: string): Promise<Blob> {

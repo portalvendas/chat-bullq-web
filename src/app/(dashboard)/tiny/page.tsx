@@ -1072,6 +1072,8 @@ export default function TinyOrdersPage({
   const [comprovante, setComprovante] = useState(''); // '' = todos; sem|parcial|confere|excedente
   const [leadsOpen, setLeadsOpen] = useState(false); // modal "leads sem resposta"
   const [unassignedOpen, setUnassignedOpen] = useState(false); // modal "leads sem vendedor"
+  // modal "origem dos leads por canal": undefined = fechado; null = geral; string = vendedor
+  const [channelFor, setChannelFor] = useState<string | null | undefined>(undefined);
   const range = controlled
     ? { from: from!, to: to! }
     : periodRange(period, customFrom, customTo);
@@ -1366,7 +1368,15 @@ export default function TinyOrdersPage({
                   )}
                 </div>
                 <div className="mt-0.5 text-[11px] text-zinc-400">
-                  média no período · {summary.leads.count} leads
+                  média no período ·{' '}
+                  <button
+                    type="button"
+                    onClick={() => setChannelFor(null)}
+                    className="font-medium text-primary hover:underline"
+                    title="Ver a origem dos leads por canal e o tempo de resposta"
+                  >
+                    {summary.leads.count} leads · por canal
+                  </button>
                   {summary.previous ? ' · vs período anterior' : ''}
                 </div>
               </div>
@@ -1484,6 +1494,15 @@ export default function TinyOrdersPage({
                               onClick={() => setUnassignedOpen(true)}
                               className="font-semibold text-primary hover:underline"
                               title="Ver os leads sem vendedor e o motivo"
+                            >
+                              {leads}
+                            </button>
+                          ) : leads > 0 ? (
+                            <button
+                              type="button"
+                              onClick={() => setChannelFor(v.vendedor)}
+                              className="font-semibold text-primary hover:underline"
+                              title="Ver a origem dos leads por canal e o tempo de resposta deste vendedor"
                             >
                               {leads}
                             </button>
@@ -1617,6 +1636,9 @@ export default function TinyOrdersPage({
 
       {unassignedOpen && (
         <LeadsUnassignedModal range={range} onClose={() => setUnassignedOpen(false)} />
+      )}
+      {channelFor !== undefined && (
+        <LeadsByChannelModal range={range} vendedor={channelFor} onClose={() => setChannelFor(undefined)} />
       )}
 
       {leadsOpen && (
@@ -2108,5 +2130,116 @@ function OrigemBadge({ origem }: { origem: 'whatsapp' | 'funil' }) {
     <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
       <FileText className="h-3 w-3" /> Card
     </span>
+  );
+}
+
+/** Minutos → "8 min" / "1h20" / "2d 3h". */
+function fmtMinutes(m: number | null | undefined): string {
+  if (m == null) return '—';
+  if (m < 60) return `${m} min`;
+  if (m < 1440) return `${Math.floor(m / 60)}h${m % 60 ? String(m % 60).padStart(2, '0') : ''}`;
+  const d = Math.floor(m / 1440);
+  const h = Math.floor((m % 1440) / 60);
+  return `${d}d${h ? ` ${h}h` : ''}`;
+}
+
+/** Origem dos leads por canal + tempo de resposta (geral ou de um vendedor). */
+function LeadsByChannelModal({
+  range,
+  vendedor,
+  onClose,
+}: {
+  range: { from?: string; to?: string };
+  vendedor: string | null;
+  onClose: () => void;
+}) {
+  const { data, isLoading } = useQuery({
+    queryKey: ['tiny-leads-by-channel', range.from, range.to, vendedor],
+    queryFn: () => tinyService.leadsByChannel(range, vendedor ?? undefined),
+  });
+  const max = Math.max(1, ...(data?.canais ?? []).map((c) => c.leads));
+  const pctTxt = (v: number | null) =>
+    v == null ? '—' : `${Math.round(v * 100)}%`;
+  const rows = data ? [...data.canais, data.total] : [];
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
+      <div
+        className="max-h-[85vh] w-full max-w-3xl overflow-y-auto rounded-xl bg-white p-5 shadow-xl dark:bg-zinc-900"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="mb-1 flex items-center justify-between">
+          <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
+            Origem dos leads {vendedor ? `· ${vendedor}` : '· todos os vendedores'}
+          </h2>
+          <button onClick={onClose} className="text-zinc-400 hover:text-zinc-600">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+        <p className="mb-4 text-xs text-zinc-500">
+          Tempo de resposta = da entrada do lead até a 1ª mensagem de uma pessoa da equipe (CRM, celular ou Salesbot
+          disparado por ela). &quot;Expediente&quot; desconta noite, fim de semana e feriado.
+        </p>
+        {isLoading ? (
+          <div className="flex items-center gap-2 py-8 text-sm text-zinc-400">
+            <Loader2 className="h-4 w-4 animate-spin" /> carregando…
+          </div>
+        ) : !data || data.total.leads === 0 ? (
+          <div className="py-8 text-center text-sm text-zinc-400">Nenhum lead no período.</div>
+        ) : (
+          <table className="w-full text-sm">
+            <thead className="text-left text-[11px] uppercase tracking-wide text-zinc-400">
+              <tr>
+                <th className="pb-2 pr-3 font-medium">Canal</th>
+                <th className="pb-2 pr-3 text-right font-medium">Leads</th>
+                <th className="pb-2 pr-3 text-right font-medium" title="Mediana do tempo até a 1ª resposta, só horário de expediente">
+                  Resposta (expediente)
+                </th>
+                <th className="pb-2 pr-3 text-right font-medium" title="Mediana em horário corrido">
+                  Resposta (corrido)
+                </th>
+                <th className="pb-2 pr-3 text-right font-medium" title="Leads respondidos em até 15 min de expediente">
+                  Até 15 min
+                </th>
+                <th className="pb-2 text-right font-medium">Sem resposta</th>
+              </tr>
+            </thead>
+            <tbody className="text-zinc-700 dark:text-zinc-300">
+              {rows.map((c) => {
+                const total = c.canal === 'Total';
+                return (
+                  <tr
+                    key={c.canal}
+                    className={`border-t border-zinc-100 dark:border-zinc-800 ${total ? 'font-semibold' : ''}`}
+                  >
+                    <td className="py-2 pr-3">
+                      <div>{c.canal}</div>
+                      {!total && (
+                        <div className="mt-1 h-1 w-full max-w-[140px] overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
+                          <div className="h-full bg-primary/70" style={{ width: `${(c.leads / max) * 100}%` }} />
+                        </div>
+                      )}
+                    </td>
+                    <td className="py-2 pr-3 text-right tabular-nums">
+                      {c.leads}
+                      {!total && data.total.leads > 0 && (
+                        <span className="ml-1 text-[11px] font-normal text-zinc-400">
+                          {Math.round((c.leads / data.total.leads) * 100)}%
+                        </span>
+                      )}
+                    </td>
+                    <td className="py-2 pr-3 text-right tabular-nums">{fmtMinutes(c.medianaExpedienteMin)}</td>
+                    <td className="py-2 pr-3 text-right tabular-nums text-zinc-500">{fmtMinutes(c.medianaMin)}</td>
+                    <td className="py-2 pr-3 text-right tabular-nums">{pctTxt(c.ate15minPct)}</td>
+                    <td className={`py-2 text-right tabular-nums ${c.semResposta > 0 ? 'text-red-600' : ''}`}>
+                      {c.semResposta}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        )}
+      </div>
+    </div>
   );
 }
