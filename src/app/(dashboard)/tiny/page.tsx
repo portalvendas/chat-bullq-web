@@ -39,6 +39,7 @@ import {
   AlertCircle,
   Check,
   Sparkles,
+  Download,
 } from 'lucide-react';
 import {
   tinyService,
@@ -1122,6 +1123,29 @@ export default function TinyOrdersPage({
     placeholderData: (prev) => prev,
   });
 
+  // Exporta o relatório com EXATAMENTE os filtros da tela.
+  const [exporting, setExporting] = useState(false);
+  async function handleExport() {
+    try {
+      setExporting(true);
+      const blob = await tinyService.exportReport(range, vendedor || undefined, comprovante || undefined);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const d = (v?: string) => (v ? v.slice(0, 10) : 'tudo');
+      a.href = url;
+      a.download = `vendas_${d(range.from)}_a_${d(range.to)}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      toast.success('Relatório exportado.');
+    } catch {
+      toast.error('Falha ao exportar o relatório.');
+    } finally {
+      setExporting(false);
+    }
+  }
+
   const qc = useQueryClient();
   const enrichMut = useMutation({
     mutationFn: () => tinyService.enrichContacts(),
@@ -1207,6 +1231,20 @@ export default function TinyOrdersPage({
             ))}
             {vendorOptions?.hasSemVendedor && <option value="__sem__">Sem vendedor</option>}
           </select>
+          <button
+            type="button"
+            onClick={handleExport}
+            disabled={exporting}
+            title="Baixa em Excel o que está na tela, com os filtros aplicados: resumo, por vendedor, pedidos e propostas."
+            className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 px-2.5 py-1.5 text-xs font-medium text-zinc-700 transition-colors hover:bg-zinc-100 disabled:opacity-60 dark:border-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-800"
+          >
+            {exporting ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Download className="h-3.5 w-3.5" />
+            )}
+            Exportar relatório
+          </button>
           <button
             type="button"
             onClick={() => enrichMut.mutate()}

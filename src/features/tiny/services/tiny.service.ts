@@ -352,6 +352,18 @@ export const tinyService = {
   async deleteReceipt(docId: string, receiptId: string): Promise<void> {
     await api.delete(`/tiny/documents/${docId}/comprovante/${receiptId}`);
   },
+  /** Relatório .xlsx com os mesmos filtros da tela (período, vendedor, comprovante). */
+  async exportReport(period: TinyPeriod = {}, vendedor?: string, comprovante?: string): Promise<Blob> {
+    const { data } = await api.get('/tiny/export', {
+      params: {
+        ...period,
+        ...(vendedor ? { vendedor } : {}),
+        ...(comprovante ? { comprovante } : {}),
+      },
+      responseType: 'blob',
+    });
+    return data as Blob;
+  },
   async orders(
     kind: 'PEDIDO' | 'ORCAMENTO',
     page = 1,
