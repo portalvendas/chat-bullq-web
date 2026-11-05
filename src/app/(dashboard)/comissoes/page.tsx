@@ -6,7 +6,7 @@
  *
  * Regra por vendedor: valor fixo até bater a meta; depois da meta, % sobre o
  * vendido (só o excedente ou o total, configurável), mantendo ou não o fixo.
- * Base = pedidos de venda direta do Tiny no mês, SÓ PRODUTOS (sem frete).
+ * Base = pedidos de venda direta do Tiny no mês: PRODUTOS (líquido) − FRETE.
  */
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -143,7 +143,7 @@ function Comissoes() {
               <BadgeDollarSign className="h-6 w-6 text-primary" /> Comissões
             </h1>
             <p className="mt-1 text-sm text-zinc-500">
-              Pedidos de venda direta do Tiny, só produtos (sem frete). Visível apenas para o dono da conta.
+              Base = Produtos (valor líquido) − Frete dos pedidos de venda direta do Tiny. Visível apenas para o dono da conta.
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -177,12 +177,16 @@ function Comissoes() {
         {rep && (
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <Kpi label="Pedidos" value={String(rep.totais.pedidos)} />
-            <Kpi label="Vendas sem frete" value={brl(rep.totais.vendas)} hint={`Bruto ${brl(rep.totais.bruto)} · frete ${brl(rep.totais.frete)}`} />
+            <Kpi
+              label="Base da comissão"
+              value={brl(rep.totais.vendas)}
+              hint={`Produtos ${brl(rep.totais.produtos)} − frete ${brl(rep.totais.frete)}`}
+            />
             <Kpi label="Comissões do mês" value={brl(rep.totais.comissao)} strong />
             <Kpi
               label="Custo de comissão"
               value={rep.totais.vendas > 0 ? pct(rep.totais.comissao / rep.totais.vendas) : '—'}
-              hint="Comissões ÷ vendas sem frete"
+              hint="Comissões ÷ base da comissão"
             />
           </div>
         )}
@@ -191,7 +195,7 @@ function Comissoes() {
           <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-300">
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
             <span>
-              <b>{rep.totais.fretePendente} pedido(s)</b> ainda sem frete lido do Tiny — entram pelo valor cheio. O sync
+              <b>{rep.totais.fretePendente} pedido(s)</b> ainda sem produtos/frete lidos do Tiny — entram pelo valor cheio. O sync
               completa sozinho aos poucos; para fechar o mês agora, clique em <b>Atualizar fretes</b>.
             </span>
           </div>
@@ -215,7 +219,9 @@ function Comissoes() {
                   <tr>
                     <th className="px-4 py-2 font-medium">Vendedor</th>
                     <th className="px-2 py-2 text-right font-medium">Pedidos</th>
-                    <th className="px-2 py-2 text-right font-medium">Vendas s/ frete</th>
+                    <th className="px-2 py-2 text-right font-medium">Produtos líq.</th>
+                    <th className="px-2 py-2 text-right font-medium">Frete</th>
+                    <th className="px-2 py-2 text-right font-medium" title="Produtos (valor líquido) − Frete">Base</th>
                     <th className="px-2 py-2 text-right font-medium">Meta do mês</th>
                     <th className="px-2 py-2 font-medium">Atingimento</th>
                     <th className="px-2 py-2 text-right font-medium">Fixo</th>
@@ -329,10 +335,12 @@ function ReportRow({
     <tr className="border-t border-zinc-100 dark:border-zinc-800">
       <td className="px-4 py-2.5">
         <div className="font-medium text-zinc-800 dark:text-zinc-100">{r.vendedor}</div>
-        {r.fretePendente > 0 && <div className="text-[11px] text-amber-600">{r.fretePendente} sem frete apurado</div>}
+        {r.fretePendente > 0 && <div className="text-[11px] text-amber-600">{r.fretePendente} a apurar no Tiny</div>}
       </td>
       <td className="px-2 py-2.5 text-right tabular-nums">{r.pedidos}</td>
-      <td className="px-2 py-2.5 text-right tabular-nums">{brl(r.vendas)}</td>
+      <td className="px-2 py-2.5 text-right tabular-nums">{brl(r.produtos)}</td>
+      <td className="px-2 py-2.5 text-right tabular-nums text-zinc-500">{brl(r.frete)}</td>
+      <td className="px-2 py-2.5 text-right font-medium tabular-nums">{brl(r.vendas)}</td>
       <td className="px-2 py-2.5 text-right">
         {c ? (
           goalTxt != null ? (

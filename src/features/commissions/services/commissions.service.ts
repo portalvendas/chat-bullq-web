@@ -40,7 +40,9 @@ export interface CommissionRow {
   metaDoMes: number | null;
   pedidos: number;
   bruto: number;
+  produtos: number;
   frete: number;
+  /** Base da comissão = produtos líquidos − frete. */
   vendas: number;
   fretePendente: number;
   regra: {
@@ -59,6 +61,7 @@ export interface CommissionReport {
   totais: {
     pedidos: number;
     bruto: number;
+    produtos: number;
     frete: number;
     vendas: number;
     comissao: number;
