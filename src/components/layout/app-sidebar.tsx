@@ -15,6 +15,7 @@ import {
   ShieldCheck,
   Megaphone,
   Activity,
+  BadgeDollarSign,
 } from 'lucide-react';
 import { usePermissions } from '@/hooks/use-permissions';
 import { InboxTree } from '@/features/inbox-views/components/inbox-tree';
@@ -58,6 +59,8 @@ export function AppSidebar() {
     useAuthStore();
   const activeOrg = organizations.find((o) => o.id === activeOrgId);
   const isOrgAdmin = activeOrg?.role === 'OWNER' || activeOrg?.role === 'ADMIN';
+  // Comissões: SÓ o dono da conta (nunca vendedoras, mesmo com papel ADMIN).
+  const isOwner = activeOrg?.role === 'OWNER';
   const { canView } = usePermissions();
 
   const handleOrgSwitch = (orgId: string) => {
@@ -131,6 +134,12 @@ export function AppSidebar() {
             <SidebarItem href="/produtividade">
               <Activity className="size-5" />
               <SidebarLabel>Produtividade</SidebarLabel>
+            </SidebarItem>
+          )}
+          {isOwner && (
+            <SidebarItem href="/comissoes">
+              <BadgeDollarSign className="size-5" />
+              <SidebarLabel>Comissões</SidebarLabel>
             </SidebarItem>
           )}
           {user?.isPlatformAdmin && (
