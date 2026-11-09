@@ -10,6 +10,7 @@ import { Check, CheckCheck, Clock, AlertCircle, ExternalLink, Reply, Trash2, X, 
 import { toast } from 'sonner';
 import { inboxService, type Conversation, type Message } from '../services/inbox.service';
 import { ChatInput, type ChatInputHandle } from './chat-input';
+import { TemplateSendDialog } from './template-send-dialog';
 import {
   quickRepliesService,
   renderQuickReplyVars,
@@ -62,41 +63,57 @@ const statusIcons: Record<string, React.ElementType> = {
 function EngagementWindowBanner({
   channelType,
   messages,
+  conversationId,
+  contactName,
 }: {
   channelType: string;
   messages: Message[];
+  conversationId: string;
+  contactName?: string | null;
 }) {
+  const [open, setOpen] = useState(false);
   // Janela 24h é regra rígida APENAS do WhatsApp Cloud API oficial (Meta).
-  // Canais Zappfy/Uazapi (WHATSAPP_ZAPPFY) não têm essa restrição — banner
-  // ali confunde mais que ajuda.
+  // Canais Zappfy/Uazapi/Baileys não têm essa restrição.
   if (channelType !== 'WHATSAPP_OFFICIAL') return null;
   if (messages.length === 0) return null;
 
-  const lastInbound = [...messages]
-    .reverse()
-    .find((m) => m.direction === 'INBOUND');
-  if (!lastInbound) return null;
+  const lastInbound = [...messages].reverse().find((m) => m.direction === 'INBOUND');
+  // Cliente NUNCA escreveu neste número (ex.: lead do formulário, vendedora
+  // iniciou): a Meta só aceita template — texto livre falha.
+  const neverOpened = !lastInbound;
+  const ageHours = lastInbound
+    ? (Date.now() - new Date(lastInbound.createdAt).getTime()) / (60 * 60 * 1000)
+    : Infinity;
+  if (!neverOpened && ageHours < 24) return null;
 
-  const ageMs = Date.now() - new Date(lastInbound.createdAt).getTime();
-  const ageHours = ageMs / (60 * 60 * 1000);
-  if (ageHours < 24) return null;
-
-  const ageLabel =
-    ageHours < 48
-      ? `${Math.floor(ageHours)}h`
-      : `${Math.floor(ageHours / 24)} dias`;
+  const ageLabel = ageHours < 48 ? `${Math.floor(ageHours)}h` : `${Math.floor(ageHours / 24)} dias`;
 
   return (
     <div className="flex items-start gap-2 border-b border-amber-200 bg-amber-50 px-4 py-2.5 text-xs text-amber-900 dark:border-amber-900/50 dark:bg-amber-900/20 dark:text-amber-200">
       <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0" />
       <div className="flex-1 leading-relaxed">
-        <strong>Janela de 24h expirada</strong> — última mensagem do cliente
-        foi há {ageLabel}. WhatsApp só aceita{' '}
-        <strong>templates aprovados</strong> agora. Mensagem de texto livre
-        vai falhar com erro <code className="font-mono text-[11px]">Re-engagement message</code>.
-        Peça pro cliente mandar qualquer mensagem pra reabrir a janela, ou
-        envie um template HSM via Meta Business.
+        {neverOpened ? (
+          <>
+            <strong>O cliente ainda não mandou mensagem neste número.</strong> Para iniciar a conversa o
+            WhatsApp só aceita <strong>template aprovado</strong> — texto livre não é entregue.
+          </>
+        ) : (
+          <>
+            <strong>Janela de 24h expirada</strong> — última mensagem do cliente foi há {ageLabel}. O
+            WhatsApp só aceita <strong>template aprovado</strong> até o cliente responder.
+          </>
+        )}
       </div>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="shrink-0 rounded-md bg-amber-600 px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-amber-700"
+      >
+        Enviar template
+      </button>
+      {open && (
+        <TemplateSendDialog conversationId={conversationId} contactName={contactName} onClose={() => setOpen(false)} />
+      )}
     </div>
   );
 }
@@ -979,6 +996,8 @@ export function ChatPanel({
       <EngagementWindowBanner
         channelType={conversation.channel.type}
         messages={messages}
+        conversationId={conversation.id}
+        contactName={conversation.contact?.name}
       />
 
       <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto bg-zinc-50 p-4 dark:bg-zinc-900/50">
