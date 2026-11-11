@@ -277,7 +277,44 @@ export interface ResendFailedResult {
   windowHours: number;
 }
 
+/** GET /dashboard/mobile — payload agregado, pronto pra renderizar. Cada
+ *  seção pode vir null se a fonte falhou (nome dela aparece em `errors`). */
+export interface MobileDashboardData {
+  range: { from: string; to: string };
+  generatedAt: string;
+  errors: string[];
+  vendas: { pedidos: number; valor: number; ticketMedio: number; deltaValorPct: number | null; deltaPedidosPct: number | null } | null;
+  propostas: { count: number; valor: number; conversaoPct: number | null; deltaCountPct: number | null } | null;
+  leads: { count: number; perDay: number | null; noResponse: number; deltaPct: number | null; conversaoPct: number | null } | null;
+  serie: {
+    bucket: 'day' | 'week' | 'month';
+    points: Array<{ date: string; pedidos: number; vendas: number; propostas: number; propostasValor: number; leads: number }>;
+  } | null;
+  vendedores: Array<{
+    vendedor: string; leads: number; pedidos: number; vendas: number;
+    propostas: number; propostasValor: number; conversaoPct: number | null;
+  }> | null;
+  atendimento: {
+    ativas: number; fila: number; abertas: number; aguardando: number; bot: number; presas: number;
+    primeiraRespostaMin: number | null; primeiraRespostaTrend: number;
+    slaPct: number | null; resolucaoPct: number | null;
+    csat: number | null; csatRespostas: number;
+    conversas: number; conversasTrend: number; mensagens: number;
+  } | null;
+  atendentes: Array<{
+    id: string; nome: string; avatarUrl: string | null; ativas: number; conversas: number;
+    fechadas: number; resolucaoPct: number; primeiraRespostaMin: number | null;
+  }> | null;
+}
+
 export const dashboardService = {
+  async getMobile(from?: string, to?: string): Promise<MobileDashboardData> {
+    const params: Record<string, string> = {};
+    if (from) params.from = from;
+    if (to) params.to = to;
+    const { data } = await api.get('/dashboard/mobile', { params });
+    return (data?.data ?? data) as MobileDashboardData;
+  },
   async getWaHealth(): Promise<WaPaymentHealth> {
     const { data } = await api.get('/dashboard/wa-health');
     return (data?.data ?? data) as WaPaymentHealth;

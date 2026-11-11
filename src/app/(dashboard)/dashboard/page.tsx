@@ -10,8 +10,10 @@ import {
 import {
   Activity, Clock, Target, CheckCircle2, TrendingUp, TrendingDown, Minus,
   Bot, Tag as TagIcon, MessageCircle, CalendarClock,
-  Star, RotateCcw, ShieldCheck, ShoppingBag, Users, Sparkles, Pencil,
+  Star, RotateCcw, ShieldCheck, ShoppingBag, Users, Sparkles, Pencil, Smartphone,
 } from 'lucide-react';
+import { MobileDashboard } from '@/features/dashboard/mobile/mobile-dashboard';
+import { useDashboardView } from '@/features/dashboard/hooks/use-dashboard-view';
 import { dashboardService, type SparklinePoint } from '@/features/dashboard/services/dashboard.service';
 import { useOrgId } from '@/hooks/use-org-query-key';
 import { Heatmap } from '@/features/dashboard/components/Heatmap';
@@ -200,7 +202,43 @@ function TabBar({ tab, setTab }: { tab: DashTab; setTab: (t: DashTab) => void })
   );
 }
 
+/**
+ * Entrada do /dashboard: no celular carrega o Dashboard MOBILE (1 request
+ * agregado, layout de toque); no desktop, o painel completo. O usuário pode
+ * alternar (fica salvo na sessão) e `?view=mobile|desktop` força pela URL.
+ */
 export default function DashboardPage() {
+  const searchParams = useSearchParams();
+  const { view, isMobileDevice, setView } = useDashboardView(searchParams.get('view'));
+  if (view === null) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <div className="h-7 w-7 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </div>
+    );
+  }
+  if (view === 'mobile') return <MobileDashboard onSwitchToDesktop={() => setView('desktop')} />;
+  return (
+    <DesktopDashboard
+      onSwitchToMobile={isMobileDevice ? () => setView('mobile') : undefined}
+    />
+  );
+}
+
+function MobileSwitch({ onClick }: { onClick?: () => void }) {
+  if (!onClick) return null;
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="mt-2 inline-flex items-center gap-1.5 rounded-lg bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary"
+    >
+      <Smartphone className="h-3.5 w-3.5" /> Voltar para a versão mobile
+    </button>
+  );
+}
+
+function DesktopDashboard({ onSwitchToMobile }: { onSwitchToMobile?: () => void }) {
   const orgId = useOrgId();
   const searchParams = useSearchParams();
   const urlTab = searchParams.get('tab');
@@ -296,6 +334,7 @@ export default function DashboardPage() {
       <div className="h-full min-h-0 overflow-y-auto">
         <div className="mx-auto w-full max-w-6xl p-6">
           <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Dashboard</h1>
+          <MobileSwitch onClick={onSwitchToMobile} />
           <MyDayCard />
           <TabBar tab={tab} setTab={setTab} />
           <div className="mt-4">{periodFilter}</div>
@@ -312,6 +351,7 @@ export default function DashboardPage() {
       <div className="h-full min-h-0 overflow-y-auto">
         <div className="mx-auto w-full max-w-6xl p-6">
           <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Dashboard</h1>
+          <MobileSwitch onClick={onSwitchToMobile} />
           <MyDayCard />
           <TabBar tab={tab} setTab={setTab} />
           <div className="mt-4">{periodFilter}</div>
@@ -328,6 +368,7 @@ export default function DashboardPage() {
       <div className="h-full min-h-0 overflow-y-auto">
         <div className="mx-auto w-full max-w-6xl p-6">
           <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Dashboard</h1>
+          <MobileSwitch onClick={onSwitchToMobile} />
           <MyDayCard />
           <TabBar tab={tab} setTab={setTab} />
           <div className="mt-4">{periodFilter}</div>
@@ -343,6 +384,7 @@ export default function DashboardPage() {
     <div className="h-full min-h-0 overflow-y-auto">
       <div className="mx-auto w-full max-w-6xl p-6">
       <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Dashboard</h1>
+          <MobileSwitch onClick={onSwitchToMobile} />
       <MyDayCard />
       <TabBar tab={tab} setTab={setTab} />
       <div className="mt-4">{periodFilter}</div>

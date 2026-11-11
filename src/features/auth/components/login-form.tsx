@@ -10,6 +10,7 @@ import { Loader2 } from 'lucide-react';
 import { loginSchema, type LoginFormData } from '../schemas/login.schema';
 import { authService } from '../services/auth.service';
 import { useAuthStore } from '@/stores/auth-store';
+import { isMobileViewport } from '@/features/dashboard/hooks/use-dashboard-view';
 
 export function LoginForm() {
   const router = useRouter();
@@ -36,7 +37,8 @@ export function LoginForm() {
       // setAuth already picks the best org (stored or first available)
 
       toast.success(`Bem-vindo, ${result.user.name}!`);
-      router.push('/inbox');
+      // No celular a entrada é o Dashboard mobile; no desktop, o inbox.
+      router.push(isMobileViewport() ? '/dashboard' : '/inbox');
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Erro ao fazer login');
     } finally {
