@@ -22,6 +22,8 @@
   "20": "meta-capi-card.tsx",
   "21": "dashboard/page.tsx",
   "22": "ConversionRow",
+  "23": "mobile-dashboard.tsx",
+  "24": "app/page.tsx",
   "28": "chat-panel.tsx",
   "29": "routine.service.ts"
 }

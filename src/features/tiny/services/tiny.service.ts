@@ -131,6 +131,11 @@ export interface TinyChannelRow {
   medianaExpedienteMin: number | null;
   mediaExpedienteMin: number | null;
   ate15minPct: number | null;
+  /** Propostas/pedidos do período (data do documento) no canal do lead do contato. */
+  propostas: number;
+  propostasValor: number;
+  pedidos: number;
+  pedidosValor: number;
 }
 export interface TinyLeadsByChannel {
   vendedor: string | null;

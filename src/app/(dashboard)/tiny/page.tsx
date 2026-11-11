@@ -2164,7 +2164,7 @@ function LeadsByChannelModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
       <div
-        className="max-h-[85vh] w-full max-w-3xl overflow-y-auto rounded-xl bg-white p-5 shadow-xl dark:bg-zinc-900"
+        className="max-h-[85vh] w-full max-w-5xl overflow-y-auto rounded-xl bg-white p-5 shadow-xl dark:bg-zinc-900"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-1 flex items-center justify-between">
@@ -2177,20 +2177,28 @@ function LeadsByChannelModal({
         </div>
         <p className="mb-4 text-xs text-zinc-500">
           Tempo de resposta = da entrada do lead até a 1ª mensagem de uma pessoa da equipe (CRM, celular ou Salesbot
-          disparado por ela). &quot;Expediente&quot; desconta noite, fim de semana e feriado.
+          disparado por ela). &quot;Expediente&quot; desconta noite, fim de semana e feriado. Propostas e pedidos =
+          documentos do período (mesmo filtro dos cards), no canal de origem do lead do cliente.
         </p>
         {isLoading ? (
           <div className="flex items-center gap-2 py-8 text-sm text-zinc-400">
             <Loader2 className="h-4 w-4 animate-spin" /> carregando…
           </div>
-        ) : !data || data.total.leads === 0 ? (
+        ) : !data || (data.total.leads === 0 && data.total.propostas === 0 && data.total.pedidos === 0) ? (
           <div className="py-8 text-center text-sm text-zinc-400">Nenhum lead no período.</div>
         ) : (
+          <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="text-left text-[11px] uppercase tracking-wide text-zinc-400">
               <tr>
                 <th className="pb-2 pr-3 font-medium">Canal</th>
                 <th className="pb-2 pr-3 text-right font-medium">Leads</th>
+                <th className="pb-2 pr-3 text-right font-medium" title="Propostas do período (data da proposta) no canal do lead">
+                  Propostas
+                </th>
+                <th className="pb-2 pr-3 text-right font-medium" title="Pedidos (venda efetiva) do período no canal do lead">
+                  Pedidos
+                </th>
                 <th className="pb-2 pr-3 text-right font-medium" title="Mediana do tempo até a 1ª resposta, só horário de expediente">
                   Resposta (expediente)
                 </th>
@@ -2227,6 +2235,14 @@ function LeadsByChannelModal({
                         </span>
                       )}
                     </td>
+                    <td className="py-2 pr-3 text-right tabular-nums">
+                      <div>{c.propostas}</div>
+                      <div className="text-[11px] font-normal text-zinc-400">{c.propostas ? brl(c.propostasValor) : '—'}</div>
+                    </td>
+                    <td className="py-2 pr-3 text-right tabular-nums">
+                      <div className={c.pedidos ? 'text-emerald-700 dark:text-emerald-400' : ''}>{c.pedidos}</div>
+                      <div className="text-[11px] font-normal text-zinc-400">{c.pedidos ? brl(c.pedidosValor) : '—'}</div>
+                    </td>
                     <td className="py-2 pr-3 text-right tabular-nums">{fmtMinutes(c.medianaExpedienteMin)}</td>
                     <td className="py-2 pr-3 text-right tabular-nums text-zinc-500">{fmtMinutes(c.medianaMin)}</td>
                     <td className="py-2 pr-3 text-right tabular-nums">{pctTxt(c.ate15minPct)}</td>
@@ -2238,6 +2254,7 @@ function LeadsByChannelModal({
               })}
             </tbody>
           </table>
+          </div>
         )}
       </div>
     </div>
