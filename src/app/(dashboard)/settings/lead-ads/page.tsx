@@ -3,7 +3,15 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { Facebook, Plus, Trash2, Loader2, Copy, Check } from 'lucide-react';
+import {
+  Facebook,
+  Plus,
+  Trash2,
+  Loader2,
+  Copy,
+  Check,
+  Download,
+} from 'lucide-react';
 import { api } from '@/lib/api';
 import {
   leadAdsService,
@@ -48,6 +56,7 @@ export default function LeadAdsSettingsPage() {
   const [pageId, setPageId] = useState('');
   const [pageName, setPageName] = useState('');
   const [accessToken, setAccessToken] = useState('');
+  const [importFormId, setImportFormId] = useState('');
 
   const invalidate = () =>
     qc.invalidateQueries({ queryKey: ['lead-ads-pages'] });
@@ -82,6 +91,21 @@ export default function LeadAdsSettingsPage() {
       invalidate();
     },
     onError: () => toast.error('Erro ao remover'),
+  });
+  const importLeads = useMutation({
+    mutationFn: () =>
+      leadAdsService.importForm({ formId: importFormId.trim() }),
+    onSuccess: (r) => {
+      toast.success(
+        `Importação concluída: ${r.created} novo(s), ${r.skipped} já existente(s)` +
+          (r.errors ? `, ${r.errors} com erro` : '') +
+          ` (de ${r.total}).`,
+      );
+      setImportFormId('');
+      invalidate();
+    },
+    onError: (e: any) =>
+      toast.error(e?.response?.data?.message ?? 'Erro ao importar leads'),
   });
 
   return (
@@ -204,6 +228,40 @@ export default function LeadAdsSettingsPage() {
           </ul>
         )}
       </div>
+
+      {/* Importar leads existentes (backfill) */}
+      {pages.length > 0 && (
+        <div className="mt-6">
+          <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-zinc-500">
+            Importar leads existentes
+          </div>
+          <p className="mb-3 text-xs text-zinc-500">
+            O webhook só captura leads <b>novos</b>. Para trazer os que já estão
+            num formulário instantâneo, cole o <b>ID do formulário</b> e importe.
+            Leads já existentes no funil não são duplicados.
+          </p>
+          <div className="flex items-center gap-2 rounded-lg border border-zinc-200 p-3 dark:border-zinc-800">
+            <input
+              value={importFormId}
+              onChange={(e) => setImportFormId(e.target.value)}
+              placeholder="ID do formulário (ex: 1203456789012345)"
+              className="flex-1 rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm font-mono outline-none focus:border-primary dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+            />
+            <button
+              onClick={() => importLeads.mutate()}
+              disabled={importLeads.isPending || !importFormId.trim()}
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-xs font-medium text-white hover:opacity-90 disabled:opacity-50"
+            >
+              {importLeads.isPending ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <Download className="h-3.5 w-3.5" />
+              )}
+              Importar leads
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

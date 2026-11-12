@@ -29,4 +29,24 @@ export const leadAdsService = {
   async remove(id: string): Promise<void> {
     await api.delete(`/lead-ads/pages/${id}`);
   },
+  /**
+   * Importa (backfill) os leads já existentes de um formulário instantâneo.
+   * Pode demorar (pagina a Graph API), então usa timeout estendido.
+   */
+  async importForm(dto: {
+    formId: string;
+    pageId?: string;
+  }): Promise<{
+    formId: string;
+    pageId: string;
+    total: number;
+    created: number;
+    skipped: number;
+    errors: number;
+  }> {
+    const { data } = await api.post('/lead-ads/import', dto, {
+      timeout: 120000,
+    });
+    return unwrap(data);
+  },
 };
