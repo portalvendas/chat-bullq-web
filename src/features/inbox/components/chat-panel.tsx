@@ -6,7 +6,7 @@ import {
   getFocusedConversation,
   setFocusedConversation,
 } from '@/features/productivity/lib/focused-conversation';
-import { Check, CheckCheck, Clock, AlertCircle, ExternalLink, Reply, Trash2, X, Ban, Search, Paperclip, MessageSquareText, Tag, Send, RotateCw } from 'lucide-react';
+import { Check, CheckCheck, Clock, AlertCircle, ExternalLink, Reply, Trash2, X, Ban, Search, Paperclip, MessageSquareText, Tag, Send, RotateCw, StickyNote } from 'lucide-react';
 import { toast } from 'sonner';
 import { inboxService, type Conversation, type Message } from '../services/inbox.service';
 import { ChatInput, type ChatInputHandle } from './chat-input';
@@ -1043,6 +1043,35 @@ export function ChatPanel({
                 const dateKey = `${msgDate.getFullYear()}-${msgDate.getMonth()}-${msgDate.getDate()}`;
                 const showDateSeparator = dateKey !== lastDateKey;
                 lastDateKey = dateKey;
+                // Nota interna da equipe (type SYSTEM): nunca é enviada ao
+                // cliente — renderiza centralizada, em destaque, sem bolha.
+                if (msg.type === 'SYSTEM') {
+                  return (
+                    <Fragment key={msg.id}>
+                      {showDateSeparator && (
+                        <div className="flex justify-center pb-1 pt-3 first:pt-0">
+                          <span className="rounded-full bg-zinc-200/80 px-3 py-1 text-[11px] font-medium text-zinc-600 shadow-sm dark:bg-zinc-800 dark:text-zinc-300">
+                            {formatDateSeparator(msg.createdAt)}
+                          </span>
+                        </div>
+                      )}
+                      <div id={`msg-${msg.id}`} className="flex justify-center py-1">
+                        <div className="w-full max-w-[85%] rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-amber-950 shadow-sm dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-100">
+                          <div className="mb-1 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-300">
+                            <StickyNote className="h-3.5 w-3.5" />
+                            Nota interna · não enviada ao cliente
+                          </div>
+                          <p className="whitespace-pre-wrap text-sm leading-relaxed">
+                            {msg.content?.text ?? ''}
+                          </p>
+                          <div className="mt-1 text-right text-[10px] text-amber-700/70 dark:text-amber-300/70">
+                            {new Date(msg.createdAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                          </div>
+                        </div>
+                      </div>
+                    </Fragment>
+                  );
+                }
                 return (
                   <Fragment key={msg.id}>
                   {showDateSeparator && (
