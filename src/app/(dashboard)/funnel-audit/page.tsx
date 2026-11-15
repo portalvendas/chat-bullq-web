@@ -28,12 +28,14 @@ import {
   Clock,
   Kanban,
   Users,
+  Settings,
 } from 'lucide-react';
 import {
   funnelAuditService,
   type AuditSuggestion,
   type AuditFinding,
 } from '@/features/funnel-audit/services/funnel-audit.service';
+import { ScheduleConfigModal } from '@/features/funnel-audit/components/schedule-config';
 import { pipelinesService } from '@/features/pipelines/services/pipelines.service';
 import {
   chatbotService,
@@ -151,6 +153,8 @@ export default function FunnelAuditPage() {
       arr.includes(id) ? arr.filter((x) => x !== id) : [...arr, id],
     );
 
+  const [cfgOpen, setCfgOpen] = useState(false);
+
   return (
     <div className="h-full overflow-y-auto mx-auto max-w-4xl space-y-5 p-4 sm:p-6">
       {/* Header */}
@@ -161,10 +165,18 @@ export default function FunnelAuditPage() {
             Auditoria de Funil
           </h1>
           <p className="text-xs text-zinc-500">
-            Roda sozinha seg–sáb às 08:30, 12:30 e 16:30 e avisa cada vendedora
-            do que é dela. Sugestões de etapa só mudam o card se você aplicar.
+            Roda conforme o agendamento (ajuste no botão “Agendar”) e avisa cada
+            vendedora do que é dela. Sugestões de etapa só mudam o card se você
+            aplicar.
           </p>
         </div>
+        <button
+          onClick={() => setCfgOpen(true)}
+          title="Agendamento automático"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+        >
+          <Settings className="h-4 w-4" /> Agendar
+        </button>
         <button
           onClick={() => runAudit.mutate()}
           disabled={runAudit.isPending || running}
@@ -178,6 +190,8 @@ export default function FunnelAuditPage() {
           {running ? 'Auditando…' : 'Auditar funil'}
         </button>
       </div>
+
+      <ScheduleConfigModal open={cfgOpen} onClose={() => setCfgOpen(false)} />
 
       {/* Seletor de funis */}
       {pipelines && pipelines.length > 0 && (

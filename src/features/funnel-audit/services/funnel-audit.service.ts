@@ -76,7 +76,27 @@ export interface AuditFindingsPage {
   pagination: { page: number; limit: number; total: number; totalPages: number };
 }
 
+export interface AuditScheduleConfig {
+  organizationId: string;
+  autoEnabled: boolean;
+  times: string[];
+  weekdays: number[];
+  isDefault: boolean;
+}
+
 export const funnelAuditService = {
+  async getConfig(): Promise<AuditScheduleConfig> {
+    const { data } = await api.get('/funnel-audit/config');
+    return unwrap<AuditScheduleConfig>(data);
+  },
+  async setConfig(dto: {
+    autoEnabled?: boolean;
+    times?: string[];
+    weekdays?: number[];
+  }): Promise<AuditScheduleConfig> {
+    const { data } = await api.put('/funnel-audit/config', dto);
+    return unwrap<AuditScheduleConfig>(data);
+  },
   async findings(params: {
     runId?: string;
     type?: string;
