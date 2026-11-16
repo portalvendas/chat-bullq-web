@@ -18,6 +18,7 @@ import {
   leadDistributionService,
   type PipelineRule,
 } from '@/features/settings/services/lead-distribution.service';
+import { virtualSellersService } from '@/features/settings/services/virtual-sellers.service';
 
 /** Chave da regra padrão aplicada aos demais funis. */
 const DEFAULT_KEY = '*';
@@ -39,6 +40,11 @@ export default function DistribuicaoPage() {
     queryFn: () => leadDistributionService.getConfig(),
     staleTime: 30_000,
   });
+  const { data: virtualSellers } = useQuery({
+    queryKey: ['virtual-sellers'],
+    queryFn: () => virtualSellersService.list(),
+    staleTime: 30_000,
+  });
 
   const [enabled, setEnabled] = useState(false);
   // Pesos por funil: { [pipelineId | '*']: { [userId]: pesoString } }
@@ -56,9 +62,16 @@ export default function DistribuicaoPage() {
     setByFunnel(map);
   }, [cfg]);
 
+  // Vendedores = membros humanos ativos + vendedores virtuais (IA). Ambos
+  // participam do rodizio por userId; os virtuais ganham um selo "IA".
   const sellers = useMemo(
-    () => (members ?? []).filter((m) => m.user?.isActive !== false),
-    [members],
+    () => [
+      ...(members ?? []).filter((m) => m.user?.isActive !== false),
+      ...(virtualSellers ?? [])
+        .filter((v) => v.user?.isActive !== false)
+        .map((v) => ({ userId: v.userId, user: v.user, __virtual: true }) as any),
+    ],
+    [members, virtualSellers],
   );
 
   // Cada funil ativo + a linha "padrão" (demais funis) no fim.
@@ -176,8 +189,15 @@ export default function DistribuicaoPage() {
                     className="flex items-center justify-between gap-3 px-4 py-2"
                   >
                     <div className="min-w-0">
-                      <div className="truncate text-sm text-zinc-700 dark:text-zinc-300">
-                        {m.user?.name || m.user?.email}
+                      <div className="flex items-center gap-1.5 truncate text-sm text-zinc-700 dark:text-zinc-300">
+                        <span className="truncate">
+                          {m.user?.name || m.user?.email}
+                        </span>
+                        {(m as any).__virtual && (
+                          <span className="rounded bg-violet-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-violet-700 dark:bg-violet-500/15 dark:text-violet-300">
+                            IA
+                          </span>
+                        )}
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
