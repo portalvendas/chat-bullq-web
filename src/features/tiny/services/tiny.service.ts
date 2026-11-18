@@ -299,19 +299,29 @@ export const tinyService = {
     const { data } = await api.get('/tiny/documents', { params: { contactId } });
     return unwrap<TinyLeadDocuments>(data) ?? { pedidos: [], orcamentos: [] };
   },
-  async summary(period: TinyPeriod = {}, vendedor?: string): Promise<TinySummary> {
+  async summary(period: TinyPeriod = {}, vendedor?: string, channels?: string[]): Promise<TinySummary> {
     const { data } = await api.get('/tiny/summary', {
-      params: { ...period, ...(vendedor ? { vendedor } : {}) },
+      params: {
+        ...period,
+        ...(vendedor ? { vendedor } : {}),
+        ...(channels?.length ? { channel: channels.join(',') } : {}),
+      },
     });
     return unwrap<TinySummary>(data);
+  },
+  /** Origens (canais) possíveis para o filtro por canal. */
+  async leadChannels(): Promise<string[]> {
+    const { data } = await api.get('/tiny/lead-channels');
+    return unwrap<string[]>(data) ?? [];
   },
   async leadsNoResponse(
     period: TinyPeriod = {},
     page = 1,
     limit = 50,
+    channels?: string[],
   ): Promise<TinyLeadsNoResponsePage> {
     const { data } = await api.get('/tiny/leads-no-response', {
-      params: { page, limit, ...period },
+      params: { page, limit, ...period, ...(channels?.length ? { channel: channels.join(',') } : {}) },
     });
     return unwrap<TinyLeadsNoResponsePage>(data);
   },
@@ -399,6 +409,7 @@ export const tinyService = {
     period: TinyPeriod = {},
     vendedor?: string,
     comprovante?: string,
+    channels?: string[],
   ): Promise<TinyOrdersPage> {
     const { data } = await api.get('/tiny/orders', {
       params: {
@@ -408,6 +419,7 @@ export const tinyService = {
         ...period,
         ...(vendedor ? { vendedor } : {}),
         ...(comprovante ? { comprovante } : {}),
+        ...(channels?.length ? { channel: channels.join(',') } : {}),
       },
     });
     return unwrap<TinyOrdersPage>(data);

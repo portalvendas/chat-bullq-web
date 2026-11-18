@@ -1069,6 +1069,7 @@ export default function TinyOrdersPage({
   const [customFrom, setCustomFrom] = useState('');
   const [customTo, setCustomTo] = useState('');
   const [vendedor, setVendedor] = useState(''); // '' = todos; '__sem__' = sem vendedor
+  const [channels, setChannels] = useState<string[]>([]); // [] = todos os canais (origem)
   const [comprovante, setComprovante] = useState(''); // '' = todos; sem|parcial|confere|excedente
   const [leadsOpen, setLeadsOpen] = useState(false); // modal "leads sem resposta"
   const [unassignedOpen, setUnassignedOpen] = useState(false); // modal "leads sem vendedor"
@@ -1086,8 +1087,8 @@ export default function TinyOrdersPage({
   // período. Keyar por range.from/range.to deixa esta aba consistente com
   // Atendimento/Comercial/Custos. `placeholderData` evita flicker na troca.
   const { data: summary } = useQuery({
-    queryKey: ['tiny-summary', range.from, range.to, vendedor],
-    queryFn: () => tinyService.summary(range, vendedor || undefined),
+    queryKey: ['tiny-summary', range.from, range.to, vendedor, channels],
+    queryFn: () => tinyService.summary(range, vendedor || undefined, channels),
     staleTime: 60_000,
     placeholderData: (prev) => prev,
   });
@@ -1098,6 +1099,11 @@ export default function TinyOrdersPage({
     queryFn: () => tinyService.vendors(range),
     staleTime: 60_000,
     placeholderData: (prev) => prev,
+  });
+  const { data: channelOptions } = useQuery({
+    queryKey: ['tiny-lead-channels'],
+    queryFn: () => tinyService.leadChannels(),
+    staleTime: 300_000,
   });
 
   // Filtro de comprovante só se aplica a Pedidos.
@@ -1111,6 +1117,7 @@ export default function TinyOrdersPage({
       range.to,
       vendedor,
       comprovanteFiltro,
+      channels,
     ],
     queryFn: () =>
       tinyService.orders(
@@ -1120,6 +1127,7 @@ export default function TinyOrdersPage({
         range,
         vendedor || undefined,
         comprovanteFiltro || undefined,
+        channels,
       ),
     staleTime: 30_000,
     placeholderData: (prev) => prev,
@@ -1233,6 +1241,14 @@ export default function TinyOrdersPage({
             ))}
             {vendorOptions?.hasSemVendedor && <option value="__sem__">Sem vendedor</option>}
           </select>
+          <ChannelMultiSelect
+            options={channelOptions ?? []}
+            value={channels}
+            onChange={(next) => {
+              setChannels(next);
+              setPage(1);
+            }}
+          />
           <button
             type="button"
             onClick={handleExport}
@@ -1644,8 +1660,78 @@ export default function TinyOrdersPage({
       {leadsOpen && (
         <LeadsNoResponseModal
           range={range}
+          channels={channels}
           onClose={() => setLeadsOpen(false)}
         />
+      )}
+    </div>
+  );
+}
+
+/** Filtro multi-seleção por ORIGEM/canal do lead. [] = todos. */
+function ChannelMultiSelect({
+  options,
+  value,
+  onChange,
+}: {
+  options: string[];
+  value: string[];
+  onChange: (next: string[]) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const label =
+    value.length === 0
+      ? 'Todos os canais'
+      : value.length === 1
+        ? value[0]
+        : `${value.length} canais`;
+  const toggle = (opt: string) =>
+    onChange(value.includes(opt) ? value.filter((v) => v !== opt) : [...value, opt]);
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        title="Filtrar por origem/canal do lead"
+        className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-2.5 py-1.5 text-xs font-medium text-zinc-700 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200"
+      >
+        <span className="max-w-[9rem] truncate">{label}</span>
+        <ChevronDown className="h-3.5 w-3.5 opacity-60" />
+      </button>
+      {open && (
+        <>
+          <button
+            type="button"
+            aria-hidden
+            onClick={() => setOpen(false)}
+            className="fixed inset-0 z-30 cursor-default"
+          />
+          <div className="absolute right-0 z-40 mt-1 max-h-72 w-60 overflow-y-auto rounded-lg border border-zinc-200 bg-white p-1 shadow-lg dark:border-zinc-800 dark:bg-zinc-900">
+            <button
+              type="button"
+              onClick={() => onChange([])}
+              className="flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left text-xs font-medium text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800"
+            >
+              Todos os canais
+              {value.length === 0 && <Check className="h-3.5 w-3.5 text-primary" />}
+            </button>
+            <div className="my-1 border-t border-zinc-100 dark:border-zinc-800" />
+            {options.map((opt) => {
+              const on = value.includes(opt);
+              return (
+                <button
+                  key={opt}
+                  type="button"
+                  onClick={() => toggle(opt)}
+                  className="flex w-full items-center justify-between gap-2 rounded-md px-2 py-1.5 text-left text-xs text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800"
+                >
+                  <span className="truncate">{opt}</span>
+                  {on && <Check className="h-3.5 w-3.5 shrink-0 text-primary" />}
+                </button>
+              );
+            })}
+          </div>
+        </>
       )}
     </div>
   );
@@ -1658,9 +1744,11 @@ export default function TinyOrdersPage({
  */
 function LeadsNoResponseModal({
   range,
+  channels,
   onClose,
 }: {
   range: { from?: string; to?: string };
+  channels?: string[];
   onClose: () => void;
 }) {
   const router = useRouter();
@@ -1668,8 +1756,8 @@ function LeadsNoResponseModal({
   const [startingId, setStartingId] = useState<string | null>(null);
   const [pickerFor, setPickerFor] = useState<string | null>(null);
   const { data, isLoading, isFetching } = useQuery({
-    queryKey: ['tiny-leads-no-response', range.from, range.to, page],
-    queryFn: () => tinyService.leadsNoResponse(range, page, 50),
+    queryKey: ['tiny-leads-no-response', range.from, range.to, page, channels],
+    queryFn: () => tinyService.leadsNoResponse(range, page, 50, channels),
     placeholderData: (prev) => prev,
   });
   // Canais de WhatsApp pra "Iniciar conversa" (precisa escolher o número).
