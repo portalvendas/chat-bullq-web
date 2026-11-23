@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { Workflow, Plus, Trash2, Loader2, Loader, X, Upload, Copy } from 'lucide-react';
+import { Workflow, Plus, Trash2, Loader2, Loader, X, Upload, Copy, Download } from 'lucide-react';
 import {
   cadencesService,
   type Cadence,
@@ -26,6 +26,42 @@ function nodeCount(c: Cadence): number {
     return g.nodes.filter((n) => n.type !== 'start' && n.type !== 'stop').length;
   }
   return c.steps?.length ?? 0;
+}
+
+/** Baixa o JSON do Salesbot (definição: trigger, grafo, ações). Client-side. */
+function exportBot(c: Cadence): void {
+  const payload = {
+    kortiaSalesbot: 1 as const,
+    exportedAt: new Date().toISOString(),
+    name: c.name,
+    description: c.description,
+    triggerType: c.triggerType,
+    triggerValue: c.triggerValue,
+    stopOnReply: c.stopOnReply,
+    businessHoursOnly: c.businessHoursOnly,
+    runWindow: c.runWindow,
+    channelFilter: c.channelFilter,
+    steps: c.steps,
+    graph: c.graph ?? null,
+    onEnd: c.onEnd,
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {
+    type: 'application/json',
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const slug =
+    (c.name || 'salesbot')
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '') || 'salesbot';
+  a.href = url;
+  a.download = `salesbot-${slug}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
 }
 
 /**
@@ -219,6 +255,13 @@ export function JarvisSalesbotsTab() {
                   {c.stopOnReply ? 'para na resposta' : 'não para'} ·{' '}
                   {c._count?.runs ?? 0} execuções
                 </div>
+              </button>
+              <button
+                onClick={() => exportBot(c)}
+                title="Exportar JSON"
+                className="flex h-8 w-8 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-300"
+              >
+                <Download className="h-4 w-4" />
               </button>
               <button
                 onClick={() => duplicate.mutate(c.id)}
