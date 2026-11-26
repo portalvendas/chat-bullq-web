@@ -19,7 +19,9 @@ import { KanbanCard } from './kanban-card';
 import { CardDialog } from './card-dialog';
 import { AddConversationDialog } from './add-conversation-dialog';
 import { ConversationDialog } from '@/features/inbox/components/conversation-dialog';
-import { Calendar } from 'lucide-react';
+import { ArrowRightLeft, Calendar } from 'lucide-react';
+import { useAuthStore } from '@/stores/auth-store';
+import { LeadTransferDialog } from './lead-transfer-dialog';
 
 // ─── Filtro por data de recebimento do lead ──────────────────────
 type DatePreset = 'today' | 'yesterday' | '7d' | '30d' | 'month' | 'all';
@@ -86,6 +88,11 @@ export function KanbanBoard({ pipelineId }: Props) {
   const [addStageId, setAddStageId] = useState<string | null>(null);
   // Conversation popup (when card has a linked conversation, click opens chat).
   const [viewingConvId, setViewingConvId] = useState<string | null>(null);
+  // Transferir leads entre vendedores (só OWNER/ADMIN).
+  const [transferOpen, setTransferOpen] = useState(false);
+  const { organizations, activeOrgId } = useAuthStore();
+  const myRole = organizations.find((o) => o.id === activeOrgId)?.role;
+  const isAdmin = myRole === 'OWNER' || myRole === 'ADMIN';
   // Filtro por data de recebimento do lead (padrão: últimos 30 dias).
   const [preset, setPreset] = useState<DatePreset>('30d');
   const range = useMemo(() => rangeFor(preset), [preset]);
@@ -214,7 +221,23 @@ export function KanbanBoard({ pipelineId }: Props) {
         <span className="ml-auto text-[11px] text-zinc-400">
           {totalLeads} leads
         </span>
+        {isAdmin && (
+          <button
+            onClick={() => setTransferOpen(true)}
+            title="Transferir leads de um vendedor para outro"
+            className="inline-flex items-center gap-1 rounded-full border border-zinc-200 px-2.5 py-1 text-xs font-medium text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+          >
+            <ArrowRightLeft className="h-3.5 w-3.5" /> Transferir leads
+          </button>
+        )}
       </div>
+      {transferOpen && (
+        <LeadTransferDialog
+          defaultPipelineId={pipelineId}
+          onClose={() => setTransferOpen(false)}
+          onDone={() => qc.invalidateQueries({ queryKey: ['pipeline-board', pipelineId] })}
+        />
+      )}
 
       <DndContext
         sensors={sensors}

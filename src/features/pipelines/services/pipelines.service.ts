@@ -212,6 +212,27 @@ export interface RoutingOptions {
   leadAdsPages: { pageId: string; pageName: string | null }[];
 }
 
+/** Lead (card aberto) listado na prévia da transferência. */
+export interface LeadTransferItem {
+  id: string;
+  title: string;
+  createdAt: string;
+  temperature: string | null;
+  stage: string;
+  pipeline: string;
+  contactName: string | null;
+  phone: string | null;
+  /** Última mensagem humana desde a entrada do lead (null = nunca teve). */
+  lastHumanAt: string | null;
+  lastInboundAt: string | null;
+}
+
+export interface LeadTransferResult {
+  transferred: number;
+  conversationsUpdated: number;
+  skipped: Array<{ cardId: string; reason: string }>;
+}
+
 export const pipelinesService = {
   async list(includeArchived = false): Promise<Pipeline[]> {
     const { data } = await api.get('/pipelines', {
@@ -324,6 +345,34 @@ export const pipelinesService = {
       toIndex,
       ...(closedReason ? { closedReason } : {}),
     });
+    return data.data ?? data;
+  },
+  /** Prévia da transferência: leads abertos do vendedor no período. */
+  async leadTransferPreview(params: {
+    fromUserId: string;
+    from?: string;
+    to?: string;
+    noHumanContact?: boolean;
+    pipelineId?: string;
+  }): Promise<{ items: LeadTransferItem[]; total: number; truncated: boolean }> {
+    const { data } = await api.get('/pipelines/lead-transfer/preview', {
+      params: {
+        fromUserId: params.fromUserId,
+        ...(params.from ? { from: params.from } : {}),
+        ...(params.to ? { to: params.to } : {}),
+        ...(params.noHumanContact ? { noHumanContact: '1' } : {}),
+        ...(params.pipelineId ? { pipelineId: params.pipelineId } : {}),
+      },
+    });
+    return data.data ?? data;
+  },
+  /** Transfere os leads selecionados (card + conversa) para outro vendedor. */
+  async leadTransfer(dto: {
+    cardIds: string[];
+    toUserId: string;
+    fromUserId?: string;
+  }): Promise<LeadTransferResult> {
+    const { data } = await api.post('/pipelines/lead-transfer', dto);
     return data.data ?? data;
   },
 };
