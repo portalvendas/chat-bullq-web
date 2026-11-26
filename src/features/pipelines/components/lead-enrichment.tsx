@@ -148,9 +148,10 @@ export function deriveLeadSource(
 }
 
 function getTracking(card: CardDetail): LeadTracking {
-  const fromContact = (card.contact?.metadata as any)?.tracking;
-  const fromCard = (card.metadata as any)?.tracking;
-  return (fromContact ?? fromCard ?? {}) as LeadTracking;
+  const fromContact = (card.contact?.metadata as any)?.tracking ?? {};
+  const fromCard = (card.metadata as any)?.tracking ?? {};
+  // O do card (desta entrada) prevalece sobre o do contato (1º toque).
+  return { ...fromContact, ...fromCard } as LeadTracking;
 }
 
 function getMetaSource(card: CardDetail): unknown {
@@ -217,7 +218,22 @@ function Field({ label, value }: { label: string; value?: string | null }) {
   );
 }
 
+/** Rótulos dos dados do anúncio do Lead Ads gravados no rastreamento. */
+const TRACKING_LABELS: Record<string, string> = {
+  platform: 'Plataforma',
+  campaign_name: 'Campanha',
+  adset_name: 'Conjunto de anúncios',
+  ad_name: 'Anúncio',
+  campaign_id: 'ID da campanha',
+  adset_id: 'ID do conjunto',
+  ad_id: 'ID do anúncio',
+  form_id: 'Formulário (ID)',
+  leadgen_id: 'Lead ID (Meta)',
+  is_organic: 'Orgânico',
+};
+
 function humanizeKey(k: string): string {
+  if (TRACKING_LABELS[k]) return TRACKING_LABELS[k];
   return k.replace(/_/g, ' ').replace(/^./, (m) => m.toUpperCase());
 }
 
@@ -275,9 +291,30 @@ export function LeadEnrichment({
     ['item_outro', 'Outro item'],
     ['descricao', 'Descrição'],
   ];
-  const formEntries = FORM_FIELDS.map(
+  const lpEntries = FORM_FIELDS.map(
     ([k, label]) => [label, fmtVal(raw[k])] as [string, string],
   ).filter(([, v]) => v !== '');
+  // Formulário instantâneo do Facebook (Lead Ads): respostas cruas em
+  // metadata.fields com a pergunta como chave (ex.: "quando_pretende_fazer_o_pedido?":
+  // "este_mês"). Mostra pergunta e resposta legíveis; dados de contato ficam fora.
+  const LEAD_ADS_SKIP = new Set([
+    'nome', 'nome_completo', 'full_name', 'first_name', 'last_name', 'name',
+    'email', 'e-mail', 'telefone', 'phone', 'phone_number', 'celular', 'whatsapp',
+    'origem', 'form_versao',
+  ]);
+  const pretty = (v: unknown) =>
+    String(v ?? '')
+      .replace(/_\/_/g, ' / ')
+      .replace(/_/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .replace(/^./, (m) => m.toUpperCase());
+  const fbFields =
+    meta.fields && typeof meta.fields === 'object' ? (meta.fields as Record<string, any>) : {};
+  const leadAdsEntries = Object.entries(fbFields)
+    .filter(([k, v]) => v !== '' && v != null && !LEAD_ADS_SKIP.has(k.toLowerCase().trim()))
+    .map(([k, v]) => [pretty(k), pretty(v)] as [string, string]);
+  const formEntries = lpEntries.length > 0 ? lpEntries : leadAdsEntries;
   // Resumo do formulário também vem na DESCRIÇÃO do card (ex.: "Itens: … |
   // Material: … | Score: 51 (Morno)") — é o que o card sem conversa mostra.
   const description = card.description?.trim() || '';
@@ -350,7 +387,9 @@ export function LeadEnrichment({
           {formEntries.length > 0 ? (
             <div className="grid grid-cols-2 gap-2">
               {formEntries.map(([label, value]) => (
-                <Field key={label} label={label} value={value} />
+                <div key={label} className={label.length > 22 ? 'col-span-2' : ''}>
+                  <Field label={label} value={value} />
+                </div>
               ))}
             </div>
           ) : description ? (
