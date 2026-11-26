@@ -182,6 +182,50 @@ export interface CommercialData {
   }>;
 }
 
+/** Métricas de mídia paga (custos null quando não há gasto/base). */
+export interface AdsMetrics {
+  gasto: number;
+  impressoes: number;
+  cliques: number;
+  ctr: number | null;
+  leads: number;
+  leadsQualificados: number;
+  orcamentos: number;
+  orcamentosValor: number;
+  vendas: number;
+  vendasValor: number;
+  ticketMedio: number | null;
+  cpl: number | null;
+  custoLeadQualificado: number | null;
+  custoOrcamento: number | null;
+  cac: number | null;
+  roas: number | null;
+  taxaLeadVendaPct: number | null;
+  receitaPorNomePct: number | null;
+}
+export interface AdsNode { key: string; name: string; metrics: AdsMetrics }
+export interface AdsAdsetNode extends AdsNode { ads: AdsNode[] }
+export interface AdsCampaignNode extends AdsNode {
+  platform: string;
+  casouComMeta: boolean;
+  adsets: AdsAdsetNode[];
+}
+export interface AdsCoverageBucket { n: number; valor: number }
+export type AdsCoverage = Record<
+  'total' | 'comAnuncio' | 'casadoComMeta' | 'porNome' | 'semAnuncio' | 'clienteAntesDoAnuncio' | 'semCliente',
+  AdsCoverageBucket
+>;
+export interface AdsPerformanceData {
+  attribution: 'first_touch';
+  range: { from: string; to: string };
+  metaConfigured: boolean;
+  totals: AdsMetrics;
+  coverage: { vendas: AdsCoverage; orcamentos: AdsCoverage };
+  platforms: string[];
+  campaigns: AdsCampaignNode[];
+  nonAd: Array<{ key: string; label: string; metrics: AdsMetrics }>;
+}
+
 export interface IntakeHealth {
   total: number;
   janelaDias: number;
@@ -427,6 +471,13 @@ export const dashboardService = {
     if (to) params.to = to;
     if (origem && origem !== 'all') params.origem = origem;
     const { data } = await api.get('/dashboard/commercial', { params });
+    return data.data;
+  },
+  async getAdsPerformance(from?: string, to?: string): Promise<AdsPerformanceData> {
+    const params: Record<string, string> = {};
+    if (from) params.from = from;
+    if (to) params.to = to;
+    const { data } = await api.get('/dashboard/ads-performance', { params });
     return data.data;
   },
   async exportCommercial(from?: string, to?: string): Promise<Blob> {

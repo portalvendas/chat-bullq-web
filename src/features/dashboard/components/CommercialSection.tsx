@@ -17,6 +17,7 @@ import {
   type MetaAdsStatus,
 } from '@/features/dashboard/services/dashboard.service';
 import { useOrgId } from '@/hooks/use-org-query-key';
+import { AdsPerformanceSection } from './AdsPerformanceSection';
 
 const brl = (n: number) =>
   new Intl.NumberFormat('pt-BR', {
@@ -123,7 +124,7 @@ function ExportButton({ from, to }: { from: string; to: string }) {
       type="button"
       onClick={onExport}
       disabled={loading}
-      title="Exporta campanha x conjunto x criativo x vendas/orcamentos em .xlsx"
+      title="Exporta o desempenho por anúncio (campanha › conjunto › anúncio × gasto, leads, orçamentos e vendas) em .xlsx"
       className="inline-flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-700 shadow-sm hover:bg-zinc-50 disabled:opacity-60 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
     >
       <Download className="h-4 w-4" />
@@ -308,6 +309,8 @@ export function CommercialSection({ from, to }: { from: string; to: string }) {
       <CohortSection cohort={o.cohort} totalPedidos={o.pedidos} />
 
       <MetaAdsPanel overview={d.overview} />
+
+      <AdsPerformanceSection from={from} to={to} />
 
       <EvolutionCharts series={d.series} />
 
