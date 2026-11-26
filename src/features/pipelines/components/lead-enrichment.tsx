@@ -221,7 +221,14 @@ function humanizeKey(k: string): string {
   return k.replace(/_/g, ' ').replace(/^./, (m) => m.toUpperCase());
 }
 
-export function LeadEnrichment({ card }: { card: CardDetail }) {
+export function LeadEnrichment({
+  card,
+  defaultShowTracking = false,
+}: {
+  card: CardDetail;
+  /** Abre o bloco de rastreamento já expandido (painel "Lead" do inbox). */
+  defaultShowTracking?: boolean;
+}) {
   const c = card.contact;
   const tracking = getTracking(card);
   // Campos personalizados gravados no import (metadata.custom).
@@ -277,7 +284,7 @@ export function LeadEnrichment({ card }: { card: CardDetail }) {
   const hasFormBlock =
     score != null || formEntries.length > 0 || description.length > 0;
   // Rastreamento vem RECOLHIDO por padrão — o operador expande se quiser ver.
-  const [showTracking, setShowTracking] = useState(false);
+  const [showTracking, setShowTracking] = useState(defaultShowTracking);
   const trackingKeys = Object.keys(tracking).filter(
     (k) => tracking[k] !== undefined && tracking[k] !== '' && tracking[k] !== null,
   );

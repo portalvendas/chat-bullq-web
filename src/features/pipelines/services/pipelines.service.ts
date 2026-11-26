@@ -277,6 +277,11 @@ export const pipelinesService = {
    * Cards (across pipelines) que apontam pra essa conversa. Usado pelo
    * popover de pipelines no header da conversa.
    */
+  /** Card do lead desta conversa (prioriza aberto, inclusive LP/Lead Ads sem vínculo). */
+  async leadCardForConversation(conversationId: string): Promise<{ cardId: string | null }> {
+    const { data } = await api.get(`/pipelines/cards/lead-for-conversation/${conversationId}`);
+    return data.data ?? data;
+  },
   async listByConversation(conversationId: string): Promise<ConversationCard[]> {
     const { data } = await api.get(
       `/pipelines/cards/by-conversation/${conversationId}`,
