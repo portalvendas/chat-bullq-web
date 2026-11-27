@@ -48,6 +48,8 @@ export interface CardSummary {
   conversationId: string | null;
   assignedToId: string | null;
   metadata: Record<string, unknown>;
+  /** Fonte/tráfego do lead (Google, Meta Ads, Instagram…), derivada no backend. */
+  leadSource?: string;
   closedAt: string | null;
   closedReason: string | null;
   createdAt: string;
@@ -79,6 +81,8 @@ export interface BoardResponse {
   pipeline: Pipeline;
   stages: PipelineStage[];
   cards: Record<string, CardSummary[]>; // by stageId
+  /** Fontes do lead presentes no período, com contagem (filtro do Funil). */
+  leadSources?: Array<{ name: string; count: number }>;
 }
 
 /** Tracking capturado na origem do lead (LP/Ads). Vive em metadata.tracking. */

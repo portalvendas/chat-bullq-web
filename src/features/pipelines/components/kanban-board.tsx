@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import {
   DndContext,
   DragOverlay,
@@ -22,6 +22,7 @@ import { ConversationDialog } from '@/features/inbox/components/conversation-dia
 import { ArrowRightLeft, Calendar } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth-store';
 import { LeadTransferDialog } from './lead-transfer-dialog';
+import { LeadSourceFilter } from './lead-source-filter';
 
 // ─── Filtro por data de recebimento do lead ──────────────────────
 type DatePreset = 'today' | 'yesterday' | '7d' | '30d' | 'month' | 'all';
@@ -109,6 +110,40 @@ export function KanbanBoard({ pipelineId }: Props) {
     queryFn: () => pipelinesService.getBoard(pipelineId, range),
   });
 
+  // Filtro por FONTE do lead (tráfego). Vazio = todas. Lembrado por funil
+  // neste navegador (conveniência; falha de storage = sem filtro).
+  const sourcesKey = `kortia:funil:fontes:${pipelineId}`;
+  const [sources, setSources] = useState<string[]>([]);
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(sourcesKey);
+      const arr = raw ? JSON.parse(raw) : [];
+      setSources(Array.isArray(arr) ? arr.filter((x) => typeof x === 'string') : []);
+    } catch {
+      setSources([]);
+    }
+  }, [sourcesKey]);
+  const changeSources = (next: string[]) => {
+    setSources(next);
+    try {
+      window.localStorage.setItem(sourcesKey, JSON.stringify(next));
+    } catch {
+      /* ignore */
+    }
+  };
+  // Cards exibidos: o filtro é só de VISUALIZAÇÃO — o arrastar continua
+  // usando o board completo (cardIndex), então mover entre etapas não muda.
+  const visibleCards = useMemo(() => {
+    if (!board) return {} as Record<string, CardSummary[]>;
+    if (!sources.length) return board.cards;
+    const sel = new Set(sources);
+    const out: Record<string, CardSummary[]> = {};
+    for (const [stageId, list] of Object.entries(board.cards)) {
+      out[stageId] = list.filter((c) => sel.has(c.leadSource ?? 'Outros / manual'));
+    }
+    return out;
+  }, [board, sources]);
+
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
   );
@@ -193,7 +228,11 @@ export function KanbanBoard({ pipelineId }: Props) {
     );
   }
 
-  const totalLeads = Object.values(board.cards).reduce(
+  const allLeads = Object.values(board.cards).reduce(
+    (acc, list) => acc + list.length,
+    0,
+  );
+  const totalLeads = Object.values(visibleCards).reduce(
     (acc, list) => acc + list.length,
     0,
   );
@@ -218,8 +257,14 @@ export function KanbanBoard({ pipelineId }: Props) {
             {p.label}
           </button>
         ))}
+        <span className="mx-1 h-4 w-px bg-zinc-200 dark:bg-zinc-700" />
+        <LeadSourceFilter
+          options={board.leadSources ?? []}
+          value={sources}
+          onChange={changeSources}
+        />
         <span className="ml-auto text-[11px] text-zinc-400">
-          {totalLeads} leads
+          {sources.length ? `${totalLeads} de ${allLeads} leads` : `${totalLeads} leads`}
         </span>
         {isAdmin && (
           <button
@@ -250,7 +295,7 @@ export function KanbanBoard({ pipelineId }: Props) {
             <KanbanColumn
               key={stage.id}
               stage={stage}
-              cards={board.cards[stage.id] ?? []}
+              cards={visibleCards[stage.id] ?? []}
               onAddCard={() => setAddStageId(stage.id)}
               onOpenConversation={(convId) => setViewingConvId(convId)}
               onCardClick={(c) => {
